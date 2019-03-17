@@ -26,61 +26,64 @@ MDY_SET_IMMUTABLE_STRING(sVert, R"dy(
 #version 430
 #import <Input_DefaultVao>;
 #import <Input_UboCamera>;
+#import <Etc_Miscellaneous>;
+#import <Input_ModelTransform>;
 
 out VS_OUT 
 { 
   vec2  texCoord; 
+  vec2  screenTex;
   float zDiffuse;
   float wValue;
-  vec3  tempColor;
+  float zValue;
 } vs_out;
-
-uniform mat4 uModelMatrix;
-uniform mat4 uRotationMatrix;
-
-float rand(float n){ return fract(floor(n * 0.1f) * 43758.5453123); }
 
 void main() 
 {
-  vec4 mdp = uModelMatrix * vec4(dyPosition, 1.0);
-  vec4 vec = uCamera.mViewMatrix * mdp;
-  gl_Position     = uCamera.mProjMatrix * vec;
+  vec4 mdp = DyTransform(vec4(dyPosition, 1.0));
+  vec4 vec    = uCamera.mViewMatrix * mdp;
+  gl_Position = uCamera.mProjMatrix * vec;
 
   vs_out.wValue   = vec.w;
   vs_out.texCoord = dyTexCoord0;
-  vs_out.zDiffuse = abs(normalize(uRotationMatrix * vec4(dyNormal, 0.0)).z);
-  vs_out.tempColor= vec3(rand(mdp.x), rand(mdp.y), rand(mdp.z));
+  vs_out.zDiffuse = abs((mat3(uCamera.mViewMatrix) * normalize(DyGetRotationMatrix() * dyNormal)).z);
+  vs_out.zValue   = DyToZValue(gl_Position.z, gl_Position.w);
+  vs_out.screenTex= DoToScreenSpaceXy(gl_Position.xy / gl_Position.w);
 }
 )dy");
 
 MDY_SET_IMMUTABLE_STRING(sFrag, R"dy(
 #version 430
+#import <Output_OITStream>;
 
 in VS_OUT 
 { 
   vec2  texCoord; 
+  vec2  screenTex;
   float zDiffuse;
   float wValue;
-  vec3 tempColor;
+  float zValue;
 } vs_out;
-
-layout (location = 0) out vec4 outColor;
-layout (location = 1) out vec4 outWeight;
 
 uniform float uAlphaOffset;
 uniform float uDepthScale;
-layout (binding = 0) uniform sampler2D uUnlit;
+layout (binding = 0) uniform sampler2D uTexture0;  // unlit
 
 vec4 ShaderFragment()
 {
-  vec4 color = texture(uUnlit, vs_out.texCoord);
-  color.rgb *= vs_out.zDiffuse * vs_out.tempColor;
+  vec4 color = texture(uTexture0, vs_out.texCoord);
+  color.rgb *= vs_out.zDiffuse;
   color.a   *= uAlphaOffset;
   return color;
 }
 
 void main()
 {
+  if (DyIsTransparentObjectFrontOf(vs_out.screenTex, vs_out.zValue) == false)
+  {
+    discard;
+  }
+
   vec4 color = ShaderFragment();
 
   // Assuming that the projection matrix is a perspective projection.

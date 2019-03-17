@@ -16,9 +16,9 @@
 ///
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "../Builds/VisualStudio2017/GridLeftModelInformation.h"
-#include "../Builds/VisualStudio2017/GridRightController.h"
-#include "../Builds/VisualStudio2017/GridUp_BriefInformation.h"
+#include "../Builds/VisualStudio2017/Include/Panel/GridRight_ModelInformation.h"
+#include "../Builds/VisualStudio2017/Include/Panel/GridLeft_Controller.h"
+#include "../Builds/VisualStudio2017/Include/Panel/GridUp_BriefInformation.h"
 
 //==============================================================================
 /*
@@ -84,7 +84,7 @@ private:
   ApplicationCommandManager mCommandManager;
   std::unique_ptr<MenuBarComponent> mMenuBar = nullptr;
 
-  GridRightPanel_ModelInformation   mRightPanel {"Hello world!"};
+  GridRightPanel_ModelInformation   mRightPanel {"Not supported yet."};
   GridLeftPanel_Controller          mLeftPanel {Colours::white};
   GridUpPanel_BriefInformation      mUpPanel {};
 

@@ -15,8 +15,9 @@
 ///
 
 #include "MainComponent.h"
-#include "../Builds/VisualStudio2017/ProgressDialog_ReadModel.h"
-#include "../Builds/VisualStudio2017/Singleton_ModelInstance.h"
+#include "../Builds/VisualStudio2017/Include/Helper/Singleton_ModelInstance.h"
+#include "../Builds/VisualStudio2017/Include/Helper/Global_EnumSuccess.h"
+#include "../Builds/VisualStudio2017/Include/Panel/ProgressDialog_ReadModel.h"
 
 //==============================================================================
 MainComponent::MainComponent()

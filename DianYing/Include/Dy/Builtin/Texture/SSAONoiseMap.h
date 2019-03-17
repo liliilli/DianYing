@@ -13,14 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyTextureResource.h>
+#include <Dy/Builtin/Abstract/ATextureResource.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBtTexSSAONoiseMap
 /// @brief Noise texture for SSAO effect.
-class FDyBtTexSSAONoiseMap final : public ADyTextureResource
+class FDyBtTexSSAONoiseMap final : public ATextureResource
 {
   MDY_REGISTER_RESOURCE_TEXTURE(FDyBtTexSSAONoiseMap, "dyBtTexSSAONoiseMap")
 };

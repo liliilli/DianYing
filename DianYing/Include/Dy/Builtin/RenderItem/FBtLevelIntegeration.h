@@ -14,9 +14,9 @@
 ///
 
 #include <Dy/Builtin/Abstract/ARenderItem.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 
 namespace dy
 {
@@ -33,6 +33,10 @@ public:
 
   void OnSetupRenderingSetting() override final;
   void pSetupOpaqueCSMIntegration();
+  /// Update directional light property.
+  void pUpdateUboShadowInfo();
+  void pUpdateUboDirectionalLightInfo();
+  void pUpdateUboPointLightsInfo();
   void pSetupTranslucentOITIntegration();
 
   void OnRender() override final;
@@ -54,7 +58,7 @@ private:
   TDyResourceBinderAttachment  mBinderAttZValue  { "dyBtDefZValue" };
   TDyResourceBinderAttachment  mBinderAttSSAO    { "dyBtAtSSAOOutputFinal" };
   TDyResourceBinderAttachment  mBinderAttSky     { "dyBtAtSkyOutput" };
-  TDyResourceBinderAttachment  mBinderAttEmissive{ "dyBtEmissive" };
+  TDyResourceBinderAttachment  mBinderAttEmissive{ "dyBtEmissiveResult" };
 
   TDyResourceBinderFrameBuffer mBinderFbTranslucent { "dyBtFbIntgLevelTrans" };
   TDyResourceBinderShader      mBinderTransShader{ "dyBtShOITIntegration" };

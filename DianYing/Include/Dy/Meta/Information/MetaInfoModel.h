@@ -15,15 +15,13 @@
 
 #include <nlohmann/json_fwd.hpp>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
 {
   
-///
 /// @struct PDyModelInstanceMetaInfo
 /// @brief Descriptor instance which saves information to create model meshes.
-///
 struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
   using TBuiltinMeshSpecifierList = std::vector<std::string>;
@@ -31,16 +29,14 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   {
     std::string mMeshSpecifier      = MDY_INITIALIZE_EMPTYSTR;
     std::string mMaterialSpecifier  = MDY_INITIALIZE_EMPTYSTR;
+    bool        mInstanced = false;
 
-    DMesh(_MIN_ const std::string_view& mesh, _MIN_ const std::string_view& mat) :
-        mMeshSpecifier{(mesh)},
-        mMaterialSpecifier{(mat)} {};
-    DMesh(_MIN_ const char* mesh, _MIN_ const char* mat) :
-        mMeshSpecifier{mesh},
-        mMaterialSpecifier{mat} {};
-    DMesh(_MIN_ const std::string& mesh, _MIN_ const std::string& mat) :
-        mMeshSpecifier{mesh},
-        mMaterialSpecifier{mat} {};
+    DMesh(const std::string_view& mesh, const std::string_view& mat, bool iInstanced = false) 
+      : mMeshSpecifier{(mesh)}, mMaterialSpecifier{(mat)}, mInstanced{iInstanced} {};
+    DMesh(const char* mesh, const char* mat, bool iInstanced = false) 
+      : mMeshSpecifier{mesh}, mMaterialSpecifier{mat}, mInstanced{iInstanced} {};
+    DMesh(const std::string& mesh, const std::string& mat, bool iInstanced = false) 
+      : mMeshSpecifier{mesh}, mMaterialSpecifier{mat}, mInstanced{iInstanced} {};
     DMesh() = default;
   };
   using TExternalMeshList = std::vector<DMesh>;
@@ -53,18 +49,18 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 
   struct DTransform final
   {
-    DDyVector3 mPosition  = DDyVector3{0, 0, 0};
-    DDyVector3 mRotation  = DDyVector3{0, 0, 0};
-    DDyVector3 mScale     = DDyVector3{1, 1, 1};
+    DVector3 mPosition  = DVector3{0, 0, 0};
+    DVector3 mRotation  = DVector3{0, 0, 0};
+    DVector3 mScale     = DVector3{1, 1, 1};
   };
 
   std::string               mSpecifierName            = MDY_INITIALIZE_EMPTYSTR;
   //TBuiltinMeshSpecifierList mBuiltinMeshSpecifierList = {};
   //bool                      mIsUsingBuiltinMesh       = false;
 
-  TExternalMeshList         mMeshList = {};
-  DSkeleton                 mSkeleton;
-  DTransform                mTransform;
+  TExternalMeshList mMeshList = {};
+  DSkeleton         mSkeleton;
+  DTransform        mTransform;
 };
 
 /// @brief Serialization function

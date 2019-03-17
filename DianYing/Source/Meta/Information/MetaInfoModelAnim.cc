@@ -28,10 +28,10 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelAnimInstanceMetaInf
 /// @brief Deserialization function
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelAnimInstanceMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, "ExternalPath", p.mExternalPath);
-  DyJsonGetValueFromTo(j, "IsCompressed", p.mIsCompressed);
-  DyJsonGetValueFromTo(j, "SkeletonSpecifier", p.mSkeletonSpeicfier);
-  DyJsonGetValueFromTo(j, "Details", p.mDetails);
+  json::GetValueFromTo(j, "ExternalPath", p.mExternalPath);
+  json::GetValueFromTo(j, "IsCompressed", p.mIsCompressed);
+  json::GetValueFromTo(j, "SkeletonSpecifier", p.mSkeletonSpeicfier);
+  json::GetValueFromTo(j, "Details", p.mDetails);
 }
 
 /// @brief Serialization function
@@ -43,7 +43,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelAnimInstanceMetaInf
 /// @brief Deserialization function
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelAnimInstanceMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo(j, "RateScale", p.mRateScale);
+  json::GetValueFromTo(j, "RateScale", p.mRateScale);
 }
 
 } /// ::dy namespace

@@ -15,30 +15,26 @@
 
 #include <Dy/Helper/Library/HelperJson.h>
 
-namespace dy
+namespace dy::json
 {
 
-bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexcept;
-
-MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept;
-
 template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const char* name)
+MDY_NODISCARD TReturnType GetValueFrom(const TParam1& jsonAtlas, const char* name)
 {
   return jsonAtlas.at(name).template get<TReturnType>();
 }
 
 template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name)
+MDY_NODISCARD TReturnType GetValueFrom(const TParam1& jsonAtlas, const std::string_view& name)
 {
-  return DyJsonGetValueFrom<TParam1>(jsonAtlas, (name));
+  return json::GetValueFrom<TParam1>(jsonAtlas, (name));
 }
 
 template <typename TReturnType, typename TJsonAtlas>
-void DyJsonGetValueFromTo(
-    _MIN_ const TJsonAtlas& jsonAtlas, 
-    _MIN_ const std::string& iKey, 
-    _MINOUT_ TReturnType& destination)
+void GetValueFromTo(
+    const TJsonAtlas& jsonAtlas, 
+    const std::string& iKey, 
+    TReturnType& destination)
 {
   if constexpr (std::is_move_assignable_v<TReturnType> == true)
   {
@@ -50,15 +46,6 @@ void DyJsonGetValueFromTo(
   }
 }
 
-MDY_NODISCARD inline EDySuccess
-DyCheckHeaderIsExist(
-    _MIN_ const nlohmann::json& atlas, 
-    _MIN_ const std::string& iString) noexcept
-{
-  if (atlas.find(iString) == atlas.end()) { return DY_FAILURE; }
-  else                                    { return DY_SUCCESS; }
-}
-
-} /// ::dy namespace
+} /// ::dy::json namespace
 
 #endif /// GUARD_DY_HELPER_LIBRARY_HelperJson_INL

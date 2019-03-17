@@ -13,15 +13,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLFrameBufferResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLFrameBufferResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
 
 /// @class FDyBtFrameBufferDeferred
 /// @brief Basic render (OPAQUE, DEFERRED) framebuffer object descriptor.
-class FDyBtFrameBufferDeferred final : public ADyGLFrameBufferResource
+class FDyBtFrameBufferDeferred final : public AGLFrameBufferResource
 {
   MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFrameBufferDeferred, "dyBtBasicRender")
 };

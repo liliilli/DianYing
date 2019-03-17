@@ -16,10 +16,10 @@
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <regex>
 
-namespace dy
+namespace dy::regex
 {
 
-std::vector<std::string> DyRegexCreateObjectParentSpecifierList(_MIN_ std::string iParentNameFullList)
+std::vector<std::string> CreateObjectParentSpecifierList(std::string iParentNameFullList)
 {
   // If buffer is empty, just return empty list.
   if (iParentNameFullList.empty() == true) { return {}; }
@@ -39,7 +39,7 @@ std::vector<std::string> DyRegexCreateObjectParentSpecifierList(_MIN_ std::strin
   return parentSpecifierList;
 }
 
-bool DyRegexCheckIsCompressedDataFile(_MIN_ const std::string& iFileName)
+bool IsCompressedDataFile(const std::string& iFileName)
 {
   if (iFileName.empty() == true) { return false; }
 
@@ -48,24 +48,35 @@ bool DyRegexCheckIsCompressedDataFile(_MIN_ const std::string& iFileName)
 }
 
 std::optional<std::vector<std::string>> 
-DyRegexGetMatchedKeyword(_MIN_ std::string iBuffer, _MIN_ const std::string& iRegex)
+GetMatchedKeywordFrom(std::string iBuffer, const std::string& iRegex)
 {
   // If buffer is empty, just return empty list.
   if (iBuffer.empty() == true) { return {}; }
 
   // Set regex instance and match instance for searching & binding result.
-  static const std::regex parentMatchRegex(iRegex);
+  const std::regex parentMatchRegex(iRegex);
   std::smatch parentSpecifierMatch;
 
   // Matching & Insertion
   std::vector<std::string> result {};
   while (std::regex_search(iBuffer, parentSpecifierMatch, parentMatchRegex) == true) 
   { 
-    result.emplace_back(parentSpecifierMatch[1].str());
+    for (size_t i = 1, size = parentSpecifierMatch.size(); i < size; ++i)
+    {
+      result.emplace_back(parentSpecifierMatch[i].str());
+    }
     iBuffer = parentSpecifierMatch.suffix();
   }
 
   return result;
 }
 
-} /// ::dy namespace
+bool IsMatched(const std::string& iString, const std::string& iRegex)
+{
+  if (iString.empty() == true) { return false; }
+
+  static const std::regex regexPattern(iRegex);
+  return std::regex_match(iString, regexPattern);
+}
+
+} /// ::dy::regex namespace

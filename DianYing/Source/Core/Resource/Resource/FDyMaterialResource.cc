@@ -14,15 +14,16 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Builtin/Constant/GeneralValue.h>
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/IO/MIOMeta.h>
 
 namespace dy
 {
@@ -37,66 +38,68 @@ FDyMaterialResource::FDyMaterialResource(const FDyMaterialInformation& iInformat
   for (const auto& ptrTextureInfo : ptrTextureInfoList)
   { // Bind texture resource of this material.
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(ptrTextureInfo), "Unexpected error occurred.");
-    DySafeUniquePtrEmplaceBack(this->mBinderTextureList, (*ptrTextureInfo)->GetSpecifierName());
+    SafeUniquePtrEmplaceBack(this->mBinderTextureList, (*ptrTextureInfo)->GetSpecifierName());
   }
 
   // If default uniform value is exist, apply them to shader.
   MDY_ASSERT(this->mBinderShader.IsResourceExist() == true);
-  auto& managerMetaInfo = MDyMetaInfo::GetInstance();
-  const auto& metaItem  = managerMetaInfo.GetMaterialMetaInformation(mSpecifierName);
+  auto& managerMetaInfo = MIOMeta::GetInstance();
+  const auto& metaItem = managerMetaInfo.GetMaterialMetaInformation(
+    TryRemovePostfix(mSpecifierName, kInstancingPostfix)
+  );
   if (metaItem.mUniformValues.empty() == false)
   {
     for (const auto& [uniformName, smtValueInstance] : metaItem.mUniformValues)
     {
-      using EUniform = EDyUniformVariableType;
+      using EUniform = EUniformVariableType;
       switch (smtValueInstance->mType)
       {
       case EUniform::Matrix4: 
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Matrix4>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Matrix4>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Matrix4>(uniformName, item.mValue);
       } break;
       case EUniform::Matrix3:
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Matrix3>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Matrix3>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Matrix3>(uniformName, item.mValue);
       } break;
       case EUniform::Matrix2: break;
       case EUniform::Vector4:
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Vector4>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Vector4>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Vector4>(uniformName, item.mValue);
       } break;
       case EUniform::Vector3:
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Vector3>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Vector3>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Vector3>(uniformName, item.mValue);
       } break;
       case EUniform::Vector2: 
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Vector2>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Vector2>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Vector2>(uniformName, item.mValue);
       } break;
       case EUniform::IVec4: break;
       case EUniform::IVec3: break;
       case EUniform::IVec2: break;
       case EUniform::Integer:
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Integer>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Integer>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Integer>(uniformName, item.mValue);
       } break;
       case EUniform::Unsigned: 
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Unsigned>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Unsigned>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Unsigned>(uniformName, item.mValue);
       } break;
       case EUniform::Float: 
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Float>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Float>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Float>(uniformName, item.mValue);
       } break;
       case EUniform::Bool:
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Bool>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Bool>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Bool>(uniformName, item.mValue);
       } break;
       case EUniform::Matrix4Array:
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Matrix4Array>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Matrix4Array>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Matrix4Array>(uniformName, item.mValue);
       } break;
       case EUniform::Vector3Array:
-      { const auto& item = static_cast<FDyUniformValue<EUniform::Vector3Array>&>(*smtValueInstance);
+      { const auto& item = static_cast<TUniformValue<EUniform::Vector3Array>&>(*smtValueInstance);
         this->mBinderShader->TryUpdateUniform<EUniform::Vector3Array>(uniformName, item.mValue);
       } break;
       default: MDY_UNEXPECTED_BRANCH(); break;
@@ -115,7 +118,7 @@ FDyMaterialResource::FDyMaterialResource(const PDyMaterialInstanceMetaInfo& iIns
   for (const auto& bindingTextureItem : iInstanceInfo.mTextureNames)
   { // Bind texture resource of this material.
     if (bindingTextureItem.mTextureSpecifier.empty() == true) { continue; }
-    DySafeUniquePtrEmplaceBack(this->mBinderTextureList, bindingTextureItem.mTextureSpecifier);
+    SafeUniquePtrEmplaceBack(this->mBinderTextureList, bindingTextureItem.mTextureSpecifier);
   }
   this->mIsInstant = true;
 }
@@ -139,7 +142,7 @@ EDySuccess FDyMaterialResource::TryUpdateTextureList() noexcept
   for (TI32 j = 0; j < textureResourceListSize; ++j)
   {
     const auto& textureBinder = (*textureResources[j]);
-    FDyGLWrapper::BindTexture(j, textureBinder->GetTextureType(), textureBinder->GetTextureId());
+    XGLWrapper::BindTexture(j, textureBinder->GetTextureType(), textureBinder->GetTextureId());
   }
   return DY_SUCCESS;
 }
@@ -163,7 +166,7 @@ EDySuccess FDyMaterialResource::TryDetachTextureListFromShader() noexcept
   for (TI32 j = 0; j < textureResourceListSize; ++j)
   {
     const auto& textureBinder = (*textureResources[j]);
-    FDyGLWrapper::UnbindTexture(j, textureBinder->GetTextureType());
+    XGLWrapper::UnbindTexture(j, textureBinder->GetTextureType());
   }
   return DY_SUCCESS;
 }

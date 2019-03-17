@@ -18,6 +18,7 @@
 #include <Dy/Builtin/RenderItem/Level/FBtPpCsmShadow.h>
 #include <Dy/Builtin/RenderItem/Level/FBtPpSsao.h>
 #include <Dy/Builtin/RenderItem/Level/FBtPpSkybox.h>
+#include <Dy/Builtin/RenderItem/Level/FBtPpEmissive.h>
 
 namespace dy
 {
@@ -31,6 +32,7 @@ void FBtRenderPipelineDefaultLevelPostProcess::__ConstructionHelper
   oMeta.mLocalRenderItemNames.emplace_back(FBtRenderItemCsmShadow::sName);
   oMeta.mLocalRenderItemNames.emplace_back(FBtRenderItemSsao::sName);
   oMeta.mLocalRenderItemNames.emplace_back(FBtRenderItemSkybox::sName);
+  oMeta.mLocalRenderItemNames.emplace_back(FBtRenderItemEmissive::sName);
 }
 
 EDySuccess FBtRenderPipelineDefaultLevelPostProcess::OnPreRenderCheckCondition()

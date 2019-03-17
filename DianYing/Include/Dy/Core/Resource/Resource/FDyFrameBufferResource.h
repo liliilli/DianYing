@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
 
 //!
@@ -32,27 +32,38 @@ class FDyFrameBufferInformation;
 
 namespace dy
 {
-class FDyFrameBufferResource final
+
+/// @class FDyFrameBufferResource
+/// @brief Frame buffer resource type (abstract)
+class FDyFrameBufferResource 
 {
 public:
-  FDyFrameBufferResource(const FDyFrameBufferInformation& iInformation);
-  ~FDyFrameBufferResource();
+  FDyFrameBufferResource() = default;
+  virtual ~FDyFrameBufferResource() = 0;
 
   /// @brief Get specifier name of framebuffer resource.
   MDY_NODISCARD const std::string& GetSpecifierName();
   /// @brief Get framebuffer id.
-  MDY_NODISCARD TU32 GetFrameBufferId() const noexcept;
+  MDY_NODISCARD virtual TU32 GetTargetFrameBufferId() const noexcept = 0;
   /// @brief Get framebuffer size.
-  MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize();
+  MDY_NODISCARD const DVectorInt2& GetFrameBufferSize();
 
-  /// @brid Framebuffer.
-  EDySuccess BindFrameBuffer()   const noexcept;
-  void       UnbindFrameBuffer() const noexcept; 
+  /// @brief Bind Framebuffer.
+  EDySuccess virtual BindFrameBuffer() const noexcept = 0;
+  /// @brief Unbind framebuffer and revert to default framebuffer.
+  void UnbindFrameBuffer() const noexcept; 
 
-private:
+  /// @brief Push framebuffer's internal gl states.
+  void PushGlobalStates();
+  /// @brief Pop framebuffer's internal gl states.
+  void PopGlobalStates();
+
+  /// @brief Swap.
+  void virtual Swap() = 0;
+
+protected:
   std::string   mSpecifierName;
-  TU32          mFrameBufferId    = 0;
-  DDyVectorInt2 mFrameBufferSize  = {};
+  DVectorInt2 mFrameBufferSize  = {};
 
   using TAttachmentBinder = std::unique_ptr<TDyResourceBinderAttachment>;
   using TAttachmentBinderList = std::vector<TAttachmentBinder>;
@@ -62,6 +73,8 @@ private:
   TBlendingEquationList           mAttachmentBlendingList = {};
   TDyResourceBinderAttachment     mBinderDepthBuffer      = {};
 };
+
+inline FDyFrameBufferResource::~FDyFrameBufferResource() = default;
 
 } /// ::dy namespace
 

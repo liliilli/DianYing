@@ -13,14 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBtShSkyboxDefault
 /// @brief Builtin skybox rendering shader.
-class FDyBtShSkyboxDefault final : public ADyGLShaderResource
+class FDyBtShSkyboxDefault final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBtShSkyboxDefault, "dyBtShGlSkyboxDefault")
 public:

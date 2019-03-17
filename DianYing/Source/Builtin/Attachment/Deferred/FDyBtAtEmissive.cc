@@ -21,7 +21,7 @@ namespace dy
 void FDyBtAttachmentEmissive::ConstructBuffer(PDyGlAttachmentInstanceMetaInfo& oProperty) noexcept
 {
   oProperty.mSpecifierName  = sName;
-  oProperty.mAttachmentSize = DDyVectorInt2{1280, 720};
+  oProperty.mAttachmentSize = DVectorInt2{1280, 720};
   oProperty.mParameterList  =
   {
     PDyGlTexParameterInformation\
@@ -30,7 +30,7 @@ void FDyBtAttachmentEmissive::ConstructBuffer(PDyGlAttachmentInstanceMetaInfo& o
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::Repeat},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::Repeat},
   };
-  oProperty.mBufferFormat = EDyGlBufferDataInternalFormat::RGBA8;
-}
+  oProperty.mBufferFormat = EGlBufferDataInternalFormat::RGBA16Float;
+} 
 
 } /// ::dy namespace

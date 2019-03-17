@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLAttachmentResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
@@ -23,7 +23,7 @@ namespace dy
 /// @class FDyBtAttachmentUnlit
 /// @brief Unlit attachment
 ///
-class FDyBtAttachmentUnlit final : public ADyGLAttachmentResource
+class FDyBtAttachmentUnlit final : public AGLAttachmentResource
 {
   MDY_REGISTER_RESOURCE_ATTACHMENT(FDyBtAttachmentUnlit, "dyBtUnlit")
 };

@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/ColorRGBA.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 
 namespace dy
@@ -49,6 +49,8 @@ struct PBlendingEquation final
     DstSubSrc,  // Operator will be Dst - Src.
     CompareMin, // Operator will be min(Src, Dst) to each element.
     CompareMax, // Operator will be max(Src, Dst) to each element.
+
+    __Error
   };
 
   enum class EFunc
@@ -65,6 +67,8 @@ struct PBlendingEquation final
     OneMinusDstAlpha,   // Factor will be 1 - vec4(Da)
     ConstColor,         // Factor will be mConstColor.
     OneMinusConstColor, // Factor will be 1 - mConstColor.
+
+    __Error
   };
 
   /// @brief Result color will be R = S*(mSrcFunc) mBlendMode D*(mDstFunc).
@@ -75,7 +79,18 @@ struct PBlendingEquation final
   EFunc mDstFunc   = EFunc::OneMinusSrcAlpha;
   /// @brief This variable will be used 
   /// when using EFunc::ConstColor, EFunc::OneMinusConstColor
-  DDyColorRGBA mConstantColor = DDyColorRGBA{};
+  DColorRGBA mConstantColor = DColorRGBA{};
+
+  PBlendingEquation() = default;
+  PBlendingEquation(
+    EFunc iSrc, EMode iMode, EFunc iDst, 
+    const DColorRGBA& iConstantColor = DColorRGBA{});
+
+  MDY_NODISCARD static GLenum ToGLenum(EMode iMode);
+  MDY_NODISCARD static EMode  ToMode(GLenum iGlMode);
+
+  MDY_NODISCARD static GLint ToGLenum(EFunc iFunc);
+  MDY_NODISCARD static EFunc ToFunc(GLenum iGlFunc);
 };
 using TBlendingEquationList = std::vector<PBlendingEquation>;
 
@@ -100,8 +115,8 @@ struct PDyGlAttachmentInformation final
 {
   std::string                               mAttachmentName = MDY_INITIALIZE_EMPTYSTR;
   std::vector<PDyGlTexParameterInformation> mParameterList  = {};
-  DDyVectorInt2                             mAttachmentSize = {};
-  DDyColorRGBA                              mBorderColor    = DDyColorRGBA::Black;
+  DVectorInt2                             mAttachmentSize = {};
+  DColorRGBA                              mBorderColor    = DColorRGBA::Black;
 
   ///
   /// @brief  Get attachment id. If attachment is not initialized yet, just return 0.

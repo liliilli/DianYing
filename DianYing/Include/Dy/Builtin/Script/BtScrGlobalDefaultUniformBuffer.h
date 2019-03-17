@@ -13,17 +13,17 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Abstract/ADyWidgetCppScript.h>
-#include <Dy/Builtin/Abstract/ADyScriptResource.h>
+#include <Dy/Component/Abstract/AWidgetCppScript.h>
+#include <Dy/Builtin/Abstract/AScriptResource.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
-#include <Dy/Component/Abstract/ADyGlobalCppScript.h>
-#include <Dy/Component/Abstract/ADyActorCppScript.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
+#include <Dy/Component/Abstract/AGlobalCppScript.h>
+#include <Dy/Component/Abstract/AActorCppScript.h>
 
 namespace dy
 {
    
-class BtScrGlobalDefaultUniformBuffer final : public ADyScriptResource, public ADyGlobalCppScript
+class BtScrGlobalDefaultUniformBuffer final : public AScriptResource, public AGlobalCppScript
 {
   MDY_REGISTER_RESOURCE_SCRIPT(BtScrGlobalDefaultUniformBuffer, "BtGblDefaultUniformBuffer")
 public:

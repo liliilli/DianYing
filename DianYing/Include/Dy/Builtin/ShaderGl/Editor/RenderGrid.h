@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderGrid
 /// @brief Rendering grid shader.
 ///
-class FDyBuiltinShaderGLRenderGrid final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderGrid final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderGrid, "dyBtShaderGlRenderGrid")
 public:

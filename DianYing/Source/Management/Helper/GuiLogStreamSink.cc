@@ -13,16 +13,16 @@
 ///
 
 /// Header file
-#include <Dy/Management/Helper/GuiLogStreamSink.h>
+#include <Dy/Management/Helper/FGuiLogStreamSink.h>
 
 namespace dy
 {
 
 template <>
-std::mutex               FDyGuiLogStreamSink<std::mutex>::mLogMutex;
+std::mutex               FGuiLogStreamSink<std::mutex>::mLogMutex;
 template <>
-std::queue<std::string>  FDyGuiLogStreamSink<std::mutex>::mLogChunk;
+std::queue<std::string>  FGuiLogStreamSink<std::mutex>::mLogChunk;
 template <>
-std::atomic<bool>        FDyGuiLogStreamSink<std::mutex>::sLogGuiActivated;
+std::atomic<bool>        FGuiLogStreamSink<std::mutex>::sLogGuiActivated;
 
 } /// ::dy namespace

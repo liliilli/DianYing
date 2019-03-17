@@ -8,6 +8,10 @@
 
 #pragma once
 
+#ifdef new
+#undef new
+#endif
+
 // Configuration file (edit imconfig.h or define IMGUI_USER_CONFIG to set your own filename)
 #ifdef IMGUI_USER_CONFIG
 #include IMGUI_USER_CONFIG

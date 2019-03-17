@@ -34,7 +34,31 @@ MDY_NODISCARD std::string CreateRandomString(TU32 length)
   return str;
 }
 
-void ToLower(std::string& ioString)
+bool HasPostfix(const std::string& iString, const std::string& iPostfix)
+{
+  if (const auto id = iString.find(iPostfix.c_str()); id == std::string::npos)
+  {
+    return false;
+  }
+  else if (iString.size() - id != iPostfix.size())
+  {
+    return false;
+  }
+
+  return true;
+}
+
+std::string TryRemovePostfix(const std::string& iString, const std::string& iPostfix)
+{
+  if (HasPostfix(iString, iPostfix) == false)
+  {
+    return iString;
+  }
+
+  return iString.substr(0, iString.find(iPostfix.c_str()));
+}
+
+  void ToLower(std::string& ioString)
 {
   std::transform(
     MDY_BIND_BEGIN_END(ioString), ioString.begin(), 

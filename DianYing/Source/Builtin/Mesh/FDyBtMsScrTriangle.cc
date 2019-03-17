@@ -26,19 +26,19 @@ void FDyBtMsScrTriangle::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& propert
   auto& submeshDesc = property.mDefaultMeshBuffer;
   submeshDesc.mVertexList.reserve(3);
   {
-    DDyVertexInformation vertex;
+    DDefaultVertexInfo vertex;
 
-    vertex.mPosition  = DDyVector3{ -1, -1, 0 };
-    vertex.mNormal    = DDyVector3{ 1 };
-    vertex.mTexCoord0 = DDyVector2{ 0, 0 };
+    vertex.mPosition  = DVector3{ -1, -1, 0 };
+    vertex.mNormal    = DVector3{ 1 };
+    vertex.mTexCoord0 = DVector2{ 0, 0 };
     submeshDesc.mVertexList.emplace_back(vertex);
-    vertex.mPosition  = DDyVector3{ 3, -1, 0 };
-    vertex.mNormal    = DDyVector3{ 1 };
-    vertex.mTexCoord0 = DDyVector2{ 2, 0 };
+    vertex.mPosition  = DVector3{ 3, -1, 0 };
+    vertex.mNormal    = DVector3{ 1 };
+    vertex.mTexCoord0 = DVector2{ 2, 0 };
     submeshDesc.mVertexList.emplace_back(vertex);
-    vertex.mPosition  = DDyVector3{ -1, 3, 0 };
-    vertex.mNormal    = DDyVector3{ 1 };
-    vertex.mTexCoord0 = DDyVector2{ 0, 2 };
+    vertex.mPosition  = DVector3{ -1, 3, 0 };
+    vertex.mNormal    = DVector3{ 1 };
+    vertex.mTexCoord0 = DVector2{ 0, 2 };
     submeshDesc.mVertexList.emplace_back(vertex);
   }
 

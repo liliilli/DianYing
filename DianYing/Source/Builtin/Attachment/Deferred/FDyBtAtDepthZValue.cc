@@ -21,7 +21,7 @@ namespace dy::builtin
 void FDyBtAtDepthZValue::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
-  property.mAttachmentSize = DDyVectorInt2{1280, 720};
+  property.mAttachmentSize = DVectorInt2{1280, 720};
   property.mParameterList  =
   {
     PDyGlTexParameterInformation\
@@ -30,8 +30,8 @@ void FDyBtAtDepthZValue::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo&
     //{EDyGlParameterName::TextureCompareMode, EDyGlParameterValue::CompareRefToTexture},
     //{EDyGlParameterName::TextureCompareFunc, EDyGlParameterValue::LessEqual},
   };
-  property.mAttachmentType = EDyTextureStyleType::D2;
-  property.mBufferFormat   = EDyGlBufferDataInternalFormat::DEPTH32;
+  property.mAttachmentType = ETextureStyleType::D2;
+  property.mBufferFormat   = EGlBufferDataInternalFormat::DEPTH32;
 }
 
 } /// ::dy::builtin namespace

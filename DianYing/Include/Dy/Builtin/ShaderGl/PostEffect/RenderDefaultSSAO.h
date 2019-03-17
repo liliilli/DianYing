@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -22,7 +22,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderDefaultSSAO
 /// @brief OpenGL Shader for post-processing SSAO (Screen-space ambient occlusion).
 ///
-class FDyBuiltinShaderGLRenderDefaultSSAO final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderDefaultSSAO final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderDefaultSSAO, "dyBtShSSAO")
 public:

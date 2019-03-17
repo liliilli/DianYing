@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
-#include <Dy/Core/Resource/Internal/GeometryType.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
+#include <Dy/Core/Resource/Internal/XGeometryTypes.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <nlohmann/json_fwd.hpp>
@@ -28,7 +28,7 @@ namespace dy
 ///
 struct PDyDefaultMeshInformation final
 {
-  std::vector<DDyVertexInformation> mVertexList;
+  std::vector<DDefaultVertexInfo> mVertexList;
 };
 
 /// @enum EDyMeshUsage

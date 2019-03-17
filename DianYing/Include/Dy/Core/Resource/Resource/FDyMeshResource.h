@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
+#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 
 //!
 //! Forward declaration
@@ -21,7 +22,7 @@
 
 namespace dy
 {
-class FDyMeshVBOIntermediate;
+class FMeshVBOIntermediate;
 } /// ::dy namespace
 
 //!
@@ -31,15 +32,13 @@ class FDyMeshVBOIntermediate;
 namespace dy
 {
 
-///
 /// @class FDyMeshResource
-/// @brief
-///
+/// @brief Resource type of actual mesh. Stores internal GL ids (VBO, EBO, instancing, and VAO)
 class FDyMeshResource final
 {
 public:
   /// @brief
-  FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance);
+  FDyMeshResource(FMeshVBOIntermediate& ioIntermediateInstance);
   ~FDyMeshResource();
 
   /// @brief Get mesh specifier name.
@@ -63,10 +62,20 @@ public:
   /// @brief Bind Vertex Array object. if vao id is 0, return DY_FAILURE with doing nothing. 
   EDySuccess BindVertexArray() const noexcept;
 
+  /// @brief Check this mesh is supporting instancing.
+  MDY_NODISCARD bool IsSupportingInstancing() const noexcept;
+
+  /// @brief Get Instancing buffer when exist.
+  MDY_NODISCARD std::optional<TU32> GetInstancingBufferId() const noexcept;
+
 private:
-  std::string               mSpecifierName        = MDY_INITIALIZE_EMPTYSTR;
-  DDyGlBufferIdInformation  mBufferIdInformation  = {};
+  std::string mSpecifierName;
+  DGlBufferIdInformation    mBufferIdInformation  = {};
   DDySubmeshFlagInformation mMeshFlagInformation  = {};
+  DDyGLVaoBindInformation   mBindInformation = {};
+
+  /// @brief Instancing buffer id for only used when instancing,
+  std::optional<TU32> mInstancingBufferId;
 };
 
 } /// ::dy namespace

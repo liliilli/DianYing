@@ -13,27 +13,27 @@
 ///
 
 /// Header file
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <thread>
 
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
-#include <Dy/Core/Rendering/Wrapper/PDyGLBufferDescriptor.h>
-#include <Dy/Core/Rendering/Wrapper/PDyGLAttachmentDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PGLBufferDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/PGLAttachmentDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
+#include <Dy/Core/Resource/Internal/XShaderTypes.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
-#include "Dy/Helper/Type/Area2D.h"
+#include "Dy/Helper/Type/DArea2D.h"
 
 #define MDY_GL_NONE 0
 #define MDY_GL_NONE_VAO 0
 #if defined(NDEBUG) == false
-#define MDY_CHECK_OPENGL() \
+#define MDY_CHECK_OPENGL \
   { const auto _ = glGetError(); MDY_ASSERT_MSG(_ == GL_NO_ERROR, "OpenGL Command failed."); }
 #else
-#define MDY_CHECK_OPENGL() (void)0;
+#define MDY_CHECK_OPENGL (void)0;
 #endif
 
 //!
@@ -43,52 +43,186 @@
 namespace
 {
 
-MDY_NODISCARD dy::EDyAttributeVariableType 
+MDY_NODISCARD dy::EAttributeVariableType 
 DyGlGetAttributeVariableTypeFrom(_MIN_ GLenum type) noexcept
 {
   switch (type)
   {
-  case GL_BOOL:                             return dy::EDyAttributeVariableType::Bool;
-  case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyAttributeVariableType::Float;
-  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyAttributeVariableType::Vector2;
-  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyAttributeVariableType::Vector3;
-  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EDyAttributeVariableType::Vector4;
-  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EDyAttributeVariableType::Matrix2;
-  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EDyAttributeVariableType::Matrix3;
-  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EDyAttributeVariableType::Matrix4;
-  case GL_INT:                              return dy::EDyAttributeVariableType::Integer;
-  case GL_INT_VEC2:                         return dy::EDyAttributeVariableType::IVec2;
-  case GL_INT_VEC3:                         return dy::EDyAttributeVariableType::IVec3;
-  case GL_INT_VEC4:                         return dy::EDyAttributeVariableType::IVec4;
-  default: return dy::EDyAttributeVariableType::NoneError;
+  case GL_BOOL:                             return dy::EAttributeVariableType::Bool;
+  case GL_FLOAT:      case GL_DOUBLE:       return dy::EAttributeVariableType::Float;
+  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EAttributeVariableType::Vector2;
+  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EAttributeVariableType::Vector3;
+  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EAttributeVariableType::Vector4;
+  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EAttributeVariableType::Matrix2;
+  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EAttributeVariableType::Matrix3;
+  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EAttributeVariableType::Matrix4;
+  case GL_INT:                              return dy::EAttributeVariableType::Integer;
+  case GL_INT_VEC2:                         return dy::EAttributeVariableType::IVec2;
+  case GL_INT_VEC3:                         return dy::EAttributeVariableType::IVec3;
+  case GL_INT_VEC4:                         return dy::EAttributeVariableType::IVec4;
+  default: return dy::EAttributeVariableType::NoneError;
   }
 }
 
-MDY_NODISCARD dy::EDyUniformVariableType 
+MDY_NODISCARD dy::EUniformVariableType 
 DyGlGetUniformVariableTypeFrom(_MIN_ GLenum type) noexcept
 {
   switch (type)
   {
-  case GL_BOOL:                             return dy::EDyUniformVariableType::Bool;
-  case GL_FLOAT:      case GL_DOUBLE:       return dy::EDyUniformVariableType::Float;
-  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EDyUniformVariableType::Vector2;
-  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EDyUniformVariableType::Vector3;
-  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EDyUniformVariableType::Vector4;
-  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EDyUniformVariableType::Matrix2;
-  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EDyUniformVariableType::Matrix3;
-  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EDyUniformVariableType::Matrix4;
-  case GL_INT:                              return dy::EDyUniformVariableType::Integer;
-  case GL_UNSIGNED_INT:                     return dy::EDyUniformVariableType::Unsigned;
-  case GL_INT_VEC2:                         return dy::EDyUniformVariableType::IVec2;
-  case GL_INT_VEC3:                         return dy::EDyUniformVariableType::IVec3;
-  case GL_INT_VEC4:                         return dy::EDyUniformVariableType::IVec4;
-  case GL_SAMPLER_1D:                       return dy::EDyUniformVariableType::Texture1D;
-  case GL_SAMPLER_2D:                       return dy::EDyUniformVariableType::Texture2D;
-  case GL_SAMPLER_2D_RECT:                  return dy::EDyUniformVariableType::Texture2DRectangle;
-  case GL_SAMPLER_2D_ARRAY:                 return dy::EDyUniformVariableType::Texture2DArray;
-  case GL_SAMPLER_2D_ARRAY_SHADOW:          return dy::EDyUniformVariableType::Texture2DShadowArray;
-  case GL_SAMPLER_CUBE:                     return dy::EDyUniformVariableType::Texture2DCubemap;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EDyUniformVariableType::NoneError);
+  case GL_BOOL:                             return dy::EUniformVariableType::Bool;
+  case GL_FLOAT:      case GL_DOUBLE:       return dy::EUniformVariableType::Float;
+  case GL_FLOAT_VEC2: case GL_DOUBLE_VEC2:  return dy::EUniformVariableType::Vector2;
+  case GL_FLOAT_VEC3: case GL_DOUBLE_VEC3:  return dy::EUniformVariableType::Vector3;
+  case GL_FLOAT_VEC4: case GL_DOUBLE_VEC4:  return dy::EUniformVariableType::Vector4;
+  case GL_FLOAT_MAT2: case GL_DOUBLE_MAT2:  return dy::EUniformVariableType::Matrix2;
+  case GL_FLOAT_MAT3: case GL_DOUBLE_MAT3:  return dy::EUniformVariableType::Matrix3;
+  case GL_FLOAT_MAT4: case GL_DOUBLE_MAT4:  return dy::EUniformVariableType::Matrix4;
+  case GL_INT:                              return dy::EUniformVariableType::Integer;
+  case GL_UNSIGNED_INT:                     return dy::EUniformVariableType::Unsigned;
+  case GL_INT_VEC2:                         return dy::EUniformVariableType::IVec2;
+  case GL_INT_VEC3:                         return dy::EUniformVariableType::IVec3;
+  case GL_INT_VEC4:                         return dy::EUniformVariableType::IVec4;
+  case GL_SAMPLER_1D:                       return dy::EUniformVariableType::Texture1D;
+  case GL_SAMPLER_2D:                       return dy::EUniformVariableType::Texture2D;
+  case GL_SAMPLER_2D_RECT:                  return dy::EUniformVariableType::Texture2DRectangle;
+  case GL_SAMPLER_2D_ARRAY:                 return dy::EUniformVariableType::Texture2DArray;
+  case GL_SAMPLER_2D_ARRAY_SHADOW:          return dy::EUniformVariableType::Texture2DShadowArray;
+  case GL_SAMPLER_CUBE:                     return dy::EUniformVariableType::Texture2DCubemap;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EUniformVariableType::NoneError);
+  }
+}
+
+/// @brief 
+void CbGlFeatBlendStack(const bool& iTopStatus)
+{
+  if (iTopStatus == true) { glEnable(GL_BLEND); } 
+  else                    { glDisable(GL_BLEND); }
+}
+
+/// @brief
+void CbGlFeatCullfaceStack(const bool& iTopStatus)
+{
+  if (iTopStatus == true) { glEnable(GL_CULL_FACE); } 
+  else                    { glDisable(GL_CULL_FACE); }
+}
+
+/// @brief
+void CbGlFeatDepthTestStack(const bool& iTopStatus)
+{
+  if (iTopStatus == true) { glEnable(GL_DEPTH_TEST); } 
+  else                    { glDisable(GL_DEPTH_TEST); }
+}
+
+/// @brief
+void CbGlFeatScissorTestStack(const bool& iTopStatus)
+{
+  if (iTopStatus == true) { glEnable(GL_SCISSOR_TEST); } 
+  else                    { glDisable(GL_SCISSOR_TEST); }
+}
+
+/// @brief
+void CbGlPolygonModeStack(const dy::DGlGlobalStates::DPolygonMode& iTopStatus)
+{
+  // Get value from structure.
+  const auto& polygonMode = iTopStatus;
+  GLenum mode   = GL_NONE;
+  GLenum value  = GL_NONE;
+
+  // Set mode
+  switch (polygonMode.mMode)
+  {
+  case dy::DGlGlobalStates::DPolygonMode::EMode::Front: mode = GL_FRONT;  break;
+  case dy::DGlGlobalStates::DPolygonMode::EMode::Back:  mode = GL_BACK;   break;
+  case dy::DGlGlobalStates::DPolygonMode::EMode::FrontAndBack: mode = GL_FRONT_AND_BACK; break;
+  }
+  // Set value
+  switch (polygonMode.mValue)
+  {
+  case dy::DGlGlobalStates::DPolygonMode::EValue::Triangle: value = GL_FILL; break;
+  case dy::DGlGlobalStates::DPolygonMode::EValue::Line:     value = GL_LINE; break;
+  case dy::DGlGlobalStates::DPolygonMode::EValue::Point:    value = GL_POINT; break;
+  }
+
+  // Issue into OpenGL system.
+  glPolygonMode(mode, value);
+}
+
+void CbGlBlendModeStatus(const dy::DGlGlobalStates::DBlendMode& iTopStatus)
+{
+  const auto& blendMode = iTopStatus;
+
+  for (TU32 i = 0, size = static_cast<TU32>(blendMode.mBlendingSettingList.size());
+       i < size; ++i)
+  {
+    const auto& [equation, src, dst] = blendMode.mBlendingSettingList[i];
+    switch (equation)
+    {
+    case dy::DGlGlobalStates::DBlendMode::EEqut::SrcAddDst: glBlendEquationi(i, GL_FUNC_ADD); break;
+    case dy::DGlGlobalStates::DBlendMode::EEqut::SrcSubDst: glBlendEquationi(i, GL_FUNC_SUBTRACT); break;
+    case dy::DGlGlobalStates::DBlendMode::EEqut::DstSubSrc: glBlendEquationi(i, GL_FUNC_REVERSE_SUBTRACT); break;
+    case dy::DGlGlobalStates::DBlendMode::EEqut::CompareMin: glBlendEquationi(i, GL_MIN); break;
+    case dy::DGlGlobalStates::DBlendMode::EEqut::CompareMax: glBlendEquationi(i, GL_MAX); break;
+    }
+
+    GLenum srcEnum = GL_NONE, dstEnum = GL_NONE;
+    switch (src)
+    {
+    case dy::DGlGlobalStates::DBlendMode::EFunc::Zero: srcEnum = GL_ZERO; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::One:  srcEnum = GL_ONE; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::SrcColor: srcEnum = GL_SRC_COLOR; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::OneMinusSrcColor: srcEnum = GL_ONE_MINUS_SRC_COLOR; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::SrcAlpha: srcEnum = GL_SRC_ALPHA; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::OneMinusSrcAlpha: srcEnum = GL_ONE_MINUS_SRC_ALPHA; break;
+    }
+    switch (dst)
+    {
+    case dy::DGlGlobalStates::DBlendMode::EFunc::Zero: dstEnum = GL_ZERO; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::One:  dstEnum = GL_ONE; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::SrcColor: dstEnum = GL_SRC_COLOR; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::OneMinusSrcColor: dstEnum = GL_ONE_MINUS_SRC_COLOR; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::SrcAlpha: dstEnum = GL_SRC_ALPHA; break;
+    case dy::DGlGlobalStates::DBlendMode::EFunc::OneMinusSrcAlpha: dstEnum = GL_ONE_MINUS_SRC_ALPHA; break;
+    }
+
+    glBlendFunci(i, srcEnum, dstEnum);
+  }
+}
+
+void CbGlCullfaceModeStack(const dy::DGlGlobalStates::DCullfaceMode& iTopStatus)
+{
+  using EValue = dy::DGlGlobalStates::DCullfaceMode::EValue;
+  switch (iTopStatus.mValue)
+  {
+  case EValue::Front:         glCullFace(GL_FRONT);           break;
+  case EValue::Back:          glCullFace(GL_BACK);            break;
+  case EValue::FrontAndBack:  glCullFace(GL_FRONT_AND_BACK);  break;
+  }
+}
+
+void CbGlViewportStack(const dy::DGlGlobalStates::DViewport& iTopStatus)
+{
+  for (auto& [index, area] : iTopStatus.mViewportSettingList)
+  {
+    if (index <= -1)  { dy::XGLWrapper::SetViewport(area); }
+    else              { dy::XGLWrapper::SetViewportIndexed(static_cast<TU32>(index), area); }
+  }
+}
+
+void CbGlAttachmentBlendingStack(const std::vector<dy::PBlendingEquation>& iTopStatus)
+{
+  using namespace dy;
+  for (size_t i = 0, size = iTopStatus.size(); i < size; ++i)
+  {
+    const auto& [mode, src, dst, color] = iTopStatus[i];
+    const auto glMode     = PBlendingEquation::ToGLenum(mode);
+    const auto glSrcFunc  = PBlendingEquation::ToGLenum(src);
+    const auto glDstsFunc = PBlendingEquation::ToGLenum(dst);
+
+    const auto glColorRgba = color.ToArray();
+
+    glBlendEquationi(i, glMode);
+    glBlendFunci(i, glSrcFunc, glDstsFunc);
+    glBlendColor(glColorRgba[0], glColorRgba[1], glColorRgba[2], glColorRgba[3]);
   }
 }
 
@@ -101,9 +235,20 @@ DyGlGetUniformVariableTypeFrom(_MIN_ GLenum type) noexcept
 namespace dy
 {
 
-std::mutex FDyGLWrapper::mGLCriticalSectionMutex;
+std::mutex XGLWrapper::mGLCriticalSectionMutex;
 
-GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
+FCallStack<DGlGlobalStates> XGLWrapper::mInternalGlobalStatusStack;
+FCallStack<bool> XGLWrapper::mInternal_FeatBlendStack;
+FCallStack<bool> XGLWrapper::mInternal_FeatCullfaceStack;
+FCallStack<bool> XGLWrapper::mInternal_FeatDepthTestStack;
+FCallStack<bool> XGLWrapper::mInternal_FeatScissorTestStack;
+FCallStack<DGlGlobalStates::DPolygonMode>   XGLWrapper::mInternal_PolygonModeStack;
+FCallStack<DGlGlobalStates::DBlendMode>     XGLWrapper::mInternal_BlendModeStack;
+FCallStack<DGlGlobalStates::DCullfaceMode>  XGLWrapper::mInternal_CullfaceModeStack;
+FCallStack<DGlGlobalStates::DViewport>      XGLWrapper::mInternal_ViewportStack;
+FCallStack<std::vector<PBlendingEquation>>    XGLWrapper::sAttachmentBlendings;
+
+GLFWwindow* XGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
 {
   MDY_ASSERT_MSG(descriptor.mWindowName.empty() == false, "Window name must not be empty.");
   MDY_ASSERT_MSG(descriptor.mWindowSize.X > 0 && descriptor.mWindowSize.Y > 0, "Window size must be valid.");
@@ -124,24 +269,35 @@ GLFWwindow* FDyGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescripto
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+  // Set callback function for global internal status stack.
+  mInternal_FeatBlendStack.SetCallback(CbGlFeatBlendStack);
+  mInternal_FeatDepthTestStack.SetCallback(CbGlFeatDepthTestStack);
+  mInternal_FeatCullfaceStack.SetCallback(CbGlFeatCullfaceStack);
+  mInternal_FeatScissorTestStack.SetCallback(CbGlFeatScissorTestStack);
+  mInternal_PolygonModeStack.SetCallback(CbGlPolygonModeStack);
+  mInternal_BlendModeStack.SetCallback(CbGlBlendModeStatus);
+  mInternal_CullfaceModeStack.SetCallback(CbGlCullfaceModeStack);
+  mInternal_ViewportStack.SetCallback(CbGlViewportStack);
+  sAttachmentBlendings.SetCallback(CbGlAttachmentBlendingStack);
+
   return glfwCreateWindow(
       descriptor.mWindowSize.X, descriptor.mWindowSize.Y,
       descriptor.mWindowName.c_str(),
       ptrMonitor, descriptor.mSharingContext);
 }
 
-void FDyGLWrapper::CreateGLContext(_MIN_ GLFWwindow* window)
+void XGLWrapper::CreateGLContext(_MIN_ GLFWwindow* window)
 {
   glfwMakeContextCurrent(window);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor)
 {
   // Validation check.
   MDY_ASSERT_MSG(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrBuffer), "Texture Image buffer must not be null.");
   MDY_ASSERT_MSG(descriptor.mTextureSize.X > 0 && descriptor.mTextureSize.Y > 0, "Texture size must be positive value.");
-  MDY_ASSERT_MSG(descriptor.mType != EDyTextureStyleType::NoneError, "Texture Image type must be specified.");
+  MDY_ASSERT_MSG(descriptor.mType != ETextureStyleType::NoneError, "Texture Image type must be specified.");
   if (descriptor.mIsUsingCustomizedParameter == true)
   {
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
@@ -153,14 +309,14 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   // Make texture.
   switch (descriptor.mType)
   {
-  case EDyTextureStyleType::D1:
+  case ETextureStyleType::D1:
   {
     glGenTextures(1, &mTextureResourceId);
     glBindTexture(GL_TEXTURE_1D, mTextureResourceId);
     glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, descriptor.mTextureSize.X, 0, 
         descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mPtrBuffer->data());
   } break;
-  case EDyTextureStyleType::D2:
+  case ETextureStyleType::D2:
   { // Border parameter must be 0.
     glGenTextures(1, &mTextureResourceId);
     glBindTexture(GL_TEXTURE_2D, mTextureResourceId);
@@ -169,12 +325,12 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
 
   // Make mipmap by following option.
-  const GLenum glTextureType = DyGLGetLowTextureType(descriptor.mType);
+  const GLenum glTextureType = GlGetLowTextureType(descriptor.mType);
   if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
 
   // Set texture parameters.
   if (descriptor.mIsUsingCustomizedParameter == true)
@@ -193,16 +349,16 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescript
   }
   glBindTexture(glTextureType, 0);
   glFlush();
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
 
   return mTextureResourceId;
 }
 
-std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateTexture(const PDyGLTextureCubemapDescriptor& descriptor)
 {
   // Validation check.
   MDY_ASSERT_MSG(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
-  MDY_ASSERT_MSG(descriptor.mType == EDyTextureStyleType::D2Cubemap, "Texture Image type must be D2Cubemap.");
+  MDY_ASSERT_MSG(descriptor.mType == ETextureStyleType::D2Cubemap, "Texture Image type must be D2Cubemap.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mTopBuffer),    "Texture Image buffer must not be null.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mBottomBuffer), "Texture Image buffer must not be null.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mFrontBuffer),  "Texture Image buffer must not be null.");
@@ -238,12 +394,12 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescrip
           descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mFrontBuffer->data());
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, MDY_VECTOR_XY(descriptor.mBackSize), 0, 
           descriptor.mImageFormat, descriptor.mImagePixelType, descriptor.mBackBuffer->data());
-    MDY_CHECK_OPENGL();
+    MDY_CHECK_OPENGL;
 
     // Make mipmap by following option.
-    const GLenum glTextureType = DyGLGetLowTextureType(descriptor.mType);
+    const GLenum glTextureType = GlGetLowTextureType(descriptor.mType);
     if (descriptor.mIsUsingDefaultMipmap == true) { glGenerateMipmap(glTextureType); }
-    MDY_CHECK_OPENGL();
+    MDY_CHECK_OPENGL;
 
     // Set texture parameters.
     if (descriptor.mIsUsingCustomizedParameter == true)
@@ -262,18 +418,18 @@ std::optional<TU32> FDyGLWrapper::CreateTexture(const PDyGLTextureCubemapDescrip
     }
     glBindTexture(glTextureType, 0);
     glFlush();
-    MDY_CHECK_OPENGL();
+    MDY_CHECK_OPENGL;
   }
 
   return mTextureResourceId;
 }
 
-void FDyGLWrapper::DeleteTexture(_MIN_ const TU32 validTextureId)
+void XGLWrapper::DeleteTexture(_MIN_ const TU32 validTextureId)
 {
   glDeleteTextures(1, &validTextureId);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFragmentDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFragmentDescriptor& descriptor)
 {
   TU32 shaderFragmentId;
 
@@ -297,12 +453,12 @@ std::optional<TU32> FDyGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFr
   return shaderFragmentId;
 }
 
-void FDyGLWrapper::DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId)
+void XGLWrapper::DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId)
 {
   glDeleteShader(shaderFragmentId);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList& fragmentList)
+std::optional<TU32> XGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList& fragmentList)
 {
   const TU32 shaderProgramId = glCreateProgram();
 
@@ -321,22 +477,22 @@ std::optional<TU32> FDyGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList&
   return shaderProgramId;
 }
 
-void FDyGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
+void XGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
 {
   glDeleteProgram(shaderProgramId);
 }
 
-void FDyGLWrapper::UseShaderProgram(_MIN_ TU32 iShaderProgramId)
+void XGLWrapper::UseShaderProgram(_MIN_ TU32 iShaderProgramId)
 {
   glUseProgram(iShaderProgramId);
 }
 
-void FDyGLWrapper::DisuseShaderProgram()
+void XGLWrapper::DisuseShaderProgram()
 {
   glUseProgram(0);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateBuffer(_MIN_ const PGLBufferDescriptor& descriptor)
 {
   TU32 id = MDY_INITIALIZE_DEFUINT;
   GLenum usage = GL_NONE;
@@ -349,31 +505,36 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
 
   switch (descriptor.mBufferType)
   {
-  case EDyDirectBufferType::VertexBuffer:
+  case EDirectBufferType::VertexBuffer:
   { // VBO
     glGenBuffers(1, &id);
     glBindBuffer(GL_ARRAY_BUFFER, id);
     { // Make buffer space first,
       glBufferData(GL_ARRAY_BUFFER, descriptor.mBufferByteSize, 0, usage);
-      // fill out with buffers.
-      auto* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-      memcpy(ptr, descriptor.mPtrBuffer, descriptor.mBufferByteSize);
-      glUnmapBuffer(GL_ARRAY_BUFFER);
+      if (descriptor.mPtrBuffer != nullptr)
+      {
+        // fill out with buffers.
+        auto* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        memcpy(ptr, descriptor.mPtrBuffer, descriptor.mBufferByteSize);
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+      }
     }
+    MDY_CHECK_OPENGL;
     glBindBuffer(GL_ARRAY_BUFFER, MDY_GL_NONE);
     glFlush();
   } break;
-  case EDyDirectBufferType::ElementBuffer:
+  case EDirectBufferType::ElementBuffer:
   { // EBO
     glGenBuffers(1, &id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, descriptor.mBufferByteSize, descriptor.mPtrBuffer, usage);
+    MDY_CHECK_OPENGL;
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, MDY_GL_NONE);
     glFlush();
   } break;
-  case EDyDirectBufferType::UniformBuffer:
-  case EDyDirectBufferType::TransformFeedback:
-  case EDyDirectBufferType::ShaderStorage:
+  case EDirectBufferType::UniformBuffer:
+  case EDirectBufferType::TransformFeedback:
+  case EDirectBufferType::ShaderStorage:
     MDY_NOT_IMPLEMENTED_ASSERT();
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt);
   }
@@ -381,20 +542,20 @@ std::optional<TU32> FDyGLWrapper::CreateBuffer(_MIN_ const PDyGLBufferDescriptor
   return id;
 }
 
-void FDyGLWrapper::DeleteBuffer(_MIN_ const TU32 directBufferId)
+void XGLWrapper::DeleteBuffer(_MIN_ const TU32 directBufferId)
 {
   glDeleteBuffers(1, &directBufferId);
 }
 
-void FDyGLWrapper::MapBuffer(
-    _MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, 
+void XGLWrapper::MapBuffer(
+    _MIN_ EDirectBufferType iBufferType, _MIN_ TU32 iBufferId, 
     _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize)
 {
   GLenum bufferType = GL_NONE;
   switch (iBufferType)
   {
-  case EDyDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
-  case EDyDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
+  case EDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
+  case EDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
@@ -402,16 +563,16 @@ void FDyGLWrapper::MapBuffer(
   glBufferSubData(bufferType, 0, iBufferSize, iPtrBuffer);
 }
 
-void FDyGLWrapper::MapBufferExt(
-    _MIN_ EDyDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize,
+void XGLWrapper::MapBufferExt(
+    _MIN_ EDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize,
     _MIN_ TU32 iItemByteSize, _MIN_ TU32 iGapByteSize, _MIN_ TU32 iStartPoint)
 {
   GLenum  bufferType = GL_NONE;
   auto*   ptrInput   = static_cast<char*>(iPtrBuffer);
   switch (iBufferType)
   {
-  case EDyDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
-  case EDyDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
+  case EDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
+  case EDirectBufferType::ElementBuffer:  { bufferType = GL_ELEMENT_ARRAY_BUFFER; } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
@@ -427,14 +588,14 @@ void FDyGLWrapper::MapBufferExt(
   glUnmapBuffer(bufferType);
 }
 
-TU32 FDyGLWrapper::CreateVertexArrayObject()
+TU32 XGLWrapper::CreateVertexArrayObject()
 {
   TU32 vaoId = MDY_INITIALIZE_DEFUINT;
   glGenVertexArrays(1, &vaoId);
   return vaoId;
 }
 
-void FDyGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDescriptor)
+void XGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDescriptor)
 {
   if (iDescriptor.mAttributeInfo.mIsUsingDefaultDyAttributeModel == true)
   { // If descriptor using default attribute structure binding model, retrieve information from another dimesion
@@ -454,7 +615,12 @@ void FDyGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDe
   glBindVertexArray(iDescriptor.mVaoId);
   glBindBuffer(GL_ARRAY_BUFFER, iDescriptor.mBoundVboId);
   glBindVertexBuffer(0, iDescriptor.mBoundVboId, attributeInfo.mOffsetByteSize, attributeInfo.mStrideByteSize);
-  if (iDescriptor.mBoundEboId > 0) { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); }
+  MDY_CHECK_OPENGL;
+
+  if (iDescriptor.mBoundEboId > 0) 
+  { 
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iDescriptor.mBoundEboId); 
+  }
 
   for (auto i = 0u; i < attributeCount; ++i)
   { // Set up vbo attribute formats.
@@ -465,31 +631,55 @@ void FDyGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDe
     glEnableVertexAttribArray(i);
     if (type == GL_INT) 
     { 
-      glVertexAttribIFormat(i, attributeFormat.mElementCount, type, 
-          attributeFormat.mOffsetByteSize); 
+      glVertexAttribIFormat(i, attributeFormat.mElementCount, type, attributeFormat.mOffsetByteSize); 
     }
     else 
     { 
       glVertexAttribFormat(i, attributeFormat.mElementCount, type, isMustNormalized, 
-          attributeFormat.mOffsetByteSize); 
+        attributeFormat.mOffsetByteSize); 
     }
     glVertexAttribBinding(i, 0);
   }
+  glVertexBindingDivisor(0, 0);
+  MDY_CHECK_OPENGL;
+
+  // If instancing buffer is exist, so should binding instancing id also..
+  if (iDescriptor.mInstancingVboId.has_value() == true)
+  {
+    glEnableVertexAttribArray(10);
+    glEnableVertexAttribArray(11);
+    glEnableVertexAttribArray(12);
+    glEnableVertexAttribArray(13);
+
+    glVertexAttribFormat(10, 4, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribFormat(11, 4, GL_FLOAT, GL_FALSE, 16);
+    glVertexAttribFormat(12, 4, GL_FLOAT, GL_FALSE, 32);
+    glVertexAttribFormat(13, 4, GL_FLOAT, GL_FALSE, 48);
+
+    glVertexAttribBinding(10, 1);
+    glVertexAttribBinding(11, 1);
+    glVertexAttribBinding(12, 1);
+    glVertexAttribBinding(13, 1);
+
+    glVertexBindingDivisor(1, 1);
+    MDY_CHECK_OPENGL;
+  }
+
   glBindVertexArray(MDY_GL_NONE_VAO);
   glFlush();
 }
 
-void FDyGLWrapper::DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId)
+void XGLWrapper::DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId)
 {
   glDeleteVertexArrays(1, &vertexArrayObjectId);
 }
 
-std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDescriptor& iDescriptor)
+std::optional<TU32> XGLWrapper::CreateAttachment(_MIN_ const PGLAttachmentDescriptor& iDescriptor)
 {
   // Validation check.
   MDY_ASSERT_MSG(iDescriptor.mBufferSize.X > 0 && iDescriptor.mBufferSize.Y > 0, 
       "Buffer size must be positive value.");
-  MDY_ASSERT_MSG(iDescriptor.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, 
+  MDY_ASSERT_MSG(iDescriptor.mBufferFormat != EGlBufferDataInternalFormat::NoneError, 
       "Attachment buffer format must be specified.");
   if (iDescriptor.mIsUsingCustomizedParameter == true)
   {
@@ -498,9 +688,9 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
   }
 
   TU32 attachmentId = MDY_INITIALIZE_DEFUINT;
-  const auto glTextureType    = DyGLGetLowTextureType(iDescriptor.mAttachmentType);
+  const auto glTextureType    = GlGetLowTextureType(iDescriptor.mAttachmentType);
   const auto mipmapLv         = iDescriptor.mSpecifiedMipmapLevel;
-  const auto glInternalFormat = DyGlGetLowDataFormatType(iDescriptor.mBufferFormat);
+  const auto glInternalFormat = GlGetLowDataFormatType(iDescriptor.mBufferFormat);
 
   // Create attachment (texture only now)
   glGenTextures(1, &attachmentId);
@@ -508,21 +698,21 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
 
   switch (iDescriptor.mAttachmentType)
   {
-  case EDyTextureStyleType::D2: 
-  case EDyTextureStyleType::D2Shadow:
-  case EDyTextureStyleType::D2Rectangle:
+  case ETextureStyleType::D2: 
+  case ETextureStyleType::D2Shadow:
+  case ETextureStyleType::D2Rectangle:
   {
     glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, 
         MDY_VECTOR_XY(iDescriptor.mBufferSize));
   } break;
-  case EDyTextureStyleType::D1:
-  case EDyTextureStyleType::D1Array: 
+  case ETextureStyleType::D1:
+  case ETextureStyleType::D1Array: 
   {
     glTexStorage2D(glTextureType, mipmapLv, glInternalFormat, 
         iDescriptor.mBufferSize.X, iDescriptor.mDepthNumber);
   } break;
-  case EDyTextureStyleType::D2Array:
-  case EDyTextureStyleType::D2ShadowArray: 
+  case ETextureStyleType::D2Array:
+  case ETextureStyleType::D2ShadowArray: 
   {
     glTexStorage3D(glTextureType, mipmapLv, glInternalFormat, 
         MDY_VECTOR_XY(iDescriptor.mBufferSize), iDescriptor.mDepthNumber);
@@ -547,11 +737,11 @@ std::optional<TU32> FDyGLWrapper::CreateAttachment(_MIN_ const PDyGLAttachmentDe
   glBindTexture(glTextureType, 0);
   glFlush();
 
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
   return attachmentId;
 }
 
-EDySuccess FDyGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIsRenderBuffer)
+EDySuccess XGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIsRenderBuffer)
 {
   // Delete attachment (only texture attachment now)
   if (iIsRenderBuffer == true) 
@@ -565,7 +755,7 @@ EDySuccess FDyGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool i
   return DY_SUCCESS;
 }
 
-std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor)
+std::optional<TU32> XGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor)
 {
   const auto attachmentBindingSize = TU32(iDescriptor.mAttachmentBindingList.size());
   std::vector<GLenum> attachmentTypeList = {};
@@ -581,7 +771,7 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
     const auto [attachmentId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mAttachmentBindingList[i];
     if (isRenderBuffer == false)
     { // If attachment is texture.
-      glBindTexture(DyGLGetLowTextureType(attachmentType), attachmentId);
+      glBindTexture(GlGetLowTextureType(attachmentType), attachmentId);
       const auto typeValue = DyGetAttachmentTypeValue(attachmentFormat);
       glFramebufferTexture(GL_FRAMEBUFFER, typeValue, attachmentId, 0);
       attachmentTypeList.emplace_back(typeValue);
@@ -597,7 +787,7 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
     const auto [depthId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mDepthBufferBinding;
     if (isRenderBuffer == false)
     {
-      glBindTexture(DyGLGetLowTextureType(attachmentType), depthId);
+      glBindTexture(GlGetLowTextureType(attachmentType), depthId);
       glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthId, 0);
     }
     else
@@ -620,25 +810,25 @@ std::optional<TU32> FDyGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBuffer
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glFlush();
 
-  MDY_CHECK_OPENGL();
+  MDY_CHECK_OPENGL;
   return framebufferId;
 }
 
-EDySuccess FDyGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
+EDySuccess XGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
 {
   glDeleteFramebuffers(1, &framebufferId);
   return DY_SUCCESS;
 }
 
-void FDyGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
+void XGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
-  DDyArea2D area; 
-  area.mLeftDown  = DDyVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DDyVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
-  FDyGLWrapper::SetViewport(area);
+  DArea2D area; 
+  area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  XGLWrapper::SetViewport(area);
 }
 
-void FDyGLWrapper::SetViewport(_MIN_ const DDyArea2D& iViewportRegion)
+void XGLWrapper::SetViewport(_MIN_ const DArea2D& iViewportRegion)
 {
   glViewport(
       static_cast<TI32>(iViewportRegion.mLeftDown.X), 
@@ -647,15 +837,15 @@ void FDyGLWrapper::SetViewport(_MIN_ const DDyArea2D& iViewportRegion)
       static_cast<TI32>(iViewportRegion.mRightUp.Y - iViewportRegion.mLeftDown.Y));
 }
 
-void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
+void XGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
-  DDyArea2D area; 
-  area.mLeftDown  = DDyVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DDyVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
-  FDyGLWrapper::SetViewportIndexed(iIndex, area);
+  DArea2D area; 
+  area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  XGLWrapper::SetViewportIndexed(iIndex, area);
 }
 
-void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DDyArea2D& iViewportRegion)
+void XGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DArea2D& iViewportRegion)
 {
   glViewportIndexedf(iIndex, 
       iViewportRegion.mLeftDown.X, 
@@ -664,29 +854,29 @@ void FDyGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DDyArea2D& 
       iViewportRegion.mRightUp.Y - iViewportRegion.mLeftDown.Y);
 }
 
-void FDyGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)
+void XGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, iFboId);
 }
 
-void FDyGLWrapper::UnbindFrameBufferObject()
+void XGLWrapper::UnbindFrameBufferObject()
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FDyGLWrapper::BindVertexArrayObject(_MIN_ TU32 iVaoId)
+void XGLWrapper::BindVertexArrayObject(_MIN_ TU32 iVaoId)
 {
   glBindVertexArray(iVaoId);
 }
 
-void FDyGLWrapper::UnbindVertexArrayObject()
+void XGLWrapper::UnbindVertexArrayObject()
 {
   glBindVertexArray(0);
 }
 
-void FDyGLWrapper::BindTexture(
+void XGLWrapper::BindTexture(
     _MIN_ TU32 activeTextureIndex, 
-    _MIN_ EDyTextureStyleType type, _MIN_ TU32 textureId)
+    _MIN_ ETextureStyleType type, _MIN_ TU32 textureId)
 {
   #if defined(NDEBUG) == false 
   {
@@ -697,35 +887,35 @@ void FDyGLWrapper::BindTexture(
   glActiveTexture(GL_TEXTURE0 + activeTextureIndex);
   switch (type)
   {
-  case EDyTextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, textureId); } break;
-  case EDyTextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, textureId); } break;
+  case ETextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, textureId); } break;
+  case ETextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, textureId); } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }
 
-void FDyGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ EDyTextureStyleType type)
+void XGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ ETextureStyleType type)
 {
   glActiveTexture(GL_TEXTURE0 + textureIndex);
   switch (type)
   {
-  case EDyTextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, 0); } break;
-  case EDyTextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, 0); } break;
+  case ETextureStyleType::D1: { glBindTexture(GL_TEXTURE_1D, 0); } break;
+  case ETextureStyleType::D2: { glBindTexture(GL_TEXTURE_2D, 0); } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }
 
-void FDyGLWrapper::Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount)
+void XGLWrapper::Draw(_MIN_ EDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount)
 {
   GLenum drawType = GL_POINT;
   switch (iType)
   {
-  case EDyDrawType::Point:  drawType = GL_POINT;  break;
-  case EDyDrawType::Line:   drawType = GL_LINE;   break;
-  case EDyDrawType::LineStrip: drawType = GL_LINE_STRIP; break;
-  case EDyDrawType::LineLoop:   drawType = GL_LINE_LOOP; break;
-  case EDyDrawType::Triangle:   drawType = GL_TRIANGLES; break;
-  case EDyDrawType::TriangleStip: drawType = GL_TRIANGLE_STRIP; break;
-  case EDyDrawType::TriangleFan:  drawType = GL_TRIANGLE_FAN;   break;
+  case EDrawType::Point:  drawType = GL_POINT;  break;
+  case EDrawType::Line:   drawType = GL_LINE;   break;
+  case EDrawType::LineStrip: drawType = GL_LINE_STRIP; break;
+  case EDrawType::LineLoop:   drawType = GL_LINE_LOOP; break;
+  case EDrawType::Triangle:   drawType = GL_TRIANGLES; break;
+  case EDrawType::TriangleStip: drawType = GL_TRIANGLE_STRIP; break;
+  case EDrawType::TriangleFan:  drawType = GL_TRIANGLE_FAN;   break;
   }
 
   if (iIsElement == true)
@@ -738,20 +928,44 @@ void FDyGLWrapper::Draw(_MIN_ EDyDrawType iType, _MIN_ bool iIsElement, _MIN_ TU
   }
 }
 
-TI32 FDyGLWrapper::QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum)
+void XGLWrapper::DrawInstanced(EDrawType iType, bool iIsElement, TU32 iCount, TU32 iInstanceCount)
+{
+  GLenum drawType = GL_POINT;
+  switch (iType)
+  {
+  case EDrawType::Point:  drawType = GL_POINT;  break;
+  case EDrawType::Line:   drawType = GL_LINE;   break;
+  case EDrawType::LineStrip: drawType = GL_LINE_STRIP; break;
+  case EDrawType::LineLoop:   drawType = GL_LINE_LOOP; break;
+  case EDrawType::Triangle:   drawType = GL_TRIANGLES; break;
+  case EDrawType::TriangleStip: drawType = GL_TRIANGLE_STRIP; break;
+  case EDrawType::TriangleFan:  drawType = GL_TRIANGLE_FAN;   break;
+  }
+
+  if (iIsElement == true)
+  {
+    glDrawElementsInstanced(drawType, iCount, GL_UNSIGNED_INT, 0, iInstanceCount);
+  }
+  else
+  {
+    glDrawArraysInstanced(drawType, 0, iCount, iInstanceCount);
+  }
+}
+
+TI32 XGLWrapper::QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum)
 {
   TI32 result = 0;
   glGetProgramiv(iShaderProgramId, iQueryEnum, &result);
   return result;
 }
 
-void FDyGLWrapper::QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector)
+void XGLWrapper::QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector)
 {
   glGetFloatv(iGLLowEnumCommand, iPtrRawFloatVector);
 }
 
-std::optional<std::tuple<std::string, GLsizei, GLint, EDyAttributeVariableType, TU32>> 
-FDyGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex)
+std::optional<std::tuple<std::string, GLsizei, GLint, EAttributeVariableType, TU32>> 
+XGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex)
 {
   const TI32 attrBufferLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH);
   auto* attributeName = static_cast<char*>(std::calloc(attrBufferLength, sizeof(GLchar)));
@@ -765,15 +979,15 @@ FDyGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ T
 
   MDY_ASSERT_MSG(attrLocation != -1, "Attribute location did not find.");
   const auto type = DyGlGetAttributeVariableTypeFrom(attributeType);
-  MDY_ASSERT_MSG(type != EDyAttributeVariableType::NoneError, "Not supported attribute type.");
+  MDY_ASSERT_MSG(type != EAttributeVariableType::NoneError, "Not supported attribute type.");
 
   const auto result = std::make_tuple(std::string(attributeName), attributelength, attributeSize, type, attrLocation);
   free(attributeName); attributeName = nullptr;
   return result;
 }
 
-std::optional<std::tuple<std::string, GLsizei, GLint, EDyUniformVariableType, TU32>>
-FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformIndex)
+std::optional<std::tuple<std::string, GLsizei, GLint, EUniformVariableType, TU32>>
+XGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformIndex)
 {
   const TI32 uniformBufLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_UNIFORM_MAX_LENGTH);
   auto* uniformName = static_cast<char*>(std::calloc(uniformBufLength, sizeof(GLchar)));
@@ -793,15 +1007,16 @@ FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
   }
 
   auto type = DyGlGetUniformVariableTypeFrom(uniType);
-  MDY_ASSERT_MSG(type != EDyUniformVariableType::NoneError, "Not supported uniform type.");
+  MDY_ASSERT_MSG(type != EUniformVariableType::NoneError, "Not supported uniform type.");
 
   // If array type.. 
   if (std::strchr(uniformName, '[') != nullptr)
   {
     switch (type)
     {
-    case EDyUniformVariableType::Matrix4: { type = EDyUniformVariableType::Matrix4Array; } break;
-    case EDyUniformVariableType::Vector3: { type = EDyUniformVariableType::Vector3Array; } break;
+    case EUniformVariableType::Matrix4: { type = EUniformVariableType::Matrix4Array; } break;
+    case EUniformVariableType::Vector3: { type = EUniformVariableType::Vector3Array; } break;
+    case EUniformVariableType::Float:   { type = EUniformVariableType::FloatArray; } break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
@@ -813,7 +1028,7 @@ FDyGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
 }
 
 std::optional<std::string> 
-FDyGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex)
+XGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex)
 {
   const TI32 uboNameMaxLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH);
   auto* uniformName = static_cast<char*>(std::calloc(uboNameMaxLength, sizeof(GLchar)));
@@ -832,7 +1047,7 @@ FDyGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN
   return result;
 }
 
-void FDyGLWrapper::UpdateUniformMatrix4(TU32 iId, const DDyMatrix4x4& iBuffer, bool iTransposed)
+void XGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -840,7 +1055,7 @@ void FDyGLWrapper::UpdateUniformMatrix4(TU32 iId, const DDyMatrix4x4& iBuffer, b
   glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void FDyGLWrapper::UpdateUniformMatrix3(TU32 iId, const DDyMatrix3x3& iBuffer, bool iTransposed)
+void XGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -848,7 +1063,7 @@ void FDyGLWrapper::UpdateUniformMatrix3(TU32 iId, const DDyMatrix3x3& iBuffer, b
   glUniformMatrix3fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DDyMatrix4x4>& iBuffer, bool iIransposed)
+void XGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMatrix4x4>& iBuffer, bool iIransposed)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -859,7 +1074,7 @@ void FDyGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DDyMatr
   glUniformMatrix4fv(iId, size, transposed, &iBuffer[0][0].X);
 }
 
-void FDyGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DDyVector3>& iBuffer)
+void XGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>& iBuffer)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -867,59 +1082,187 @@ void FDyGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DDyVect
   glUniform3fv(iId, size, iBuffer.front().Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector4(TU32 iId, const DDyVector4& iBuffer)
+void XGLWrapper::UpdateUniformVector4(TU32 iId, const DVector4& iBuffer)
 {
   glUniform4fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector3(TU32 iId, const DDyVector3& iBuffer)
+void XGLWrapper::UpdateUniformVector3(TU32 iId, const DVector3& iBuffer)
 {
   glUniform3fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformVector2(TU32 iId, const DDyVector2& iBuffer)
+void XGLWrapper::UpdateUniformVector2(TU32 iId, const DVector2& iBuffer)
 {
   glUniform2fv(iId, 1, iBuffer.Data());
 }
 
-void FDyGLWrapper::UpdateUniformInteger(TU32 iId, const TI32& iBuffer)
+void XGLWrapper::UpdateUniformInteger(TU32 iId, const TI32& iBuffer)
 {
   glUniform1i(iId, iBuffer);
 }
 
-void FDyGLWrapper::UpdateUniformUnsigned(TU32 iId, const TU32& iBuffer)
+void XGLWrapper::UpdateUniformUnsigned(TU32 iId, const TU32& iBuffer)
 {
   glUniform1ui(iId, iBuffer);
 }
 
-void FDyGLWrapper::UpdateUniformFloat(TU32 iId, const TF32& iBuffer)
+void XGLWrapper::UpdateUniformFloat(TU32 iId, const TF32& iBuffer)
 {
   glUniform1f(iId, iBuffer);
 }
 
-FDyGLWrapper::__OutsideLockguard::MDY_PRIVATE(OutsideLockguard)
-(FDyGLWrapper::MDY_PRIVATE(OutsideLockguard)&& iSource) noexcept
+void XGLWrapper::UpdateUniformFloatArray(TU32 iId, const std::vector<TF32>& iBuffer)
+{
+  if (iBuffer.empty() == true) { return; }
+
+  glUniform1fv(iId, iBuffer.size(), iBuffer.data());
+}
+
+void XGLWrapper::PushInternalGlobalState(const DGlGlobalStates& iNewStatus)
+{
+  //
+  mInternalGlobalStatusStack.Push(iNewStatus, false);
+
+  const auto& topStatusChunk = mInternalGlobalStatusStack.Top();
+  // Set
+  if (topStatusChunk.mIsEnableBlend.has_value() == true)
+  { mInternal_FeatBlendStack.Push(*topStatusChunk.mIsEnableBlend); }
+  if (topStatusChunk.mIsEnableCullface.has_value() == true)
+  { mInternal_FeatCullfaceStack.Push(*topStatusChunk.mIsEnableCullface); }
+  if (topStatusChunk.mIsEnableDepthTest.has_value() == true)
+  { mInternal_FeatDepthTestStack.Push(*topStatusChunk.mIsEnableDepthTest); }
+  if (topStatusChunk.mIsEnableScissorTest.has_value() == true)
+  { mInternal_FeatScissorTestStack.Push(*topStatusChunk.mIsEnableScissorTest); }
+
+  if (topStatusChunk.mBlendMode.has_value() == true)
+  { mInternal_BlendModeStack.Push(*topStatusChunk.mBlendMode); }
+  if (topStatusChunk.mPolygonMode.has_value() == true)
+  { mInternal_PolygonModeStack.Push(*topStatusChunk.mPolygonMode); }
+  if (topStatusChunk.mCullfaceMode.has_value() == true)
+  { mInternal_CullfaceModeStack.Push(*topStatusChunk.mCullfaceMode); }
+  if (topStatusChunk.mViewportSettingList.has_value() == true)
+  { mInternal_ViewportStack.Push(*topStatusChunk.mViewportSettingList); }
+  if (topStatusChunk.mAttachmentBlendings.has_value() == true)
+  { sAttachmentBlendings.Push(*topStatusChunk.mAttachmentBlendings); }
+}
+
+void XGLWrapper::PopInternalGlobalState()
+{
+  if (mInternalGlobalStatusStack.IsEmpty() == true) { return; }
+
+  auto extracted = mInternalGlobalStatusStack.ExtractTop(false);
+
+  if (extracted.mIsEnableBlend.has_value() == true)       { mInternal_FeatBlendStack.Pop(); }
+  if (extracted.mIsEnableCullface.has_value() == true)    { mInternal_FeatCullfaceStack.Pop(); }
+  if (extracted.mIsEnableDepthTest.has_value() == true)   { mInternal_FeatDepthTestStack.Pop(); }
+  if (extracted.mIsEnableScissorTest.has_value() == true) { mInternal_FeatScissorTestStack.Pop(); }
+
+  if (extracted.mBlendMode.has_value() == true)     { mInternal_BlendModeStack.Pop(); }
+  if (extracted.mPolygonMode.has_value() == true)   { mInternal_PolygonModeStack.Pop(); }
+  if (extracted.mCullfaceMode.has_value() == true)  { mInternal_CullfaceModeStack.Pop(); }
+  if (extracted.mViewportSettingList.has_value() == true) { mInternal_ViewportStack.Pop(); }
+  if (extracted.mAttachmentBlendings.has_value() == true) { sAttachmentBlendings.Pop(); }
+}
+
+XGLWrapper::__OutsideLockguard::MDY_PRIVATE(OutsideLockguard)
+(XGLWrapper::MDY_PRIVATE(OutsideLockguard)&& iSource) noexcept
 {
   iSource.mIsMoved = true;
 }
 
-FDyGLWrapper::__OutsideLockguard FDyGLWrapper::__LockMutex()
+XGLWrapper::__OutsideLockguard XGLWrapper::__LockMutex()
 {
-  FDyGLWrapper::mGLCriticalSectionMutex.lock();
+  XGLWrapper::mGLCriticalSectionMutex.lock();
   return __OutsideLockguard{};
 }
 
-void FDyGLWrapper::__UnlockMutex()
+void XGLWrapper::__UnlockMutex()
 {
-  FDyGLWrapper::mGLCriticalSectionMutex.unlock();
+  XGLWrapper::mGLCriticalSectionMutex.unlock();
 }
 
-FDyGLWrapper::__OutsideLockguard::~MDY_PRIVATE(OutsideLockguard)() noexcept
+void XGLWrapper::SetupInitialGlobalStatus()
+{
+  //! Push initial OpenGL global status.
+  //! But we don't have to call callback function because it is alreay set on OpenGL system.
+  DGlGlobalStates initialStatus;
+  {
+    {
+      using EMode = DGlGlobalStates::DPolygonMode::EMode;
+      using EValue = DGlGlobalStates::DPolygonMode::EValue;
+      using DPolygonMode = DGlGlobalStates::DPolygonMode;
+      // Set value.
+      initialStatus.mIsEnableBlend = glIsEnabled(GL_BLEND);
+      initialStatus.mIsEnableCullface = glIsEnabled(GL_CULL_FACE);
+      initialStatus.mIsEnableDepthTest = glIsEnabled(GL_DEPTH_TEST);
+      initialStatus.mIsEnableScissorTest = glIsEnabled(GL_SCISSOR_TEST);
+      initialStatus.mPolygonMode = DPolygonMode{ EMode::FrontAndBack, EValue::Triangle };
+    }
+    // Get blend mode.
+    // @TODO DELETE THIS 
+    {
+      using DBlendMode = DGlGlobalStates::DBlendMode;
+      using EEqut = DGlGlobalStates::DBlendMode::EEqut;
+      using EFunc = DGlGlobalStates::DBlendMode::EFunc;
+      DBlendMode mode{};
+      mode.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::SrcAlpha, EFunc::OneMinusSrcAlpha);
+      initialStatus.mBlendMode = mode;
+    }
+    // Get cullface mode.
+    {
+      using DCullfaceMode = DGlGlobalStates::DCullfaceMode;
+      DCullfaceMode cullface{ DCullfaceMode::EValue::Back };
+      initialStatus.mCullfaceMode = cullface;
+    }
+    // Get default viewport.
+    {
+      using DViewport = DGlGlobalStates::DViewport;
+      DViewport defaultViewport;
+      // Get global size. 
+      GLint defaultSize[4]; glGetIntegerv(GL_VIEWPORT, defaultSize);
+      defaultViewport.mViewportSettingList.emplace_back(
+        -1, // Global 
+        DArea2D{ defaultSize[0], defaultSize[1], defaultSize[2], defaultSize[3] }
+      );
+      initialStatus.mViewportSettingList = defaultViewport;
+    }
+    // Get default blending equation of default framebuffer.
+    {
+      using EFunc = PBlendingEquation::EFunc;
+      using EMode = PBlendingEquation::EMode;
+      GLint blendSrc, blendDst, blendMode;
+      glGetIntegerv(GL_BLEND_SRC, &blendSrc);
+      glGetIntegerv(GL_BLEND_DST, &blendDst);
+      glGetIntegerv(GL_BLEND_EQUATION_RGB, &blendMode);
+
+      // Get wrapped type from glenum.
+      const auto defaultMode  = PBlendingEquation::ToMode(blendMode);
+      const auto defaultSrc   = PBlendingEquation::ToFunc(blendSrc);
+      const auto defaultDst   = PBlendingEquation::ToFunc(blendDst);
+
+      // Get default constant blend color from gl api (this sucks XP)
+      std::array<TF32, 4> glDefaultBlendColor;
+      glGetFloatv(GL_BLEND_COLOR, glDefaultBlendColor.data());
+      const DColorRGBA defaultColor = DColorRGBA{glDefaultBlendColor}; 
+
+      // Insert
+      decltype(initialStatus.mAttachmentBlendings)::value_type defaultBlendings;
+      defaultBlendings.emplace_back(defaultSrc, defaultMode, defaultDst, defaultColor);
+      initialStatus.mAttachmentBlendings = defaultBlendings;
+    }
+
+    // Insert default status
+    PushInternalGlobalState(initialStatus);
+  }
+}
+
+XGLWrapper::__OutsideLockguard::~MDY_PRIVATE(OutsideLockguard)() noexcept
 {
   if (this->mIsMoved == false)
   { // Unlock gl critical section when not moved.
     glFlush();
-    FDyGLWrapper::MDY_PRIVATE(UnlockMutex)();
+    XGLWrapper::MDY_PRIVATE(UnlockMutex)();
   }
 }
 

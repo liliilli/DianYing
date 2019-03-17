@@ -14,23 +14,23 @@
 ///
 
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
-#include <Dy/Helper/Type/ColorRGBA.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
 
 namespace dy
 {
 
 ///
 /// @struct PDyMetaWidgetImageDescriptor
-/// @brief image(`FDyImage`) component of widget descriptor
+/// @brief image(`FWidgetImage`) component of widget descriptor
 ///
 struct PDyMetaWidgetImageDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {
   /// Size (px) of text widget (leaf widget).
-  DDyVectorInt2 mWidgetSize = {};
+  DVectorInt2 mWidgetSize = {};
   /// Initial position of canvas.
-  DDyVectorInt2 mInitialPosition = {};
+  DVectorInt2 mInitialPosition = {};
   /// Originable to parent frame (except for list layout)
   EDyOrigin     mOrigin = EDyOrigin::Center_Center;
 
@@ -38,9 +38,9 @@ struct PDyMetaWidgetImageDescriptor final : public PDyMetaWidgetCommonBaseDesc
   std::string   mImageSpecifierName = {};
   /// Region to display on widget size. \n
   /// If `mIsSizeToContent` is true, widget will be realigned following partial region.
-  DDyArea2D     mImageRegion        = {};
+  DArea2D     mImageRegion        = {};
   /// ImageTintColor(rgb) + ImageAlpha(a)
-  DDyColorRGBA  mTintColor          = DDyColorRGBA::White;
+  DColorRGBA  mTintColor          = DColorRGBA::White;
   /// Check use automatically align size to image(texture) size.
   bool          mIsSizeToContent    = false;
 

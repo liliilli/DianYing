@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderFontArraySDF
 /// @brief OpenGL SDF font text (basic) shader program.
 ///
-class FDyBuiltinShaderGLRenderFontArraySDF final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderFontArraySDF final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderFontArraySDF, "dyBtShaderGlRenderFontArraySDF")
 public:

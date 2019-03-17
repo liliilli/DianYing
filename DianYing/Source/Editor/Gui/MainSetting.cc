@@ -1,5 +1,5 @@
 #include <precompiled.h>
-#include "Dy/Management/LoggingManager.h"
+#include "Dy/Management/MLog.h"
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License

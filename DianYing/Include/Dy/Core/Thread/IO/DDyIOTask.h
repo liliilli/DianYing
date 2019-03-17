@@ -13,11 +13,11 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/EDyScope.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Resource/Type/EResourceScope.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 
-#include <Dy/Helper/Type/Clamp.h>
+#include <Dy/Helper/Type/DClamp.h>
 
 namespace dy
 {
@@ -29,13 +29,13 @@ namespace dy
 struct DDyIOTask final
 {
 private:
-  using TPriority = DDyClamp<TU08, 0, 255>;
+  using TPriority = DClamp<TU08, 0, 255>;
 public:
   /// Must be moved except for Requiring.
   std::string       mSpecifierName  = {};
   EDyResourceStyle  mResourcecStyle = EDyResourceStyle::NoneError;
-  EDyResourceType   mResourceType   = EDyResourceType::NoneError;
-  EDyScope          mScope          = EDyScope::Global;
+  EResourceType   mResourceType   = EResourceType::NoneError;
+  EResourceScope          mScope          = EResourceScope::Global;
   EDyObject         mBoundObjectStyle    = EDyObject::NoneError;
   TPriority         mTaskPriority   = 0;
   bool              mIsResourceDeferred = false;

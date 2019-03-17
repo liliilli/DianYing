@@ -15,12 +15,12 @@
 #include <Dy/Builtin/RenderItem/FBtScreenIntegration.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Type/EDyDrawType.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Type/EDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
-#include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Element/Level.h>
+#include <Dy/Management/Rendering/MUniformBufferObject.h>
+#include <Dy/Component/CLightDirectional.h>
+#include <Dy/Element/FLevel.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
@@ -60,18 +60,18 @@ void FBtRenderItemScreenIntegeration::OnRender()
   (*submeshList[0])->BindVertexArray();
 
   // Set shader 
-  this->mBinderShader->TryInsertTextureRequisition(0, this->mBinderAttSceneFinal->GetAttachmentId());
-  this->mBinderShader->TryInsertTextureRequisition(1, this->mBinderAttUIFinal->GetAttachmentId());
-  this->mBinderShader->TryInsertTextureRequisition(2, this->mBinderAttDbgFinal->GetAttachmentId());
+  this->mBinderShader->TryInsertTextureRequisition(0, this->mBinderAttSceneFinal->GetSourceAttachmentId());
+  this->mBinderShader->TryInsertTextureRequisition(1, this->mBinderAttUIFinal->GetSourceAttachmentId());
+  this->mBinderShader->TryInsertTextureRequisition(2, this->mBinderAttDbgFinal->GetSourceAttachmentId());
 
   this->mBinderShader->UseShader();
   this->mBinderShader->TryUpdateUniformList();
 
   // Bind g-buffers as textures and draw.
-  FDyGLWrapper::Draw(EDyDrawType::Triangle, false, 3);
+  XGLWrapper::Draw(EDrawType::Triangle, false, 3);
 
   // Rewind
-  FDyGLWrapper::UnbindVertexArrayObject();
+  XGLWrapper::UnbindVertexArrayObject();
   this->mBinderShader->DisuseShader();
 }
 

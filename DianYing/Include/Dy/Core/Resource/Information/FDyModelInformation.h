@@ -13,9 +13,9 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Internal/GeometryType.h>
+#include <Dy/Core/Resource/Internal/XGeometryTypes.h>
 #include <Dy/Meta/Information/MetaInfoModel.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 
 namespace dy
 {
@@ -56,10 +56,14 @@ public:
     return this->mModelTransform;
   }
 
+  /// @brief Get instancing flags list.
+  MDY_NODISCARD const std::vector<bool>& GetInstancingFlags() const noexcept;
+
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
   std::vector<std::unique_ptr<TDyInformationBinderMesh>>     mMeshInformations;
   std::vector<std::unique_ptr<TDyInformationBinderMaterial>> mMaterialInformations;
+  std::vector<bool> mPairInstancingflag;
 
   /// Valid skeleton reference handle.
   TDyInformationBinderSkeleton         mBinderSkeleton;

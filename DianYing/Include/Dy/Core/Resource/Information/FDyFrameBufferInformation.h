@@ -13,9 +13,9 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -49,7 +49,7 @@ public:
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
 
   /// @brief Get frame buffer size.
-  MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize() const noexcept { return this->mFrameBufferSize; }
+  MDY_NODISCARD const DVectorInt2& GetFrameBufferSize() const noexcept { return this->mFrameBufferSize; }
 
   /// @brief Get attachment info list.
   MDY_NODISCARD const auto& GetAttachmentInformationBinderList() const noexcept { return this->mAttachmentInfoList; }
@@ -66,6 +66,9 @@ public:
   /// @brief Check populated frame buffer is using pixel shader.
   MDY_NODISCARD bool IsUsingPixelShader() const noexcept { return this->mIsNotUsingPixelShader == false; }
 
+  /// @brief Check framebuffer will be created as ping-pong framebuffer.
+  MDY_NODISCARD bool IsPingPong() const noexcept;
+
 private:
   using TAttachmentInformation = std::pair<
     PDyGlAttachmentBinderInformation, std::unique_ptr<TDyInformationBinderAttachment>
@@ -75,11 +78,13 @@ private:
   std::string               mSpecifierName;
   TAttachmentInfoBinderList mAttachmentInfoList = {};
   TBlendingEquationList     mAttachmentBlendings = {};
-  DDyVectorInt2             mFrameBufferSize    = {};
+  DVectorInt2             mFrameBufferSize    = {};
 
   TAttachmentInformation    mDepthAttachment    = {};
   bool                      mIsUsingDepthBuffer = false;
   bool                      mIsNotUsingPixelShader = false;
+  /// @brief When enabled, attachment will be created as ping-pong (two-attachment) attachment.
+  bool                      mIsPingpong     = false;
 };
 
 } /// ::dy namespace

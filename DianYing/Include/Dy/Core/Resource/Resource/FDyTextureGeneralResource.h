@@ -42,7 +42,7 @@ public:
   virtual ~FDyTextureGeneralResource();
 
 private:
-  DDyVectorInt2 mTextureSize = {};
+  DVectorInt2 mTextureSize = {};
 };
 
 } /// ::dy namespace

@@ -13,12 +13,12 @@
 ///
 
 /// Header file
-#include <Dy/Management/Internal/Sound/CallbackChannel.h>
-#include <Dy/Management/Type/Sound/ADySoundInstance.h>
+#include <Dy/Management/Internal/Sound/XCallbackChannel.h>
+#include <Dy/Management/Type/Sound/ASoundInstance.h>
 
 namespace dy
 {
-class FDyInstantSound2D;
+class FInstantSound2D;
 } /// ::dy namesapce
 
 namespace dy
@@ -34,15 +34,15 @@ FMOD_RESULT F_CALLBACK __CallbackSoundChannel(
   {
     auto* channel = reinterpret_cast<FMOD::Channel*>(chanControl);
 
-    ADySoundInstance* ptrData = nullptr;
+    ASoundInstance* ptrData = nullptr;
     // Get user data from channel, and cast to wrapping type to manipulate property.
     {
       void* ptrUserData = nullptr;
       channel->getUserData(&ptrUserData);
-      if (ptrUserData != nullptr) { ptrData = reinterpret_cast<ADySoundInstance*>(ptrUserData); }
+      if (ptrUserData != nullptr) { ptrData = reinterpret_cast<ASoundInstance*>(ptrUserData); }
     }
     // Change status if sound is end.
-    if (ptrData != nullptr) { ptrData->__SetStatus(EDySoundStatus::Stop); }
+    if (ptrData != nullptr) { ptrData->__SetStatus(ESoundState::Stop); }
   }
 
   return FMOD_OK;

@@ -16,8 +16,16 @@
 namespace dy::mcs
 {
 
+/// @struct DParsingArgs
+/// @brief Arguments instance for parsing shader.
+struct DParsingArgs final
+{
+  const std::string* mShaderString = nullptr;
+  bool mIsInstantiable = false;
+};
+
 /// @brief Parse variant opengl shader string, return parsed buffer to read properly in OpenGL library.
-MDY_NODISCARD std::string ParseGLShader(_MIN_ const std::string& iShaderString);
+MDY_NODISCARD std::string ParseGLShader(const DParsingArgs& iShaderString);
 
 } /// ::dy::mcs namespace
 

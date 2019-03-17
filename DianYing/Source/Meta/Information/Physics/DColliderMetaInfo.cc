@@ -22,18 +22,18 @@ namespace dy
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySphereColliderMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, "Radius", p.mRadius);
+  json::GetValueFromTo(j, "Radius", p.mRadius);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCapsulesColliderMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, "HalfHeight", p.mHalfHeight);
-  DyJsonGetValueFromTo(j, "Radius", p.mRadius);
+  json::GetValueFromTo(j, "HalfHeight", p.mHalfHeight);
+  json::GetValueFromTo(j, "Radius", p.mRadius);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyBoxColliderMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, "HalfExtent", p.mHalfExtent);
+  json::GetValueFromTo(j, "HalfExtent", p.mHalfExtent);
 }
 
 } /// ::dy namespace

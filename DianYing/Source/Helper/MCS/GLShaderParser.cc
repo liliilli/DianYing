@@ -17,7 +17,7 @@
 
 #include <algorithm>
 #include <Dy/Helper/Library/HelperRegex.h>
-#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 
 //!
 //! Local translation unit function & data
@@ -108,7 +108,108 @@ layout(std140, binding = 0) uniform CameraBlock
 } uCamera;
 
 // @brief Get focused camera's PV matrix.
-mat4 Dy_GetCameraPv() { return uCamera.mProjMatrix * uCamera.mViewMatrix; }
+mat4 DyGetCameraPv() { return uCamera.mProjMatrix * uCamera.mViewMatrix; }
+)dy");
+
+/// @brief Default Light input unfiorm variables.
+/// #import <Input_UboDirLight>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_UboDirLight, R"dy(
+// binding = 1 is DirectionalLightBlock uniform block.
+layout(std140, binding = 1) uniform DDyUboDirectionalLight
+{
+  vec3  mDirection; // World space
+  vec4  mColor;   // Not use alpha value
+  float mIntensity; // Intensity
+} uLightDir;
+
+// binding = 2 is CSM Shadow mapping attaching uniform block.
+layout(std140, binding = 2) uniform DDyUboDirShadow
+{
+  uniform mat4    uLightVPSBMatrix[4];
+  uniform vec4    uNormalizedFarPlanes;
+  uniform float   uShadowBias;
+  uniform float   uShadowStrength;
+} uDyShadowMapping;
+
+vec3 DyComputeShadowCoords(int iSlice, vec3 iWorldPosition)
+{
+  // Orthographic projection doesn't need division by w.
+  return (uDyShadowMapping.uLightVPSBMatrix[iSlice] * vec4(iWorldPosition, 1.0f)).xyz;
+}
+
+float DyComputeShadowCoefficient(sampler2DArrayShadow iShadowMap, vec3 iWorldPosition, float iZValue)
+{
+  int slice = 3;
+  const vec4 normalizedFarPlanes = uDyShadowMapping.uNormalizedFarPlanes;
+  vec4 layerColor = vec4(1.0, 0.5f, 1.0f, 1.0f); // DEBUG
+
+       if (iZValue < normalizedFarPlanes.x) { slice = 0; layerColor = vec4(1.0, 0.5, 0.5, 1.0); }
+  else if (iZValue < normalizedFarPlanes.y) { slice = 1; layerColor = vec4(0.5, 1.0, 0.5, 1.0); }
+  else if (iZValue < normalizedFarPlanes.z) { slice = 2; layerColor = vec4(0.5, 0.5, 1.0, 1.0); }
+
+  vec4 shadowCoords;
+  // Swizzling specific for shadow sampler.
+  shadowCoords.xyw = DyComputeShadowCoords(slice, iWorldPosition);
+  shadowCoords.w  -= uDyShadowMapping.uShadowBias;
+  shadowCoords.z   = float(slice);
+  
+  return (
+    1.0f - 
+    (1.0f - clamp(texture(iShadowMap, shadowCoords), 0.0f, 1.0f)) * uDyShadowMapping.uShadowStrength
+  ); 
+}
+)dy");
+
+/// @brief Default Light input unfiorm variables but not uniform block.
+/// #import <Input_UStrPointLight>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_UStrPointLight, R"dy(
+// Point lights uniform structure for lighting.
+// If intensity is 0, light item will be passed.
+struct DDyPointLight
+{
+  vec3  mWorldPosition;
+  vec3  mColor;
+  float mIntensity;
+  float mRange;
+};
+uniform DDyPointLight uDyLightPoint[16];
+)dy");
+
+/// @brief Default Model transform input & processing API.
+/// This module is dynamic to instancing flag, so if true, module will support static instancing.
+/// #import <Input_ModelTransform>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_ModelTransform_Single, R"dy(
+uniform mat4 uModelMatrix;
+mat4 DyGetModelTransform() { return uModelMatrix; }
+
+vec4 DyTransform(const vec4 iLocalPos)
+{
+  return uModelMatrix * iLocalPos;
+}
+
+mat3 DyGetRotationMatrix()
+{
+  return transpose(inverse(mat3(uModelMatrix)));
+}
+)dy");
+
+/// #import <Input_ModelTransform>; when instancing flag is enabled.
+/// In the other way, #import <Input_ModelTransformInstancing>; explicitly.
+MDY_SET_IMMUTABLE_STRING(Buffer_Input_ModelTransform_Multi, R"dy(
+// This will be attached by another binding index.
+layout (location = 10) in mat4 dyInstanceModelMatrix;
+
+mat4 DyGetModelTransform() { return dyInstanceModelMatrix; }
+
+vec4 DyTransform(const vec4 iLocalPos)
+{
+  return dyInstanceModelMatrix * iLocalPos;
+}
+
+mat3 DyGetRotationMatrix()
+{
+  return transpose(inverse(mat3(dyInstanceModelMatrix)));
+}
 )dy");
 
 /// @brief Skinned animation input uniform variables.
@@ -130,7 +231,7 @@ mat4 Dy_GetBoneTransform()
 }
 )dy");
 
-/// @brief Default Texture2D input uniform varaibles.
+/// @brief Default Texture2D input uniform variables.
 /// #import <Input_DefaultTexture2D>;
 MDY_SET_IMMUTABLE_STRING(Buffer_Input_DefaultTexture2D, R"dy(
 layout (binding = 0) uniform sampler2D uTexture0;
@@ -158,6 +259,52 @@ layout (location = 5) out vec4 gActorId;
 uniform float uBtDyActorId = 0;
 
 void DyBindActorId() { gActorId = vec4(uBtDyActorId, 0, 0, 1); }
+void DyNotSetEmissive() { gEmissive = vec4(0, 0, 0, 1); };
+)dy");
+
+/// @brief Default Weighted blended output module.
+/// #import <Output_OITStream>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Output_OITStream, R"dy(
+layout (location = 0) out vec4 outColor;
+layout (location = 1) out vec4 outWeight;
+
+layout (binding = 10) uniform sampler2D uTexture10; // mCompareZDepth
+
+bool DyIsTransparentObjectFrontOf(const vec2 iTexCoord, const float iZValue)
+{
+  float opaqueZ = texture(uTexture10, iTexCoord).r;
+  return iZValue < opaqueZ;
+}
+)dy");
+
+/// @brief miscellaneous functional-style functions module.
+/// #import <Etc_Miscellaneous>
+MDY_SET_IMMUTABLE_STRING(Buffer_Etc_Miscellaneous, R"dy(
+/// @brief Convert r, g, b (SRGB) value to gray value.
+float DyToGrayScale(float iR, float iG, float iB) 
+{ 
+  return 0.2126 * iR + 0.7152 * iG + 0.0722 * iB;
+}
+
+/// @brief Check float value is nearly equal to target value.
+bool DyIsNearlyEqual(float iValue, float iTarget)
+{
+  return abs(iValue - iTarget) < 0.00001;
+}
+
+/// @brief Convert to projected Z value to depth value.
+float DyToZValue(const float iProjectedZ, const float iProjectedW)
+{
+  return ((iProjectedZ / iProjectedW) + 1.0f) * 0.5f;
+}
+
+float rand(float n){ return fract(floor(n * 0.1f) * 43758.5453123); }
+
+/// @brief Convert projection x, y position to screen space [0, 1] value.
+vec2 DoToScreenSpaceXy(const vec2 iProjectedXy)
+{
+  return (iProjectedXy + vec2(1)) * 0.5f; 
+}
 )dy");
 
 } /// ::anonymous namespace
@@ -169,8 +316,15 @@ void DyBindActorId() { gActorId = vec4(uBtDyActorId, 0, 0, 1); }
 namespace dy::mcs
 {
 
-std::string ParseGLShader(_MIN_ const std::string& iShaderString)
+std::string ParseGLShader(const DParsingArgs& iArgs)
 {
+  if (iArgs.mShaderString == nullptr)
+  {
+    MDY_ASSERT_MSG(false, "Failed to parse shader, shader buffer must be specified.");
+    return "";
+  }
+  const auto& iShaderString = *iArgs.mShaderString;
+
   // Find `#import `.
   auto optImportIt = DyStrInQuote(iShaderString, "#import ");
   if (optImportIt.has_value() == false) { return iShaderString; }
@@ -181,26 +335,53 @@ std::string ParseGLShader(_MIN_ const std::string& iShaderString)
   std::string exportShaderBuffer = optPrev.has_value() == false ? "" : optPrev.value();
 
   // Get Dy shader module keywords.
-  const auto optMatchedKeywordList = DyRegexGetMatchedKeyword(optMid.value(), R"(#import <([\w]+)>;)");
-  MDY_ASSERT_MSG_FORCE(optMatchedKeywordList.has_value() == true, "Undefined Dy shader module. Failed to load shader.");
+  const auto optMatchedKeywordList = regex::GetMatchedKeywordFrom(optMid.value(), R"(#import <([\w]+)>;)");
+  MDY_ASSERT_MSG_FORCE(
+    optMatchedKeywordList.has_value() == true, 
+    "Undefined Dy shader module. Failed to load shader.");
 
   // Check module keyword. If not found anything, output error.
   // If found any module, just replace `#import phrase` with given string to buffer.
   for (auto& keyword : optMatchedKeywordList.value())
   {
-    switch (DyStrSwitchInput(keyword))
+    switch (SwitchStrInput(keyword))
     {
-    case DyStrCase("Input_DefaultVao"):       exportShaderBuffer += Buffer_Input_DefaultVao; break;
-    case DyStrCase("Input_UboCamera"):        exportShaderBuffer += Buffer_Input_UboCamera; break;
-    case DyStrCase("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
-    case DyStrCase("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
-    case DyStrCase("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
+    case CaseStr("Input_DefaultVao"):       exportShaderBuffer += Buffer_Input_DefaultVao; break;
+    case CaseStr("Input_UboCamera"):        exportShaderBuffer += Buffer_Input_UboCamera; break;
+    case CaseStr("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
+    case CaseStr("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
+    case CaseStr("Input_UboDirLight"):      exportShaderBuffer += Buffer_Input_UboDirLight; break;
+    case CaseStr("Input_UStrPointLight"):   exportShaderBuffer += Buffer_Input_UStrPointLight; break;
+    case CaseStr("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
+    case CaseStr("Etc_Miscellaneous"):      exportShaderBuffer += Buffer_Etc_Miscellaneous; break;
+    case CaseStr("Input_ModelTransform"):  
+    {
+      if (iArgs.mIsInstantiable == true)
+      {
+        exportShaderBuffer += Buffer_Input_ModelTransform_Multi;
+      }
+      else
+      {
+        exportShaderBuffer += Buffer_Input_ModelTransform_Single; 
+      }
+    } break;
+    case CaseStr("Input_ModelTransformInstancing"):
+      exportShaderBuffer += Buffer_Input_ModelTransform_Multi;
+      break;
+    case CaseStr("Output_OITStream"):
+      exportShaderBuffer += Buffer_Output_OITStream;
+      break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
   }
 
   // Append next buffer.
-  exportShaderBuffer += optNext.has_value() == true ? ParseGLShader(optNext.value()) : "";
+  if (optNext.has_value() == true)
+  {
+    auto nextArgs = iArgs;
+    nextArgs.mShaderString = &optNext.value();
+    exportShaderBuffer += ParseGLShader(nextArgs);
+  }
   // Return.
   return exportShaderBuffer;
 }

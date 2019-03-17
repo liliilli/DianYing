@@ -54,7 +54,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo&
           { "Specifier": "nanosuit_Helmet", "Material": "dyBtMtCheckerWorldPos" },
           { "Specifier": "nanosuit_Legs", "Material": "dyBtMtCheckerWorldPos" },
           { "Specifier": "nanosuit_Lights", "Material": "dyBtMtCheckerWorldPos" },
-          { "Specifier": "nanosuit_Visor", "Material": "dyBtMtCheckerWorldPos" }
+          { "Specifier": "nanosuit_Visor", "Material": "dyBtMtCheckerWorldPos", "IsInstancing": true }
         ],
         "Skeleton":
         {
@@ -66,9 +66,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo&
    */ 
 
   p.mSourceType = EDyResourceSource::External;
-  DyJsonGetValueFromTo(j, "Mesh",     p.mMeshList);
-  DyJsonGetValueFromTo(j, "Skeleton", p.mSkeleton);
-  DyJsonGetValueFromTo(j, "Transform", p.mTransform);
+  json::GetValueFromTo(j, "Mesh",     p.mMeshList);
+  json::GetValueFromTo(j, "Skeleton", p.mSkeleton);
+  json::GetValueFromTo(j, "Transform", p.mTransform);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DMesh& p)
@@ -78,8 +78,16 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::D
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DMesh& p)
 {
-  DyJsonGetValueFromTo(j, "Specifier",  p.mMeshSpecifier);
-  DyJsonGetValueFromTo(j, "Material",   p.mMaterialSpecifier);
+  json::GetValueFromTo(j, "Specifier",  p.mMeshSpecifier);
+  json::GetValueFromTo(j, "Material",   p.mMaterialSpecifier);
+  if (json::HasJsonKey(j, "IsInstancing") == true)
+  {
+    json::GetValueFromTo(j, "IsInstancing", p.mInstanced);
+  }
+  else
+  {
+    p.mInstanced = false;
+  }
   // 
   if (p.mMaterialSpecifier.empty() == true)
   {
@@ -94,8 +102,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::D
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DSkeleton& p)
 {
-  DyJsonGetValueFromTo(j, "IsUsingSkeleton",    p.mIsUsingSkeleton);
-  DyJsonGetValueFromTo(j, "SkeletonSpecifier",  p.mSkeletonSpecifier);
+  json::GetValueFromTo(j, "IsUsingSkeleton",    p.mIsUsingSkeleton);
+  json::GetValueFromTo(j, "SkeletonSpecifier",  p.mSkeletonSpecifier);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::DTransform& p)
@@ -105,9 +113,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelInstanceMetaInfo::D
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo::DTransform& p)
 {
-  DyJsonGetValueFromTo(j, "Position",   p.mPosition);
-  DyJsonGetValueFromTo(j, "Rotation",   p.mRotation);
-  DyJsonGetValueFromTo(j, "Scale",      p.mScale);
+  json::GetValueFromTo(j, "Position",   p.mPosition);
+  json::GetValueFromTo(j, "Rotation",   p.mRotation);
+  json::GetValueFromTo(j, "Scale",      p.mScale);
 }
 
 } /// ::dy namespace

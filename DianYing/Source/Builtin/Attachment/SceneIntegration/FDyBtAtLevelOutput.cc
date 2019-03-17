@@ -21,7 +21,7 @@ namespace dy
 void FDyBtAttOutput::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
-  property.mAttachmentSize = DDyVectorInt2{1280, 720};
+  property.mAttachmentSize = DVectorInt2{1280, 720};
   property.mParameterList  =
   {
     PDyGlTexParameterInformation\
@@ -30,8 +30,8 @@ void FDyBtAttOutput::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& pro
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
   };
-  property.mBufferFormat  = EDyGlBufferDataInternalFormat::RGBA8;
-  property.mBorderColor   = DDyColorRGBA{ 0, 0, 0, 0 };
+  property.mBufferFormat  = EGlBufferDataInternalFormat::RGBA8;
+  property.mBorderColor   = DColorRGBA{ 0, 0, 0, 0 };
 }
 
 } /// ::dy namespace

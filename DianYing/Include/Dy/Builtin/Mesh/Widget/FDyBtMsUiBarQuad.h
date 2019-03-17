@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyMeshResource.h>
+#include <Dy/Builtin/Abstract/AMeshResource.h>
 
 namespace dy::builtin
 {
@@ -22,7 +22,7 @@ namespace dy::builtin
 /// @class FDyBtMsUiBarQuad
 /// @brief Create mesh for bar rendering.
 ///
-class FDyBtMsUiBarQuad final : public ADyMeshResource
+class FDyBtMsUiBarQuad final : public AMeshResource
 {
   MDY_REGISTER_RESOURCE_MESH(FDyBtMsUiBarQuad, "dyBtMsUiBarQuad");
 };

@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLFrameBufferResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLFrameBufferResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
@@ -23,7 +23,7 @@ namespace dy
 /// @class FDyBtFbTransIntegration
 /// @brief Integration phase of opaque scene and transcluent textures.
 ///
-class FDyBtFbTransIntegration final : public ADyGLFrameBufferResource
+class FDyBtFbTransIntegration final : public AGLFrameBufferResource
 {
   MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFbTransIntegration, "dyBtFbIntgLevelTrans")
 };

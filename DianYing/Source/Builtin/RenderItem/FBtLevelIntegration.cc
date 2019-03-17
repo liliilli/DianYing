@@ -14,18 +14,22 @@
 
 #include <Dy/Builtin/RenderItem/FBtLevelIntegeration.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
-#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/MWorld.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Type/EDyDrawType.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Type/EDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
-#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
-#include <Dy/Component/CDyDirectionalLight.h>
-#include <Dy/Element/Level.h>
+#include <Dy/Management/Rendering/MRendering.h>
+#include <Dy/Management/Rendering/MUniformBufferObject.h>
+#include <Dy/Component/CLightDirectional.h>
+#include <Dy/Element/FLevel.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include <Dy/Component/Internal/Lights/DUboPointLight.h>
+#include <Dy/Component/CLightPoint.h>
+#include "Dy/Core/Reflection/RReflection.h"
+#include "Dy/Component/CCamera.h"
 
 namespace dy
 {
@@ -53,41 +57,79 @@ void FBtRenderItemLevelIntegeration::OnSetupRenderingSetting()
 void FBtRenderItemLevelIntegeration::pSetupOpaqueCSMIntegration()
 {
   // Update shader's uniform information.
-  if (const auto* ptr = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
+  this->pUpdateUboShadowInfo();
+  this->pUpdateUboDirectionalLightInfo();
+  this->pUpdateUboPointLightsInfo();
+
+  this->mBinderFrameBuffer->BindFrameBuffer();
+  const auto& backgroundColor = MWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
+  glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void FBtRenderItemLevelIntegeration::pUpdateUboShadowInfo()
+{
+  auto& uboManager = MUniformBufferObject::GetInstance();
+  if (const auto* ptr = MRendering::GetInstance().GetPtrMainDirectionalShadow();
       ptr != nullptr) 
   { 
-    using EUniform = EDyUniformVariableType;
-    // DyConvertToVector
-    this->mBinderOpaqueShader->TryUpdateUniform<EUniform::Vector4>(
-        "uNormalizedFarPlanes", 
-        ptr->GetCSMNormalizedFarPlanes());
-    this->mBinderOpaqueShader->TryUpdateUniform<EUniform::Matrix4Array>(
-        "uLightVPSBMatrix[0]", 
-        DyConvertToVector<DDyMatrix4x4>(ptr->GetCSMLightSegmentVPSBMatrix()));
+    DDyUboDirShadow shadow = ptr->GetUboShadowInfo();
+    uboManager.UpdateUboContainer("dyBtUboDirShadow", 0, sizeof(DDyUboDirShadow), &shadow);
   }
+  else
+  {
+    DDyUboDirShadow shadow;
+    uboManager.UpdateUboContainer("dyBtUboDirShadow", 0, sizeof(DDyUboDirShadow), &shadow);
+  }
+}
 
-  // Update directional light property.
-  auto* ptrLight = MDyRendering::GetInstance().GetPtrMainDirectionalLight();
+void FBtRenderItemLevelIntegeration::pUpdateUboDirectionalLightInfo()
+{
+  auto& uboManager = MUniformBufferObject::GetInstance();
+  auto* ptrLight = MRendering::GetInstance().GetPtrMainDirectionalLight();
   if (this->mAddrMainLight != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
     this->mAddrMainLight = reinterpret_cast<ptrdiff_t>(ptrLight);
-    auto& uboManager = MDyUniformBufferObject::GetInstance();
     if (this->mAddrMainLight == 0)
     {
-      DDyUboDirectionalLight light;
-      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light);
+      DUboDirectionalLight light;
+      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DUboDirectionalLight), &light);
     }
     else
     {
-      DDyUboDirectionalLight light = ptrLight->GetUboLightInfo();
-      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light);
+      DUboDirectionalLight light = ptrLight->GetUboLightInfo();
+      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DUboDirectionalLight), &light);
+    }
+  }
+}
+
+void FBtRenderItemLevelIntegeration::pUpdateUboPointLightsInfo()
+{
+  auto& activateLightPtrList  = MRendering::GetInstance().__GetActivatedPointLights();
+  std::vector<DUboPointLight> pointLightChunk; 
+  pointLightChunk.reserve(16);
+
+  // Do cpu frustum culling.
+  const auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
+  for (auto& ptrLight : activateLightPtrList)
+  {
+    const auto& lightInfo = ptrLight->GetUboLightInfo();
+    if (ptrCamera->IsSphereInFrustum(lightInfo.mPosition, lightInfo.mRange) == true)
+    {
+      pointLightChunk.emplace_back(lightInfo);
     }
   }
 
-  this->mBinderFrameBuffer->BindFrameBuffer();
-  const auto& backgroundColor = MDyWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
-  glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
-  glClear(GL_COLOR_BUFFER_BIT);
+  for (size_t i = 0, size = pointLightChunk.size(); i < size; ++i)
+  {
+    this->mBinderOpaqueShader->TryUpdateUniformStruct(i, pointLightChunk[i]);
+  }
+
+  for (size_t i = pointLightChunk.size(); i < 16; ++i)
+  {
+    static const DUboPointLight blank{};
+    this->mBinderOpaqueShader->TryUpdateUniformStruct(i, blank);
+  }
 }
 
 void FBtRenderItemLevelIntegeration::pSetupTranslucentOITIntegration()
@@ -107,37 +149,37 @@ void FBtRenderItemLevelIntegeration::OnRender()
   {
     this->mBinderFrameBuffer->BindFrameBuffer();
     // Check Textures.
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(0, this->mBinderAttUnlit->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(1, this->mBinderAttNormal->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(2, this->mBinderAttSpecular->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(3, this->mBinderAttPosition->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(4, this->mBinderAttShadow->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(5, this->mBinderAttZValue->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(6, this->mBinderAttSSAO->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(7, this->mBinderAttSky->GetAttachmentId());
-    this->mBinderOpaqueShader->TryInsertTextureRequisition(8, this->mBinderAttEmissive->GetAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(0, this->mBinderAttUnlit->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(1, this->mBinderAttNormal->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(2, this->mBinderAttSpecular->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(3, this->mBinderAttPosition->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(4, this->mBinderAttShadow->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(5, this->mBinderAttZValue->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(6, this->mBinderAttSSAO->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(7, this->mBinderAttSky->GetSourceAttachmentId());
+    this->mBinderOpaqueShader->TryInsertTextureRequisition(8, this->mBinderAttEmissive->GetSourceAttachmentId());
     this->mBinderOpaqueShader->UseShader();
     this->mBinderOpaqueShader->TryUpdateUniformList();
 
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    XGLWrapper::Draw(EDrawType::Triangle, true, 3);
   }
 
   {
     this->mBinderFbTranslucent->BindFrameBuffer();
     // 
-    this->mBinderTransShader->TryInsertTextureRequisition(0, this->mBinderAttOpaque->GetAttachmentId());
-    this->mBinderTransShader->TryInsertTextureRequisition(1, this->mBinderAttOITColor->GetAttachmentId());
-    this->mBinderTransShader->TryInsertTextureRequisition(2, this->mBinderAttOITWeigh->GetAttachmentId());
+    this->mBinderTransShader->TryInsertTextureRequisition(0, this->mBinderAttOpaque->GetSourceAttachmentId());
+    this->mBinderTransShader->TryInsertTextureRequisition(1, this->mBinderAttOITColor->GetSourceAttachmentId());
+    this->mBinderTransShader->TryInsertTextureRequisition(2, this->mBinderAttOITWeigh->GetSourceAttachmentId());
     this->mBinderTransShader->UseShader();
     this->mBinderTransShader->TryUpdateUniformList();
 
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    XGLWrapper::Draw(EDrawType::Triangle, true, 3);
 
     this->mBinderTransShader->DisuseShader();
     this->mBinderFbTranslucent->UnbindFrameBuffer();
   }
 
-  FDyGLWrapper::UnbindVertexArrayObject();
+  XGLWrapper::UnbindVertexArrayObject();
 }
 
 void FBtRenderItemLevelIntegeration::OnReleaseRenderingSetting()

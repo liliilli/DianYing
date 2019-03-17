@@ -16,151 +16,145 @@
 namespace dy
 {
 
-inline const PDyLevelConstructMetaInfo& 
-MDyMetaInfo::Impl::GetLevelMetaInformation(const std::string& iLevelName) const noexcept
-{
-  return this->mLevelInfoMap.at(iLevelName);
-}
-
 inline const PDyScriptInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetScriptMetaInformation(const std::string& iScriptName) const
+MIOMeta::Impl::GetScriptMetaInformation(const std::string& iScriptName) const
 {
   return this->mScriptMetaInfo.at(iScriptName);
 }
 
 inline const std::unordered_map<std::string, PDyScriptInstanceMetaInfo>& 
-MDyMetaInfo::Impl::GetRefGlobalScriptMetaInfoContainer() const noexcept
+MIOMeta::Impl::GetRefGlobalScriptMetaInfoContainer() const noexcept
 {
   return this->mGlobalScriptMetaInfo;
 }
 
 inline const PDyPrefabInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetPrefabMetaInformation(const std::string& iPrefabName) const
+MIOMeta::Impl::GetPrefabMetaInformation(const std::string& iPrefabName) const
 {
   return *this->mPrefabMetaInfo.at(iPrefabName);
 }
 
 inline const PDyMetaFontInformation& 
-MDyMetaInfo::Impl::GetFontMetaInformation(const std::string& iFontName) const
+MIOMeta::Impl::GetFontMetaInformation(const std::string& iFontName) const
 {
   return this->mFontMetaInfo.at(iFontName);
 }
 
 inline const PDyMetaWidgetRootDescriptor& 
-MDyMetaInfo::Impl::GetWidgetMetaInformation(const std::string& iWidgetMetaName) const
+MIOMeta::Impl::GetWidgetMetaInformation(const std::string& iWidgetMetaName) const
 {
   return *this->mWidgetMetaInfo.at(iWidgetMetaName);
 }
 
 inline const PDyGLShaderInstanceMetaInfo&
-MDyMetaInfo::Impl::GetShaderMetaInformation(const std::string& iShaderName) const
+MIOMeta::Impl::GetShaderMetaInformation(const std::string& iShaderName) const
 {
   return this->mShaderMetaInfo.at(iShaderName);
 }
 
 inline const PDyMeshInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetBtMeshMetaInformation( const std::string & specifier) const
+MIOMeta::Impl::GetBtMeshMetaInformation(const std::string& specifier) const
 {
   return this->mModelMeshMetaInfo.at(specifier);
 }
 
 inline const PDyModelInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetModelMetaInformation(const std::string& specifier) const
+MIOMeta::Impl::GetModelMetaInformation(const std::string& specifier) const
 {
   return this->mModelMetaInfo.at(specifier);
 }
 
 inline const PDyModelSkelInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetModelSkeletonMetaInformation( const std::string& specifier) const
+MIOMeta::Impl::GetModelSkeletonMetaInformation( const std::string& specifier) const
 {
   return this->mModelSkeletonMetaInfo.at(specifier);
 }
 
 inline const PDyModelAnimInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetModelAnimScrapMetaInformation(const std::string& specifier) const
+MIOMeta::Impl::GetModelAnimScrapMetaInformation(const std::string& specifier) const
 {
   return this->mModelAnimScrapMetaInfo.at(specifier);
 }
 
 inline const PDyTextureInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetTextureMetaInformation(const std::string& specifier) const
+MIOMeta::Impl::GetTextureMetaInformation(const std::string& specifier) const
 {
   return this->mTextureMetaInfo.at(specifier);
 }
 
 inline const PDyMaterialInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetMaterialMetaInformation(const std::string& specifier) const
+MIOMeta::Impl::GetMaterialMetaInformation(const std::string& specifier) const
 {
   return this->mMaterialMetaInfo.at(specifier);
 }
 
 inline const PDyGlFrameBufferInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetGlFrameBufferMetaInformation(const std::string& specifier) const
+MIOMeta::Impl::GetGlFrameBufferMetaInformation(const std::string& specifier) const
 {
   return this->mFrameBufferMetaInfo.at(specifier);
 }
 
 inline const PDyGlAttachmentInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetGLAttachmentMetaInformation( const std::string& specifier) const
+MIOMeta::Impl::GetGLAttachmentMetaInformation( const std::string& specifier) const
 {
   return this->mAttachmentMetaInfo.at(specifier);
 }
 
 inline const PDySoundInstanceMetaInfo& 
-MDyMetaInfo::Impl::GetSoundMetaInformation( const std::string& specifier) const
+MIOMeta::Impl::GetSoundMetaInformation( const std::string& specifier) const
 {
   return this->mSoundMetaInfo.at(specifier);
 }
 
 inline const PDyMetaWidgetRootDescriptor* 
-MDyMetaInfo::Impl::MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)() const noexcept
+MIOMeta::Impl::MDY_PRIVATE(TryGetLoadingWidgetMetaLoading)() const noexcept
 {
   if (this->IsLoadingWidgetMetaInfoExist() == false) { return nullptr; }
   return this->mLoadingWidgetMetaInfo.get();
 }
 
-inline bool MDyMetaInfo::Impl::IsLoadingWidgetMetaInfoExist() const noexcept
+inline bool MIOMeta::Impl::IsLoadingWidgetMetaInfoExist() const noexcept
 {
   return this->mLoadingWidgetMetaInfo != nullptr;
 }
 
-inline void MDyMetaInfo::Impl::MDY_PRIVATE(PopulateBootResourceSpecifierList)() const noexcept
+inline void MIOMeta::Impl::MDY_PRIVATE(PopulateBootResourceSpecifierList)() const noexcept
 {
   static bool mIsCalled = false;
   MDY_ASSERT_MSG(mIsCalled == false, "This function must not be called twice.");
 
   SDyIOConnectionHelper::PopulateResourceList(
       this->mBootResourceSpecifierList, 
-      EDyScope::Global,
-      []() { DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::FirstLoading); }
+      EResourceScope::Global,
+      []() { GDyEngine::GetInstance().SetNextGameStatus(EGlobalGameState::FirstLoading); }
   );
 
   mIsCalled = true;
 }
 
-inline void MDyMetaInfo::Impl::MDY_PRIVATE(PopulateGlobalResourceSpecifierList)() const noexcept
+inline void MIOMeta::Impl::MDY_PRIVATE(PopulateGlobalResourceSpecifierList)() const noexcept
 {
   static bool mIsCalled = false;
   MDY_ASSERT_MSG_FORCE(mIsCalled == false, "This function must not be called twice.");
 
   // Global resource list consists of many sub-global resource list from each global resource script.
-  SDyIOConnectionHelper::PopulateResourceList(mGlobalResourceSpecifierList, EDyScope::Global,
+  SDyIOConnectionHelper::PopulateResourceList(mGlobalResourceSpecifierList, EResourceScope::Global,
     [] 
     { 
       // Create global scripts.
-      auto& scriptManager = MDyScript::GetInstance();
+      auto& scriptManager = MScript::GetInstance();
       scriptManager.CreateGlobalScriptInstances();
       scriptManager.CallonStartGlobalScriptList();
-      DyEngine::GetInstance().SetNextGameStatus(EDyGlobalGameStatus::Loading); 
+      GDyEngine::GetInstance().SetNextGameStatus(EGlobalGameState::Loading); 
     }
   );
   mIsCalled = true;
 }
 
-inline void MDyMetaInfo::Impl::MDY_PRIVATE(InitiateMetaInformation)()
+inline void MIOMeta::Impl::MDY_PRIVATE(InitiateMetaInformation)()
 {
-  const auto& metaPath = MDySetting::GetInstance().GetMetaPathSettingInformation();
-  reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
+  const auto& metaPath = MSetting::GetInstance().GetMetaPathSettingInformation();
+  reflect::RBuiltinResources::BindBuiltinResourcesToMetaManager();
 
   MDY_CALL_ASSERT_SUCCESS(this->pReadFontResourceMetaInformation    (metaPath.mFontMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadModelMeshResourceMetaInformation(metaPath.mModelMeshMetaPath));
@@ -175,12 +169,12 @@ inline void MDyMetaInfo::Impl::MDY_PRIVATE(InitiateMetaInformation)()
   MDY_CALL_ASSERT_SUCCESS(this->pReadScriptResourceMetaInformation(metaPath.mScriptMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadPrefabResourceMetaInformation(metaPath.mPrefabMetaPath));
   MDY_CALL_ASSERT_SUCCESS(this->pReadWidgetResourceMetaInformation(metaPath.mWidgetMetaPath));
-  MDY_CALL_ASSERT_SUCCESS(this->pReadLevelResourceMetaInformation (metaPath.mSceneMetaPath));
+  MDY_CALL_ASSERT_SUCCESS(this->pReadLevelResourceMetaInformation (metaPath.mLevelMetaPath));
 }
 
-inline void MDyMetaInfo::Impl::MDY_PRIVATE(InitiateMetaInformationComp)(const nlohmann::json& iJson)
+inline void MIOMeta::Impl::MDY_PRIVATE(InitiateMetaInformationComp)(const nlohmann::json& iJson)
 {
-  reflect::RDyBuiltinResource::BindBuiltinResourcesToMetaManager();
+  reflect::RBuiltinResources::BindBuiltinResourcesToMetaManager();
 
   MDY_CALL_ASSERT_SUCCESS(this->pReadFontMetaAtlas(iJson["Font"]));
   MDY_CALL_ASSERT_SUCCESS(this->pReadShaderMetaAtlas(iJson["Shader"]));
@@ -199,10 +193,10 @@ inline void MDyMetaInfo::Impl::MDY_PRIVATE(InitiateMetaInformationComp)(const nl
   MDY_CALL_ASSERT_SUCCESS(this->pReadLevelMetaAtlas (iJson["Level"]));
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadScriptResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadScriptResourceMetaInformation(const std::string& metaFilePath)
 {
   // Validity Test
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const std::optional<nlohmann::json> opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG(opJsonAtlas.has_value() == true, "Failed to read script resource meta information. File path is not exist.");
 
   // Check "List" Category is exist.
@@ -210,13 +204,14 @@ inline EDySuccess MDyMetaInfo::Impl::pReadScriptResourceMetaInformation(const st
   return this->pReadScriptMetaAtlas(jsonAtlas);
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadPrefabResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadPrefabResourceMetaInformation(const std::string& metaFilePath)
 {
   /// @brief Check prefab meta information list.
   static auto CheckPrefabMetaCategory = []( const nlohmann::json& atlas) -> EDySuccess
   {
-    if (DyCheckHeaderIsExist(atlas, sCategoryMeta) == DY_FAILURE)       { return DY_FAILURE; }
-    if (DyCheckHeaderIsExist(atlas, sCategoryObjectList) == DY_FAILURE) { return DY_FAILURE; }
+    using namespace json;
+    if (json::HasJsonKey(atlas, sCategoryMeta) == false)       { return DY_FAILURE; }
+    if (json::HasJsonKey(atlas, sCategoryObjectList) == false) { return DY_FAILURE; }
     return DY_SUCCESS;
   };
 
@@ -225,7 +220,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadPrefabResourceMetaInformation(const st
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   // Validity Test
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const std::optional<nlohmann::json> opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read prefab resource meta information.");
@@ -235,10 +230,10 @@ inline EDySuccess MDyMetaInfo::Impl::pReadPrefabResourceMetaInformation(const st
   return this->pReadPrefabMetaAtlas(jsonAtlas);
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadFontResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadFontResourceMetaInformation(const std::string& metaFilePath)
 { 
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read font meta information. File is not exist.");
@@ -246,10 +241,10 @@ inline EDySuccess MDyMetaInfo::Impl::pReadFontResourceMetaInformation(const std:
   return this->pReadFontMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadModelResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadModelResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read Model meta information. File is not exist.");
@@ -258,10 +253,10 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelResourceMetaInformation(const std
   return this->pReadModelMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadModelMeshResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadModelMeshResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read model meta information. File is not exist.");
@@ -270,10 +265,10 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelMeshResourceMetaInformation(const
   return this->pReadModelMeshMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadModelSkeletonMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadModelSkeletonMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read model skeleton information. File is not exist.");
@@ -282,10 +277,10 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelSkeletonMetaInformation(const std
   return this->pReadModelSkelMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadModelAnimationMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadModelAnimationMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read model animation sequence information. File is not exist.");
@@ -294,10 +289,10 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelAnimationMetaInformation(const st
   return this->pReadModelAnimMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadTextureResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadTextureResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read texture meta information. File is not exist.");
@@ -306,10 +301,10 @@ inline EDySuccess MDyMetaInfo::Impl::pReadTextureResourceMetaInformation(const s
   return this->pReadTextureMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadShaderResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadShaderResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read shader meta information. File is not exist.");
@@ -317,10 +312,10 @@ inline EDySuccess MDyMetaInfo::Impl::pReadShaderResourceMetaInformation(const st
   return this->pReadShaderMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadMaterialResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadMaterialResourceMetaInformation(const std::string& metaFilePath)
 {
   // (1) Validity Test
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read material meta information. File is not exist.");
@@ -328,9 +323,9 @@ inline EDySuccess MDyMetaInfo::Impl::pReadMaterialResourceMetaInformation(const 
   return this->pReadMaterialMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadLevelResourceMetaInformation(const std::string& metaFilepath)
+inline EDySuccess MIOMeta::Impl::pReadLevelResourceMetaInformation(const std::string& metaFilepath)
 {
-  const auto opJsonAtlas = DyGetJsonAtlasFromFile(metaFilepath);
+  const auto opJsonAtlas = json::GetAtlasFromFile(metaFilepath);
   MDY_ASSERT_MSG_FORCE(
     opJsonAtlas.has_value() == true, 
     "Failed to read scene meta information. File is not exist.");
@@ -338,9 +333,9 @@ inline EDySuccess MDyMetaInfo::Impl::pReadLevelResourceMetaInformation(const std
   return this->pReadLevelMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadWidgetResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadWidgetResourceMetaInformation(const std::string& metaFilePath)
 { 
-  const std::optional<nlohmann::json> opJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const std::optional<nlohmann::json> opJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG(
     opJsonAtlas.has_value() == true, 
     "Must be valid json atlas from file path.");
@@ -348,9 +343,9 @@ inline EDySuccess MDyMetaInfo::Impl::pReadWidgetResourceMetaInformation(const st
   return this->pReadWidgetMetaAtlas(opJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadSoundResourceMetaInformation(const std::string& metaFilePath)
+inline EDySuccess MIOMeta::Impl::pReadSoundResourceMetaInformation(const std::string& metaFilePath)
 {
-  const auto optJsonAtlas = DyGetJsonAtlasFromFile(metaFilePath);
+  const auto optJsonAtlas = json::GetAtlasFromFile(metaFilePath);
   MDY_ASSERT_MSG(
     optJsonAtlas.has_value() == true, 
     "Must be valid json atlas from file path.");
@@ -358,12 +353,10 @@ inline EDySuccess MDyMetaInfo::Impl::pReadSoundResourceMetaInformation(const std
   return this->pReadSoundMetaAtlas(optJsonAtlas.value());
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadScriptMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadScriptMetaAtlas(const nlohmann::json& iJson)
 {
   // Check "List" Category is exist.
-  MDY_ASSERT_MSG(
-    DyCheckHeaderIsExist(iJson, sCategoryList) == DY_SUCCESS, 
-    "Unexpecte error occurred.");
+  MDY_ASSERT(json::HasJsonKey(iJson, sCategoryList) == true);
 
   const auto& scriptResourceListAtlas = iJson[(sCategoryList)];
   for (const auto& scriptResource : scriptResourceListAtlas)
@@ -372,7 +365,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadScriptMetaAtlas(const nlohmann::json& 
 
     // Check Duplicated script specfier integrity
     MDY_ASSERT_MSG(
-      DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+      Contains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
       "Duplicated script specifier not permitted.");
     MDY_ASSERT_MSG(
       std::filesystem::exists(metaInfo.mFilePath) == true, 
@@ -385,7 +378,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadScriptMetaAtlas(const nlohmann::json& 
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadPrefabMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadPrefabMetaAtlas(const nlohmann::json& iJson)
 {
   // Make prefab meta information instance sequencially.
   const auto& prefabAtlas = iJson.at((sCategoryObjectList));
@@ -400,11 +393,11 @@ inline EDySuccess MDyMetaInfo::Impl::pReadPrefabMetaAtlas(const nlohmann::json& 
   for (auto& object : prefabObjectList)
   {
     if (MDY_CHECK_ISEMPTY(object)) { continue; }
-    if (object->mPrefabType == EDyMetaObjectType::Actor
+    if (object->mPrefabType == EWorldObjectType::Actor
     &&  object->mCommonProperties.mParentSpecifierName.empty() == false)
     { // If object type is Actor, and have parents specifier name as dec
       // Try move object into any parent's children list.
-      const auto list = DyRegexCreateObjectParentSpecifierList(object->mCommonProperties.mParentSpecifierName);
+      const auto list = regex::CreateObjectParentSpecifierList(object->mCommonProperties.mParentSpecifierName);
       MoveMetaPrefabIntoParentRecursively(prefabObjectList, list, 0, object);
     }
   }
@@ -419,7 +412,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadPrefabMetaAtlas(const nlohmann::json& 
   return DY_SUCCESS; 
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadWidgetMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadWidgetMetaAtlas(const nlohmann::json& iJson)
 {
   for (const auto& widgetMeta : iJson)
   {
@@ -430,7 +423,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadWidgetMetaAtlas(const nlohmann::json& 
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadFontMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadFontMetaAtlas(const nlohmann::json& iJson)
 {
   for (auto it = iJson.cbegin(); it != iJson.cend(); ++it)
   { // Create font meta information instance from each json atlas.
@@ -443,18 +436,21 @@ inline EDySuccess MDyMetaInfo::Impl::pReadFontMetaAtlas(const nlohmann::json& iJ
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadLevelMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadLevelMetaAtlas(const nlohmann::json& iJson)
 {
-  for (const auto& sceneAtlas : iJson)
+  auto levelList = iJson.items();
+  for (auto it = levelList.begin(); it != levelList.end(); ++it)
   {
-    auto desc = sceneAtlas.get<PDyLevelConstructMetaInfo>();
-    auto [it, isSucceeded] = this->mLevelInfoMap.try_emplace(desc.mMetaCategory.mLevelName, std::move(desc));
-    MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error occurred.");
+    auto metaInfo = it.value().get<PLevelInstanceMetaInfo>();
+    metaInfo.mLevelName = it.key();
+
+    auto [_, isSucceeded] = this->mLevelMetaInfo.try_emplace(metaInfo.mLevelName, metaInfo);
+    MDY_ASSERT(isSucceeded == true);
   }
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadShaderMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadShaderMetaAtlas(const nlohmann::json& iJson)
 {
   for (const auto& item : iJson.items())
   {
@@ -467,7 +463,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadShaderMetaAtlas(const nlohmann::json& 
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadSoundMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadSoundMetaAtlas(const nlohmann::json& iJson)
 {
   for (const auto& item : iJson.items())
   {
@@ -480,7 +476,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadSoundMetaAtlas(const nlohmann::json& i
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadTextureMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadTextureMetaAtlas(const nlohmann::json& iJson)
 {
   for (const auto& item : iJson.items())
   {
@@ -493,7 +489,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadTextureMetaAtlas(const nlohmann::json&
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadMaterialMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadMaterialMetaAtlas(const nlohmann::json& iJson)
 {
   for (const auto& item : iJson.items())
   {
@@ -506,7 +502,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadMaterialMetaAtlas(const nlohmann::json
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadModelAnimMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadModelAnimMetaAtlas(const nlohmann::json& iJson)
 {
   for (const auto& item : iJson.items())
   {
@@ -519,7 +515,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelAnimMetaAtlas(const nlohmann::jso
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadModelMeshMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadModelMeshMetaAtlas(const nlohmann::json& iJson)
 {
   for (const auto& item : iJson.items())
   {
@@ -532,7 +528,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelMeshMetaAtlas(const nlohmann::jso
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadModelSkelMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadModelSkelMetaAtlas(const nlohmann::json& iJson)
 {
   for (const auto& item : iJson.items())
   {
@@ -545,7 +541,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelSkelMetaAtlas(const nlohmann::jso
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pReadModelMetaAtlas(const nlohmann::json& iJson)
+inline EDySuccess MIOMeta::Impl::pReadModelMetaAtlas(const nlohmann::json& iJson)
 {
   for (const auto& item : iJson.items())
   {
@@ -558,7 +554,7 @@ inline EDySuccess MDyMetaInfo::Impl::pReadModelMetaAtlas(const nlohmann::json& i
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pfAddWidgetMetaInformation(const std::string& metaInformationString)
+inline EDySuccess MIOMeta::Impl::pfAddWidgetMetaInformation(const std::string& metaInformationString)
 {
   const nlohmann::json jsonAtlas = nlohmann::json::parse(metaInformationString);
   auto rootInstance = DyCreateWidgetMetaInformation(jsonAtlas);
@@ -568,7 +564,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddWidgetMetaInformation(const std::strin
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::MDY_PRIVATE(AddLoadingWidgetMetaInformation)(const std::string& widgetMetaInfo)
+inline EDySuccess MIOMeta::Impl::MDY_PRIVATE(AddLoadingWidgetMetaInformation)(const std::string& widgetMetaInfo)
 {
   const nlohmann::json jsonAtlas = nlohmann::json::parse(widgetMetaInfo);
   auto rootInstance = DyCreateWidgetMetaInformation(jsonAtlas);
@@ -578,12 +574,12 @@ inline EDySuccess MDyMetaInfo::Impl::MDY_PRIVATE(AddLoadingWidgetMetaInformation
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pfAddScriptMetaInformation(const PDyScriptInstanceMetaInfo& metaInfo)
+inline EDySuccess MIOMeta::Impl::pfAddScriptMetaInformation(const PDyScriptInstanceMetaInfo& metaInfo)
 {
   if (metaInfo.mScriptMode == decltype(metaInfo.mScriptMode)::Global)
   { // If script mode is `Global`, insert it to separated container.
     MDY_ASSERT_MSG_FORCE(
-      DyIsMapContains(this->mGlobalScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+      Contains(this->mGlobalScriptMetaInfo, metaInfo.mSpecifierName) == false, 
       "Duplicated global script name is exist.");
 
     this->mGlobalScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -591,7 +587,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddScriptMetaInformation(const PDyScriptI
   else
   {
     MDY_ASSERT_MSG_FORCE(
-      DyIsMapContains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
+      Contains(this->mScriptMetaInfo, metaInfo.mSpecifierName) == false, 
       "Duplicated general script name is exist.");
 
     this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -600,17 +596,17 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddScriptMetaInformation(const PDyScriptI
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pfAddGLShaderMetaInfo(const PDyGLShaderInstanceMetaInfo& metaInfo)
+inline EDySuccess MIOMeta::Impl::pfAddGLShaderMetaInfo(const PDyGLShaderInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mShaderMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mShaderMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated gl shader name is exist.");
 
   this->mShaderMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pfAddBuiltinMeshMetaInfo(const PDyMeshInstanceMetaInfo& metaInfo)
+inline EDySuccess MIOMeta::Impl::pfAddBuiltinMeshMetaInfo(const PDyMeshInstanceMetaInfo& metaInfo)
 {
 #if defined(NDEBUG) == false 
   if (metaInfo.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel == false)
@@ -621,51 +617,51 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddBuiltinMeshMetaInfo(const PDyMeshInsta
   }
 #endif
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mModelMeshMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mModelMeshMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated Mesh name is exist.");
 
   this->mModelMeshMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pfAddModelMetaInfo(const PDyModelInstanceMetaInfo& metaInfo)
+inline EDySuccess MIOMeta::Impl::pfAddModelMetaInfo(const PDyModelInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mModelMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mModelMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated model name is exist.");
 
   this->mModelMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pfAddTextureMetaInfo(const PDyTextureInstanceMetaInfo& metaInfo)
+inline EDySuccess MIOMeta::Impl::pfAddTextureMetaInfo(const PDyTextureInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mTextureMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mTextureMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated texture name is exist.");
 
   this->mTextureMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pfAddMaterialMetaInfo(const PDyMaterialInstanceMetaInfo& metaInfo)
+inline EDySuccess MIOMeta::Impl::pfAddMaterialMetaInfo(const PDyMaterialInstanceMetaInfo& metaInfo)
 {
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mMaterialMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mMaterialMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated material name is exist.");
 
   this->mMaterialMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pfAddGLAttachmentMetaInfo(const PDyGlAttachmentInstanceMetaInfo& metaInfo)
+inline EDySuccess MIOMeta::Impl::pfAddGLAttachmentMetaInfo(const PDyGlAttachmentInstanceMetaInfo& metaInfo)
 {
 #if defined(_DEBUG) == true
   MDY_ASSERT_MSG(
     metaInfo.mSpecifierName.empty() != true, 
     "Attachment specifier name must be specifed.");
   MDY_ASSERT_MSG(
-    metaInfo.mBufferFormat != EDyGlBufferDataInternalFormat::NoneError, 
+    metaInfo.mBufferFormat != EGlBufferDataInternalFormat::NoneError, 
     "Attachment format must not none.");
   MDY_ASSERT_MSG(
     metaInfo.mAttachmentSize.X > 0 && metaInfo.mAttachmentSize.Y > 0, 
@@ -673,14 +669,14 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddGLAttachmentMetaInfo(const PDyGlAttach
 #endif
 
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mAttachmentMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mAttachmentMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated attachment name is exist.");
 
   this->mAttachmentMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
+inline EDySuccess MIOMeta::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
 {
 
 #if defined(_DEBUG) == true
@@ -703,7 +699,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrame
 #endif
 
   MDY_ASSERT_MSG(
-    DyIsMapContains(this->mFrameBufferMetaInfo, metaInfo.mSpecifierName) == false, 
+    Contains(this->mFrameBufferMetaInfo, metaInfo.mSpecifierName) == false, 
     "Duplicated framebuffer name is exist.");
 
   auto [it, isSuccessful] = this->mFrameBufferMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
@@ -717,7 +713,7 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrame
     PDyGlAttachmentInstanceMetaInfo defaultDepthBuffer;
     {
       defaultDepthBuffer.mSpecifierName   = fmt::format("{}_D_{}", specifier, CreateRandomString(5));
-      defaultDepthBuffer.mBufferFormat    = EDyGlBufferDataInternalFormat::DEPTH32;
+      defaultDepthBuffer.mBufferFormat    = EGlBufferDataInternalFormat::DEPTH32;
       defaultDepthBuffer.mSourceType      = EDyResourceSource::Builtin;
       defaultDepthBuffer.mAttachmentSize  = instance.mFrameBufferSize;
     }
@@ -729,13 +725,13 @@ inline EDySuccess MDyMetaInfo::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrame
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::MDY_PRIVATE(AddBootResourceSpecifierList)(const TResourceSpecifierList& list)
+inline EDySuccess MIOMeta::Impl::MDY_PRIVATE(AddBootResourceSpecifierList)(const TResourceSpecifierList& list)
 {
   this->mBootResourceSpecifierList = list;
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyMetaInfo::Impl::MDY_PRIVATE(AddGlobalResourceSpecifierList)(const TResourceSpecifierList& list)
+inline EDySuccess MIOMeta::Impl::MDY_PRIVATE(AddGlobalResourceSpecifierList)(const TResourceSpecifierList& list)
 {
   if (list.empty() == false) { this->mGlobalResourceSpecifierList.emplace_back(list); }
   return DY_SUCCESS;

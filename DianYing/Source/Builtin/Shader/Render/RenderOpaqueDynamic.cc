@@ -27,7 +27,7 @@ MDY_SET_IMMUTABLE_STRING(sVert, R"dy(
 #import <Input_DefaultVao>; 
 #import <Input_SkinAnimation>;
 #import <Input_UboCamera>;
-uniform mat4 uModelMatrix;
+#import <Input_ModelTransform>;
 
 out gl_PerVertex { vec4 gl_Position; };
 out VS_OUT
@@ -39,11 +39,11 @@ out VS_OUT
 
 void main()
 {
-	vs_out.modelPosition  = uModelMatrix * Dy_GetBoneTransform() * vec4(dyPosition, 1.0);
+	vs_out.modelPosition  = DyTransform(Dy_GetBoneTransform() * vec4(dyPosition, 1.0));
 	vs_out.normal		      = mat3(uModelMatrix) * mat3(Dy_GetBoneTransform()) * dyNormal;
 	vs_out.texCoord		    = dyTexCoord0;
 
-  gl_Position			      = Dy_GetCameraPv() * vs_out.modelPosition; 
+  gl_Position			      = DyGetCameraPv() * vs_out.modelPosition; 
 }
 )dy");
 
@@ -64,6 +64,7 @@ void main() {
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
 	gSpecular = vec4(1, 0, 1, 1);
 	gPosition = fs_in.modelPosition;
+  DyNotSetEmissive();
 }
 )dy");
 

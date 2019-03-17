@@ -76,7 +76,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptReferenceMetaInfo&
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ PDyScriptReferenceMetaInfo& p)
 {
-  p.mSpecifierName = DyJsonGetValueFrom<std::string>(j, sHeader_Specifier);
+  p.mSpecifierName = json::GetValueFrom<std::string>(j, sHeader_Specifier);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptInstanceMetaInfo& p)
@@ -93,11 +93,11 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptInstanceMetaInfo& 
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ PDyScriptInstanceMetaInfo& p)
 {
-  p.mSpecifierName  = DyJsonGetValueFrom<std::string>   (j, sHeader_Specifier);
-  p.mScriptMode     = DyJsonGetValueFrom<EDyScriptMode> (j, "Mode");
-  p.mScriptType     = DyJsonGetValueFrom<EDyScriptType> (j, sHeader_Type);
-  p.mFilePath       = DyJsonGetValueFrom<std::string>   (j, sHeader_Path);
-  p.mIsCompressed   = DyJsonGetValueFrom<bool>          (j, sHeader_IsCompressed);
+  p.mSpecifierName  = json::GetValueFrom<std::string>   (j, sHeader_Specifier);
+  p.mScriptMode     = json::GetValueFrom<EDyScriptMode> (j, "Mode");
+  p.mScriptType     = json::GetValueFrom<EDyScriptType> (j, sHeader_Type);
+  p.mFilePath       = json::GetValueFrom<std::string>   (j, sHeader_Path);
+  p.mIsCompressed   = json::GetValueFrom<bool>          (j, sHeader_IsCompressed);
 }
 
 } /// ::dy namespace

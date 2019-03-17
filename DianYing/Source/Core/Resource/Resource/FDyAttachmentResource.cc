@@ -15,64 +15,51 @@
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
-#include <Dy/Core/Rendering/Wrapper/PDyGLAttachmentDescriptor.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 
 namespace dy
 {
 
-FDyAttachmentResource::FDyAttachmentResource(_MIN_ const FDyAttachmentInformation& iInformation) :
-    mSpecifierName{iInformation.GetSpecifierName()},
-    mInformationBinder{mSpecifierName}
+const std::string& FDyAttachmentResource::GetSpecifierName() const noexcept
 {
-  PDyGLAttachmentDescriptor descriptor;
-  descriptor.mBorderColor           = iInformation.GetBorderColor();
-  descriptor.mBufferSize            = iInformation.GetBufferSize();
-  descriptor.mParameterList         = iInformation.GetParameterList();
-  descriptor.mBufferFormat          = iInformation.GetBufferType();
-  descriptor.mAttachmentType        = iInformation.GetAttachmentType();
-  descriptor.mSpecifiedMipmapLevel  = iInformation.GetMipmapLevel();
-  descriptor.mDepthNumber           = iInformation.GetDepthNumber();
-  if (descriptor.mParameterList.empty() == false) 
-  { 
-    descriptor.mIsUsingCustomizedParameter = true; 
-  }
-
-  { MDY_GRAPHIC_SET_CRITICALSECITON();
-    const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);
-    MDY_ASSERT_MSG(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");
-    this->mAttachmentId = optAttachmentId.value();
-  }
+  return this->mSpecifierName;
 }
 
-FDyAttachmentResource::~FDyAttachmentResource()
+const EGlBufferDataInternalFormat& FDyAttachmentResource::GetBufferType() const noexcept
 {
-  MDY_GRAPHIC_SET_CRITICALSECITON();
-  MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteAttachment(this->mAttachmentId, this->IsRenderBuffer()));
-}
-
-const EDyGlBufferDataInternalFormat& FDyAttachmentResource::GetBufferType() const noexcept
-{
-  MDY_ASSERT_MSG(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  MDY_ASSERT_MSG(
+    this->mInformationBinder.IsResourceExist() == true, 
+    "Unexpected error occurred. Information must be valid.");
   return this->mInformationBinder->GetBufferType();
 }
 
-const EDyTextureStyleType& FDyAttachmentResource::GetAttachmentType() const noexcept
+const ETextureStyleType& FDyAttachmentResource::GetAttachmentType() const noexcept
 {
-  MDY_ASSERT_MSG(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  MDY_ASSERT_MSG(
+    this->mInformationBinder.IsResourceExist() == true, 
+    "Unexpected error occurred. Information must be valid.");
   return this->mInformationBinder->GetAttachmentType();
 }
 
 TU32 FDyAttachmentResource::GetMipmapLevel() const noexcept
 {
-  MDY_ASSERT_MSG(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  MDY_ASSERT_MSG(
+    this->mInformationBinder.IsResourceExist() == true, 
+    "Unexpected error occurred. Information must be valid.");
   return this->mInformationBinder->GetMipmapLevel();
 }
 
 TU32 FDyAttachmentResource::GetDepthNumber() const noexcept
 {
-  MDY_ASSERT_MSG(this->mInformationBinder.IsResourceExist() == true, "Unexpected error occurred. Information must be valid.");
+  MDY_ASSERT_MSG(
+    this->mInformationBinder.IsResourceExist() == true, 
+    "Unexpected error occurred. Information must be valid.");
   return this->mInformationBinder->GetDepthNumber();
+}
+
+bool FDyAttachmentResource::IsPingPong() const noexcept
+{
+  return this->mIsPingpong;
 }
 
 } /// ::dy namespace

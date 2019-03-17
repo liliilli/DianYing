@@ -16,11 +16,11 @@
 #include <atomic>
 #include <Dy/Core/Thread/IO/DDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
-#include <Dy/Helper/Pointer.h>
+#include <Dy/Helper/System/Pointer.h>
 
 namespace dy
 {
-class MDyMetaInfo;
+class MIOMeta;
 } /// ::dy namespace
 
 //!
@@ -37,7 +37,7 @@ namespace dy
 class TDyIOWorker final
 {
 public:
-  TDyIOWorker(const MDyMetaInfo& metaManager) : mMetaManager(metaManager) {};
+  TDyIOWorker(const MIOMeta& metaManager) : mMetaManager(metaManager) {};
   ~TDyIOWorker()  = default;
   TDyIOWorker(const TDyIOWorker&)             = delete;
   TDyIOWorker(TDyIOWorker&&)                  = delete;
@@ -77,7 +77,7 @@ private:
   std::atomic<bool>         mIsAssigned   = false;
   bool                      mIsShouldStop = false;
 
-  const MDyMetaInfo&        mMetaManager;
+  const MIOMeta&        mMetaManager;
 };
 
 } /// ::dy namespace

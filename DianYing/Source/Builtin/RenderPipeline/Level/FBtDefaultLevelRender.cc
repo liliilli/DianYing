@@ -13,10 +13,10 @@
 ///
 
 #include <Dy/Builtin/RenderPipeline/Level/FBtDefaultLevelRender.h>
-#include <Dy/Management/Type/Render/DDyGlGlobalStatus.h>
-#include <Dy/Management/Type/Render/EDyModelRenderingMode.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/Type/Render/DGlGlobalStates.h>
+#include <Dy/Management/Type/Render/ERenderingModelMode.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
+#include <Dy/Management/MSetting.h>
 
 #include <Dy/Builtin/RenderItem/Level/FBtOpaqueDefault.h>
 #include <Dy/Builtin/RenderItem/Level/FBtLevelOITDefault.h>
@@ -48,37 +48,35 @@ void FBtRenderPipelineDefaultLevelRender::OnFailedCheckCondition()
 
 void FBtRenderPipelineDefaultLevelRender::OnSetupRenderingSetting()
 {
-#ifdef false
   { // Set overall rendering mode.
-    DDyGlGlobalStatus initialStatus{};
-    using DPolygonMode = DDyGlGlobalStatus::DPolygonMode;
-    using EMode  = DDyGlGlobalStatus::DPolygonMode::EMode;
-    using EValue = DDyGlGlobalStatus::DPolygonMode::EValue;
+    DGlGlobalStates initialStatus{};
+    using DPolygonMode = DGlGlobalStates::DPolygonMode;
+    using EMode  = DGlGlobalStates::DPolygonMode::EMode;
+    using EValue = DGlGlobalStates::DPolygonMode::EValue;
     //
-    switch (MDySetting::GetInstance().GetRenderingMode())
+    switch (MSetting::GetInstance().GetRenderingMode())
     {
-    case EDyModelRenderingMode::FillNormal: 
+    case ERenderingModelMode::FillNormal: 
     {
       initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Triangle}; 
-      { MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->InsertInternalGlobalStatus(initialStatus);
+      { 
+        XGLWrapper::PushInternalGlobalState(initialStatus);
       }
     } break;
-    case EDyModelRenderingMode::WireFrame: 
+    case ERenderingModelMode::WireFrame: 
     {
       initialStatus.mPolygonMode = DPolygonMode{EMode::FrontAndBack, EValue::Line}; 
-      { MDY_GRAPHIC_SET_CRITICALSECITON();
-        this->InsertInternalGlobalStatus(initialStatus);
+      { 
+        XGLWrapper::PushInternalGlobalState(initialStatus);
       }
     } break;
     }
   }
-#endif
 }
 
 void FBtRenderPipelineDefaultLevelRender::OnReleaseRenderingSetting()
 {
-  //this->PopInternalGlobalStatus();
+  XGLWrapper::PopInternalGlobalState();
 }
 
 void FBtRenderPipelineDefaultLevelRender::OnPostRender()

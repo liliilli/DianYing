@@ -19,16 +19,19 @@
 
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferGeneralResource.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferPingPongResource.h>
+#include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
 
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Meta/Information/MetaInfoModelAnim.h>
 #include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
 
-#include <Dy/Management/IO/MDyIOData.h>
-#include <Dy/Management/IO/MDyIOResource.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/WindowManager.h>
+#include <Dy/Management/IO/MIORescInfo.h>
+#include <Dy/Management/IO/MIOResource.h>
+#include <Dy/Management/IO/MIOMeta.h>
+#include <Dy/Management/MWindow.h>
+#include <Dy/Builtin/Constant/GeneralValue.h>
 
 constexpr TU08 kDefaultPriority = 128;
 
@@ -37,29 +40,29 @@ namespace dy
 
 TDyIO::TDyIO()
 {
-  this->mMetaInfoManager    = &MDyMetaInfo::GetInstance();
-  this->mIODataManager      = &MDyIOData::GetInstance();
-  this->mIOResourceManager  = &MDyIOResource::GetInstance();
+  this->MIOMetaManager    = &MIOMeta::GetInstance();
+  this->mIODataManager      = &MIORescInfo::GetInstance();
+  this->mIOResourceManager  = &MIOResource::GetInstance();
 }
 
 TDyIO::~TDyIO()
 {
   this->mIOResourceManager  = nullptr;
   this->mIODataManager      = nullptr;
-  this->mMetaInfoManager    = nullptr;
+  this->MIOMetaManager    = nullptr;
 }
 
 EDySuccess TDyIO::Initialize()
 {
   // Initialize IOWorkers with context.
-  const auto& windowManager = MDyWindow::GetInstance();
+  const auto& windowManager = MWindow::GetInstance();
   const auto& workerWndList = windowManager.GetGLWorkerWindowList();
   MDY_ASSERT_MSG(workerWndList.size() == this->mWorkerList.size(), "WndList and I/O Worker list size must be same.");
 
   for (auto i = 0u; i < this->mWorkerList.size(); ++i)
   {
     auto& [instance, thread] = this->mWorkerList[i];
-    instance  = std::make_unique<TDyIOWorker>(MDyMetaInfo::GetInstance());
+    instance  = std::make_unique<TDyIOWorker>(MIOMeta::GetInstance());
     thread    = std::thread(&TDyIOWorker::operator(), std::ref(*instance), DyMakeNotNull(workerWndList[i]));
   }
 
@@ -153,24 +156,32 @@ void TDyIO::outTryStop()
 }
 
 EDySuccess TDyIO::outTryEnqueueTask(
-    _MIN_ const std::string& iSpecifier,
-    _MIN_ EDyResourceType iResourceType, _MIN_ EDyResourceStyle iResourceStyle,
-    _MIN_ EDyScope iScope, _MIN_ bool iIsDerivedFromResource)
+    const std::string& iSpecifier,
+    EResourceType iResourceType, EDyResourceStyle iResourceStyle,
+    EResourceScope iScope, bool iIsDerivedFromResource)
 {
-  MDY_ASSERT_MSG_FORCE(this->outIsMetaInformationExist(iSpecifier, iResourceType) == true, "Meta information must be exist.");
+  if (iResourceStyle == EDyResourceStyle::Information)
+  {
+    const auto specifier = TryRemovePostfix(iSpecifier, kInstancingPostfix);
+    MDY_ASSERT_MSG_FORCE(
+      this->outIsMetaInformationExist(specifier, iResourceType) == true, 
+      "Meta information must be exist.");
+  }
 
   { // Query there is Reference Instance for myself. If found, just return do nothing.
     std::vector<PRIVerificationItem> itselfRIItem{};
     itselfRIItem.emplace_back(iSpecifier, iResourceType, iResourceStyle, iScope);
     const auto result = this->pCheckAndUpdateReferenceInstance(itselfRIItem);
-    if (result.empty() == true || result.begin()->second != EDyRIStatus::NotValid) { return DY_SUCCESS; }
+    if (result.empty() == true 
+    ||  result.begin()->second != EDyRIStatus::NotValid) { return DY_SUCCESS; }
   }
 
   // Make dependency list.
   DDyIOTaskDeferred::TConditionList conditionList = {};
   const auto checkList = this->pMakeDependenciesCheckList(iSpecifier, iResourceType, iResourceStyle, iScope);
   if (checkList.empty() == false)
-  { // And get not-found list from dependency list.
+  { 
+    // And get not-found list from dependency list.
     const auto notFoundRIList = this->pCheckAndUpdateReferenceInstance(checkList);
 
     if (notFoundRIList.empty() == false)
@@ -178,7 +189,10 @@ EDySuccess TDyIO::outTryEnqueueTask(
       for (const auto& [instance, status] : notFoundRIList)
       { // Require depende resource tasks only if NotValid but RI is exist.
         const auto& [specifier, type, style, scope] = instance;
-        if (status == EDyRIStatus::NotValid) { MDY_CALL_BUT_NOUSE_RESULT(outTryEnqueueTask(specifier, type, style, scope, true)); }
+        if (status == EDyRIStatus::NotValid) 
+        { 
+          outTryEnqueueTask(specifier, type, style, scope, true); 
+        }
 
         conditionList.emplace_back(specifier, type, style);
       }
@@ -186,7 +200,10 @@ EDySuccess TDyIO::outTryEnqueueTask(
   }
 
   // Require itself own resource task.
-  MDY_CALL_ASSERT_SUCCESS(this->outCreateReferenceInstance(iSpecifier, iResourceType, iResourceStyle, iScope));
+  MDY_CALL_ASSERT_SUCCESS(
+    this->outCreateReferenceInstance(iSpecifier, iResourceType, iResourceStyle, iScope)
+  );
+
   // Construct IO Tasks.
   DDyIOTask task;
   {
@@ -202,14 +219,17 @@ EDySuccess TDyIO::outTryEnqueueTask(
 
   // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
   // Because VAO can not be created and shared from other thread not main thread.
-  if (task.mResourceType == EDyResourceType::Mesh 
-   && task.mResourcecStyle == EDyResourceStyle::Resource) 
+  if (task.mResourceType == EResourceType::Mesh 
+  &&  task.mResourcecStyle == EDyResourceStyle::Resource) 
   { 
-    task.mResourceType = EDyResourceType::__MeshVBO;
+    task.mResourceType = EResourceType::__MeshVBO;
   }
 
   // Make deferred task and forward deferred task to list (atomic)
-  if (conditionList.empty() == false) { this->outInsertDeferredTaskList({task, conditionList}); }
+  if (conditionList.empty() == false) 
+  { 
+    this->outInsertDeferredTaskList({task, conditionList}); 
+  }
   else
   {   // Just insert task to queue, if anything does not happen.
     { // Critical section.
@@ -223,56 +243,91 @@ EDySuccess TDyIO::outTryEnqueueTask(
   return DY_SUCCESS;
 }
 
-EDySuccess TDyIO::outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)
+EDySuccess TDyIO::outCreateReferenceInstance(const std::string& specifier, 
+  EResourceType type, EDyResourceStyle style, EResourceScope scope)
 {
   switch (style)
   {
-  case EDyResourceStyle::Information: return this->mRIInformationMap.CreateReferenceInstance(specifier, type, style, scope);
-  case EDyResourceStyle::Resource:    return this->mRIResourceMap.CreateReferenceInstance(specifier, type, style, scope);
+  case EDyResourceStyle::Information: 
+    return this->mRIInformationMap.CreateReferenceInstance(specifier, type, style, scope);
+  case EDyResourceStyle::Resource:    
+    return this->mRIResourceMap.CreateReferenceInstance(specifier, type, style, scope);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 }
 
-std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
-    _MIN_ const std::string& iSpecifier,
-    _MIN_ EDyResourceType iResourceType,
-    _MIN_ EDyResourceStyle iResourceStyle,
-    _MIN_ EDyScope iScope) const
+std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(const std::string& iSpecifier,
+  EResourceType iResourceType, EDyResourceStyle iResourceStyle, EResourceScope iScope) const
 {
   std::vector<PRIVerificationItem> checkList = {};
 
-  if (iResourceType == EDyResourceType::Material)
-  { // If resource type is `Material`, bind all dependencies of `Material` to checkList.
-    const auto& metaMaterial = this->mMetaInfoManager->GetMaterialMetaInformation(iSpecifier);
+  if (iResourceType == EResourceType::Material)
+  { 
+    // If resource type is `Material`, bind all dependencies of `Material` to checkList.
+    const auto materialName   = TryRemovePostfix(iSpecifier, kInstancingPostfix);
+    const auto& metaMaterial  = this->MIOMetaManager->GetMaterialMetaInformation(materialName);
+
+    // Texture 
     for (const auto& bindingTextureItem : metaMaterial.mTextureNames) 
     {
       if (bindingTextureItem.mTextureSpecifier.empty() == true) { break; }
-      checkList.emplace_back(bindingTextureItem.mTextureSpecifier, EDyResourceType::Texture, iResourceStyle, iScope);
+      checkList.emplace_back(
+        bindingTextureItem.mTextureSpecifier, EResourceType::Texture, 
+        iResourceStyle, iScope);
     }
-    checkList.emplace_back(metaMaterial.mShaderSpecifier, EDyResourceType::GLShader, iResourceStyle, iScope);
+
+    // Shader (If supports instancing, must have postfix "__inst".
+    auto shaderName = metaMaterial.mShaderSpecifier;
+    if (HasPostfix(iSpecifier, kInstancingPostfix) == true) 
+    { 
+      shaderName += kInstancingPostfix; 
+    }
+
+    checkList.emplace_back(shaderName, EResourceType::GLShader, iResourceStyle, iScope);
   }
-  else if (iResourceType == EDyResourceType::GLFrameBuffer)
-  { // If resource type is `FrameBuffer`, bind all dependencies of `FrameBuffer` to checkList.
-    const auto& metaInfo = this->mMetaInfoManager->GetGlFrameBufferMetaInformation(iSpecifier);
+  else if (iResourceType == EResourceType::GLFrameBuffer)
+  { 
+    // If resource type is `FrameBuffer`, bind all dependencies of `FrameBuffer` to checkList.
+    const auto& metaInfo = this->MIOMetaManager->GetGlFrameBufferMetaInformation(iSpecifier);
 
     // Get dependent attachment specifier list and add.
     for (const auto& [specifier, type] : metaInfo.mColorAttachmentList)
-    { checkList.emplace_back(specifier, EDyResourceType::GLAttachment, iResourceStyle, iScope); }
+    { checkList.emplace_back(specifier, EResourceType::GLAttachment, iResourceStyle, iScope); }
 
     // If framebuffer also use depth buffer, enqueue it. 
     if (metaInfo.mIsUsingDepthBuffer == true)
     { 
-      MDY_ASSERT_MSG(metaInfo.mDepthAttachmentSpecifier.empty() == false, "Depth attachment must be specified if use depth buffer.");
-      checkList.emplace_back(metaInfo.mDepthAttachmentSpecifier, EDyResourceType::GLAttachment, iResourceStyle, iScope);
+      MDY_ASSERT_MSG(
+        metaInfo.mDepthAttachmentSpecifier.empty() == false, 
+        "Depth attachment must be specified if use depth buffer.");
+      checkList.emplace_back(
+        metaInfo.mDepthAttachmentSpecifier, EResourceType::GLAttachment, iResourceStyle, iScope);
     }
   }
-  else if (iResourceType == EDyResourceType::Model)
+  else if (iResourceType == EResourceType::Model)
   { // If resource type is `Model` and if using builtin mesh specifier...
-    const auto& metaInfo = this->mMetaInfoManager->GetModelMetaInformation(iSpecifier);
-    for (const auto& [meshSpecifier, materialSpecifier] : metaInfo.mMeshList)
-    { // Get dependent attachment specifier list and add.
-      checkList.emplace_back(meshSpecifier,     EDyResourceType::Mesh,      iResourceStyle, iScope);
-      checkList.emplace_back(materialSpecifier, EDyResourceType::Material,  iResourceStyle, iScope);
+    const auto& metaInfo = this->MIOMetaManager->GetModelMetaInformation(iSpecifier);
+
+    // Get dependent attachment specifier list and add.
+    for (const auto& [meshSpecifier, materialSpecifier, isInstanced] : metaInfo.mMeshList)
+    { 
+      // If this list is need to be instanced...
+      std::string requiredMeshSpecifier = meshSpecifier;
+      std::string requiredMatSpecifier  = materialSpecifier;
+      if (isInstanced == true)
+      {
+        // And mesh does not be a separated name if info.
+        if (iResourceStyle == EDyResourceStyle::Resource)
+        {
+          requiredMeshSpecifier += kInstancingPostfix;
+        }
+        requiredMatSpecifier  += kInstancingPostfix;
+      }
+
+      // Mesh with instancing or not...
+      // Material with instancing or not...
+      checkList.emplace_back(requiredMeshSpecifier, EResourceType::Mesh, iResourceStyle, iScope);
+      checkList.emplace_back(requiredMatSpecifier, EResourceType::Material, iResourceStyle, iScope);
     }
 
     // If this model will use skeleton, add skeleton (information) also.
@@ -280,17 +335,21 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
     if (metaInfo.mSkeleton.mIsUsingSkeleton == true)
     {
       checkList.emplace_back(
-          metaInfo.mSkeleton.mSkeletonSpecifier, 
-          EDyResourceType::Skeleton, EDyResourceStyle::Information, iScope);
+        metaInfo.mSkeleton.mSkeletonSpecifier, 
+        EResourceType::Skeleton, EDyResourceStyle::Information, iScope);
     }
   }
-  else if (iResourceType == EDyResourceType::AnimationScrap)
-  { // If resource type is `AnimationScrap`, `Skeleton` must be populated also.
-    const auto& metaInfo = this->mMetaInfoManager->GetModelAnimScrapMetaInformation(iSpecifier);
-    MDY_ASSERT_MSG_FORCE(metaInfo.mSkeletonSpeicfier.empty() == false, "Skeleton specifier of animation scrap must not be empty.");
+  else if (iResourceType == EResourceType::AnimationScrap)
+  { 
+    // If resource type is `AnimationScrap`, `Skeleton` must be populated also.
+    const auto& metaInfo = this->MIOMetaManager->GetModelAnimScrapMetaInformation(iSpecifier);
+    MDY_ASSERT_MSG_FORCE(
+      metaInfo.mSkeletonSpeicfier.empty() == false, 
+      "Skeleton specifier of animation scrap must not be empty.");
 
-    // `AnimationScrap` could only be populated as `Information`, so dependent Skeleton also be a `Information`.
-    checkList.emplace_back(metaInfo.mSkeletonSpeicfier, EDyResourceType::Skeleton, iResourceStyle, iScope);
+    // `AnimationScrap` could only be populated as `Information`,
+    // so dependent Skeleton also be a `Information`.
+    checkList.emplace_back(metaInfo.mSkeletonSpeicfier, EResourceType::Skeleton, iResourceStyle, iScope);
   }
 
   // Resource common dependencies.
@@ -298,12 +357,20 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
   {
     switch (iResourceType)
     {
-    case EDyResourceType::Mesh:
-    case EDyResourceType::Model:    case EDyResourceType::GLShader:
-    case EDyResourceType::Texture:  case EDyResourceType::Material:
-    case EDyResourceType::GLAttachment: case EDyResourceType::GLFrameBuffer:
+    case EResourceType::Mesh: 
+    {
+      auto specifier = TryRemovePostfix(iSpecifier, kInstancingPostfix);
+      checkList.emplace_back(specifier, iResourceType, EDyResourceStyle::Information, iScope);
+    } break;
+    case EResourceType::Material:
+    case EResourceType::Model: 
+    case EResourceType::GLShader:
+    case EResourceType::Texture:  
+    case EResourceType::GLAttachment: 
+    case EResourceType::GLFrameBuffer:
+    {
       checkList.emplace_back(iSpecifier, iResourceType, EDyResourceStyle::Information, iScope);
-      break;
+    } break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(checkList);
     }
   }
@@ -313,12 +380,12 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(
 
 EDySuccess TDyIO::InstantPopulateMaterialResource(
     _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
-    _MIN_ TDyResourceBinder<EDyResourceType::Material>& refMat, 
-    _MIN_ EDyScope iScope, 
+    _MIN_ TResourceBinder<EResourceType::Material>& refMat, 
+    _MIN_ EResourceScope iScope, 
     _MIN_ bool(*callback)())
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNULL(callback),  "Callback material resource population is not supported yet.");
-  MDY_ASSERT_MSG(iScope == EDyScope::Temporal, "Temporary material resource population must be inputted.");
+  MDY_ASSERT_MSG(iScope == EResourceScope::Temporal, "Temporary material resource population must be inputted.");
 
   // If resource type is `Material`, bind all dependencies of `Material` to checkList.
   std::vector<PRIVerificationItem> checkList = {};
@@ -326,9 +393,14 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
     for (const auto& bindingTextureItem : iDesc.mTextureNames) 
     {
       if (bindingTextureItem.mTextureSpecifier.empty() == true) { break; }
-      checkList.emplace_back(bindingTextureItem.mTextureSpecifier, EDyResourceType::Texture, EDyResourceStyle::Resource, iScope);
+      checkList.emplace_back(
+        bindingTextureItem.mTextureSpecifier, EResourceType::Texture, 
+        EDyResourceStyle::Resource, iScope);
     }
-    checkList.emplace_back(iDesc.mShaderSpecifier, EDyResourceType::GLShader, EDyResourceStyle::Resource, iScope);
+
+    checkList.emplace_back(
+      iDesc.mShaderSpecifier, EResourceType::GLShader, 
+      EDyResourceStyle::Resource, iScope);
   }
 
   // If `checkList` is not empty, check dependencies.
@@ -354,15 +426,15 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
   // Require itself own resource task.
   MDY_CALL_ASSERT_SUCCESS(this->outCreateReferenceInstance(
       iDesc.mSpecifierName, 
-      EDyResourceType::Material, EDyResourceStyle::Resource, iScope));
+      EResourceType::Material, EDyResourceStyle::Resource, iScope));
 
   // Construct IO Tasks.
   DDyIOTask task;
   {
     task.mSpecifierName       = iDesc.mSpecifierName;
-    task.mResourceType        = EDyResourceType::Material;
+    task.mResourceType        = EResourceType::Material;
     task.mResourcecStyle      = EDyResourceStyle::Resource;
-    task.mScope               = EDyScope::Temporal;
+    task.mScope               = EResourceScope::Temporal;
     task.mTaskPriority        = 192;
     task.mIsResourceDeferred  = false;
     task.mBoundObjectStyle    = EDyObject::Etc_NotBindedYet;
@@ -385,7 +457,8 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
   return DY_SUCCESS;
 }
 
-TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept
+TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(
+  _MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept
 {
   TDependencyList resultNotFoundList = {};
 
@@ -406,18 +479,24 @@ TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(_MIN_ const std::
       // Check if RI is bound by actual resource.
       if (this->pIsReferenceInstanceBound(specifier, type, style) == false)
       {
-        resultNotFoundList.emplace_back(PRIVerificationItem{specifier, type, style, scope}, EDyRIStatus::NotBoundYet);
+        resultNotFoundList.emplace_back(
+          PRIVerificationItem{specifier, type, style, scope}, 
+          EDyRIStatus::NotBoundYet);
       }
       continue;
     }
 
-    resultNotFoundList.emplace_back(PRIVerificationItem{specifier, type, style, scope}, EDyRIStatus::NotValid);
+    resultNotFoundList.emplace_back(
+      PRIVerificationItem{specifier, type, style, scope}, 
+      EDyRIStatus::NotValid);
   }
 
   return resultNotFoundList;
 }
 
-void TDyIO::pTryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
+void TDyIO::pTryEnlargeResourceScope(
+  EResourceScope scope, const std::string& specifier, 
+  EResourceType type, EDyResourceStyle style)
 {
   switch (style)
   {
@@ -427,7 +506,8 @@ void TDyIO::pTryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::stri
   }
 }
 
-EDySuccess TDyIO::outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
+EDySuccess TDyIO::outTryRetrieveReferenceInstanceFromGC(
+  const std::string& specifier, EResourceType type, EDyResourceStyle style)
 {
   // Get RI from gc list.
   auto optRI = this->mGarbageCollector.MoveInstanceFromGC(specifier, type, style);
@@ -442,7 +522,7 @@ EDySuccess TDyIO::outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string&
   }
 }
 
-void TDyIO::outInsertDeferredTaskList(_MIN_ const DDyIOTaskDeferred& task)
+void TDyIO::outInsertDeferredTaskList(const DDyIOTaskDeferred& task)
 {
   MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
   this->mIODeferredTaskList.emplace_back(task);
@@ -454,9 +534,9 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
   MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
   for (auto& resultItem : this->mWorkerResultList)
   {
-    MDY_ASSERT_MSG(resultItem.mResourceType != EDyResourceType::NoneError
-            && resultItem.mResourceType != EDyResourceType::Script
-            && resultItem.mResourceType != EDyResourceType::WidgetMeta, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(resultItem.mResourceType != EResourceType::NoneError
+            && resultItem.mResourceType != EResourceType::Script
+            && resultItem.mResourceType != EResourceType::WidgetMeta, "Unexpected error occurred.");
     if (resultItem.mSmtPtrResultInstance == nullptr) { continue; }
 
     if (resultItem.mResourceStyle == EDyResourceStyle::Information)
@@ -485,7 +565,8 @@ void TDyIO::outForceProcessIOInsertPhase() noexcept
   this->mWorkerResultList.clear();
 }
 
-void TDyIO::pTryUpdateDeferredTaskList(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ EDyResourceStyle iStyle)
+void TDyIO::pTryUpdateDeferredTaskList(
+  const std::string& iSpecifier, EResourceType iType, EDyResourceStyle iStyle)
 {
   std::vector<DDyIOTask> reinsertionTasklist = {};
 
@@ -542,26 +623,47 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     result.mIsHaveDeferredTask  = task.mIsResourceDeferred;
   }
 
-  MDY_ASSERT_MSG(task.mResourcecStyle == EDyResourceStyle::Resource, "Main deferred task must be resource style.");
-  const auto& infoManager = MDyIOData::GetInstance();
+  MDY_ASSERT_MSG(
+    task.mResourcecStyle == EDyResourceStyle::Resource, 
+    "Main deferred task must be resource style.");
+  const auto& infoManager = MIORescInfo::GetInstance();
 
-  switch (task.mResourceType) {
-  case EDyResourceType::GLShader:
-  { // Need to move it as independent function.
-    const auto instance = new FDyShaderResource(*infoManager.GetPtrInformation<EDyResourceType::GLShader>(result.mSpecifierName));
+  switch (task.mResourceType) 
+  {
+  case EResourceType::GLShader:
+  { 
+    // Need to move it as independent function.
+    const auto instance = new FDyShaderResource(
+      *infoManager.GetPtrInformation<EResourceType::GLShader>(result.mSpecifierName));
+
     result.mSmtPtrResultInstance = instance;
   } break;
-  case EDyResourceType::Mesh:
-  { // Get intermediate instance from task, and make mesh resource.
-    Owner<FDyMeshVBOIntermediate*> ptrrawIntermediateInstance = std::any_cast<FDyMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
+  case EResourceType::Mesh:
+  { 
+    // Get intermediate instance from task, and make mesh resource.
+    Owner<FMeshVBOIntermediate*> ptrrawIntermediateInstance = 
+      std::any_cast<FMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
+
     const auto instance = new FDyMeshResource(*ptrrawIntermediateInstance);
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
+
     result.mSmtPtrResultInstance = instance;
   } break;
-  case EDyResourceType::GLFrameBuffer:
-  { // Only Resource, create fbo with attachment.
-    const auto instance = new FDyFrameBufferResource(*infoManager.GetPtrInformation<EDyResourceType::GLFrameBuffer>(result.mSpecifierName));
-    result.mSmtPtrResultInstance = instance;
+  case EResourceType::GLFrameBuffer:
+  { 
+    // Only Resource, create fbo with attachment.
+    const auto& refInfo =
+      *infoManager.GetPtrInformation<EResourceType::GLFrameBuffer>(result.mSpecifierName);
+    if (refInfo.IsPingPong() == true)
+    {
+      const auto instance = new FDyFrameBufferPingPongResource(refInfo);
+      result.mSmtPtrResultInstance = instance;
+    }
+    else
+    {
+      const auto instance = new FDyFrameBufferGeneralResource(refInfo);
+      result.mSmtPtrResultInstance = instance;
+    }
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   };
@@ -573,7 +675,7 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
 //! Condition
 //!
 
-bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
+bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style)
 {
   switch (style)
   {
@@ -584,30 +686,30 @@ bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ 
 }
 
 EDySuccess TDyIO::TryBindBinderToResourceRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIResourceMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryBindBinderToInformationRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIInformationMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryDetachBinderFromResourceRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIResourceMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryDetachBinderFromInformationRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EDyResourceType iType, _MIN_ const __FDyBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIInformationMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
-bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style)
+bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style)
 {
   switch (style)
   {
@@ -617,23 +719,23 @@ bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ 
   }
 }
 
-bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type)
+bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type)
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mMetaInfoManager), "MetaInformation manager must not be null.");
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->MIOMetaManager), "MetaInformation manager must not be null.");
   switch (type)
   {
-  case EDyResourceType::Script:         return this->mMetaInfoManager->IsScriptMetaInformationExist(specifier);
-  case EDyResourceType::Mesh:           return this->mMetaInfoManager->IsMeshMetaInfoExist(specifier);
-  case EDyResourceType::Model:          return this->mMetaInfoManager->IsModelMetaInfoExist(specifier);
-  case EDyResourceType::Skeleton:       return this->mMetaInfoManager->IsModelSkeletonMetaInfoExist(specifier);
-  case EDyResourceType::AnimationScrap: return this->mMetaInfoManager->IsModelAnimScrapMetaInfoExist(specifier);
-  case EDyResourceType::GLShader:       return this->mMetaInfoManager->IsGLShaderMetaInfoExist(specifier);
-  case EDyResourceType::Texture:        return this->mMetaInfoManager->IsTextureMetaInfoExist(specifier);
-  case EDyResourceType::Material:       return this->mMetaInfoManager->IsMaterialMetaInfoExist(specifier);
-  case EDyResourceType::WidgetMeta:     return this->mMetaInfoManager->IsWidgetMetaInfoExist(specifier);
-  case EDyResourceType::GLAttachment:   return this->mMetaInfoManager->IsAttachmentMetaInfoExist(specifier);
-  case EDyResourceType::GLFrameBuffer:  return this->mMetaInfoManager->IsFrameBufferMetaInfoExist(specifier);
-  case EDyResourceType::Sound:          return this->mMetaInfoManager->IsSoundMetaInfoExist(specifier);
+  case EResourceType::Script:         return this->MIOMetaManager->IsScriptMetaInformationExist(specifier);
+  case EResourceType::Mesh:           return this->MIOMetaManager->IsMeshMetaInfoExist(specifier);
+  case EResourceType::Model:          return this->MIOMetaManager->IsModelMetaInfoExist(specifier);
+  case EResourceType::Skeleton:       return this->MIOMetaManager->IsModelSkeletonMetaInfoExist(specifier);
+  case EResourceType::AnimationScrap: return this->MIOMetaManager->IsModelAnimScrapMetaInfoExist(specifier);
+  case EResourceType::GLShader:       return this->MIOMetaManager->IsGLShaderMetaInfoExist(specifier);
+  case EResourceType::Texture:        return this->MIOMetaManager->IsTextureMetaInfoExist(specifier);
+  case EResourceType::Material:       return this->MIOMetaManager->IsMaterialMetaInfoExist(specifier);
+  case EResourceType::WidgetMeta:     return this->MIOMetaManager->IsWidgetMetaInfoExist(specifier);
+  case EResourceType::GLAttachment:   return this->MIOMetaManager->IsAttachmentMetaInfoExist(specifier);
+  case EResourceType::GLFrameBuffer:  return this->MIOMetaManager->IsFrameBufferMetaInfoExist(specifier);
+  case EResourceType::Sound:          return this->MIOMetaManager->IsSoundMetaInfoExist(specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
@@ -685,27 +787,27 @@ EDySuccess TDyIO::outTryCallSleptCallbackFunction()
   return DY_SUCCESS;
 }
 
-void TDyIO::outInsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI)
+void TDyIO::outInsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& iRefRI)
 {
   this->mGarbageCollector.InsertGcCandidate(iRefRI);
 }
 
-void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EDyScope iScope, _MIN_ EDyResourceStyle iStyle)
+void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ EDyResourceStyle iStyle)
 {
   switch (iStyle)
   {
   case EDyResourceStyle::Information: 
   { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
     // and reinsert it to gc list.
-    const auto gcCandidateList = this->mRIInformationMap.GetForwardCandidateRIAsList(iScope);
-    this->mGarbageCollector.InsertGcCandidateList(gcCandidateList);
+    auto gcCandidateList = this->mRIInformationMap.GetForwardCandidateRIAsList(iScope);
+    this->mGarbageCollector.InsertGcCandidateList(std::move(gcCandidateList));
     this->mGarbageCollector.TryGarbageCollectCandidateList();
   } break;
   case EDyResourceStyle::Resource:    
   { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
     // and reinsert it to gc list.
-    const auto gcCandidateList = this->mRIResourceMap.GetForwardCandidateRIAsList(iScope);
-    this->mGarbageCollector.InsertGcCandidateList(gcCandidateList);
+    auto gcCandidateList = this->mRIResourceMap.GetForwardCandidateRIAsList(iScope);
+    this->mGarbageCollector.InsertGcCandidateList(std::move(gcCandidateList));
     this->mGarbageCollector.TryGarbageCollectCandidateList();
   } break;
   default: MDY_UNEXPECTED_BRANCH();

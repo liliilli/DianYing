@@ -14,7 +14,6 @@
 
 /// Header file
 #include <Dy/Builtin/Texture/CheckerBright.h>
-#include <Dy/Core/Resource/Internal/TextureType.h>
 
 //!
 //! Implementation
@@ -26,8 +25,8 @@ namespace dy::builtin
 void FDyBtTexCheckerBright::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PDyTextureInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName             = sName;
-  property.mTextureType               = EDyTextureStyleType::D2;
-  property.mTextureMapType_Deprecated = EDyTextureMapType::Diffuse;
+  property.mTextureType               = ETextureStyleType::D2;
+  property.mTextureMapType_Deprecated = ETextureMapType::Diffuse;
   property.mTextureColorType    = EDyImageColorFormatStyle::RGB;
   property.mBuiltinBufferSize.X = 8;
   property.mBuiltinBufferSize.Y = 8;

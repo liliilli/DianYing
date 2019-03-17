@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -22,7 +22,7 @@ namespace dy::builtin
 /// @class FDyBtGlslRenderCSMLightNormal
 /// @brief Instantiate and create resource for cascade shadow rendering.
 ///
-class FDyBtGlslRenderCSMLightNormal final : public ADyGLShaderResource
+class FDyBtGlslRenderCSMLightNormal final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBtGlslRenderCSMLightNormal, "dyBtGlslRenderCsmLightNormal")
 public:

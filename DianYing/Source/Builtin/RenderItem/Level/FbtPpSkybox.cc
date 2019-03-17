@@ -13,15 +13,15 @@
 ///
 
 #include <Dy/Builtin/RenderItem/Level/FBtPpSkybox.h>
-#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/MWorld.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Type/EDyDrawType.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Type/EDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
+#include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
-#include <Dy/Component/CDySkybox.h>
+#include <Dy/Component/CSkybox.h>
 
 namespace dy
 {
@@ -35,7 +35,7 @@ void FBtRenderItemSkybox::__ConstructionHelper
 EDySuccess FBtRenderItemSkybox::OnPreRenderCheckCondition()
 {
   // Check skybox is attached to rendering manager.
-  auto optSkybox = MDyWorld::GetInstance().GetPtrMainLevelSkybox();
+  auto optSkybox = MWorld::GetInstance().GetPtrMainLevelSkybox();
   if (optSkybox.has_value() == false)
   {
     return DY_FAILURE;
@@ -74,7 +74,7 @@ void FBtRenderItemSkybox::OnRender()
 {
   // https://www.khronos.org/opengl/wiki/Cubemap_Texture
   // Render
-  auto optSkybox = MDyWorld::GetInstance().GetPtrMainLevelSkybox();
+  auto optSkybox = MWorld::GetInstance().GetPtrMainLevelSkybox();
   MDY_ASSERT_MSG(optSkybox.has_value() == true, "Unexpected error occurred.");
 
   auto ptrSkyboxTexture  = optSkybox.value();
@@ -83,7 +83,7 @@ void FBtRenderItemSkybox::OnRender()
 
   this->mBinderMeshSkybox->BindVertexArray();
 
-  using EUniform = EDyUniformVariableType;
+  using EUniform = EUniformVariableType;
   this->mBinderShdSkybox->TryUpdateUniform<EUniform::Float>(
     "uExposure",
     ptrSkyboxTexture->GetExposure());
@@ -92,20 +92,20 @@ void FBtRenderItemSkybox::OnRender()
     ptrSkyboxTexture->GetRotationDegree());
   this->mBinderShdSkybox->TryUpdateUniform<EUniform::Vector3>(
     "uTintColor",    
-    static_cast<DDyVector3>(ptrSkyboxTexture->GetTintColor()));
+    static_cast<DVector3>(ptrSkyboxTexture->GetTintColor()));
   this->mBinderShdSkybox->TryInsertTextureRequisition(0, refBinderTexture->GetTextureId());
-  //this->mBinderShdSkybox->TryInsertTextureRequisition(1, this->mBinderAttUnlit->GetAttachmentId());
+  //this->mBinderShdSkybox->TryInsertTextureRequisition(1, this->mBinderAttUnlit->GetSourceAttachmentId());
 
   this->mBinderShdSkybox->UseShader();
   this->mBinderShdSkybox->TryUpdateUniformList();
 
   if (this->mBinderMeshSkybox->IsEnabledIndices() == true)
   {
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, this->mBinderMeshSkybox->GetIndicesCounts()); 
+    XGLWrapper::Draw(EDrawType::Triangle, true, this->mBinderMeshSkybox->GetIndicesCounts()); 
   }
   else
   {
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, false, this->mBinderMeshSkybox->GetVertexCounts()); 
+    XGLWrapper::Draw(EDrawType::Triangle, false, this->mBinderMeshSkybox->GetVertexCounts()); 
   }
 
   this->mBinderShdSkybox->DisuseShader();

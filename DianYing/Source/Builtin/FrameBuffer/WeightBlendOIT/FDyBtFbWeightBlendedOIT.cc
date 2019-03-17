@@ -16,6 +16,7 @@
 #include <Dy/Builtin/FrameBuffer/WeightBlendOIT/FDyBtFbWeightBlendedOIT.h>
 #include <Dy/Builtin/Attachment/WeightBlendOIT/FDyBtAtOITColor.h>
 #include <Dy/Builtin/Attachment/WeightBlendOIT/FDyBtAtOITWeight.h>
+#include <Dy/Builtin/Attachment/WeightBlendOIT/FDyBtAtOITDepth.h>
 
 namespace dy::builtin
 {
@@ -23,13 +24,13 @@ namespace dy::builtin
 void FDyBtFbWeightBlendedOIT::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName         = sName;
-  property.mFrameBufferSize       = DDyVectorInt2{1280, 720};
+  property.mFrameBufferSize       = DVectorInt2{1280, 720};
 
   property.mIsNotUsingPixelShader = false;
   property.mColorAttachmentList.emplace_back((FDyBtAtWBOITColor::sName), EDyGlAttachmentType::Color0);
   property.mColorAttachmentList.emplace_back((FDyBtAtWBOITWeight::sName), EDyGlAttachmentType::Color1);
 
-  property.mIsUsingDepthBuffer    = false;
+  property.mIsUsingDepthBuffer = false;
 }
 
 } /// ::dy::builtin namespace

@@ -52,12 +52,12 @@ EDyGlImagePixelReadType FDyTextureInformation::GetPixelReadType() const noexcept
   return this->mInternalPixelReadType;
 }
 
-EDyTextureStyleType FDyTextureInformation::GetType() const noexcept
+ETextureStyleType FDyTextureInformation::GetType() const noexcept
 {
   return this->mTextureType;
 }
 
-const DDyColorRGBA& FDyTextureInformation::GetBorderColor() const noexcept
+const DColorRGBA& FDyTextureInformation::GetBorderColor() const noexcept
 {
   return this->mBorderColor;
 }

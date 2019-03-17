@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
 
@@ -27,28 +27,28 @@ namespace dy
 class FDyIOGC final
 {
 public:
-  ///
   /// @brief Check whether resource's Reference Instance is exist on now as any kind of information.
   /// @param specifier Resource specifier name.
   /// @param type  Resource type.
   /// @param style Resource style mode.
-  ///
-  MDY_NODISCARD bool IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD bool IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EDyResourceStyle style);
 
   /// @brief Move instance from gc list as return value.
-  MDY_NODISCARD std::optional<DDyIOReferenceInstance> MoveInstanceFromGC(_MIN_ const std::string& speicifer, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD std::optional<std::unique_ptr<DDyIOReferenceInstance>> 
+    MoveInstanceFromGC(const std::string& speicifer, EResourceType type, EDyResourceStyle style);
 
   /// @brief Insert RI gc-ed candidate into container.
-  void InsertGcCandidate(_MIN_ DDyIOReferenceInstance iRICandidateList) noexcept;
+  /// Inserted argument will be empty.
+  void InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& ioRICandidateList) noexcept;
   /// @brief Insert RI gc-ed candidate list into container.
-  void InsertGcCandidateList(_MIN_ const std::vector<DDyIOReferenceInstance>& iRICandidateList) noexcept;
+  void InsertGcCandidateList(std::vector<std::unique_ptr<DDyIOReferenceInstance>> iRICandidateList) noexcept;
 
   /// @brief 
   EDySuccess TryGarbageCollectCandidateList() noexcept;
 
 private:
   /// @brief
-  std::vector<DDyIOReferenceInstance> mRIGarbageCandidateList = {};
+  std::vector<std::unique_ptr<DDyIOReferenceInstance>> mRIGarbageCandidateList = {};
 };
 
 } /// ::dy namespace

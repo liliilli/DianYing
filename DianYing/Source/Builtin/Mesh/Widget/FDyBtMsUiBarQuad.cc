@@ -24,7 +24,7 @@ void FDyBtMsUiBarQuad::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property)
   property.mMeshUsage     = EDyMeshUsage::DynamicDraw;
 
   // (Position, Texture coord) stride.
-  //DDyVector2{}, DDyVector2{}, DDyVector2{}, DDyVector2{}, 
+  //DVector2{}, DVector2{}, DVector2{}, DVector2{}, 
   property.mCustomMeshBuffer.resize(8);
 
   /*
@@ -39,7 +39,7 @@ void FDyBtMsUiBarQuad::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property)
 
   property.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel = false;
   property.mVAOBindingInfo.mOffsetByteSize = 0;
-  property.mVAOBindingInfo.mStrideByteSize = sizeof(DDyVector2);
+  property.mVAOBindingInfo.mStrideByteSize = sizeof(DVector2);
   property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 0);
 }
 

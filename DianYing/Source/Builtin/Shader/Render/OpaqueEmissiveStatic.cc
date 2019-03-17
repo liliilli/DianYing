@@ -25,7 +25,7 @@ MDY_SET_IMMUTABLE_STRING(sVertexShaderCode, R"dy(
 #version 430
 #import <Input_DefaultVao>;
 #import <Input_UboCamera>;
-uniform mat4 uModelMatrix;
+#import <Input_ModelTransform>;
 
 out gl_PerVertex { vec4 gl_Position; };
 out VS_OUT
@@ -36,9 +36,9 @@ out VS_OUT
 
 void main()
 {
-  gl_Position			      = uCamera.mProjMatrix * uCamera.mViewMatrix * uModelMatrix * vec4(dyPosition, 1.0);
-	vs_out.normal		      = mat3(uModelMatrix) * dyNormal;
-	vs_out.modelPosition  = (uModelMatrix * vec4(dyPosition, 1.0));
+  gl_Position			      = DyGetCameraPv() * DyTransform(vec4(dyPosition, 1.0));
+	vs_out.normal		      = DyGetRotationMatrix() * dyNormal;
+	vs_out.modelPosition  = DyTransform(vec4(dyPosition, 1.0));
 }
 )dy");
 
@@ -64,7 +64,7 @@ void main() {
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
   // RGB must be used specular color, and A must be used roughness.
 	//gSpecular = vec4(1, 1, 1, uRoughness);
-  gEmissive = vec4(0, gUnlit.r * uEmissiveFactor, 0, 1);
+  gEmissive = vec4(0, 1 * uEmissiveFactor, 0, 1);
 	gPosition = fs_in.modelPosition;
 }
 )dy");

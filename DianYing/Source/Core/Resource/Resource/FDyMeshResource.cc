@@ -14,44 +14,61 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Core/Resource/Internal/FDyMeshVBOIntermediate.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 
 namespace dy
 {
 
-FDyMeshResource::FDyMeshResource(_MINOUT_ FDyMeshVBOIntermediate& intermediateInstance) :
-    mSpecifierName{ intermediateInstance.GetSpecifierName() }
+FDyMeshResource::FDyMeshResource(FMeshVBOIntermediate& ioIntermediateInstance) 
+  : mSpecifierName{ ioIntermediateInstance.GetSpecifierName() }
 {
-  this->mBufferIdInformation = intermediateInstance.GetBufferIdInfo();
-  this->mMeshFlagInformation = intermediateInstance.GetMeshFlagInfo();
-  intermediateInstance.ResetAllProperties();
+  this->mBufferIdInformation = ioIntermediateInstance.GetBufferIdInfo();
+  this->mMeshFlagInformation = ioIntermediateInstance.GetMeshFlagInfo();
+  ioIntermediateInstance.ResetAllProperties();
+  
+  if (ioIntermediateInstance.IsSupportingInstancing() == true)
+  {
+    PGLBufferDescriptor desc;
+    desc.mBufferType      = EDirectBufferType::VertexBuffer;
+    desc.mBufferUsage     = EDyMeshUsage::DynamicDraw;
+    desc.mBufferByteSize  = 0;
+    { MDY_GRAPHIC_SET_CRITICALSECITON();
+      const auto optInstancingBuffer = XGLWrapper::CreateBuffer(desc);
+      MDY_ASSERT(optInstancingBuffer.has_value() == true);
+      this->mInstancingBufferId = optInstancingBuffer;
+    }
+  }
 
   // OPENGL create vao vbo ebo phrase.
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    this->mBufferIdInformation.mVao = FDyGLWrapper::CreateVertexArrayObject();
+    this->mBufferIdInformation.mVao = XGLWrapper::CreateVertexArrayObject();
 
     PDyGLVaoBindDescriptor descriptor;
     descriptor.mVaoId         = this->mBufferIdInformation.mVao;
     descriptor.mBoundVboId    = this->mBufferIdInformation.mVbo;
     descriptor.mBoundEboId    = this->mBufferIdInformation.mEbo;
-    descriptor.mAttributeInfo = intermediateInstance.GetVaoBindingInfo();
-    FDyGLWrapper::BindVertexArrayObject(descriptor);
+    descriptor.mAttributeInfo = this->mBindInformation = ioIntermediateInstance.GetVaoBindingInfo();
+    if (this->mInstancingBufferId.has_value() == true)
+    {
+      descriptor.mInstancingVboId = *this->mInstancingBufferId;
+    }
+    XGLWrapper::BindVertexArrayObject(descriptor);
   }
 
-  SDyProfilingHelper::IncreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
+  SProfilingHelper::IncreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
 }
 
 FDyMeshResource::~FDyMeshResource()
 {
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteVertexArrayObject(this->mBufferIdInformation.mVao);
-    if (this->mBufferIdInformation.mEbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo); }
-    if (this->mBufferIdInformation.mVbo > 0) { FDyGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo); }
+    XGLWrapper::DeleteVertexArrayObject(this->mBufferIdInformation.mVao);
+    if (this->mBufferIdInformation.mEbo > 0) { XGLWrapper::DeleteBuffer(this->mBufferIdInformation.mEbo); }
+    if (this->mBufferIdInformation.mVbo > 0) { XGLWrapper::DeleteBuffer(this->mBufferIdInformation.mVbo); }
   }
-  SDyProfilingHelper::DecreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
+  SProfilingHelper::DecreaseOnBindVertexCount(this->mMeshFlagInformation.mVertexCount);
 }
 
 const std::string& FDyMeshResource::GetSpecifierName() const noexcept
@@ -87,10 +104,31 @@ TU32 FDyMeshResource::GetIndicesCounts() const noexcept
 
 EDySuccess FDyMeshResource::BindVertexArray() const noexcept
 {
-  if (this->mBufferIdInformation.mVao == 0) { return DY_FAILURE; }
+  if (this->mBufferIdInformation.mVao == 0) 
+  { 
+    DyPushLogDebugError("Failed to bind vertex array object. VAO is not created.");
+    return DY_FAILURE; 
+  }
 
-  FDyGLWrapper::BindVertexArrayObject(this->mBufferIdInformation.mVao);
+  XGLWrapper::BindVertexArrayObject(this->mBufferIdInformation.mVao);
+
+  // We need to setup buffer bidning index explicitly,
+  // because OpenGL implicit state manchine changing sucks (REALLY SUCKS)
+  if (this->IsSupportingInstancing() == true)
+  {
+    glBindVertexBuffer(1, *this->mInstancingBufferId, 0, sizeof(DMatrix4x4));
+  }
   return DY_SUCCESS;
+}
+
+bool FDyMeshResource::IsSupportingInstancing() const noexcept
+{
+  return this->mInstancingBufferId.has_value() == true;
+}
+
+std::optional<TU32> FDyMeshResource::GetInstancingBufferId() const noexcept
+{
+  return this->mInstancingBufferId;
 }
 
 } /// ::dy namespace

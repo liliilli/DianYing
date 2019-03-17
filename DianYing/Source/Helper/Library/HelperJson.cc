@@ -17,43 +17,52 @@
 
 #include <filesystem>
 #include <nlohmann/json.hpp>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
+#include <Dy/Helper/Library/HelperIO.h>
 
-namespace dy
+namespace dy::json
 {
 
-bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexcept
+bool HasJsonKey(const nlohmann::json& json, const std::string& key) noexcept
 {
   return json.find(key) != json.end();
 }
 
-std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept
+std::optional<nlohmann::json> GetAtlasFromFile(const std::string& filePath) noexcept
 {
-  if (std::filesystem::exists(filePath) == false)
-  {
-    DyPushLogCritical("DyGetJsonAtlasFromFile | File path is not exist so failed to read serialization file. | Path : {}", filePath);
-    return std::nullopt;
-  }
+  const auto optBuffer = GetBufferFromFile(filePath);
+  if (optBuffer.has_value() == false) { return std::nullopt; }
 
-  std::FILE* fd = fopen(filePath.c_str(), "r");
-  std::fseek(fd, 0, SEEK_END);
-  const auto size = ftell(fd);
-  std::fseek(fd, 0, SEEK_SET);
-
-  std::vector<char> buffer(size + 1);
-  std::fread(buffer.data(), sizeof(char), size, fd);
-  std::fclose(fd);
-
-  nlohmann::json json;
   try 
   {
-    json = nlohmann::json::parse(buffer);
+    return nlohmann::json::parse(*optBuffer);
   }
   catch (nlohmann::json::parse_error& e)
   {
     MDY_ASSERT_MSG_FORCE(false, e.what());
+    return std::nullopt;
   }
-  return json;
 }
 
-} /// ::dy namespace
+std::optional<nlohmann::json> 
+GetAtlasFromFile(const std::filesystem::path& iFilePath) noexcept
+{
+  return GetAtlasFromFile(iFilePath.string());
+}
+
+std::optional<nlohmann::json> 
+GetAtlasFromString(const std::string& iSerializedString) noexcept
+{
+  try
+  {
+    auto result = nlohmann::json::parse(iSerializedString);
+    return result;
+  }
+  catch (nlohmann::json::parse_error& e)
+  {
+    DyPushLogCritical(e.what());
+    return std::nullopt;
+  }
+}
+
+} /// ::dy::json namespace

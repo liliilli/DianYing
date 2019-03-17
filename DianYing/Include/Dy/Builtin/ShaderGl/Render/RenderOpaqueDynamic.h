@@ -13,14 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBuiltinShaderGLRenderOpaqueDynamic
 /// @brief Builtin default deferred opqaue dynamic mesh gl shader which can be animated simple.
-class FDyBuiltinShaderGLRenderOpaqueDynamic final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderOpaqueDynamic final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderOpaqueDynamic, "dyBtShGlOpaqueDynamic")
 public:

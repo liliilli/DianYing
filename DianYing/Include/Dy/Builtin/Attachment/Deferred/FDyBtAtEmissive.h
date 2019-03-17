@@ -13,15 +13,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLAttachmentResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
 
 /// @class FDyBtAttachmentEmissive
 /// @brief Emissive information attachment.
-class FDyBtAttachmentEmissive final : public ADyGLAttachmentResource
+class FDyBtAttachmentEmissive final : public AGLAttachmentResource
 {
   MDY_REGISTER_RESOURCE_ATTACHMENT(FDyBtAttachmentEmissive, "dyBtEmissive")
 };

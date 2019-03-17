@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLAttachmentResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
@@ -23,7 +23,7 @@ namespace dy
 /// @class FDyBtAtOpaqueOutput
 /// @brief Opaque Deferred rendering integration output attachment.
 ///
-class FDyBtAtOpaqueOutput final : public ADyGLAttachmentResource
+class FDyBtAtOpaqueOutput final : public AGLAttachmentResource
 {
   MDY_REGISTER_RESOURCE_ATTACHMENT(FDyBtAtOpaqueOutput, "dyBtAtOpaqueOutput")
 };

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyMeshResource.h>
+#include <Dy/Builtin/Abstract/AMeshResource.h>
 
 namespace dy
 {
@@ -22,7 +22,7 @@ namespace dy
 /// @class FDyBtMsUiFontQuad
 /// @brief Create mesh for ui font rendering information and resources.
 ///
-class FDyBtMsUiFontQuad final : public ADyMeshResource
+class FDyBtMsUiFontQuad final : public AMeshResource
 {
   MDY_REGISTER_RESOURCE_MESH(FDyBtMsUiFontQuad, "dyBtMsUiFontQuad");
 };

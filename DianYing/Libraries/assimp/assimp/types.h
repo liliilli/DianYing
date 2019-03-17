@@ -56,6 +56,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Our compile configuration
 #include "defs.h"
 
+#ifdef new
+#undef new
+#endif
+
 // Some types moved to separate header due to size of operators
 #include "vector3.h"
 #include "vector2.h"

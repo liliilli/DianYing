@@ -17,30 +17,43 @@
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 #include <Dy/Core/Resource/Information/FDyMeshInformation.h>
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
+#include <Dy/Builtin/Constant/GeneralValue.h>
 #include <Dy/Helper/System/Idioms.h>
 
 namespace dy
 {
 
-FDyModelResource::FDyModelResource(_MINOUT_ const FDyModelInformation& input) :
+FDyModelResource::FDyModelResource(const FDyModelInformation& input) :
   mSpecifierName{input.GetSpecifierName()},
-  mBinderInformation{input.GetSpecifierName()}
+  mBinderInformation{input.GetSpecifierName()},
+  mSupportInstancingFlags{input.GetInstancingFlags()}
 {
+  size_t i = 0;
   for (const auto& meshInformation : input.GetMeshInformationList())
   {
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(meshInformation), "Unexpected error occurred.");
     MDY_ASSERT_MSG(meshInformation->IsResourceExist() == true, "Unexpected error occurred.");
 
-    DySafeUniquePtrEmplaceBack(this->mMeshResource, meshInformation->Get()->GetSpecifierName());
+    auto meshName = meshInformation->Get()->GetSpecifierName();
+    if (this->mSupportInstancingFlags[i] == true)
+    {
+      meshName += kInstancingPostfix;
+    }
+
+    SafeUniquePtrEmplaceBack(this->mMeshResource, meshName);
     MDY_ASSERT_MSG(this->mMeshResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
+    i++;
   }
+
+  i = 0;
   for (const auto& materialInformation : input.GetMaterialInformationList())
   {
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(materialInformation), "Unexpected error occurred.");
     MDY_ASSERT_MSG(materialInformation->IsResourceExist() == true, "Unexpected error occurred.");
 
-    DySafeUniquePtrEmplaceBack(this->mMaterialResource, materialInformation->Get()->GetSpecifierName());
+    SafeUniquePtrEmplaceBack(this->mMaterialResource, materialInformation->Get()->GetSpecifierName());
     MDY_ASSERT_MSG(this->mMaterialResource.back()->IsResourceExist() == true, "Unexpected error occurred.");
+    i++;
   }
 
   const auto& transform = input.GetInitialTransform();

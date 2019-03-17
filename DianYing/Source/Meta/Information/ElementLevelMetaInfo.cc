@@ -16,12 +16,12 @@
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 
 #include <nlohmann/json.hpp>
-#include <Dy/Helper/Type/ColorRGB.h>
+#include <Dy/Helper/Type/DColorRGB.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
-#include <Dy/Meta/Information/ComponentLightMetaInfo.h>
+#include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
 
 //!
 //! Local translation unit function & varaible data
@@ -58,24 +58,24 @@ void GetLevelResourceFromActor(_MIN_ const dy::TComponentMetaList& list, _MINOUT
       const auto& desc = std::any_cast<const PDyModelFilterComponentMetaInfo&>(componentInfo);
       if (desc.mDetails.mModelSpecifierName.empty() == true) { break; }
       
-      iSet.emplace(EDyResourceType::Model, desc.mDetails.mModelSpecifierName);
+      iSet.emplace(EResourceType::Model, desc.mDetails.mModelSpecifierName);
     } break;
     case EDyComponentMetaType::ModelAnimator:
     {
       const auto& desc = std::any_cast<const PDyModelAnimatorComponentMetaInfo&>(componentInfo);
 
       if (desc.mDetails.mSkeletonSpecifier.empty() == false)
-      { iSet.emplace(EDyResourceType::Skeleton, desc.mDetails.mSkeletonSpecifier); }
+      { iSet.emplace(EResourceType::Skeleton, desc.mDetails.mSkeletonSpecifier); }
 
       if (desc.mDetails.mTempAnimationScrap.empty() == false)
-      { iSet.emplace(EDyResourceType::AnimationScrap, desc.mDetails.mTempAnimationScrap); }
+      { iSet.emplace(EResourceType::AnimationScrap, desc.mDetails.mTempAnimationScrap); }
     } break;
     case EDyComponentMetaType::Skybox:
     {
       const auto& desc = std::any_cast<const PDySkyboxComponentMetaInfo&>(componentInfo);
 
       if (desc.mDetails.mCubemapSpecifier.empty() == false)
-      { iSet.emplace(EDyResourceType::Texture, desc.mDetails.mCubemapSpecifier); }
+      { iSet.emplace(EResourceType::Texture, desc.mDetails.mCubemapSpecifier); }
     } break;
     default: /* Do nothing */ break;
     }
@@ -99,12 +99,12 @@ TDDyResourceNameSet PDyLevelConstructMetaInfo::GetLevelResourceSet() const noexc
     const auto type = objectInfo->mObjectType;
     switch (type)
     {
-    case EDyMetaObjectType::Actor: 
+    case EWorldObjectType::Actor: 
     {
       GetLevelResourceFromActor(objectInfo->mMetaComponentInfo, result);
     } break;
-    case EDyMetaObjectType::SceneScriptor: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
-    case EDyMetaObjectType::Object: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
+    case EWorldObjectType::SceneScriptor: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
+    case EWorldObjectType::Object: { MDY_NOT_IMPLEMENTED_ASSERT(); } break;
     default: MDY_UNEXPECTED_BRANCH();
     }
   }
@@ -116,35 +116,31 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo& 
 {
   j = nlohmann::json
   {
-      {(sCategoryMeta),   p.mMetaCategory},
+      {(sCategoryMeta),   p.mMeta},
       {(sCategoryObject), p.mLevelObjectMetaInfoList},
   };
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, sCategoryMeta,    p.mMetaCategory);
-  DyJsonGetValueFromTo(j, sCategoryObject,  p.mLevelObjectMetaInfoList);
+  json::GetValueFromTo(j, sCategoryMeta,    p.mMeta);
+  json::GetValueFromTo(j, sCategoryObject,  p.mLevelObjectMetaInfoList);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyLevelConstructMetaInfo::DMeta& p)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 
-  // @TODO p.mLevelBackgroundColor to DDyColorRGB24.
+  // @TODO p.mLevelBackgroundColor to DColorRGB24.
   j = nlohmann::json
   {
-    {(sHeader_SpecifierName),               p.mLevelName},
-    {(sHeader_IsUsingUUIDForSpecification), p.mIsUsingUUIDForSpecification},
-    {(sHeader_BackgroundColor),             p.mLevelBackgroundColor},
+    {(sHeader_BackgroundColor), p.mLevelBackgroundColor},
   };
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyLevelConstructMetaInfo::DMeta& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_SpecifierName,               p.mLevelName);
-  DyJsonGetValueFromTo(j, sHeader_IsUsingUUIDForSpecification, p.mIsUsingUUIDForSpecification);
-  DyJsonGetValueFromTo(j, sHeader_BackgroundColor, p.mLevelBackgroundColor);
+  json::GetValueFromTo(j, sHeader_BackgroundColor, p.mLevelBackgroundColor);
 }
 
 } /// ::dy namespace

@@ -21,7 +21,7 @@ namespace dy
 void FDyBtFrameBufferDeferred::ConstructBuffer(PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName   = "dyBtBasicRender";
-  property.mFrameBufferSize = DDyVectorInt2{1280, 720};
+  property.mFrameBufferSize = DVectorInt2{1280, 720};
 
   property.mColorAttachmentList.emplace_back("dyBtUnlit",    EDyGlAttachmentType::Color0);
   property.mColorAttachmentList.emplace_back("dyBtNormal",   EDyGlAttachmentType::Color1);
@@ -32,6 +32,15 @@ void FDyBtFrameBufferDeferred::ConstructBuffer(PDyGlFrameBufferInstanceMetaInfo&
 
   property.mIsUsingDepthBuffer = true;
   property.mDepthAttachmentSpecifier = "dyBtDefZValue";
+
+  using EFunc = PBlendingEquation::EFunc;
+  using EMode = PBlendingEquation::EMode;
+  property.mBlendingEquationList.emplace_back();
+  property.mBlendingEquationList.emplace_back();
+  property.mBlendingEquationList.emplace_back(EFunc::One, EMode::SrcAddDst, EFunc::Zero);
+  property.mBlendingEquationList.emplace_back();
+  property.mBlendingEquationList.emplace_back();
+  property.mBlendingEquationList.emplace_back();
 }
 
 } /// ::dy namespace

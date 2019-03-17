@@ -13,9 +13,9 @@
 ///
 
 /// Header file
-#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
-#include <Dy/Management/LoggingManager.h>
-#include <Dy/Helper/ContainerHelper.h>
+#include <Dy/Management/Rendering/MUniformBufferObject.h>
+#include <Dy/Management/MLog.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 
 //!
 //! Forward declaration & Local translation unit data.
@@ -24,7 +24,7 @@
 namespace dy
 {
 
-MDY_SET_IMMUTABLE_STRING(sFunc_CreateUboContainer, "MDyUniformBufferObject::CreateUboContainer");
+MDY_SET_IMMUTABLE_STRING(sFunc_CreateUboContainer, "MUniformBufferObject::CreateUboContainer");
 
 } /// ::dy namespace
 
@@ -35,19 +35,21 @@ MDY_SET_IMMUTABLE_STRING(sFunc_CreateUboContainer, "MDyUniformBufferObject::Crea
 namespace dy
 {
 
-EDySuccess MDyUniformBufferObject::pfInitialize()
+EDySuccess MUniformBufferObject::pfInitialize()
 { // Do nothing.
   return DY_SUCCESS;
 }
 
-EDySuccess MDyUniformBufferObject::pfRelease()
-{ // Release all UBO buffer before release management instance.
-  for (auto it = this->mUboMap.begin(); it != this->mUboMap.end(); ++it)
+EDySuccess MUniformBufferObject::pfRelease()
+{ 
+  // Release all UBO buffer before release management instance.
+  for (auto it = this->mUboMap.begin(); it != this->mUboMap.end();)
   {
     const DDyUboInstanceInformation& instance = *it->second;
     const TU32 bufferIndex  = instance.GetBufferInternalIndex();
     const TU32 bindingIndex = instance.mBindingIndex;
     glDeleteBuffers(1, &bufferIndex);
+
     it = this->mUboMap.erase(it);
     this->mBeingUsedUboBufferIndexSet.erase(bindingIndex);
   }
@@ -56,7 +58,7 @@ EDySuccess MDyUniformBufferObject::pfRelease()
   return DY_SUCCESS;
 }
 
-EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstructionDescriptor& descriptor)
+EDySuccess MUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstructionDescriptor& descriptor)
 { 
   // Duplication check
   if (this->GetUboContainer(descriptor.mUboSpecifierName) != nullptr)
@@ -68,7 +70,7 @@ EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstruc
   }
 
   // Binding index duplication check
-  if (DyIsSetContains(this->mBeingUsedUboBufferIndexSet, descriptor.mBindingIndex) == true)
+  if (Contains(this->mBeingUsedUboBufferIndexSet, descriptor.mBindingIndex) == true)
   {
     DyPushLogError("{} | Failed to create UBO container. Binding Index is duplicated. | Binding Index : {}",
                   (sFunc_CreateUboContainer),
@@ -106,33 +108,34 @@ EDySuccess MDyUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstruc
   return DY_SUCCESS;
 }
 
-const DDyUboInstanceInformation* MDyUniformBufferObject::GetUboContainer(_MIN_ const std::string& specifier)
+const DDyUboInstanceInformation* MUniformBufferObject::GetUboContainer(_MIN_ const std::string& specifier)
 {
   if (auto it = this->mUboMap.find(specifier); it != this->mUboMap.end()) { return it->second.get(); }
   else                                                                    { return nullptr; }
 }
 
-EDySuccess MDyUniformBufferObject::UpdateUboContainer(
-    _MIN_ const std::string& specifier,
-    _MIN_ const TU32 bufferStartByte,
-    _MIN_ const TU32 bufferWrapSize,
-    _MIN_ const void* bufferCopyPtr)
-{ // Integrity test :: unvalid specifier test
+EDySuccess MUniformBufferObject::UpdateUboContainer(
+  const std::string& specifier,
+  TU32 bufferStartByte,
+  TU32 bufferWrapSize,
+  const void* bufferCopyPtr)
+{ 
+  // Validation test :: unvalid specifier test
   const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
-  if (MDY_CHECK_ISNULL(uboPtr))
+  if (uboPtr == nullptr)
   {
-    DyPushLogError("{} | Failed to update UBO container. Given name is not exist. | Name : {}",
-        (sFunc_CreateUboContainer),
-        specifier);
+    DyPushLogError(
+      "{} | Failed to update UBO container. Given name is not exist. | Name : {}",
+      (sFunc_CreateUboContainer), specifier);
     return DY_FAILURE;
   }
-  // Integrity Test :: OOB Test
+
+  // Validation Test :: OOB Test
   if (bufferStartByte + bufferWrapSize > uboPtr->GetContainerSize())
   {
-    DyPushLogError("{} | Failed to update UBO container. Buffer size out of bound detected. | {} + {} > {}",
-        (sFunc_CreateUboContainer),
-        bufferStartByte, bufferWrapSize,
-        uboPtr->GetContainerSize());
+    DyPushLogError(
+      "{} | Failed to update UBO container. Buffer size out of bound detected. | {} + {} > {}",
+      (sFunc_CreateUboContainer), bufferStartByte, bufferWrapSize, uboPtr->GetContainerSize());
     return DY_FAILURE;
   }
 
@@ -143,37 +146,41 @@ EDySuccess MDyUniformBufferObject::UpdateUboContainer(
   return DY_SUCCESS;
 }
 
-EDySuccess MDyUniformBufferObject::ClearUboContainer(
-    _MIN_ const std::string& specifier,
-    _MIN_ const TU32 bufferStartByte,
-    _MIN_ const TU32 bufferWrapSize)
-{ // Integrity test :: unvalid specifier test
+EDySuccess MUniformBufferObject::ClearUboContainer(
+  const std::string& specifier,
+  TU32 bufferStartByte,
+  TU32 bufferWrapSize)
+{ 
+  // Validation test :: unvalid specifier test
   const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
   if (MDY_CHECK_ISNULL(uboPtr))
   {
-    DyPushLogError("{} | Failed to clear UBO container. Given name is not exist. | Name : {}", (sFunc_CreateUboContainer), specifier);
+    DyPushLogError(
+      "{} | Failed to clear UBO container. Given name is not exist. | Name : {}", 
+      (sFunc_CreateUboContainer), specifier);
     return DY_FAILURE;
   }
-  // Integrity Test :: OOB Test
+
+  // Validation Test :: OOB Test
   if (bufferStartByte + bufferWrapSize > uboPtr->GetContainerSize())
   {
-    DyPushLogError("{} | Failed to clear UBO container. Buffer size out of bound detected. | {} + {} > {}",
-        (sFunc_CreateUboContainer),
-        bufferStartByte, bufferWrapSize,
-        uboPtr->GetContainerSize());
+    DyPushLogError(
+      "{} | Failed to clear UBO container. Buffer size out of bound detected. | {} + {} > {}",
+      (sFunc_CreateUboContainer), bufferStartByte, bufferWrapSize, uboPtr->GetContainerSize());
     return DY_FAILURE;
   }
 
   // Clear buffer with 0.
-  static constexpr float nullValue[1] = {0.f};
+  static constexpr float nullValue = 0.f;
   glBindBuffer(GL_UNIFORM_BUFFER, uboPtr->GetBufferInternalIndex());
   glClearBufferSubData(GL_UNIFORM_BUFFER, GL_RGBA, bufferStartByte, bufferWrapSize, GL_RED, GL_FLOAT, &nullValue);
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
   return DY_SUCCESS;
 }
 
-EDySuccess MDyUniformBufferObject::RemoveUboContainer(_MIN_ const std::string& specifier)
-{ // Integrity test :: unvalid specifier test
+EDySuccess MUniformBufferObject::RemoveUboContainer(_MIN_ const std::string& specifier)
+{ 
+  // Validation test :: unvalid specifier test
   const DDyUboInstanceInformation* uboPtr = this->GetUboContainer(specifier);
   if (MDY_CHECK_ISNULL(uboPtr))
   {

@@ -20,10 +20,10 @@
 #include <limits>
 #include <random>
 
-#include <Dy/Helper/Type/Vector2.h>
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector2.h>
+#include <Dy/Helper/Type/DVector3.h>
 
-#include "Dy/Management/LoggingManager.h"
+#include "Dy/Management/MLog.h"
 
 //!
 //! Data
@@ -115,7 +115,7 @@ float RandomFloatRange(const float from, const float prior_to) noexcept
   return rngGenerator(sRngGenerator);
 }
 
-DDyVector2 RandomVector2Length(float length) noexcept
+DVector2 RandomVector2Length(float length) noexcept
 {
   if (length < 0)
   {
@@ -123,7 +123,7 @@ DDyVector2 RandomVector2Length(float length) noexcept
     return {};
   }
 
-  DDyVector2 result;
+  DVector2 result;
   float squared_length;
 
   do
@@ -137,7 +137,7 @@ DDyVector2 RandomVector2Length(float length) noexcept
   return result * (length / std::sqrtf(squared_length));
 }
 
-DDyVector3 RandomVector3Length(float length) noexcept
+DVector3 RandomVector3Length(float length) noexcept
 {
   if (length < 0)
   {
@@ -145,7 +145,7 @@ DDyVector3 RandomVector3Length(float length) noexcept
     return {};
   }
 
-  DDyVector3 result;
+  DVector3 result;
   float squared_length;
 
   do
@@ -160,7 +160,7 @@ DDyVector3 RandomVector3Length(float length) noexcept
   return result * (length / std::sqrtf(squared_length));
 }
 
-DDyVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float prior_to)
+DVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float prior_to)
 {
   if (from >= prior_to)
   {
@@ -180,7 +180,7 @@ DDyVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float prior_to
   }
 }
 
-DDyVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float prior_to)
+DVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float prior_to)
 {
   if (from >= prior_to)
   {

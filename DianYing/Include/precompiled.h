@@ -38,14 +38,7 @@
   #include <d3d11.h>
   #include <d3d12.h>
   #include <vulkan/vulkan_win32.h>
-
   #include <Windows.h>
-
-  #if !defined(NDEBUG)
-    #define _CRTDBG_MAP_ALLOC
-    #include <stdlib.h>
-    #include <crtdbg.h>
-  #endif
 
   #pragma comment(lib, "d3d11.lib")
 #endif
@@ -58,7 +51,13 @@
 #include <spdlog/fmt/fmt.h>
 #include <sol2/sol_forward.hpp>
 
-#include <Dy/Helper/GlobalEnumFlags.h>
+#if defined(NDEBUG) == false && defined(_WIN32) == true
+  #define _CRTDBG_MAP_ALLOC
+  #define _CRTDBG_MAP_ALLOC_NEW
+  #include <stdlib.h>
+  #include <crtdbg.h>
+#endif
+
 #include <Dy/Helper/GlobalType.h>
 #include <Dy/Helper/System/DisableWarning.h>
 #include <Dy/Helper/System/Macroes.h>

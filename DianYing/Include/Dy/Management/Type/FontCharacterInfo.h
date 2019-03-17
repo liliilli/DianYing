@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/GlobalType.h>
-#include <Dy/Helper/Type/Vector2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <nlohmann/json_fwd.hpp>
 
 namespace dy
@@ -31,9 +31,9 @@ struct DDyTextureCoordBox
   ///
   TU32        mChannel            = MDY_INITIALIZE_DEFUINT;
   ///
-  DDyVector2  mLeftDown           = {};
+  DVector2  mLeftDown           = {};
   ///
-  DDyVector2  mRightUp            = {};
+  DVector2  mRightUp            = {};
 };
 
 void to_json  (_MOUT_ nlohmann::json& j,      _MIN_ const DDyTextureCoordBox& p);
@@ -50,13 +50,13 @@ struct DDyFontCharacterInfo final
   ///
   TF32        mHorizontalAdvance  = MDY_INITIALIZE_DEFUINT;
   ///
-  DDyVector2  mHoritontalBearing  = {};
+  DVector2  mHoritontalBearing  = {};
   ///
-  DDyVector2  mScale              = {};
+  DVector2  mScale              = {};
   ///
-  DDyVector2  mSize               = {};
+  DVector2  mSize               = {};
   ///
-  DDyVector2  mTranslate          = {};
+  DVector2  mTranslate          = {};
   ///
   DDyTextureCoordBox mTexCoordInfo = {};
 

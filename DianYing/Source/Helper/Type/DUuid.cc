@@ -17,7 +17,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

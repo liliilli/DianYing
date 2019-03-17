@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderUiImage
 /// @brief Instantiate and create resource for UI widget image.
 ///
-class FDyBuiltinShaderGLRenderUiImage final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderUiImage final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderUiImage, "dyBtShaderGlRenderUiImage")
 public:

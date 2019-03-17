@@ -59,7 +59,7 @@ struct DDyAxisBindingInformation final
 
   ///
   /// @brief Construct axis information from `DAxis`.
-  /// @param axisInfo Information from setting (MDySetting).
+  /// @param axisInfo Information from setting (MSetting).
   ///
   DDyAxisBindingInformation(_MIN_ const DDySettingInput::DAxis& axisInfo);
 };

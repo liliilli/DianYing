@@ -13,9 +13,9 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Core/Resource/Internal/TextureEnums.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Core/Resource/Internal/ETextureEnums.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -50,11 +50,11 @@ public:
   MDY_NODISCARD TU32 GetTextureId() const noexcept;
 
   /// @brief Get texture type value.
-  MDY_NODISCARD EDyTextureStyleType GetTextureType() const noexcept;
+  MDY_NODISCARD ETextureStyleType GetTextureType() const noexcept;
 
 protected:
   std::string         mTextureName = MDY_INITIALIZE_EMPTYSTR;
-  EDyTextureStyleType mTextureType = EDyTextureStyleType::NoneError;
+  ETextureStyleType mTextureType = ETextureStyleType::NoneError;
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
   TDyInformationBinderTexture mInformationBinder;
