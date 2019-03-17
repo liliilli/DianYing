@@ -22,9 +22,9 @@ namespace dy::builtin
 
 void FDyBuiltinModelSphere::ConstructBuffer(PDyModelInstanceMetaInfo& buffer) noexcept
 {
-  buffer.mSourceType          = EDyResourceSource::Builtin;
-  buffer.mSpecifierName       = sName;
-  buffer.mMeshList.emplace_back((FDyBtMsSphere::sName), (FDyBtMtCheckerWorldPos::sName));
+  buffer.mSourceType    = EDyResourceSource::Builtin;
+  buffer.mSpecifierName = sName;
+  buffer.mMeshList.emplace_back(FDyBtMsSphere::sName, FDyBtMtCheckerWorldPos::sName, true);
 }
 
 } /// ::dy::builtin namespace
