@@ -24,7 +24,7 @@ void FDyBuiltinModelEmissiveSphere::ConstructBuffer(PDyModelInstanceMetaInfo& bu
 {
   buffer.mSourceType    = EDyResourceSource::Builtin;
   buffer.mSpecifierName = sName;
-  buffer.mMeshList.emplace_back((FDyBtMsSphere::sName), (FDyBtMtOpaqueEmissiveStatic::sName));
+  buffer.mMeshList.emplace_back(FDyBtMsSphere::sName, FDyBtMtOpaqueEmissiveStatic::sName, true);
 }
 
 } /// ::dy::builtin namespace
