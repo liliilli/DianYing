@@ -88,7 +88,7 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EResourceScope scope
 EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
   const std::string& iSpecifier,
   EResourceType iType,
-  __IBinderBase* iPtrBinder)
+  IBinderBase* iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -114,7 +114,7 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
 EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   const std::string& iSpecifier, 
   EResourceType iType, 
-  __IBinderBase* iPtrBinder)
+  IBinderBase* iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -274,7 +274,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
       for (const auto& ptrBinderBase : instance->mPtrBoundBinderList)
       {
         if (ptrBinderBase == nullptr) { continue; }
-        const_cast<__IBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance->mPtrInstance);
+        const_cast<IBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance->mPtrInstance);
       }
     }
     else
@@ -286,7 +286,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
       for (const auto& ptrBinderBase : instance->mPtrBoundBinderList)
       {
         if (ptrBinderBase == nullptr) { continue; }
-        const_cast<__IBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
+        const_cast<IBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
       }
     }
     return DY_SUCCESS; 

@@ -24,7 +24,7 @@ namespace dy
 /// @struct __TBaseResourceBinder
 /// @brief Binder base class for each supporting resource type.
 template <EResourceType TType>
-struct __TBaseResourceBinder : public __IBinderBase
+struct __TBaseResourceBinder : public IBinderBase
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TBaseResourceBinder);

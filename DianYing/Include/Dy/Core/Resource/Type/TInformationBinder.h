@@ -24,7 +24,7 @@ namespace dy
 /// @struct __TInformationBinderBase
 /// @brief Binder base class for each supporting information resource type.
 template <EResourceType TType>
-struct __TInformationBinderBase : public __IBinderBase
+struct __TInformationBinderBase : public IBinderBase
 {
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TInformationBinderBase);

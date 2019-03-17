@@ -25,7 +25,7 @@
 
 namespace dy
 {
-MDY_INTERFACE __IBinderBase;
+MDY_INTERFACE IBinderBase;
 } /// ::dy namespace
 
 //!
@@ -51,7 +51,7 @@ struct DDyIOReferenceInstance final
   void*              mPtrInstance       = nullptr;               
 
   std::mutex mContainerMutex;
-  std::unordered_set<__IBinderBase*> mPtrBoundBinderList;
+  std::unordered_set<IBinderBase*> mPtrBoundBinderList;
 
   DDyIOReferenceInstance() = default;
   /// @brief Constructor without binding object ptr. \n
@@ -65,11 +65,11 @@ struct DDyIOReferenceInstance final
 
   /// @brief Bind binder instance pointer address to this RI.
   /// Be careful of duplicating address pointer.
-  void AttachBinder(__IBinderBase* iPtrBase) noexcept;
+  void AttachBinder(IBinderBase* iPtrBase) noexcept;
 
   /// @brief Unbind binder instance pointer address from this RI.
   /// If RI's scope is temporal and valid, GC candidate flag will be set up.
-  void DetachBinder(__IBinderBase* iPtrBase) noexcept;
+  void DetachBinder(IBinderBase* iPtrBase) noexcept;
 
   /// @brief Set resource valid. `iPtrInstance` must be valid pointer type of each RI type.
   /// and, `mIsResourceValid` will be true.

@@ -686,25 +686,25 @@ bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ 
 }
 
 EDySuccess TDyIO::TryBindBinderToResourceRI
-(const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase* iPtrBinder)
 {
   return this->mRIResourceMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryBindBinderToInformationRI
-(const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase* iPtrBinder)
 {
   return this->mRIInformationMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryDetachBinderFromResourceRI
-(const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase* iPtrBinder)
 {
   return this->mRIResourceMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryDetachBinderFromInformationRI
-(const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase* iPtrBinder)
 {
   return this->mRIInformationMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }

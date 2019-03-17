@@ -22,7 +22,7 @@ namespace dy
 
 MDY_NODISCARD EDySuccess
 SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource)
-(const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase* iPtrBinder)
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
@@ -44,7 +44,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource)
 
 std::optional<const __TResourceType<EResourceType::GLShader>::type*>
 SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_GLShader)
-(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, IBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EResourceType::GLShader, iPtrBinder);
   if (checkFlag == DY_FAILURE) { return std::nullopt; }
@@ -58,7 +58,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_GLShader)
 
 std::optional<const __TResourceType_T<EResourceType::Mesh>*>
 SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Mesh)
-(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, IBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EResourceType::Mesh, iPtrBinder);
   if (checkFlag == DY_FAILURE) { return std::nullopt; }
@@ -72,7 +72,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Mesh)
 
 std::optional<const __TResourceType_T<EResourceType::Model>*>
 SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Model)
-(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, IBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EResourceType::Model, iPtrBinder);
   if (checkFlag == DY_FAILURE) { return std::nullopt; }
@@ -86,7 +86,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Model)
 
 std::optional<const __TResourceType_T<EResourceType::Texture>*>
 SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Texture)
-(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, IBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EResourceType::Texture, iPtrBinder);
   if (checkFlag == DY_FAILURE) { return std::nullopt; }
@@ -100,7 +100,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Texture)
 
 std::optional<const __TResourceType_T<EResourceType::Material>*>
 SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Material)
-(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, IBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EResourceType::Material, iPtrBinder);
   if (checkFlag == DY_FAILURE) { return std::nullopt; }
@@ -114,7 +114,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Material)
 
 std::optional<const __TResourceType_T<EResourceType::GLAttachment>*> 
 SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Attachment)
-(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, IBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EResourceType::GLAttachment, iPtrBinder);
   if (checkFlag == DY_FAILURE) { return std::nullopt; }
@@ -128,7 +128,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Attachment)
 
 std::optional<const __TResourceType_T<EResourceType::GLFrameBuffer>*> 
 SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_FrameBuffer)
-(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, IBinderBase* iPtrBinder)
 {
   const auto checkFlag = __pTryRequireResource(iSpecifier, EResourceType::GLFrameBuffer, iPtrBinder);
   if (checkFlag == DY_FAILURE) { return std::nullopt; }
@@ -141,7 +141,7 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireResource_FrameBuffer)
 }
 
 EDySuccess SDyIOBindingHelper::MDY_PRIVATE(pTryDetachResource)
-(const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase* iPtrBinder)
 {
   MDY_ASSERT_MSG(iType != EResourceType::NoneError, "iType must be valid resource type.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");

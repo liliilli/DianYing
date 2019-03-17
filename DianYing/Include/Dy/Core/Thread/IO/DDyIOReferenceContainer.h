@@ -21,7 +21,7 @@
 
 namespace dy
 {
-MDY_INTERFACE __IBinderBase;
+MDY_INTERFACE IBinderBase;
 } /// ::dy namespace
 
 //!
@@ -64,14 +64,14 @@ public:
   MDY_NODISCARD EDySuccess TryBindBinderToResourceRI(
     const std::string& iSpecifier, 
     EResourceType iType, 
-    __IBinderBase* iPtrBinder);
+    IBinderBase* iPtrBinder);
 
   /// @brief Try detach binder instance from valid resource Reference Instance.
   /// If not exist, just do nothing and return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI(
     const std::string& iSpecifier, 
     EResourceType iType, 
-    __IBinderBase* iPtrBinder);
+    IBinderBase* iPtrBinder);
 
   /// @brief Get GC-Candidate Reference instance list from container. \n
   /// Condition-satisfied RI will be removed from container.

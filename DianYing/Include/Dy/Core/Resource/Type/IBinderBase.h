@@ -16,17 +16,17 @@
 namespace dy
 {
 
-/// @interface __IBinderBase
+/// @interface IBinderBase
 /// @brief Using interface for binding resource & information instance. Must use this, not __TBaseResourceBinder.
-MDY_INTERFACE __IBinderBase
-  {
-    virtual ~__IBinderBase() = default;
+MDY_INTERFACE IBinderBase
+{
+  virtual ~IBinderBase() = default;
 
-    virtual MDY_NODISCARD bool IsResourceExist() const noexcept = 0;
-    virtual void TryUpdateResourcePtr(_MIN_ const void* ptr) noexcept = 0;
-    virtual void TryDetachResourcePtr() noexcept = 0;
-    virtual void Process() noexcept {};
-  };
+  MDY_NODISCARD virtual bool IsResourceExist() const noexcept = 0;
+  virtual void TryUpdateResourcePtr(_MIN_ const void* ptr) noexcept = 0;
+  virtual void TryDetachResourcePtr() noexcept = 0;
+  virtual void Process() noexcept {};
+};
 
 } /// ::dy namespace
 
