@@ -20,22 +20,19 @@
 namespace dy
 {
 
-void DDyIOReferenceInstance::AttachBinder(_MIN_ const __IBinderBase* iPtrBase) noexcept
+void DDyIOReferenceInstance::AttachBinder(const __IBinderBase* iPtrBase) noexcept
 {
-  this->mPtrBoundBinderList.emplace_back(iPtrBase);
+  MDY_SYNC_LOCK_GUARD(mContainerMutex);
+  this->mPtrBoundBinderList.emplace(iPtrBase);
 }
 
 void DDyIOReferenceInstance::DetachBinder(const __IBinderBase* iPtrBase) noexcept
 {
-  MDY_ASSERT_MSG(this->mPtrBoundBinderList.empty() == false, "Reference count must be positive value when detach any binder.");
-
-  const auto itPtr = std::find(MDY_BIND_BEGIN_END(this->mPtrBoundBinderList), iPtrBase);
-  MDY_ASSERT_MSG(itPtr != this->mPtrBoundBinderList.end(), "Given binder pointer address must be exist in given RI list.");
-
-  FaseErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
+  MDY_SYNC_LOCK_GUARD(mContainerMutex);
+  this->mPtrBoundBinderList.erase(iPtrBase);
 }
 
-void DDyIOReferenceInstance::SetValid(_MIN_ void*& iPtrInstance) noexcept
+void DDyIOReferenceInstance::SetValid(void*& iPtrInstance) noexcept
 {
   this->mIsResourceValid  = true;
   this->mPtrInstance      = iPtrInstance;
@@ -47,7 +44,7 @@ void DDyIOReferenceInstance::SetNotValid() noexcept
   this->mPtrInstance      = nullptr;
 }
 
-bool DDyIOReferenceInstance::IsNeedToBeGced() const noexcept
+bool DDyIOReferenceInstance::HaveToBeGCed() const noexcept
 {
   if (this->mIsResourceValid == true
   &&  this->mScope == EResourceScope::Temporal 

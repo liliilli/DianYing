@@ -231,7 +231,7 @@ private:
 
   /// @brief Insert valid const reference of RI into gc list as copied instance of original instance.
   /// Use this funciton carefully.
-  void outInsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI);
+  void outInsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& iRefRI);
 
   //!
   //! Common methods (always must use mutex)

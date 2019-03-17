@@ -146,7 +146,7 @@ void SDyIOConnectionHelper::InsertResult(_MIN_ const DDyIOWorkerResult& result) 
   ioThread.outInsertResult(result);
 }
 
-void SDyIOConnectionHelper::InsertGcCandidate(const DDyIOReferenceInstance& iRefRI)
+void SDyIOConnectionHelper::InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>&& iRefRI)
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
