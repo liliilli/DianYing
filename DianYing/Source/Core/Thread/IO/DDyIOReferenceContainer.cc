@@ -86,9 +86,9 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EResourceScope scope
 }
 
 EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
-    const std::string& iSpecifier,
-    EResourceType iType,
-    __IBinderBase* iPtrBinder)
+  const std::string& iSpecifier,
+  EResourceType iType,
+  __IBinderBase* iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -96,11 +96,11 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
   // Attach binder to RI container.
   switch (iType)
   {
-  case EResourceType::Model:    this->mMapModelReference[iSpecifier]->AttachBinder(iPtrBinder);    break;
-  case EResourceType::GLShader: this->mMapGLShaderReference[iSpecifier]->AttachBinder(iPtrBinder); break;
-  case EResourceType::Texture:  this->mMapTextureReference[iSpecifier]->AttachBinder(iPtrBinder);  break;
-  case EResourceType::Mesh:     this->mMapMeshReference[iSpecifier]->AttachBinder(iPtrBinder);     break;
-  case EResourceType::Material: this->mMapMaterialReference[iSpecifier]->AttachBinder(iPtrBinder); break;
+  case EResourceType::Model:          this->mMapModelReference[iSpecifier]->AttachBinder(iPtrBinder);    break;
+  case EResourceType::GLShader:       this->mMapGLShaderReference[iSpecifier]->AttachBinder(iPtrBinder); break;
+  case EResourceType::Texture:        this->mMapTextureReference[iSpecifier]->AttachBinder(iPtrBinder);  break;
+  case EResourceType::Mesh:           this->mMapMeshReference[iSpecifier]->AttachBinder(iPtrBinder);     break;
+  case EResourceType::Material:       this->mMapMaterialReference[iSpecifier]->AttachBinder(iPtrBinder); break;
   case EResourceType::GLAttachment:   this->mMapAttachmentReference[iSpecifier]->AttachBinder(iPtrBinder);       break;
   case EResourceType::GLFrameBuffer:  this->mMapFrameBufferReference[iSpecifier]->AttachBinder(iPtrBinder);      break;
   case EResourceType::Skeleton:       this->mMapModelSkeletonReference[iSpecifier]->AttachBinder(iPtrBinder);    break;

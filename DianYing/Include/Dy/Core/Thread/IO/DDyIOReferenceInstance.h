@@ -17,6 +17,7 @@
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Resource/Type/EResourceScope.h>
+#include <Dy/Helper/Internal/FHandler.h>
 
 //!
 //! Forward declaration
@@ -34,10 +35,8 @@ MDY_INTERFACE __IBinderBase;
 namespace dy
 {
 
-///
 /// @struct DDyIOReferenceInstance
 /// @brief Internal reference instance for checking GC'ing and verifying resource validation.
-///
 struct DDyIOReferenceInstance final
 {
   using TConditionCallback = bool(*)();

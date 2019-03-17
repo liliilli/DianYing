@@ -20,13 +20,11 @@
 namespace dy
 {
 
-///
 /// @class SDyIOBindingHelper
 /// @brief Binding helper class for information & resource type from outside world.
-///
 class SDyIOBindingHelper final
 {
-private:
+public:
   /// @brief Use this require resource to another dimension.
   template <EResourceType TType>
   MDY_NODISCARD static std::optional<const __TResourceType_T<TType>*>
@@ -49,9 +47,55 @@ private:
     else 
     { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
   }
-
+  
+  /// @brief Use this require resource to another dimension.
+  template <EResourceType TType>
   MDY_NODISCARD static EDySuccess
-  MDY_PRIVATE(pTryRequireResource)(const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder);
+  TryDetachResource(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+  {
+    return MDY_PRIVATE(pTryDetachResource)(iSpecifier, TType, iPtrBinder);
+  }
+  
+  /// @brief Use this require resource to another dimension.
+  template <EResourceType TType>
+  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<TType>*>
+  TryRequireInformation(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+  {
+    if constexpr (TType == EResourceType::GLShader)     
+    { return MDY_PRIVATE(pTryRequireInformation_GLShader)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EResourceType::GLAttachment)     
+    { return MDY_PRIVATE(pTryRequireInformation_Attachment)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EResourceType::GLFrameBuffer)     
+    { return MDY_PRIVATE(pTryRequireInformation_GLFrameBuffer)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EResourceType::Texture)     
+    { return MDY_PRIVATE(pTryRequireInformation_Texture)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EResourceType::Material)     
+    { return MDY_PRIVATE(pTryRequireInformation_Material)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EResourceType::Mesh)
+    { return MDY_PRIVATE(pTryRequireInformation_Mesh)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EResourceType::Model)     
+    { return MDY_PRIVATE(pTryRequireInformation_Model)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EResourceType::Skeleton)
+    { return MDY_PRIVATE(pTryRequireInformation_Skeleton)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EResourceType::AnimationScrap)
+    { return MDY_PRIVATE(pTryRequireInformation_AnimationScrap)(iSpecifier, iPtrBinder); }
+    else if constexpr (TType == EResourceType::Sound)
+    { return MDY_PRIVATE(pTryRequireInformation_Sound)(iSpecifier, iPtrBinder); }
+    else 
+    { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
+  }
+   
+  /// @brief Use this require resource to another dimension.
+  template <EResourceType TType>
+  MDY_NODISCARD static EDySuccess
+  TryDetachInformation(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
+  {
+    return MDY_PRIVATE(pTryDetachInformation)(iSpecifier, TType, iPtrBinder);
+  }
+
+private:
+  MDY_NODISCARD static EDySuccess
+  __pTryRequireResource(const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder);
 
   MDY_NODISCARD static std::optional<const __TResourceType_T<EResourceType::GLShader>*>
   MDY_PRIVATE(pTryRequireResource_GLShader)
@@ -81,46 +125,9 @@ private:
   MDY_PRIVATE(pTryRequireResource_FrameBuffer)
   (const std::string& iSpecifier, __IBinderBase* iPtrBinder);
 
-  /// @brief Use this require resource to another dimension.
-  template <EResourceType TType>
-  MDY_NODISCARD static EDySuccess
-  TryDetachResource(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
-  {
-    return MDY_PRIVATE(pTryDetachResource)(iSpecifier, TType, iPtrBinder);
-  }
-
   MDY_NODISCARD static EDySuccess
   MDY_PRIVATE(pTryDetachResource)(const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder);
 
-  /// @brief Use this require resource to another dimension.
-  template <EResourceType TType>
-  MDY_NODISCARD static std::optional<const __TDyRscInfo_T<TType>*>
-  TryRequireInformation(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
-  {
-    if constexpr (TType == EResourceType::GLShader)     
-    { return MDY_PRIVATE(pTryRequireInformation_GLShader)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EResourceType::GLAttachment)     
-    { return MDY_PRIVATE(pTryRequireInformation_Attachment)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EResourceType::GLFrameBuffer)     
-    { return MDY_PRIVATE(pTryRequireInformation_GLFrameBuffer)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EResourceType::Texture)     
-    { return MDY_PRIVATE(pTryRequireInformation_Texture)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EResourceType::Material)     
-    { return MDY_PRIVATE(pTryRequireInformation_Material)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EResourceType::Mesh)
-    { return MDY_PRIVATE(pTryRequireInformation_Mesh)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EResourceType::Model)     
-    { return MDY_PRIVATE(pTryRequireInformation_Model)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EResourceType::Skeleton)
-    { return MDY_PRIVATE(pTryRequireInformation_Skeleton)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EResourceType::AnimationScrap)
-    { return MDY_PRIVATE(pTryRequireInformation_AnimationScrap)(iSpecifier, iPtrBinder); }
-    else if constexpr (TType == EResourceType::Sound)
-    { return MDY_PRIVATE(pTryRequireInformation_Sound)(iSpecifier, iPtrBinder); }
-    else 
-    { MDY_UNEXPECTED_BRANCH_BUT_RETURN(std::nullopt); }
-  }
-  
   MDY_NODISCARD static EDySuccess
   MDY_PRIVATE(pTryRequireInformation)
   (const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder);
@@ -164,23 +171,10 @@ private:
   MDY_NODISCARD static std::optional<const __TDyRscInfo_T<EResourceType::Sound>*>
   MDY_PRIVATE(pTryRequireInformation_Sound)
   (const std::string& iSpecifier, __IBinderBase* iPtrBinder);
- 
-  /// @brief Use this require resource to another dimension.
-  template <EResourceType TType>
-  MDY_NODISCARD static EDySuccess
-  TryDetachInformation(const std::string& iSpecifier, __IBinderBase* iPtrBinder)
-  {
-    return MDY_PRIVATE(pTryDetachInformation)(iSpecifier, TType, iPtrBinder);
-  }
 
   MDY_NODISCARD static EDySuccess
   MDY_PRIVATE(pTryDetachInformation)
   (const std::string& iSpecifier, EResourceType iType, __IBinderBase* iPtrBinder);
-
-  template <EResourceType TType>
-  friend struct __TBaseResourceBinder;
-  template <EResourceType TType>
-  friend struct __TInformationBinderBase;
 };
 
 } /// ::dy namespace
