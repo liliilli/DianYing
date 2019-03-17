@@ -22,6 +22,7 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
+#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/Helper/SProfilingHelper.h>
@@ -40,7 +41,9 @@ EDySuccess FBtRenderLevelOitDefault::OnPreRenderCheckCondition()
 {
   auto& list = MRendering::GetInstance().GetTranclucentOitMeshQueueList();
   return list.empty() == false
-      && this->mBinderFrameBuffer.IsResourceExist() == true ? DY_SUCCESS : DY_FAILURE;
+      && this->mBinderFrameBuffer.IsResourceExist() == true 
+      && this->mCompareZDepth.IsResourceExist() == true 
+    ? DY_SUCCESS : DY_FAILURE;
 }
 
 void FBtRenderLevelOitDefault::OnFailedCheckCondition()
@@ -117,6 +120,7 @@ void FBtRenderLevelOitDefault::RenderObject(
     ptrModelTransform->GetRotationMatrix());
   shaderBinder->TryUpdateUniform<EUniformVariableType::Float>("uAlphaOffset", 0.75f);
   shaderBinder->TryUpdateUniform<EUniformVariableType::Float>("uDepthScale",  0.1f);
+  shaderBinder->TryInsertTextureRequisition(10, this->mCompareZDepth->GetSourceAttachmentId());
 
   shaderBinder->UseShader();
   shaderBinder->TryUpdateUniformList();

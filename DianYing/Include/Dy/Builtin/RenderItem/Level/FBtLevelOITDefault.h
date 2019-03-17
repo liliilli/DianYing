@@ -57,7 +57,8 @@ public:
   void OnPostRender() override final;
 
 private:
-  TDyResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbWBOIT" };
+  TDyResourceBinderFrameBuffer mBinderFrameBuffer { "dyBtFbWBOIT" };
+  TDyResourceBinderAttachment  mCompareZDepth     { "dyBtDefZValue" };
 };
 
 } /// ::dy namespace

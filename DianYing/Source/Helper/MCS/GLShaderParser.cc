@@ -256,6 +256,21 @@ uniform float uBtDyActorId = 0;
 void DyBindActorId() { gActorId = vec4(uBtDyActorId, 0, 0, 1); }
 )dy");
 
+/// @brief Default Weighted blended output module.
+/// #import <Output_OITStream>;
+MDY_SET_IMMUTABLE_STRING(Buffer_Output_OITStream, R"dy(
+layout (location = 0) out vec4 outColor;
+layout (location = 1) out vec4 outWeight;
+
+layout (binding = 10) uniform sampler2D uTexture10; // mCompareZDepth
+
+bool DyIsTransparentObjectFrontOf(const vec2 iTexCoord, const float iZValue)
+{
+  float opaqueZ = texture(uTexture10, iTexCoord).r;
+  return iZValue < opaqueZ;
+}
+)dy");
+
 /// @brief miscellaneous functional-style functions module.
 /// #import <Etc_Miscellaneous>
 MDY_SET_IMMUTABLE_STRING(Buffer_Etc_Miscellaneous, R"dy(
@@ -269,6 +284,20 @@ float DyToGrayScale(float iR, float iG, float iB)
 bool DyIsNearlyEqual(float iValue, float iTarget)
 {
   return abs(iValue - iTarget) < 0.00001;
+}
+
+/// @brief Convert to projected Z value to depth value.
+float DyToZValue(const float iProjectedZ, const float iProjectedW)
+{
+  return ((iProjectedZ / iProjectedW) + 1.0f) * 0.5f;
+}
+
+float rand(float n){ return fract(floor(n * 0.1f) * 43758.5453123); }
+
+/// @brief Convert projection x, y position to screen space [0, 1] value.
+vec2 DoToScreenSpaceXy(const vec2 iProjectedXy)
+{
+  return (iProjectedXy + vec2(1)) * 0.5f; 
 }
 )dy");
 
@@ -332,6 +361,9 @@ std::string ParseGLShader(const DParsingArgs& iArgs)
     } break;
     case CaseStr("Input_ModelTransformInstancing"):
       exportShaderBuffer += Buffer_Input_ModelTransform_Multi;
+      break;
+    case CaseStr("Output_OITStream"):
+      exportShaderBuffer += Buffer_Output_OITStream;
       break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }
