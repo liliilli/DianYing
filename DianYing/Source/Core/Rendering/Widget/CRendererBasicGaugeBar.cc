@@ -84,7 +84,7 @@ void CRendererBasicGaugeBar::Render()
 
   this->mBinderShader->UseShader();
   glDepthFunc(GL_ALWAYS);
-  glBindVertexArray(this->mBinderBarMesh->GetVertexArrayId());
+  this->mBinderBarMesh->BindVertexArray();
 
   if (this->mPtrBarObject->CheckIsUsingBackgroundColor() == true)
   { // If backgroud is used, try render.

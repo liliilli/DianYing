@@ -640,23 +640,27 @@ void XGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDesc
     }
     glVertexAttribBinding(i, 0);
   }
-  //glVertexBindingDivisor(0, 0);
+  glVertexBindingDivisor(0, 0);
   MDY_CHECK_OPENGL;
 
   // If instancing buffer is exist, so should binding instancing id also..
   if (iDescriptor.mInstancingVboId.has_value() == true)
   {
-    const auto instancingId = *iDescriptor.mInstancingVboId;
-    glBindBuffer(GL_ARRAY_BUFFER, instancingId);
-    glBindVertexBuffer(1, instancingId, 0, sizeof(DMatrix4x4));
     glEnableVertexAttribArray(10);
-    glVertexAttribFormat(10, 4, GL_FLOAT, GL_FALSE, 0);
     glEnableVertexAttribArray(11);
-    glVertexAttribFormat(11, 4, GL_FLOAT, GL_FALSE, 16);
     glEnableVertexAttribArray(12);
-    glVertexAttribFormat(12, 4, GL_FLOAT, GL_FALSE, 32);
     glEnableVertexAttribArray(13);
+
+    glVertexAttribFormat(10, 4, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribFormat(11, 4, GL_FLOAT, GL_FALSE, 16);
+    glVertexAttribFormat(12, 4, GL_FLOAT, GL_FALSE, 32);
     glVertexAttribFormat(13, 4, GL_FLOAT, GL_FALSE, 48);
+
+    glVertexAttribBinding(10, 1);
+    glVertexAttribBinding(11, 1);
+    glVertexAttribBinding(12, 1);
+    glVertexAttribBinding(13, 1);
+
     glVertexBindingDivisor(1, 1);
     MDY_CHECK_OPENGL;
   }

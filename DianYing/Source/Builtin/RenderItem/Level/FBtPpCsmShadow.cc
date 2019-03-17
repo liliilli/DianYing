@@ -156,13 +156,30 @@ void FBtRenderItemCsmShadow::OnRender()
   // Render only opaque mesh list.
   auto& drawList = MRendering::GetInstance().GetOpaqueMeshQueueList();
 
-  for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : drawList)
-  { // Render
-    this->RenderObject(
-        *iPtrModel, 
+  // Make instancing list.
+  std::unordered_map<const FDyMeshResource*, std::vector<MRendering::TMeshDrawCallItem*>> instancingList;
+
+  for (auto& item : drawList)
+  {
+    auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] = item;
+    if (iPtrValidMesh->IsSupportingInstancing() == true)
+    {
+      auto& list = instancingList[iPtrValidMesh.Get()];
+      list.emplace_back(&item);
+    }
+    else
+    {
+      // Render without instancing.
+      this->RenderObject(
+        *iPtrModel,
         const_cast<FDyMeshResource&>(*iPtrValidMesh),
         const_cast<FDyMaterialResource&>(*iPtrValidMat)
-    );
+      );
+    }
+  }
+
+  for (auto& [_, itemList] : instancingList)
+  {
   }
 }
 

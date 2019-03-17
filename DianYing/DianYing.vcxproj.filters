@@ -379,6 +379,7 @@
     <ClCompile Include="data\Script\Astronaut\AstroidConstructor.cc" />
     <ClCompile Include="Source\Builtin\Prefab\FBtPbCameraMan.cc" />
     <ClCompile Include="Source\Builtin\Abstract\APrefabResource.cc" />
+    <ClCompile Include="Source\Builtin\Prefab\FBtPbDefaultSphere.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -918,6 +919,7 @@
     <ClInclude Include="Include\Dy\Element\Widget\FWidgetText.h" />
     <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbCameraMan.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\APrefabResource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbDefaultSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

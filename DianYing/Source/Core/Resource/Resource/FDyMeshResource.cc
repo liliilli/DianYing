@@ -50,7 +50,7 @@ FDyMeshResource::FDyMeshResource(FMeshVBOIntermediate& ioIntermediateInstance)
     descriptor.mVaoId         = this->mBufferIdInformation.mVao;
     descriptor.mBoundVboId    = this->mBufferIdInformation.mVbo;
     descriptor.mBoundEboId    = this->mBufferIdInformation.mEbo;
-    descriptor.mAttributeInfo = ioIntermediateInstance.GetVaoBindingInfo();
+    descriptor.mAttributeInfo = this->mBindInformation = ioIntermediateInstance.GetVaoBindingInfo();
     if (this->mInstancingBufferId.has_value() == true)
     {
       descriptor.mInstancingVboId = *this->mInstancingBufferId;
@@ -104,15 +104,31 @@ TU32 FDyMeshResource::GetIndicesCounts() const noexcept
 
 EDySuccess FDyMeshResource::BindVertexArray() const noexcept
 {
-  if (this->mBufferIdInformation.mVao == 0) { return DY_FAILURE; }
+  if (this->mBufferIdInformation.mVao == 0) 
+  { 
+    DyPushLogDebugError("Failed to bind vertex array object. VAO is not created.");
+    return DY_FAILURE; 
+  }
 
   XGLWrapper::BindVertexArrayObject(this->mBufferIdInformation.mVao);
+
+  // We need to setup buffer bidning index explicitly,
+  // because OpenGL implicit state manchine changing sucks (REALLY SUCKS)
+  if (this->IsSupportingInstancing() == true)
+  {
+    glBindVertexBuffer(1, *this->mInstancingBufferId, 0, sizeof(DMatrix4x4));
+  }
   return DY_SUCCESS;
 }
 
 bool FDyMeshResource::IsSupportingInstancing() const noexcept
 {
   return this->mInstancingBufferId.has_value() == true;
+}
+
+std::optional<TU32> FDyMeshResource::GetInstancingBufferId() const noexcept
+{
+  return this->mInstancingBufferId;
 }
 
 } /// ::dy namespace

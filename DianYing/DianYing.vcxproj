@@ -225,6 +225,7 @@
     <ClCompile Include="data\Script\DebugActor\BtScActorTest2.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest3.cc" />
     <ClCompile Include="Source\Builtin\Prefab\FBtPbCameraMan.cc" />
+    <ClCompile Include="Source\Builtin\Prefab\FBtPbDefaultSphere.cc" />
     <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.cc" />
     <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugCollisionShape.cc" />
     <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugPicking.cc" />
@@ -681,6 +682,7 @@
     <ClInclude Include="data\Script\DebugActor\BtScActorTest2.h" />
     <ClInclude Include="data\Script\DebugActor\BtScActorTest3.h" />
     <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbCameraMan.h" />
+    <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbDefaultSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugCollisionShape.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugPicking.h" />

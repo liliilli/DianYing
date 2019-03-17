@@ -39,6 +39,10 @@ public:
     DDyModelHandler::DActorInfo& iRefRenderer,
     FDyMeshResource& iRefMesh, 
     FDyMaterialResource& iRefMaterial);
+  void RenderStaticInstancingObjects(
+    FDyMeshResource& iRefMesh,
+    FDyMaterialResource& iRefMaterial,
+    TU32 iCount);
 
   void OnReleaseRenderingSetting() override final;
 

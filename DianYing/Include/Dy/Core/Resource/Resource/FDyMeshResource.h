@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
+#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 
 //!
 //! Forward declaration
@@ -64,10 +65,14 @@ public:
   /// @brief Check this mesh is supporting instancing.
   MDY_NODISCARD bool IsSupportingInstancing() const noexcept;
 
+  /// @brief Get Instancing buffer when exist.
+  MDY_NODISCARD std::optional<TU32> GetInstancingBufferId() const noexcept;
+
 private:
   std::string mSpecifierName;
-  DGlBufferIdInformation  mBufferIdInformation  = {};
+  DGlBufferIdInformation    mBufferIdInformation  = {};
   DDySubmeshFlagInformation mMeshFlagInformation  = {};
+  DDyGLVaoBindInformation   mBindInformation = {};
 
   /// @brief Instancing buffer id for only used when instancing,
   std::optional<TU32> mInstancingBufferId;

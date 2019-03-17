@@ -86,14 +86,81 @@ void FBtRenderItemOpaqueDefault::OnSetupRenderingSetting()
 void FBtRenderItemOpaqueDefault::OnRender()
 {
   auto& drawList = MRendering::GetInstance().GetOpaqueMeshQueueList();
-  for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : drawList)
-  { // Render
-    this->RenderObject(
-      *iPtrModel,
-      const_cast<FDyMeshResource&>(*iPtrValidMesh),
-      const_cast<FDyMaterialResource&>(*iPtrValidMat)
-    );
+
+  // Make instancing list.
+  std::unordered_map<const FDyMeshResource*, std::vector<MRendering::TMeshDrawCallItem*>> instancingList;
+
+  for (auto& item : drawList)
+  {
+    auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] = item;
+    if (iPtrValidMesh->IsSupportingInstancing() == true)
+    {
+      auto& list = instancingList[iPtrValidMesh.Get()];
+      list.emplace_back(&item);
+    }
+    else
+    {
+      // Render without instancing.
+      this->RenderObject(
+        *iPtrModel,
+        const_cast<FDyMeshResource&>(*iPtrValidMesh),
+        const_cast<FDyMaterialResource&>(*iPtrValidMat)
+      );
+    }
   }
+
+  for (auto& [_, itemList] : instancingList)
+  {
+    if (itemList.empty() == true) { continue; }
+    auto& [__, iMainValidMesh, iMainValidMaterial] = *itemList.front();
+    const auto instancingId = *iMainValidMesh->GetInstancingBufferId();
+
+    std::vector<DMatrix4x4> instancingMatrixes;
+    instancingMatrixes.reserve(itemList.size());
+
+    for (auto& item : itemList)
+    {
+      auto& ptrModel = std::get<0>(*item);
+      instancingMatrixes.emplace_back(
+        ptrModel->mPtrModelRenderer->GetBindedActor()->GetTransform()->GetTransform()
+      );
+    }
+
+    // We need to construct vertex binding and attribute binding connection 
+    // whenever instancing buffer is renewed. (maybe)
+    auto& ptr = const_cast<FDyMeshResource&>(*iMainValidMesh);
+    ptr.BindVertexArray();
+    glBindVertexArray(iMainValidMesh->GetVertexArrayId());
+    glBindBuffer(GL_ARRAY_BUFFER, instancingId);
+    glBufferData(GL_ARRAY_BUFFER, 
+      itemList.size() * sizeof(DMatrix4x4), 
+      instancingMatrixes.data(), 
+      GL_DYNAMIC_DRAW);
+    glBindVertexBuffer(1, instancingId, 0, sizeof(DMatrix4x4));
+
+    glEnableVertexAttribArray(10);
+    glEnableVertexAttribArray(11);
+    glEnableVertexAttribArray(12);
+    glEnableVertexAttribArray(13);
+
+    glVertexAttribFormat(10, 4, GL_FLOAT, GL_FALSE, 0);
+    glVertexAttribFormat(11, 4, GL_FLOAT, GL_FALSE, 16);
+    glVertexAttribFormat(12, 4, GL_FLOAT, GL_FALSE, 32);
+    glVertexAttribFormat(13, 4, GL_FLOAT, GL_FALSE, 48);
+
+    glVertexAttribBinding(10, 1);
+    glVertexAttribBinding(11, 1);
+    glVertexAttribBinding(12, 1);
+    glVertexAttribBinding(13, 1);
+
+    glVertexBindingDivisor(1, 1);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    this->RenderStaticInstancingObjects(
+      const_cast<FDyMeshResource&>(*iMainValidMesh),
+      const_cast<FDyMaterialResource&>(*iMainValidMaterial), itemList.size());
+  }
+
   SProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(drawList.size()));
 }
 
@@ -131,7 +198,6 @@ void FBtRenderItemOpaqueDefault::RenderObject(
   iRefMesh.BindVertexArray();
 
   // Call function call drawing array or element. 
-  // (not support instancing yet) TODO IMPLEMENT BATCHING SYSTEM.
   if (iRefMesh.IsEnabledIndices() == true)
   { XGLWrapper::Draw(EDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
   else
@@ -140,6 +206,42 @@ void FBtRenderItemOpaqueDefault::RenderObject(
   // Unbind, unset, deactivate settings for this submesh and material.
   // Unbind present submesh vertex array object.
   iRefMaterial.TryDetachTextureListFromShader();
+  XGLWrapper::UnbindVertexArrayObject();
+  shaderBinder->DisuseShader();
+}
+
+void FBtRenderItemOpaqueDefault::RenderStaticInstancingObjects(
+  FDyMeshResource& iRefMesh,
+  FDyMaterialResource& iRefMaterial,
+  TU32 iCount)
+{
+  auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
+  if (shaderBinder.IsResourceExist() == false) { return; }
+  
+  using EUniform = EUniformVariableType;
+  shaderBinder->TryUpdateUniform<EUniform::Float>("uBtDyActorId", TF32(0));
+  shaderBinder->UseShader();
+  shaderBinder->TryUpdateUniformList();
+
+  iRefMaterial.TryUpdateTextureList();
+  iRefMesh.BindVertexArray();
+
+  // Call function call drawing array or element. 
+  if (iRefMesh.IsEnabledIndices() == true)
+  { 
+    glDrawElementsInstanced(GL_TRIANGLES, iRefMesh.GetIndicesCounts(), GL_UNSIGNED_INT, 0, iCount);
+    //XGLWrapper::Draw(EDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); 
+  }
+  else
+  { 
+    glDrawArraysInstanced(GL_TRIANGLES, 0, iRefMesh.GetVertexCounts(), iCount);
+    //glDrawElementsInstanced(GL_TRIANGLES, iRefMesh.GetIndicesCounts(), GL_UNSIGNED_INT, 0, iCount);
+    //XGLWrapper::Draw(EDrawType::Triangle, false, iRefMesh.GetVertexCounts()); 
+  }
+
+  // Unbind, unset, deactivate settings for this submesh and material.
+  // Unbind present submesh vertex array object.
+  //iRefMaterial.TryDetachTextureListFromShader();
   XGLWrapper::UnbindVertexArrayObject();
   shaderBinder->DisuseShader();
 }

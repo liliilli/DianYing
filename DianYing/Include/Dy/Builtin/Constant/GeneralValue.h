@@ -17,7 +17,8 @@ namespace dy
 {
 
 /// @brief This should be used when cutting vertex when rendering with indices of mesh.
-static constexpr unsigned int kIndiceSeparator = 0xFFFFFFFF;
+static constexpr unsigned int kIndiceSeparator    = 0xFFFFFFFF;
+static constexpr const char*  kInstancingPostfix  = "__inst";
 
 } /// ::dy namespace
 
