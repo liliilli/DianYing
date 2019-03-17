@@ -926,6 +926,7 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITDepth.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FHandler.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FHandle.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Internal\XHandleAliases.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

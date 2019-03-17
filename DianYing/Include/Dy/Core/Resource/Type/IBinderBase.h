@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Resource/Internal/XHandleAliases.h>
+
 namespace dy
 {
 
@@ -23,7 +25,7 @@ MDY_INTERFACE IBinderBase
   virtual ~IBinderBase() = default;
 
   MDY_NODISCARD virtual bool IsResourceExist() const noexcept = 0;
-  virtual void TryUpdateResourcePtr(_MIN_ const void* ptr) noexcept = 0;
+  virtual void TryUpdateResourcePtr(const void* ptr) noexcept = 0;
   virtual void TryDetachResourcePtr() noexcept = 0;
   virtual void Process() noexcept {};
 };

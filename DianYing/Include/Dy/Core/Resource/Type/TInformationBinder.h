@@ -21,46 +21,54 @@
 namespace dy
 {
 
-/// @struct __TInformationBinderBase
+/// @struct TInformationBinderBase
 /// @brief Binder base class for each supporting information resource type.
 template <EResourceType TType>
-struct __TInformationBinderBase : public IBinderBase
+struct TInformationBinderBase : public IBinderBase
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TInformationBinderBase);
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TInformationBinderBase);
   using TPtrResource      = const typename __TDyRscInfo<TType>::type*;
   using TTryGetReturnType = std::optional<TPtrResource>;
 
   /// @brief Release binder instance and detach it from specified Reference Instance.
-  virtual ~__TInformationBinderBase()
+  virtual ~TInformationBinderBase()
   {
-    if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) { MDY_CALL_ASSERT_SUCCESS(this->pTryDetachResource()); }
+    if (this->mPtrResource != nullptr) 
+    { 
+      MDY_CALL_ASSERT_SUCCESS(this->pTryDetachResource()); 
+    }
   }
 
   TPtrResource operator->() noexcept        { return this->mPtrResource; }
   TPtrResource operator->() const noexcept  { return this->mPtrResource; }
 
   /// @brief Check resource is binded to binder handle.
-  MDY_NODISCARD bool IsResourceExist() const noexcept override final
+  bool IsResourceExist() const noexcept override final
   {
     return MDY_CHECK_ISNOTNULL(this->mPtrResource);
   }
 
   /// @brief Get resource pointer which is not nullable.
-  MDY_NODISCARD TPtrResource Get() const noexcept
+  TPtrResource Get() const noexcept
   {
-    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
+    MDY_ASSERT_MSG(
+      this->mPtrResource != nullptr, 
+      "Resource pointer address must not be null when use it.");
     return this->mPtrResource;
   }
 
 protected:
-  __TInformationBinderBase(_MIN_ const std::string& iSpecifierName) : mSpecifierName{iSpecifierName} {};
-  __TInformationBinderBase() {};
+  TInformationBinderBase(const std::string& iSpecifierName) 
+    : mSpecifierName{iSpecifierName} {};
+  TInformationBinderBase() {};
 
   /// @brief Require resource.
-  MDY_NODISCARD EDySuccess pTryRequireResource(_MIN_ const std::string& iNewSpecifier) noexcept
+  EDySuccess pTryRequireResource(const std::string& iNewSpecifier) noexcept
   {
-    MDY_ASSERT_MSG(iNewSpecifier.empty() == false, "Resource specifier name must be valid to require resource.");
+    MDY_ASSERT_MSG(
+      iNewSpecifier.empty() == false, 
+      "Resource specifier name must be valid to require resource.");
 
     auto ptrResult = SDyIOBindingHelper::TryRequireInformation<TType>(iNewSpecifier, this);
     if (ptrResult.has_value() == false) 
@@ -79,18 +87,18 @@ protected:
   /// @brief Try detach resource. \n
   /// If pointer of resource is null (so, not bound to anything), just return DY_FAILURE.
   /// If detach is succeeded, return DY_SUCCESS. and `mPtrResource` will be nullptr agian.
-  MDY_NODISCARD EDySuccess pTryDetachResource() noexcept
+  EDySuccess pTryDetachResource() noexcept
   {
-    if (MDY_CHECK_ISNULL(this->mPtrResource) == true) { return DY_FAILURE; }
+    if (this->mPtrResource == nullptr) { return DY_FAILURE; }
 
     MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachInformation<TType>(this->mSpecifierName, this));
-    this->mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+    this->mSpecifierName.clear();
     this->mPtrResource = nullptr;
     return DY_SUCCESS;
   }
 
   /// @brief Set new specifier name. this function must be called in lazy resource type.
-  void pSetSpecifierName(_MIN_ const std::string& iNewSpecifier) noexcept
+  void pSetSpecifierName(const std::string& iNewSpecifier) noexcept
   {
     this->mSpecifierName = iNewSpecifier;
   }
@@ -98,41 +106,49 @@ protected:
 protected:
   /// @brief Try update resource pointer of this type with ptr when RI is being valid. \n
   /// `iPtr` must be convertible to specialized __TBaseResourceBinder `Type`.
-  void TryUpdateResourcePtr(_MIN_ const void* iPtr) noexcept override final
+  void TryUpdateResourcePtr(const void* iPtr) noexcept override final
   {
   // If there is something already bound to this instance, detach this from resource.
     MDY_CALL_BUT_NOUSE_RESULT(this->pTryDetachResource());
 
     this->mPtrResource = static_cast<TPtrResource>(const_cast<void*>(iPtr));
-    this->mSpecifierName        = this->mDelayedSpecifierName;
-    this->mDelayedSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+    this->mSpecifierName = this->mDelayedSpecifierName;
+    this->mDelayedSpecifierName.clear();
   }
 
   /// @brief Try detach resource pointer of this type with ptr when RI is being GCed.
-  void TryDetachResourcePtr() noexcept override final { this->mPtrResource = nullptr; }
+  void TryDetachResourcePtr() noexcept override final 
+  { 
+    this->mPtrResource = nullptr; 
+  }
 
-  std::string   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  std::string   mDelayedSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  TPtrResource  mPtrResource    = MDY_INITIALIZE_NULL;
+  std::string   mSpecifierName;
+  std::string   mDelayedSpecifierName;
+  TPtrResource  mPtrResource = nullptr;
 };
 
 /// @class TDyInformationBinder
 /// @brief Not lazy version of `TDyInformationBinder`.
 /// User have to require resource manually. but detach is held by automatically. (RAII)
 template <EResourceType TType>
-class TDyInformationBinder final : public __TInformationBinderBase<TType>
+class TDyInformationBinder final : public TInformationBinderBase<TType>
 {
 private:
-  using TSuper = __TInformationBinderBase<TType>;
+  using TSuper = TInformationBinderBase<TType>;
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TDyInformationBinder);
-  TDyInformationBinder(_MIN_ const std::string& iNewSpecifier) : TSuper{iNewSpecifier} { TryRequireResource(iNewSpecifier); }
+  TDyInformationBinder(const std::string& iNewSpecifier) 
+    : TSuper{iNewSpecifier} 
+  { 
+    this->TryRequireResource(iNewSpecifier); 
+  }
+
   TDyInformationBinder() = default;
   virtual ~TDyInformationBinder() = default;
 
   /// @brief Try require resource with specifier name in given EResourceType.
   /// If resource is already bound to binder handle, detach it first and newly bind another resource into it.
-  void TryRequireResource(_MIN_ const std::string& iNewSpecifier)
+  void TryRequireResource(const std::string& iNewSpecifier)
   {
     // If resource is already exist and bound by something. 
     // Let it be until new resource is bounded soon.

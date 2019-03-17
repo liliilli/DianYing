@@ -800,6 +800,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IUniformStructs.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IUniformValueBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Internal\XHandleAliases.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />
