@@ -264,7 +264,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
       // If resource is valid so must forward instance pointer to binder...
       for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
       {
-        if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
+        if (ptrBinderBase == nullptr) { continue; }
         const_cast<__IBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance.mPtrInstance);
       }
     }
@@ -274,7 +274,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
       // If resource is not valid, so must detach instance pointer from binders...
       for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
       {
-        if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
+        if (ptrBinderBase == nullptr) { continue; }
         const_cast<__IBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
       }
     }
