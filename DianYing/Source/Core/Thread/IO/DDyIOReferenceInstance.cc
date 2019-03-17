@@ -20,13 +20,13 @@
 namespace dy
 {
 
-void DDyIOReferenceInstance::AttachBinder(const __IBinderBase* iPtrBase) noexcept
+void DDyIOReferenceInstance::AttachBinder(__IBinderBase* iPtrBase) noexcept
 {
   MDY_SYNC_LOCK_GUARD(mContainerMutex);
   this->mPtrBoundBinderList.emplace(iPtrBase);
 }
 
-void DDyIOReferenceInstance::DetachBinder(const __IBinderBase* iPtrBase) noexcept
+void DDyIOReferenceInstance::DetachBinder(__IBinderBase* iPtrBase) noexcept
 {
   MDY_SYNC_LOCK_GUARD(mContainerMutex);
   this->mPtrBoundBinderList.erase(iPtrBase);

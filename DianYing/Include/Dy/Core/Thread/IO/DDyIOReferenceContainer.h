@@ -64,14 +64,14 @@ public:
   MDY_NODISCARD EDySuccess TryBindBinderToResourceRI(
     const std::string& iSpecifier, 
     EResourceType iType, 
-    const __IBinderBase* iPtrBinder);
+    __IBinderBase* iPtrBinder);
 
   /// @brief Try detach binder instance from valid resource Reference Instance.
   /// If not exist, just do nothing and return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI(
-      _MIN_ const std::string& iSpecifier, 
-      _MIN_ EResourceType iType, 
-      _MIN_ const __IBinderBase* iPtrBinder);
+    const std::string& iSpecifier, 
+    EResourceType iType, 
+    __IBinderBase* iPtrBinder);
 
   /// @brief Get GC-Candidate Reference instance list from container. \n
   /// Condition-satisfied RI will be removed from container.
@@ -89,10 +89,10 @@ public:
   /// @brief Try update validity of this reference instance. \n
   /// If `isValid` is true, `iPtrInstance` must point to something valid, should not be null.
   MDY_NODISCARD EDySuccess TryUpdateValidity(
-      _MIN_ EResourceType type, 
-      _MIN_ const std::string& specifier, 
-      _MIN_ bool isValid,
-      _MIN_ void* iPtrInstance = nullptr);
+    EResourceType type, 
+    const std::string& specifier, 
+    bool isValid,
+    void* iPtrInstance = nullptr);
 
 private:
   /// @brief Forward GCed candidate Reference Instance list to `iResult`.

@@ -88,7 +88,7 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EResourceScope scope
 EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
     const std::string& iSpecifier,
     EResourceType iType,
-    const __IBinderBase* iPtrBinder)
+    __IBinderBase* iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -112,9 +112,9 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
 }
 
 EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
-    _MIN_ const std::string& iSpecifier, 
-    _MIN_ EResourceType iType, 
-    _MIN_ const __IBinderBase* iPtrBinder)
+  const std::string& iSpecifier, 
+  EResourceType iType, 
+  __IBinderBase* iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -242,20 +242,17 @@ EDySuccess DDyIOReferenceContainer::MoveReferenceInstance(std::unique_ptr<DDyIOR
 }
 
 EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
-    _MIN_ EResourceType type, 
-    _MIN_ const std::string& specifier, 
-    _MIN_ bool isValid,
-    _MIN_ void* iPtrInstance)
+  EResourceType type, const std::string& specifier, bool isValid, void* iPtrInstance)
 {
   // Get pointer of hash-map.
   TRefInstanceMap* ptrMap;
   switch (type)
   {
-  case EResourceType::Mesh:     ptrMap = &this->mMapMeshReference;     break;
-  case EResourceType::Model:    ptrMap = &this->mMapModelReference;    break;
-  case EResourceType::GLShader: ptrMap = &this->mMapGLShaderReference; break;
-  case EResourceType::Texture:  ptrMap = &this->mMapTextureReference;  break;
-  case EResourceType::Material: ptrMap = &this->mMapMaterialReference; break;
+  case EResourceType::Mesh:           ptrMap = &this->mMapMeshReference;     break;
+  case EResourceType::Model:          ptrMap = &this->mMapModelReference;    break;
+  case EResourceType::GLShader:       ptrMap = &this->mMapGLShaderReference; break;
+  case EResourceType::Texture:        ptrMap = &this->mMapTextureReference;  break;
+  case EResourceType::Material:       ptrMap = &this->mMapMaterialReference; break;
   case EResourceType::GLAttachment:   ptrMap = &this->mMapAttachmentReference;       break;
   case EResourceType::GLFrameBuffer:  ptrMap = &this->mMapFrameBufferReference;      break;
   case EResourceType::Skeleton:       ptrMap = &this->mMapModelSkeletonReference;    break;
@@ -272,6 +269,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
     {
       instance->SetValid(iPtrInstance);
       // If resource is valid so must forward instance pointer to binder...
+
       MDY_SYNC_LOCK_GUARD(instance->mContainerMutex);
       for (const auto& ptrBinderBase : instance->mPtrBoundBinderList)
       {
@@ -282,6 +280,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
     else
     {
       instance->SetNotValid();
+
       // If resource is not valid, so must detach instance pointer from binders...
       MDY_SYNC_LOCK_GUARD(instance->mContainerMutex);
       for (const auto& ptrBinderBase : instance->mPtrBoundBinderList)
