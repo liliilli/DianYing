@@ -65,6 +65,7 @@ void main() {
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
 	gSpecular = vec4(1, 0, 1, 1);
 	gPosition = fs_in.modelPosition;
+  DyNotSetEmissive();
 }
 )dy");
 

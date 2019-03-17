@@ -66,6 +66,7 @@ void main() {
   // RGB must be used specular color, and A must be used roughness.
 	gSpecular = vec4(1, 1, 1, uRoughness);
 	gPosition = fs_in.modelPosition;
+  DyNotSetEmissive();
 }
 )dy");
 

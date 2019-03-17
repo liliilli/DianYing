@@ -37,8 +37,8 @@ out VS_OUT
 void main()
 {
   gl_Position			      = DyGetCameraPv() * DyTransform(vec4(dyPosition, 1.0));
-	vs_out.normal		      = mat3(uModelMatrix) * dyNormal;
-	vs_out.modelPosition  = (uModelMatrix * vec4(dyPosition, 1.0));
+	vs_out.normal		      = DyGetRotationMatrix() * dyNormal;
+	vs_out.modelPosition  = DyTransform(vec4(dyPosition, 1.0));
 }
 )dy");
 

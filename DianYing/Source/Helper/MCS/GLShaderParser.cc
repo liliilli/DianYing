@@ -254,6 +254,7 @@ layout (location = 5) out vec4 gActorId;
 uniform float uBtDyActorId = 0;
 
 void DyBindActorId() { gActorId = vec4(uBtDyActorId, 0, 0, 1); }
+void DyNotSetEmissive() { gEmissive = vec4(0, 0, 0, 1); };
 )dy");
 
 /// @brief Default Weighted blended output module.
