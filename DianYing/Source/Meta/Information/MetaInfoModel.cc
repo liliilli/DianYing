@@ -54,7 +54,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo&
           { "Specifier": "nanosuit_Helmet", "Material": "dyBtMtCheckerWorldPos" },
           { "Specifier": "nanosuit_Legs", "Material": "dyBtMtCheckerWorldPos" },
           { "Specifier": "nanosuit_Lights", "Material": "dyBtMtCheckerWorldPos" },
-          { "Specifier": "nanosuit_Visor", "Material": "dyBtMtCheckerWorldPos" }
+          { "Specifier": "nanosuit_Visor", "Material": "dyBtMtCheckerWorldPos", "IsInstancing": true }
         ],
         "Skeleton":
         {
@@ -80,6 +80,14 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelInstanceMetaInfo:
 {
   json::GetValueFromTo(j, "Specifier",  p.mMeshSpecifier);
   json::GetValueFromTo(j, "Material",   p.mMaterialSpecifier);
+  if (json::HasJsonKey(j, "IsInstancing") == true)
+  {
+    json::GetValueFromTo(j, "IsInstancing", p.mInstanced);
+  }
+  else
+  {
+    p.mInstanced = false;
+  }
   // 
   if (p.mMaterialSpecifier.empty() == true)
   {

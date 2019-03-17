@@ -33,6 +33,30 @@
 namespace dy
 {
 
+using TInstancingHash = std::pair<const FDyMeshResource*, const FDyMaterialResource*>;
+
+}
+
+namespace std
+{
+
+template<> struct hash<dy::TInstancingHash>
+{
+  using TArgumentType = dy::TInstancingHash;
+  typedef std::size_t result_type;
+  result_type operator()(const TArgumentType& s) const noexcept
+  {
+    result_type const h1 ( std::hash<std::string>{}(s.first->GetSpecifierName()) );
+    result_type const h2 ( std::hash<std::string>{}(s.second->GetSpecifierName()) );
+    return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion)
+}
+};
+
+} /// ::std namespace
+
+namespace dy
+{
+
 void FBtRenderItemOpaqueDefault::__ConstructionHelper
   ::ConstructBuffer(PDyRenderItemInstanceMetaInfo& oMeta)
 {
@@ -88,14 +112,17 @@ void FBtRenderItemOpaqueDefault::OnRender()
   auto& drawList = MRendering::GetInstance().GetOpaqueMeshQueueList();
 
   // Make instancing list.
-  std::unordered_map<const FDyMeshResource*, std::vector<MRendering::TMeshDrawCallItem*>> instancingList;
+  std::unordered_map<
+    std::pair<const FDyMeshResource*, const FDyMaterialResource*>, 
+    std::vector<MRendering::TMeshDrawCallItem*>> instancingList;
 
   for (auto& item : drawList)
   {
     auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] = item;
     if (iPtrValidMesh->IsSupportingInstancing() == true)
     {
-      auto& list = instancingList[iPtrValidMesh.Get()];
+      auto keyPair = std::pair(iPtrValidMesh.Get(), iPtrValidMat.Get());
+      auto& list = instancingList[keyPair];
       list.emplace_back(&item);
     }
     else
