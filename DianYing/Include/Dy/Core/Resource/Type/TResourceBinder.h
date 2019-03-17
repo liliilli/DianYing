@@ -25,10 +25,10 @@ namespace dy
 /// @brief Not lazy version of `TResourceBinder`.
 /// User have to require resource manually. but detach is held by automatically. (RAII)
 template <EResourceType TType>
-class TResourceBinder final : public __TBaseResourceBinder<TType>
+class TResourceBinder final : public TResourceBinderBase<TType>
 {
 private:
-  using TSuper = __TBaseResourceBinder<TType>;
+  using TSuper = TResourceBinderBase<TType>;
 public:
   MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TResourceBinder);
   TResourceBinder(_MIN_ const std::string& iNewSpecifier) { TryRequireResource(iNewSpecifier); }
@@ -80,7 +80,7 @@ public:
 /// User have to require resource manually. but detach is held by automatically. (RAII)
 template <>
 class TResourceBinder<EResourceType::Texture> final : 
-    public __TBaseResourceBinder<EResourceType::Texture>
+    public TResourceBinderBase<EResourceType::Texture>
   , public IRenderableBinder
 {
 public:

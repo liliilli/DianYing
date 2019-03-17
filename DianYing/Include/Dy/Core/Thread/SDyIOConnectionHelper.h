@@ -98,7 +98,7 @@ public:
   static void InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept;
 
   /// @brief Insert RI to gcList anyway. Use this carefully.
-  static void InsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI);
+  static void InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>&& iRefRI);
 
   // @TODO MUST BE PRIVATE
 

@@ -33,7 +33,7 @@ namespace dy
 {
 class MIOMeta;
 class SDyIOConnectionHelper;
-MDY_INTERFACE __IBinderBase;
+MDY_INTERFACE IBinderBase;
 } /// ::dy namespace
 
 //!
@@ -178,22 +178,22 @@ private:
   /// @brief Try bind binder instance to Resource Reference Instance.
   /// If not found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToResourceRI
-  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder);
+  (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder);
 
   /// @brief Try bind binder instance to Information Reference Instance.
   /// If not found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToInformationRI
-  (_MIN_ const std::string & iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase * iPtrBinder);
+  (const std::string & iSpecifier, EResourceType iType, IBinderBase& iPtrBinder);
 
   /// @brief Try detach binder instance from Resource Reference Instance.
   /// If nnot found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI
-  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder);
+  (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder);
 
   /// @brief Try detach binder instance from Information Reference Instance.
   /// If nnot found RI, just return DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromInformationRI
-  (_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder);
+  (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder);
 
   ///
   /// @brief Try update scope of given style's specifier RI of resource type. \n
@@ -231,7 +231,7 @@ private:
 
   /// @brief Insert valid const reference of RI into gc list as copied instance of original instance.
   /// Use this funciton carefully.
-  void outInsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI);
+  void outInsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& iRefRI);
 
   //!
   //! Common methods (always must use mutex)

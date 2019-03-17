@@ -14,45 +14,76 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
-#include <Dy/Helper/System/Idioms.h>
 #include <Dy/Core/Resource/Type/IBinderBase.h>
 
 namespace dy
 {
 
-void DDyIOReferenceInstance::AttachBinder(_MIN_ const __IBinderBase* iPtrBase) noexcept
+void DDyIOReferenceInstance::AttachBinder(IBinderBase& iRefBase) noexcept
 {
-  this->mPtrBoundBinderList.emplace_back(iPtrBase);
+  MDY_SYNC_LOCK_GUARD(mContainerMutex);
+  this->mInternalHandler.AttachHandle(iRefBase.mHandle);
 }
 
-void DDyIOReferenceInstance::DetachBinder(const __IBinderBase* iPtrBase) noexcept
+void DDyIOReferenceInstance::DetachBinder(IBinderBase& iRefBase) noexcept
 {
-  MDY_ASSERT_MSG(this->mPtrBoundBinderList.empty() == false, "Reference count must be positive value when detach any binder.");
-
-  const auto itPtr = std::find(MDY_BIND_BEGIN_END(this->mPtrBoundBinderList), iPtrBase);
-  MDY_ASSERT_MSG(itPtr != this->mPtrBoundBinderList.end(), "Given binder pointer address must be exist in given RI list.");
-
-  FaseErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
+  MDY_SYNC_LOCK_GUARD(mContainerMutex);
+  this->mInternalHandler.DetachHandle(iRefBase.mHandle);
 }
 
-void DDyIOReferenceInstance::SetValid(_MIN_ void*& iPtrInstance) noexcept
+void DDyIOReferenceInstance::SetValid(void*& iPtrInstance) noexcept
 {
+  if (this->mIsResourceValid == true) { return; }
+
   this->mIsResourceValid  = true;
   this->mPtrInstance      = iPtrInstance;
+
+  {
+    MDY_SYNC_LOCK_GUARD(this->mContainerMutex);
+    for (const auto& ptrHandle : this->mInternalHandler)
+    {
+      if (ptrHandle == nullptr) { continue; }
+
+      auto* ptrBinder = static_cast<IBinderBase*>(ptrHandle->GetUserData());
+      ptrBinder->TryUpdateResourcePtr(this->mPtrInstance);
+    }
+  }
 }
 
 void DDyIOReferenceInstance::SetNotValid() noexcept
 {
+  if (this->mIsResourceValid == false) { return; }
+
   this->mIsResourceValid  = false;
   this->mPtrInstance      = nullptr;
+
+  {
+    MDY_SYNC_LOCK_GUARD(this->mContainerMutex);
+    for (const auto& ptrHandle : this->mInternalHandler)
+    {
+      if (ptrHandle == nullptr) { continue; }
+
+      auto* ptrBinder = static_cast<IBinderBase*>(ptrHandle->GetUserData());
+      ptrBinder->TryDetachResourcePtr();
+    }
+  }
 }
 
-bool DDyIOReferenceInstance::IsNeedToBeGced() const noexcept
+bool DDyIOReferenceInstance::HaveToBeGCed() const noexcept
 {
   if (this->mIsResourceValid == true
   &&  this->mScope == EResourceScope::Temporal 
-  &&  this->mPtrBoundBinderList.empty() == true) { return true; }
-  else { return false; }
+  &&  this->mInternalHandler.IsBeingBinded() == false) 
+  { 
+    return true; 
+  }
+
+  return false;
+}
+
+bool DDyIOReferenceInstance::IsBeingBound() const noexcept
+{
+  return this->mInternalHandler.IsBeingBinded();
 }
 
 } /// ::dy namespace

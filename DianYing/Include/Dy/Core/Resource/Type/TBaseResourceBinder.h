@@ -21,17 +21,17 @@
 namespace dy
 {
 
-/// @struct __TBaseResourceBinder
+/// @struct TResourceBinderBase
 /// @brief Binder base class for each supporting resource type.
 template <EResourceType TType>
-struct __TBaseResourceBinder : public __IBinderBase
+struct TResourceBinderBase : public IBinderBase
 {
 public:
-  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__TBaseResourceBinder);
+  MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(TResourceBinderBase);
   using TPtrResource = typename __TResourceType<TType>::type*;
 
   /// @brief Release binder instance and detach it from specified Reference Instance.
-  virtual ~__TBaseResourceBinder();
+  virtual ~TResourceBinderBase();
 
   TPtrResource operator->() noexcept        
   { 
@@ -50,7 +50,7 @@ public:
   MDY_NODISCARD bool IsResourceExist() const noexcept override final;
 
 protected:
-  __TBaseResourceBinder() = default;
+  TResourceBinderBase() = default;
 
   /// @brief Require resource.
   MDY_NODISCARD EDySuccess pTryRequireResource(_MIN_ const std::string& iNewSpecifier) noexcept;
@@ -61,7 +61,7 @@ protected:
   MDY_NODISCARD EDySuccess pTryDetachResource() noexcept;
 
     /// @brief Try update resource pointer of this type with ptr when RI is being valid. \n
-  /// `iPtr` must be convertible to specialized __TBaseResourceBinder `Type`.
+  /// `iPtr` must be convertible to specialized TResourceBinderBase `Type`.
   void TryUpdateResourcePtr(_MIN_ const void* iPtr) noexcept override final;
 
   /// @brief Try detach resource pointer of this type with ptr when RI is being GCed.
@@ -73,7 +73,7 @@ protected:
 };
 
 template <EResourceType TType>
-__TBaseResourceBinder<TType>::~__TBaseResourceBinder()
+TResourceBinderBase<TType>::~TResourceBinderBase()
 {
   if (MDY_CHECK_ISNOTNULL(this->mPtrResource)) 
   { 
@@ -82,20 +82,20 @@ __TBaseResourceBinder<TType>::~__TBaseResourceBinder()
 }
 
 template <EResourceType TType>
-typename __TBaseResourceBinder<TType>::TPtrResource 
-__TBaseResourceBinder<TType>::Get() const noexcept
+typename TResourceBinderBase<TType>::TPtrResource 
+TResourceBinderBase<TType>::Get() const noexcept
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mPtrResource), "Resource pointer address must not be null when use it.");
   return this->mPtrResource;
 }
 
 template <EResourceType TType>
-EDySuccess __TBaseResourceBinder<TType>::pTryRequireResource
+EDySuccess TResourceBinderBase<TType>::pTryRequireResource
 (_MIN_ const std::string& iNewSpecifier) noexcept
 {
   MDY_ASSERT_MSG(iNewSpecifier.empty() == false, "Resource specifier name must be valid to require resource.");
 
-  auto ptrResult = SDyIOBindingHelper::TryRequireResource<TType>(iNewSpecifier, this);
+  auto ptrResult = SDyIOBindingHelper::TryRequireResource<TType>(iNewSpecifier, *this);
   if (ptrResult.has_value() == false) 
   { 
     this->mDelayedSpecifierName = iNewSpecifier;
@@ -110,26 +110,26 @@ EDySuccess __TBaseResourceBinder<TType>::pTryRequireResource
 }
 
 template <EResourceType TType>
-EDySuccess __TBaseResourceBinder<TType>::pTryDetachResource() noexcept
+EDySuccess TResourceBinderBase<TType>::pTryDetachResource() noexcept
 {
   // Checking 
   if (MDY_CHECK_ISNULL(this->mPtrResource)) { return DY_FAILURE; }
 
   // Detach
-  MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachResource<TType>(this->mSpecifierName, this));
+  MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachResource<TType>(this->mSpecifierName, *this));
   this->mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   this->mPtrResource    = nullptr;
   return DY_SUCCESS;
 }
 
 template <EResourceType TType>
-bool __TBaseResourceBinder<TType>::IsResourceExist() const noexcept
+bool TResourceBinderBase<TType>::IsResourceExist() const noexcept
 {
   return MDY_CHECK_ISNOTNULL(this->mPtrResource);
 }
 
 template <EResourceType TType>
-void __TBaseResourceBinder<TType>::TryUpdateResourcePtr(const void* iPtr) noexcept
+void TResourceBinderBase<TType>::TryUpdateResourcePtr(const void* iPtr) noexcept
 {
   // If there is something already bound to this instance, detach this from resource.
   MDY_CALL_BUT_NOUSE_RESULT(this->pTryDetachResource());
@@ -140,7 +140,7 @@ void __TBaseResourceBinder<TType>::TryUpdateResourcePtr(const void* iPtr) noexce
 }
 
 template <EResourceType TType>
-void __TBaseResourceBinder<TType>::TryDetachResourcePtr() noexcept
+void TResourceBinderBase<TType>::TryDetachResourcePtr() noexcept
 { 
   this->mPtrResource = nullptr; 
 }

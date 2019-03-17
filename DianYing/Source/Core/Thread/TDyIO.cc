@@ -686,25 +686,25 @@ bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ 
 }
 
 EDySuccess TDyIO::TryBindBinderToResourceRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIResourceMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryBindBinderToInformationRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIInformationMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryDetachBinderFromResourceRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIResourceMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
 EDySuccess TDyIO::TryDetachBinderFromInformationRI
-(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ const __IBinderBase* iPtrBinder)
+(const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIInformationMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
@@ -787,7 +787,7 @@ EDySuccess TDyIO::outTryCallSleptCallbackFunction()
   return DY_SUCCESS;
 }
 
-void TDyIO::outInsertGcCandidate(_MIN_ const DDyIOReferenceInstance& iRefRI)
+void TDyIO::outInsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& iRefRI)
 {
   this->mGarbageCollector.InsertGcCandidate(iRefRI);
 }
@@ -799,15 +799,15 @@ void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ 
   case EDyResourceStyle::Information: 
   { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
     // and reinsert it to gc list.
-    const auto gcCandidateList = this->mRIInformationMap.GetForwardCandidateRIAsList(iScope);
-    this->mGarbageCollector.InsertGcCandidateList(gcCandidateList);
+    auto gcCandidateList = this->mRIInformationMap.GetForwardCandidateRIAsList(iScope);
+    this->mGarbageCollector.InsertGcCandidateList(std::move(gcCandidateList));
     this->mGarbageCollector.TryGarbageCollectCandidateList();
   } break;
   case EDyResourceStyle::Resource:    
   { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
     // and reinsert it to gc list.
-    const auto gcCandidateList = this->mRIResourceMap.GetForwardCandidateRIAsList(iScope);
-    this->mGarbageCollector.InsertGcCandidateList(gcCandidateList);
+    auto gcCandidateList = this->mRIResourceMap.GetForwardCandidateRIAsList(iScope);
+    this->mGarbageCollector.InsertGcCandidateList(std::move(gcCandidateList));
     this->mGarbageCollector.TryGarbageCollectCandidateList();
   } break;
   default: MDY_UNEXPECTED_BRANCH();

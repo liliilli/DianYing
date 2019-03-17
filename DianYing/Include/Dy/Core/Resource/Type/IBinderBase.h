@@ -13,20 +13,26 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Core/Resource/Internal/XHandleAliases.h>
+
 namespace dy
 {
 
-/// @interface __IBinderBase
-/// @brief Using interface for binding resource & information instance. Must use this, not __TBaseResourceBinder.
-MDY_INTERFACE __IBinderBase
-  {
-    virtual ~__IBinderBase() = default;
+/// @interface IBinderBase
+/// @brief Using interface for binding resource & information instance. Must use this, not TResourceBinderBase.
+MDY_INTERFACE IBinderBase
+{
+public:
+  IBinderBase() { this->mHandle.SetUserData(this); }
+  virtual ~IBinderBase() = default;
 
-    virtual MDY_NODISCARD bool IsResourceExist() const noexcept = 0;
-    virtual void TryUpdateResourcePtr(_MIN_ const void* ptr) noexcept = 0;
-    virtual void TryDetachResourcePtr() noexcept = 0;
-    virtual void Process() noexcept {};
-  };
+  MDY_NODISCARD virtual bool IsResourceExist() const noexcept = 0;
+  virtual void TryUpdateResourcePtr(const void* ptr) noexcept = 0;
+  virtual void TryDetachResourcePtr() noexcept = 0;
+  virtual void Process() noexcept {};
+
+  FResourceHandle mHandle;
+};
 
 } /// ::dy namespace
 

@@ -800,6 +800,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IUniformStructs.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IUniformValueBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Internal\XHandleAliases.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />
@@ -844,6 +845,8 @@
     <ClInclude Include="Include\Dy\Element\Type\Timer\FActorTimerItem.h" />
     <ClInclude Include="Include\Dy\Element\Type\Timer\FWidgetTimerItem.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FCallStack.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FHandle.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FHandler.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FProxyHandle.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FProxyHandler.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FRWLockAtomic.h" />
@@ -1154,6 +1157,8 @@
     <None Include="Include\Dy\Element\Inline\FActorImpl.inl" />
     <None Include="Include\Dy\Element\Inline\FActorTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FCallStackTmp.inl" />
+    <None Include="Include\Dy\Helper\Internal\Inline\FHandlerTmp.inl" />
+    <None Include="Include\Dy\Helper\Internal\Inline\FHandleTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandlerTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandleTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FThreadPoolTmp.inl" />
