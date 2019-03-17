@@ -924,6 +924,8 @@
     <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbDefaultSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RenderCSMInstancing.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITDepth.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FHandler.h" />
+    <ClInclude Include="Include\Dy\Helper\Internal\FHandle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -956,5 +958,7 @@
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />
     <None Include="data\Level\Test_Astronaut.json" />
     <None Include="..\..\..\Downloads\Rock\Rock_0.dybMesh" />
+    <None Include="Include\Dy\Helper\Internal\Inline\FHandlerTmp.inl" />
+    <None Include="Include\Dy\Helper\Internal\Inline\FHandleTmp.inl" />
   </ItemGroup>
 </Project>
