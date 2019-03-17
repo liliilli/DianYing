@@ -83,12 +83,6 @@ FHandle<TType>& FHandle<TType>::operator=(FHandle&& iHandle) noexcept
 }
 
 template <typename TType>
-TType* FHandle<TType>::operator->()
-{
-  return this->mHandlerAddress->mValue;
-}
-
-template <typename TType>
 bool FHandle<TType>::IsBinding() const noexcept
 {
   return this->mHandlerAddress != nullptr;
@@ -103,6 +97,18 @@ void FHandle<TType>::Reset()
     this->mHandlerAddress->DetachHandle(*this);
     this->mHandlerAddress = nullptr;
   }
+}
+
+template <typename TType>
+void FHandle<TType>::SetUserData(void* iPtr)
+{
+  this->mData = iPtr;
+}
+
+template <typename TType>
+void* FHandle<TType>::GetUserData() const noexcept
+{
+  return this->mData;
 }
 
 } /// ::dy namespace

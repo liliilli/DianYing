@@ -88,10 +88,13 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EResourceScope scope
 EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
   const std::string& iSpecifier,
   EResourceType iType,
-  IBinderBase* iPtrBinder)
+  IBinderBase& iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
-  if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
+  if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) 
+  { 
+    return DY_FAILURE; 
+  }
 
   // Attach binder to RI container.
   switch (iType)
@@ -114,7 +117,7 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
 EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   const std::string& iSpecifier, 
   EResourceType iType, 
-  IBinderBase* iPtrBinder)
+  IBinderBase& iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -181,7 +184,7 @@ void DDyIOReferenceContainer::ForwardCandidateRIFromList(
     }
 
     if (instance->mIsResourceValid == true 
-    &&  instance->mPtrBoundBinderList.empty() == true)
+    &&  instance->IsBeingBound() == false)
     {
       oResult.emplace_back(std::move(instance));
       it = ioContainer.erase(it);
@@ -265,33 +268,22 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
   auto& instance = (*ptrMap)[specifier];
   if (isValid != instance->mIsResourceValid) 
   { 
-    if (isValid == true)
-    {
-      instance->SetValid(iPtrInstance);
+    if (isValid == true) 
+    { 
       // If resource is valid so must forward instance pointer to binder...
-
-      MDY_SYNC_LOCK_GUARD(instance->mContainerMutex);
-      for (const auto& ptrBinderBase : instance->mPtrBoundBinderList)
-      {
-        if (ptrBinderBase == nullptr) { continue; }
-        const_cast<IBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance->mPtrInstance);
-      }
+      instance->SetValid(iPtrInstance); 
     }
     else
     {
-      instance->SetNotValid();
-
       // If resource is not valid, so must detach instance pointer from binders...
-      MDY_SYNC_LOCK_GUARD(instance->mContainerMutex);
-      for (const auto& ptrBinderBase : instance->mPtrBoundBinderList)
-      {
-        if (ptrBinderBase == nullptr) { continue; }
-        const_cast<IBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
-      }
+      instance->SetNotValid();
     }
     return DY_SUCCESS; 
   }
-  else { return DY_FAILURE; }
+  else 
+  { 
+    return DY_FAILURE; 
+  }
 }
 
 } /// ::dy namespace

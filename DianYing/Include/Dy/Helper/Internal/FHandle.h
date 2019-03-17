@@ -34,14 +34,21 @@ public:
   FHandle(FHandle&& iHandle) noexcept;
   FHandle& operator=(FHandle&& iHandle) noexcept;
 
-  TType* operator->();
-
   /// @brief Check this handle is binding any resource.
   /// This does not guarantee that handler resource has this instance actually.
   [[nodiscard]] bool IsBinding() const noexcept;
 
   /// @brief Reset binding state.
   void Reset();
+
+  /// @brief Set user data pointer to handle.
+  void SetUserData(void* iPtr);
+  /// @brief Get pointer of user data.
+  void* GetUserData() const noexcept;
+
+protected:
+  /// @brief Custom data.
+  void* mData = nullptr;
 
 private:
   FHandler<TType>* mHandlerAddress = nullptr;

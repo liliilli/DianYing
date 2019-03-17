@@ -23,7 +23,7 @@ namespace dy
 /// @struct __TResourceBinderMaterial
 /// @brief Base binder class for each supporting mateiral resource type.
 struct __TResourceBinderMaterial : 
-    public __TBaseResourceBinder<EResourceType::Material>,
+    public TResourceBinderBase<EResourceType::Material>,
     public AUniformHelper
 {
 public:

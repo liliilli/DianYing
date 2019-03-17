@@ -70,7 +70,7 @@ protected:
       iNewSpecifier.empty() == false, 
       "Resource specifier name must be valid to require resource.");
 
-    auto ptrResult = SDyIOBindingHelper::TryRequireInformation<TType>(iNewSpecifier, this);
+    auto ptrResult = SDyIOBindingHelper::TryRequireInformation<TType>(iNewSpecifier, *this);
     if (ptrResult.has_value() == false) 
     { 
       this->mDelayedSpecifierName = iNewSpecifier;
@@ -91,7 +91,7 @@ protected:
   {
     if (this->mPtrResource == nullptr) { return DY_FAILURE; }
 
-    MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachInformation<TType>(this->mSpecifierName, this));
+    MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachInformation<TType>(this->mSpecifierName, *this));
     this->mSpecifierName.clear();
     this->mPtrResource = nullptr;
     return DY_SUCCESS;
@@ -105,7 +105,7 @@ protected:
 
 protected:
   /// @brief Try update resource pointer of this type with ptr when RI is being valid. \n
-  /// `iPtr` must be convertible to specialized __TBaseResourceBinder `Type`.
+  /// `iPtr` must be convertible to specialized TResourceBinderBase `Type`.
   void TryUpdateResourcePtr(const void* iPtr) noexcept override final
   {
   // If there is something already bound to this instance, detach this from resource.

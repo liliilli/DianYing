@@ -27,6 +27,10 @@ template <typename TType>
 class FHandler
 {
 public:
+  using TContainer      = std::unordered_set<FHandle<TType>*>;
+  using iterator        = typename TContainer::iterator;
+  using const_iterator  = typename TContainer::const_iterator;
+
   FHandler() = default;
   virtual ~FHandler();
 
@@ -43,8 +47,16 @@ public:
   /// @brief Check bound handle list is empty.
   [[nodiscard]] bool IsBeingBinded() const noexcept;
 
+  iterator begin() noexcept { return this->mBindHandleList.begin(); }
+  const_iterator begin() const noexcept { return this->mBindHandleList.begin(); }
+  const_iterator cbegin() const noexcept { return this->mBindHandleList.cbegin(); }
+
+  iterator end() noexcept { return this->mBindHandleList.end(); }
+  const_iterator end() const noexcept { return this->mBindHandleList.end(); }
+  const_iterator cend() const noexcept { return this->mBindHandleList.cend(); }
+
 private:
-  std::unordered_set<FHandle<TType>*> mBindHandleList;
+  TContainer mBindHandleList;
 
   void pMoveHandler(FHandler&& iAnotherHandler) noexcept;
 

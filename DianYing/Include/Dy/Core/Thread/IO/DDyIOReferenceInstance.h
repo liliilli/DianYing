@@ -17,6 +17,7 @@
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Resource/Type/EResourceScope.h>
+#include <Dy/Core/Resource/Internal/XHandleAliases.h>
 #include <Dy/Helper/Internal/FHandler.h>
 
 //!
@@ -51,7 +52,6 @@ struct DDyIOReferenceInstance final
   void*              mPtrInstance       = nullptr;               
 
   std::mutex mContainerMutex;
-  std::unordered_set<IBinderBase*> mPtrBoundBinderList;
 
   DDyIOReferenceInstance() = default;
   /// @brief Constructor without binding object ptr. \n
@@ -65,11 +65,11 @@ struct DDyIOReferenceInstance final
 
   /// @brief Bind binder instance pointer address to this RI.
   /// Be careful of duplicating address pointer.
-  void AttachBinder(IBinderBase* iPtrBase) noexcept;
+  void AttachBinder(IBinderBase& iRefBase) noexcept;
 
   /// @brief Unbind binder instance pointer address from this RI.
   /// If RI's scope is temporal and valid, GC candidate flag will be set up.
-  void DetachBinder(IBinderBase* iPtrBase) noexcept;
+  void DetachBinder(IBinderBase& iRefBase) noexcept;
 
   /// @brief Set resource valid. `iPtrInstance` must be valid pointer type of each RI type.
   /// and, `mIsResourceValid` will be true.
@@ -80,6 +80,12 @@ struct DDyIOReferenceInstance final
 
   /// @brief Check this RI is need to be gced so moved GC container.
   MDY_NODISCARD bool HaveToBeGCed() const noexcept;
+
+  /// @brief Check handler is being bound to this.
+  bool IsBeingBound() const noexcept;
+
+private:
+  FResourceHandler mInternalHandler;
 };
 
 } /// ::dy namespace

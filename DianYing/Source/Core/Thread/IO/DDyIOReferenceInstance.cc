@@ -14,42 +14,76 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
-#include <Dy/Helper/System/Idioms.h>
 #include <Dy/Core/Resource/Type/IBinderBase.h>
 
 namespace dy
 {
 
-void DDyIOReferenceInstance::AttachBinder(IBinderBase* iPtrBase) noexcept
+void DDyIOReferenceInstance::AttachBinder(IBinderBase& iRefBase) noexcept
 {
   MDY_SYNC_LOCK_GUARD(mContainerMutex);
-  this->mPtrBoundBinderList.emplace(iPtrBase);
+  this->mInternalHandler.AttachHandle(iRefBase.mHandle);
 }
 
-void DDyIOReferenceInstance::DetachBinder(IBinderBase* iPtrBase) noexcept
+void DDyIOReferenceInstance::DetachBinder(IBinderBase& iRefBase) noexcept
 {
   MDY_SYNC_LOCK_GUARD(mContainerMutex);
-  this->mPtrBoundBinderList.erase(iPtrBase);
+  this->mInternalHandler.DetachHandle(iRefBase.mHandle);
 }
 
 void DDyIOReferenceInstance::SetValid(void*& iPtrInstance) noexcept
 {
+  if (this->mIsResourceValid == true) { return; }
+
   this->mIsResourceValid  = true;
   this->mPtrInstance      = iPtrInstance;
+
+  {
+    MDY_SYNC_LOCK_GUARD(this->mContainerMutex);
+    for (const auto& ptrHandle : this->mInternalHandler)
+    {
+      if (ptrHandle == nullptr) { continue; }
+
+      auto* ptrBinder = static_cast<IBinderBase*>(ptrHandle->GetUserData());
+      ptrBinder->TryUpdateResourcePtr(this->mPtrInstance);
+    }
+  }
 }
 
 void DDyIOReferenceInstance::SetNotValid() noexcept
 {
+  if (this->mIsResourceValid == false) { return; }
+
   this->mIsResourceValid  = false;
   this->mPtrInstance      = nullptr;
+
+  {
+    MDY_SYNC_LOCK_GUARD(this->mContainerMutex);
+    for (const auto& ptrHandle : this->mInternalHandler)
+    {
+      if (ptrHandle == nullptr) { continue; }
+
+      auto* ptrBinder = static_cast<IBinderBase*>(ptrHandle->GetUserData());
+      ptrBinder->TryDetachResourcePtr();
+    }
+  }
 }
 
 bool DDyIOReferenceInstance::HaveToBeGCed() const noexcept
 {
   if (this->mIsResourceValid == true
   &&  this->mScope == EResourceScope::Temporal 
-  &&  this->mPtrBoundBinderList.empty() == true) { return true; }
-  else { return false; }
+  &&  this->mInternalHandler.IsBeingBinded() == false) 
+  { 
+    return true; 
+  }
+
+  return false;
+}
+
+bool DDyIOReferenceInstance::IsBeingBound() const noexcept
+{
+  return this->mInternalHandler.IsBeingBinded();
 }
 
 } /// ::dy namespace
