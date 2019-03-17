@@ -201,6 +201,7 @@
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbOpaqueIntegration.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\SceneIntegration\FDyBtFbTransIntegration.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\UIIntegration\FDyBtFbBasic.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITDepth.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\WeightBlendOIT\FDyBtFbWeightBlendedOIT.cc" />
     <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
     <ClCompile Include="Source\Builtin\Material\BtMtCheckerWorldPos.cc" />
@@ -639,6 +640,7 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAttUiBasic.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAtUiId.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITDepth.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\CSM.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />

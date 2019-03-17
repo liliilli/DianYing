@@ -51,13 +51,18 @@ public:
     CModelRenderer& iRefRenderer,
     FDyMeshResource& iRefMesh, 
     FDyMaterialResource& iRefMaterial);
+  void RenderStaticInstancingObjects(
+    FDyMeshResource& iRefMesh,
+    FDyMaterialResource& iRefMaterial,
+    TU32 iCount);
 
   void OnReleaseRenderingSetting() override final;
 
   void OnPostRender() override final;
 
 private:
-  TDyResourceBinderFrameBuffer mBinderFrameBuffer{ "dyBtFbWBOIT" };
+  TDyResourceBinderFrameBuffer mBinderFrameBuffer { "dyBtFbWBOIT" };
+  TDyResourceBinderAttachment  mCompareZDepth     { "dyBtDefZValue" };
 };
 
 } /// ::dy namespace

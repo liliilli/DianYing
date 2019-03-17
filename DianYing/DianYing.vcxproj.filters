@@ -381,6 +381,7 @@
     <ClCompile Include="Source\Builtin\Abstract\APrefabResource.cc" />
     <ClCompile Include="Source\Builtin\Prefab\FBtPbDefaultSphere.cc" />
     <ClCompile Include="Source\Builtin\Shader\Level\RenderCSMInstancing.cc" />
+    <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITDepth.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -922,6 +923,7 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\APrefabResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbDefaultSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RenderCSMInstancing.h" />
+    <ClInclude Include="Include\Dy\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITDepth.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
