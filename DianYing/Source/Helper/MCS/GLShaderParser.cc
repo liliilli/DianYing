@@ -180,6 +180,8 @@ uniform DDyPointLight uDyLightPoint[16];
 /// #import <Input_ModelTransform>;
 MDY_SET_IMMUTABLE_STRING(Buffer_Input_ModelTransform_Single, R"dy(
 uniform mat4 uModelMatrix;
+mat4 DyGetModelTransform() { return uModelMatrix; }
+
 vec4 DyTransform(const vec4 iLocalPos)
 {
   return uModelMatrix * iLocalPos;
@@ -196,6 +198,9 @@ mat3 DyGetRotationMatrix()
 MDY_SET_IMMUTABLE_STRING(Buffer_Input_ModelTransform_Multi, R"dy(
 // This will be attached by another binding index.
 layout (location = 10) in mat4 dyInstanceModelMatrix;
+
+mat4 DyGetModelTransform() { return dyInstanceModelMatrix; }
+
 vec4 DyTransform(const vec4 iLocalPos)
 {
   return dyInstanceModelMatrix * iLocalPos;
@@ -254,6 +259,7 @@ layout (location = 5) out vec4 gActorId;
 uniform float uBtDyActorId = 0;
 
 void DyBindActorId() { gActorId = vec4(uBtDyActorId, 0, 0, 1); }
+void DyNotSetEmissive() { gEmissive = vec4(0, 0, 0, 1); };
 )dy");
 
 /// @brief Default Weighted blended output module.

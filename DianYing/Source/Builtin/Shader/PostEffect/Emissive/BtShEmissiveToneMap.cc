@@ -55,7 +55,8 @@ void main()
   vec3 hdrColor = texture(uTexture0, vs_out.texCoord).rgb;
 
   const vec4 origColor = texture(uTexture1, vs_out.texCoord);
-  hdrColor = hdrColor * (1 - origColor.a) + origColor.rgb * origColor.a; 
+  hdrColor += origColor.rgb;
+  //hdrColor = hdrColor * (1 - origColor.a) + origColor.rgb * origColor.a; 
 
   // reinhard tone mapping
   // lim_{hdrColor -> inf} f(hdrColor) ~= 1.0f.
@@ -63,7 +64,7 @@ void main()
 
   // gamma correction 
   mapped = pow(mapped, vec3(1.0 / gamma));
-  oResult = vec4(mapped, 1.0); // [0, 1] value.
+  oResult = vec4(mapped, 1.0f); // [0, 1] value.
 }
 )dy");
 

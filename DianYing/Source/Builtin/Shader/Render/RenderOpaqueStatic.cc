@@ -41,9 +41,9 @@ void main()
 {
   gl_Position			      = DyGetCameraPv() * DyTransform(vec4(dyPosition, 1.0));
   vs_out.fragColor	    = dyNormal * 0.5f + 0.5f;
-	vs_out.normal		      = mat3(uModelMatrix) * dyNormal;
+	vs_out.normal		      = DyGetRotationMatrix() * dyNormal;
 	vs_out.texCoord		    = dyTexCoord0;
-	vs_out.modelPosition  = (uModelMatrix * vec4(dyPosition, 1.0));
+	vs_out.modelPosition  = DyTransform(vec4(dyPosition, 1.0));
 }
 )dy");
 
@@ -65,6 +65,7 @@ void main() {
 	gNormal	  = vec4(normalize(fs_in.normal) * 0.5f + 0.5f, 1.0f);
 	gSpecular = vec4(1, 0, 1, 1);
 	gPosition = fs_in.modelPosition;
+  DyNotSetEmissive();
 }
 )dy");
 
