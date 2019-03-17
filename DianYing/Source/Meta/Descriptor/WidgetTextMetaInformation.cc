@@ -16,7 +16,7 @@
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Helper/Type/DColorRGB24.h>
 
 namespace dy
 {
@@ -58,26 +58,27 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
 
   // Common
   auto instance = std::make_unique<PDyMetaWidgetTextDescriptor>();
-  instance->mUiObjectSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
+  instance->mUiObjectSpecifierName = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   instance->mComponentType         = EDyWidgetComponentType::Text;
-  instance->mParentSpecifierName   = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
-  DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
+  instance->mParentSpecifierName   = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  json::GetValueFromTo(itemAtlas, "IsActivated", instance->mIsActivated);
+  json::GetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   // Detail (TEXT)
   const auto& detailAtlas = itemAtlas[(TPDyMWCBD::sHeader_Details)];
-  const auto string = DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_InitialString);
-  instance->mInitialString      = string;
+  const auto string = json::GetValueFrom<std::string>(detailAtlas, sHeader_InitialString);
+  instance->mTextString      = string;
 
-  instance->mInitialColor       = DyJsonGetValueFrom<DDyColorRGBA>(detailAtlas, sHeader_InitialColor);;
-  instance->mFontSize           = DyJsonGetValueFrom<TU32>(detailAtlas, sHeader_FontSize);
-  instance->mFontSpecifierName  = DyJsonGetValueFrom<std::string>(detailAtlas, sHeader_FontSpecifierName);
-  instance->mEdgeColor          = DyJsonGetValueFrom<DDyColorRGB>(detailAtlas, "EdgeColor");
-  instance->mIsUsingEdge        = DyJsonGetValueFrom<bool>(detailAtlas, sHeader_IsUsingEdge);
+  instance->mTextColor       = json::GetValueFrom<DColorRGBA>(detailAtlas, sHeader_InitialColor);;
+  instance->mFontSize           = json::GetValueFrom<TU32>(detailAtlas, sHeader_FontSize);
+  instance->mFontName  = json::GetValueFrom<std::string>(detailAtlas, sHeader_FontSpecifierName);
+  instance->mEdgeColor          = json::GetValueFrom<DColorRGB>(detailAtlas, "EdgeColor");
+  instance->mIsUsingEdge        = json::GetValueFrom<bool>(detailAtlas, sHeader_IsUsingEdge);
 
-  instance->mInitialPosition    = DDyVectorInt2{DyJsonGetValueFrom<DDyVector2>(detailAtlas, sHeader_InitialPosition)};
-  instance->mOrigin             = DyJsonGetValueFrom<EDyOrigin>(detailAtlas, "Origin");
-  instance->mWidgetSize         = DyJsonGetValueFrom<DDyVectorInt2>(detailAtlas, "WidgetSize");
-  DyJsonGetValueFromTo(detailAtlas, "Alignment", instance->mAlignment);
+  instance->mInitialPosition    = DVectorInt2{json::GetValueFrom<DVector2>(detailAtlas, sHeader_InitialPosition)};
+  instance->mOrigin             = json::GetValueFrom<EDyOrigin>(detailAtlas, "Origin");
+  instance->mWidgetSize         = json::GetValueFrom<DVectorInt2>(detailAtlas, "WidgetSize");
+  json::GetValueFromTo(detailAtlas, "Alignment", instance->mAlignment);
 
   return instance;
 }

@@ -22,7 +22,7 @@ namespace dy
 void FDyBtFBBasicShadow::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName         = sName;
-  property.mFrameBufferSize       = DDyVectorInt2{1280, 720};
+  property.mFrameBufferSize       = DVectorInt2{1280, 720};
   property.mIsNotUsingPixelShader = true;
   property.mIsUsingDepthBuffer    = true;
   property.mDepthAttachmentSpecifier = FDyBtAttachmentBasicShadow::sName;

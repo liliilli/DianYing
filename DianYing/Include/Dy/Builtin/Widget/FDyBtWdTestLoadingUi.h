@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyLoadingWidgetMetaResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/ALoadingWidgetMetaResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBtWdTestLoadingUi
 /// @brief Instantiate rendering pass.
 ///
-class FDyBtWdTestLoadingUi final : public ADyLoadingWidgetMetaResource
+class FDyBtWdTestLoadingUi final : public ALoadingWidgetMetaResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBtWdTestLoadingUi, "dyBtWdTestLoadingUi")
 public:

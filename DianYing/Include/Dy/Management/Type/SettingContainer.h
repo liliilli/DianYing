@@ -17,10 +17,10 @@
 #include <nlohmann/json_fwd.hpp>
 
 #include <Dy/Helper/GlobalType.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Type/Input/EDyInputButton.h>
 #include <Dy/Meta/Type/Physics/EDyCollisionFilter.h>
-#include <Dy/Helper/Type/Clamp.h>
+#include <Dy/Helper/Type/DClamp.h>
 
 namespace dy
 {
@@ -33,7 +33,7 @@ struct DDySettingDescription final
 {
   /// Project name of this project.
   std::string mProjectName    = MDY_INITIALIZE_EMPTYSTR;
-  /// Window name of this project. if empty, just use MDySetting::mProjectName as window name with version.
+  /// Window name of this project. if empty, just use MSetting::mProjectName as window name with version.
   std::string mWindowName     = MDY_INITIALIZE_EMPTYSTR;
   /// [High. Mid. Low]
   TI32 mVersionHigh           = MDY_INITIALIZE_DEFINT;
@@ -56,7 +56,7 @@ struct DDySettingGameplay final
 {
   struct DDyShadow final
   { /// Global default shadow map size.
-    DDyVectorInt2 mShadowGlobalDefaultMap = {};
+    DVectorInt2 mShadowGlobalDefaultMap = {};
   };
 
   struct DDyGraphics final
@@ -70,7 +70,7 @@ struct DDySettingGameplay final
   /// Initial scene name. (or uuid?)
   std::string   mInitialSceneSpecifier           = MDY_INITIALIZE_EMPTYSTR;
   /// Initial game resolution scene.
-  DDyVectorInt2 mInitialResolution      = {};
+  DVectorInt2 mInitialResolution      = {};
   /// Shadow default map resolution or properties.
   DDyShadow     mShadow                 = {};
   /// Graphics properties.
@@ -147,10 +147,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingInput::DAxis& p);
 struct DDySettingTag final
 {
   using TObjectTagList    = std::vector<std::string>;
-  using TCollisionTagList = std::vector<std::string>;
 
   TObjectTagList    mObjectTag     = {};
-  TCollisionTagList mCollisionTag  = {};
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j,    _MIN_ const DDySettingTag& p);
@@ -164,7 +162,7 @@ struct DDySettingSound final
 {
   struct DDetail
   {
-    DDyClamp<TF32, 0, 1> mVolume = 0.0f;
+    DClamp<TF32, 0, 1> mVolume = 0.0f;
     bool mMuted = false;
   };
   struct DChannelDetail final : public DDetail
@@ -270,7 +268,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyCollisionFilter& p);
 struct DDySettingMetaPath final
 {
   // Meta strings
-  std::string mSceneMetaPath    = MDY_INITIALIZE_EMPTYSTR;
+  std::string mLevelMetaPath    = MDY_INITIALIZE_EMPTYSTR;
   std::string mWidgetMetaPath   = MDY_INITIALIZE_EMPTYSTR;
   std::string mPrefabMetaPath   = MDY_INITIALIZE_EMPTYSTR;
   std::string mScriptMetaPath   = MDY_INITIALIZE_EMPTYSTR;

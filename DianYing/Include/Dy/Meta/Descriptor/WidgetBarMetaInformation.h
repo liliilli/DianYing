@@ -14,30 +14,30 @@
 ///
 
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
-#include <Dy/Helper/Type/ColorRGBA.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
 
 namespace dy
 {
 
 ///
 /// @struct PDyMetaWidgetBarDescriptor
-/// @brief basic guage bar(`FDyBasicGaugeBar`) component of widget descriptor
+/// @brief basic guage bar(`FWidgetBasicGaugeBar`) component of widget descriptor
 ///
 struct PDyMetaWidgetBarDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {
   /// Size (px) of text widget (leaf widget).
-  DDyVectorInt2 mWidgetSize       = {};
+  DVectorInt2 mWidgetSize       = {};
   /// Initial position of canvas.
-  DDyVectorInt2 mInitialPosition  = {};
+  DVectorInt2 mInitialPosition  = {};
   /// Originable to parent frame (except for list layout)
   EDyOrigin     mOrigin           = EDyOrigin::Center_Center;
 
   /// ForegroundColor(rgb) + ForegroundAlpha(a)
-  DDyColorRGBA  mForegroundColor  = DDyColorRGBA::White;
+  DColorRGBA  mForegroundColor  = DColorRGBA::White;
   /// Background color of text. `mIsUsingBackground` must be enabled to use this.
-  DDyColorRGBA  mBackgroundColor  = DDyColorRGBA{ 0, 0, 0, 0 };
+  DColorRGBA  mBackgroundColor  = DColorRGBA{ 0, 0, 0, 0 };
   /// Check use background outside of foreground region.
   bool          mIsUsingBackground= false;
   /// Min of bar gauge.

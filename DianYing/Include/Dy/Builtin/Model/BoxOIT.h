@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyModelResource.h>
+#include <Dy/Builtin/Abstract/AModelResource.h>
 
 namespace dy::builtin
 {
@@ -22,7 +22,7 @@ namespace dy::builtin
 /// @class FDyBuiltinModelBoxOIT
 /// @brief Create OIT model box information and resources.
 ///
-class FDyBuiltinModelBoxOIT final : public ADyModelResource
+class FDyBuiltinModelBoxOIT final : public AModelResource
 {
   MDY_REGISTER_RESOURCE_MODEL(FDyBuiltinModelBoxOIT, "dyBtModelBoxOIT");
 };

@@ -59,8 +59,8 @@ void from_json(const nlohmann::json& j, DDyTextureCoordBox& p)
 {
   p.mChannel          = j.at((sHeader_Channel)).get<TU32>();
   p.mMapIndex         = j.at((sHeader_MapIndex)).get<TU32>();
-  p.mLeftDown         = j.at((sHeader_LeftDown)).get<DDyVector2>();
-  p.mRightUp          = j.at((sHeader_RightUp)).get<DDyVector2>();
+  p.mLeftDown         = j.at((sHeader_LeftDown)).get<DVector2>();
+  p.mRightUp          = j.at((sHeader_RightUp)).get<DVector2>();
 }
 
 DDyFontCharacterInfo DDyFontCharacterInfo::CreateInstance(_MIN_ const nlohmann::json& j, _MIN_ const TC16 charCode)
@@ -86,10 +86,10 @@ void to_json(nlohmann::json& j, const DDyFontCharacterInfo& p)
 void from_json(const nlohmann::json& j, DDyFontCharacterInfo& p)
 {
   p.mHorizontalAdvance  = j.at((sHeader_HoriAdvance)).get<TF32>();
-  p.mHoritontalBearing  = j.at((sHeader_HoriBearing)).get<DDyVector2>();
-  p.mScale              = j.at((sHeader_Scale)).get<DDyVector2>();
-  p.mSize               = j.at((sHeader_Size)).get<DDyVector2>();
-  p.mTranslate          = j.at((sHeader_Translate)).get<DDyVector2>();
+  p.mHoritontalBearing  = j.at((sHeader_HoriBearing)).get<DVector2>();
+  p.mScale              = j.at((sHeader_Scale)).get<DVector2>();
+  p.mSize               = j.at((sHeader_Size)).get<DVector2>();
+  p.mTranslate          = j.at((sHeader_Translate)).get<DVector2>();
   p.mTexCoordInfo       = j.at((sHeader_TexCoordBox)).get<DDyTextureCoordBox>();
 }
 

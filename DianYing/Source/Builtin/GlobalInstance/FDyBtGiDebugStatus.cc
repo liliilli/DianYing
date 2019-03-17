@@ -13,7 +13,7 @@
 ///
 
 #include <Dy/Builtin/GlobalInstance/FDyBtGiDebugStatus.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

@@ -18,7 +18,7 @@ namespace dy
 
 /// @brief Check file path is valid and file is exist on present filesystem. \n
 /// This function supports relative path.
-MDY_NODISCARD bool DyFsIsFileExist(_MIN_ const std::string& iFilePath);
+MDY_NODISCARD bool IsFileExist(const std::string& iFilePath);
 
 } /// ::dy namespace
 

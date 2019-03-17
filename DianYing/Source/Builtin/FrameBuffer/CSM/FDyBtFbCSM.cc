@@ -22,7 +22,7 @@ namespace dy::builtin
 void FDyBtFbCSM::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName         = sName;
-  property.mFrameBufferSize       = DDyVectorInt2{1280, 720};
+  property.mFrameBufferSize       = DVectorInt2{1280, 720};
   property.mIsUsingDepthBuffer    = true;
   property.mIsNotUsingPixelShader = true;
   property.mDepthAttachmentSpecifier = FDyBtAtCSMLight::sName;

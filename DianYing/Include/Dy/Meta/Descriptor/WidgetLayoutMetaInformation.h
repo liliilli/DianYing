@@ -15,7 +15,7 @@
 
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
-#include <Dy/Helper/Type/Area2D.h>
+#include <Dy/Helper/Type/DArea2D.h>
 
 namespace dy
 {
@@ -26,7 +26,7 @@ namespace dy
 ///
 struct PDyMetaWidgetHorizontalLayout final : public PDyMetaWidgetCommonBaseDesc
 {
-  DDyArea2D               mArea       = {};
+  DArea2D               mArea       = {};
   EDyHorizontalAlignment  mAlignment  = EDyHorizontalAlignment::Left;
 
   ///
@@ -43,7 +43,7 @@ struct PDyMetaWidgetHorizontalLayout final : public PDyMetaWidgetCommonBaseDesc
 ///
 struct PDyMetaWidgetVerticalLayout final : public PDyMetaWidgetCommonBaseDesc
 {
-  DDyArea2D               mArea       = {};
+  DArea2D               mArea       = {};
   EDyVerticalAlignment    mAlignment  = EDyVerticalAlignment::Top;
 
   ///

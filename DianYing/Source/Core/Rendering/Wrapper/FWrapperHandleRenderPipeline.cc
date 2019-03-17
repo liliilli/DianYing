@@ -14,10 +14,10 @@
 
 #include <Dy/Core/Rendering/Wrapper/FWrapperHandleRenderPipeline.h>
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
+#include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Core/Rendering/Wrapper/FWrapperRenderItem.h>
 #include <Dy/Core/Rendering/Wrapper/FWrapperRenderPipeline.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/IO/MIOMeta.h>
 
 namespace dy
 {
@@ -26,7 +26,7 @@ FWrapperHandleRenderPipeline::FWrapperHandleRenderPipeline(const PDyRenderPipeli
   : mSpecifierName{iMetaInfo.mSpecifierName},
     mUuid{iMetaInfo.mUuid}
 {
-  auto& managerRender = MDyRendering::GetInstance();
+  auto& managerRender = MRendering::GetInstance();
 
   auto* ptrRenderPipeline = managerRender.GetRenderPipeline(iMetaInfo.mSpecifierName);
   ptrRenderPipeline->AttachHandle(this->mHandleRenderPipeline);
@@ -42,7 +42,7 @@ FWrapperHandleRenderPipeline::FWrapperHandleRenderPipeline(const PDyRenderPipeli
   }
 
   this->mHandleRenderPipelines.reserve(iMetaInfo.mChildPipelineNames.size());
-  const auto& managerMetaInfo = MDyMetaInfo::GetInstance();
+  const auto& managerMetaInfo = MIOMeta::GetInstance();
   for (const auto& childRenderPipelineName : iMetaInfo.mChildPipelineNames)
   {
     auto& metaRenderPipeline = managerMetaInfo.GetRenderPipeline(childRenderPipelineName);

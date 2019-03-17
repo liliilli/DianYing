@@ -14,9 +14,9 @@
 ///
 
 #include <Dy/Builtin/Abstract/ARenderItem.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 
 namespace dy
@@ -41,20 +41,25 @@ public:
     DDyModelHandler::DActorInfo& iRefRenderer,
     FDyMeshResource& iRefMesh, 
     FDyMaterialResource& iRefMaterial);
+  void RenderStaticInstancingObjects(
+    FDyMeshResource& iRefMesh,
+    FDyMaterialResource& iRefMaterial,
+    TU32 iCount);
 
   void OnReleaseRenderingSetting() override final;
 
   void OnPostRender() override final;
 
 private:
-  TDyResourceBinderShader       mDirLightShaderResource { "dyBtGlslRenderCsmLightNormal" };
-  TDyResourceBinderFrameBuffer  mBinderFrameBuffer      { "dyBtFbCSM" };
+  TDyResourceBinderShader       mDirLightShaderResource   { "dyBtGlslRenderCsmLightNormal" };
+  TDyResourceBinderShader       mInstancingShaderResource { "dyBtGlslRenderCsmInstancing" };
+  TDyResourceBinderFrameBuffer  mBinderFrameBuffer        { "dyBtFbCSM" };
 
   std::array<TF32, 2>           sViewportDims;
   std::ptrdiff_t                mAddrMainDirectionalShadow = 0;
 
-  DDyMatrix4x4 mViewMatrix;
-  DDyMatrix4x4 mProjMatrix;
+  DMatrix4x4 mViewMatrix;
+  DMatrix4x4 mProjMatrix;
 };
 
 } /// ::dy namespace

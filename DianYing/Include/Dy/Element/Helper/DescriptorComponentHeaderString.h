@@ -21,7 +21,7 @@ namespace dy
 MDY_SET_IMMUTABLE_STRING(sHeaderActivated,      "Activated");
 
 //!
-//! CDyTransform
+//! CTransform
 //!
 
 MDY_SET_IMMUTABLE_STRING(sHeaderLocalPosition, "LPosition");
@@ -43,7 +43,7 @@ MDY_SET_IMMUTABLE_STRING(sHeaderName,   "Name");
 
 
 //!
-//! CDyLightDirectional
+//! CLightDirectional
 //!
 
 MDY_SET_IMMUTABLE_STRING(sHeaderLightDirection,   "LightDirection");
@@ -62,20 +62,20 @@ MDY_SET_IMMUTABLE_STRING(sHeaderShadowBias,       "ShadowBias");
 MDY_SET_IMMUTABLE_STRING(sHeaderShadowCullingMaskLayer, "ShadowCullingMaskLayer");
 
 //!
-//! CDyModelFilter
+//! CModelFilter
 //!
 
 MDY_SET_IMMUTABLE_STRING(sHeaderModelName,      "ModelName");
 
 //!
-//! CDyModelRenderer
+//! CModelRenderer
 //!
 
 MDY_SET_IMMUTABLE_STRING(sHeaderShadow,         "Shadow");
 MDY_SET_IMMUTABLE_STRING(sHeaderMaterials,      "Materials");
 
 //!
-//! CDyCamera
+//! CCamera
 //!
 
 MDY_SET_IMMUTABLE_STRING(sHeaderFieldOfView,      "FieldOfView");

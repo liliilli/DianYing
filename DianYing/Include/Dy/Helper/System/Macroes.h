@@ -22,7 +22,7 @@
 
 #if     defined(MDY_PLATFORM_FLAG_WINDOWS)
 #define MDY_INHERITENCE_RESOURCE_PLATFORM_WINDOWS       public SDyRendererWindows
-#define MDY_INHERITENCE_WINDOW_INFORMATION_SUPER DDyWindowInformationWindows
+#define MDY_INHERITENCE_WINDOW_INFORMATION_SUPER MPlatformInfoWindows
 #elif   defined(MDY_PLATFORM_FLAG_LINUX)
 #define MDY_INHERITENCE_RESOURCE_PLATFORM_LINUX         public SDyRendererLinux
 #define MDY_INHERITENCE_WINDOW_INFORMATION_SUPER public DDyWindowInformationLinux
@@ -39,6 +39,10 @@
 #define MDY_TOKENPASTE(__MAX__, __MAY__) __MAX__ ## __MAY__
 /// USE THIS DIRECTLY FOR CONCATNATION.
 #define MDY_TOKENPASTE2(__MAX__, __MAY__) MDY_TOKENPASTE(__MAX__, __MAY__)
+
+/// @macro MDY_MAKENAME
+/// @breif Make name.
+#define MDY_MAKENAME(__LHS__, __RHS__) MDY_TOKENPASTE2(__LHS__, __RHS__)
 
 ///
 /// @macro MDY_TO_STRING
@@ -447,30 +451,6 @@ virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
 ///
 #define MDY_INTERFACE_PROPERTY(__MAInterfaceType__) \
   static_assert(std::is_abstract_v<__MAInterfaceType__>, MDY_TO_STRING(__MAInterfaceType__) " is not satisfied interface property.")
-
-///
-/// @macro MDY_SINGLETON_PROPERTIES
-/// This macro must not be attached to whichever class inherits IDySingleton<>.
-///
-#define MDY_SINGLETON_PROPERTIES(__MASingletonType__) \
-public: \
-    __MASingletonType__(const __MASingletonType__##&) = delete; \
-    __MASingletonType__(__MASingletonType__##&&) = delete; \
-    __MASingletonType__##& operator=(const __MASingletonType__##&) = delete; \
-    __MASingletonType__##& operator=(__MASingletonType__##&&) = delete
-
-///
-/// @macro MDY_SINGLETON_DERIVED
-/// This macro must not be attached to whichever class inherits IDySingleton<>.
-///
-#define MDY_SINGLETON_DERIVED(__MADerivedSingletonType__) \
-private:                                                  \
-    __MADerivedSingletonType__() = default;               \
-    [[nodiscard]] EDySuccess pfInitialize();              \
-    [[nodiscard]] EDySuccess pfRelease();                 \
-    friend class IDySingleton<__MADerivedSingletonType__>;\
-public:                                                   \
-    virtual ~__MADerivedSingletonType__() = default;
 
 #define MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(__MAType__)\
   __MAType__(const __MAType__&)             = delete;   \

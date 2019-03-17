@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyModelResource.h>
+#include <Dy/Builtin/Abstract/AModelResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBtMdUIFontQuad
 /// @brief Create quad for ui font rendering.
 ///
-class FDyBtMdUIFontQuad final : public ADyModelResource
+class FDyBtMdUIFontQuad final : public AModelResource
 {
   MDY_REGISTER_RESOURCE_MODEL(FDyBtMdUIFontQuad, "dyBtMdUiFontQuad");
 };

@@ -29,41 +29,41 @@ FDyTextureCubemapInformation::FDyTextureCubemapInformation(_MIN_ const PDyTextur
 
   for (TU32 cubemapId = 0; cubemapId < 6; ++cubemapId)
   {
-    std::unique_ptr<DDyImageBinaryDataBuffer> ptrBufferData = nullptr;
-    DDyVectorInt2*     ptrSize            = nullptr;
+    std::unique_ptr<DImageBinaryBuffer> ptrBufferData = nullptr;
+    DVectorInt2*     ptrSize            = nullptr;
     std::vector<TU08>* ptrInstanceBuffer  = nullptr;
 
     const auto type = static_cast<EDyCubemapFragment>(cubemapId);
     switch (type)
     {
     case EDyCubemapFragment::Top: 
-    { ptrBufferData = std::make_unique<DDyImageBinaryDataBuffer>(refExternalFilePath.mTopPath);
+    { ptrBufferData = std::make_unique<DImageBinaryBuffer>(refExternalFilePath.mTopPath);
       this->mImageActualPixelFormat = ptrBufferData->GetImageFormat();
       ptrSize = &this->mTopTextureSize;
       ptrInstanceBuffer = &this->mTopTextureImageBuffer;
     } break;
     case EDyCubemapFragment::Bottom: 
-    { ptrBufferData = std::make_unique<DDyImageBinaryDataBuffer>(refExternalFilePath.mBottomPath);
+    { ptrBufferData = std::make_unique<DImageBinaryBuffer>(refExternalFilePath.mBottomPath);
       ptrSize = &this->mBottomTextureSize;
       ptrInstanceBuffer = &this->mBottomTextureImageBuffer;
     } break;
     case EDyCubemapFragment::Left:
-    { ptrBufferData = std::make_unique<DDyImageBinaryDataBuffer>(refExternalFilePath.mLeftPath);
+    { ptrBufferData = std::make_unique<DImageBinaryBuffer>(refExternalFilePath.mLeftPath);
       ptrSize = &this->mLeftTextureSize;
       ptrInstanceBuffer = &this->mLeftTextureImageBuffer;
     } break;
     case EDyCubemapFragment::Right:
-    { ptrBufferData = std::make_unique<DDyImageBinaryDataBuffer>(refExternalFilePath.mRightPath);
+    { ptrBufferData = std::make_unique<DImageBinaryBuffer>(refExternalFilePath.mRightPath);
       ptrSize = &this->mRightTextureSize;
       ptrInstanceBuffer = &this->mRightTextureImageBuffer;
     } break;
     case EDyCubemapFragment::Front:
-    { ptrBufferData = std::make_unique<DDyImageBinaryDataBuffer>(refExternalFilePath.mFrontPath);
+    { ptrBufferData = std::make_unique<DImageBinaryBuffer>(refExternalFilePath.mFrontPath);
       ptrSize = &this->mFrontTextureSize;
       ptrInstanceBuffer = &this->mFrontTextureImageBuffer;
     } break;
     case EDyCubemapFragment::Back:
-    { ptrBufferData = std::make_unique<DDyImageBinaryDataBuffer>(refExternalFilePath.mBackPath);
+    { ptrBufferData = std::make_unique<DImageBinaryBuffer>(refExternalFilePath.mBackPath);
       ptrSize = &this->mBackTextureSize;
       ptrInstanceBuffer = &this->mBackTextureImageBuffer;
     } break;
@@ -103,7 +103,7 @@ const std::vector<TU08>& FDyTextureCubemapInformation::GetBufferOf(_MIN_ EDyCube
   }
 }
 
-const DDyVectorInt2& FDyTextureCubemapInformation::GetSizeOf(_MIN_ EDyCubemapFragment iValue) const noexcept
+const DVectorInt2& FDyTextureCubemapInformation::GetSizeOf(_MIN_ EDyCubemapFragment iValue) const noexcept
 {
   switch (iValue)
   {

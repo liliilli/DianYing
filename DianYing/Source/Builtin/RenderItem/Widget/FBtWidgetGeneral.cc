@@ -14,9 +14,9 @@
 
 #include <Dy/Builtin/RenderItem/Widget/FBtWidgetGeneral.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Management/FontManager.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
-#include <Dy/Element/Canvas/UiObject.h>
+#include <Dy/Management/MFont.h>
+#include <Dy/Management/Rendering/MRendering.h>
+#include <Dy/Element/Widget/AWidgetObject.h>
 
 namespace dy
 {
@@ -46,7 +46,7 @@ void FBtRenderWidgetGeneral::OnSetupRenderingSetting()
 
 void FBtRenderWidgetGeneral::OnRender()
 {
-  auto& list = MDyRendering::GetInstance().GetUiObjectQueuelist();
+  auto& list = MRendering::GetInstance().GetUiObjectQueuelist();
   for (auto& ptrRenderUi : list)
   {
     ptrRenderUi->Render();

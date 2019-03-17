@@ -13,15 +13,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLFrameBufferResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLFrameBufferResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBtFbSSAOBlur
 /// @brief Screen-Space ambient occlusion framebuffer for deferred level scene.
-class FDyBtFbSSAOBlur final : public ADyGLFrameBufferResource
+class FDyBtFbSSAOBlur final : public AGLFrameBufferResource
 {
   MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFbSSAOBlur, "dyBtFbSSAOBlur")
 };

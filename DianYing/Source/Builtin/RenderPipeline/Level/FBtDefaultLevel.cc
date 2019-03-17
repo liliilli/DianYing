@@ -13,8 +13,8 @@
 ///
 
 #include <Dy/Builtin/RenderPipeline/Level/FBtDefaultLevel.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MWorld.h>
+#include <Dy/Management/MSetting.h>
 
 #include <Dy/Builtin/RenderPipeline/Level/FBtDefaultLevelRender.h>
 #include <Dy/Builtin/RenderPipeline/Level/FBtDefaultLevelPostProcess.h>
@@ -37,13 +37,13 @@ void FBtRenderPipelineDefaultLevel::__ConstructionHelper
 
 EDySuccess FBtRenderPipelineDefaultLevel::OnPreRenderCheckCondition()
 {
-  if (MDyWorld::GetInstance().IsLevelPresentValid() == false) 
+  if (MWorld::GetInstance().IsLevelPresentValid() == false) 
   { 
     return DY_FAILURE; 
   }
 
   // If main camera is not exist, do not render level.
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  const auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
   if (ptrCamera == nullptr) 
   { 
     return DY_FAILURE; 

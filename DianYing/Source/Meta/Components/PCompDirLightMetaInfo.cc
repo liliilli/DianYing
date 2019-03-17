@@ -16,7 +16,7 @@
 #include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/Type/ColorRGB.h>
+#include <Dy/Helper/Type/DColorRGB.h>
 
 //!
 //! Forward declaration
@@ -38,7 +38,7 @@ MDY_SET_IMMUTABLE_STRING(sHeader_Activated, "Activated");
 namespace dy
 {
 
-void to_json(nlohmann::json& oJson, const PDyDirLightComponentMetaInfo& iItem)
+void to_json(nlohmann::json& oJson, const PDirLightComponentMetaInfo& iItem)
 {
   oJson = nlohmann::json
   {
@@ -48,33 +48,33 @@ void to_json(nlohmann::json& oJson, const PDyDirLightComponentMetaInfo& iItem)
   };
 }
 
-void from_json(const nlohmann::json& iJson, PDyDirLightComponentMetaInfo& oItem)
+void from_json(const nlohmann::json& iJson, PDirLightComponentMetaInfo& oItem)
 {
-  oItem.mType    = DyJsonGetValueFrom<EDyComponentMetaType>(iJson, sHeader_Type);
-  oItem.mDetails = DyJsonGetValueFrom<PDyDirLightComponentMetaInfo::DDetails>(iJson, sHeader_Details);
-  oItem.mInitiallyActivated = DyJsonGetValueFrom<bool>(iJson, sHeader_Activated);
+  oItem.mType    = json::GetValueFrom<EDyComponentMetaType>(iJson, sHeader_Type);
+  oItem.mDetails = json::GetValueFrom<PDirLightComponentMetaInfo::DDetails>(iJson, sHeader_Details);
+  oItem.mInitiallyActivated = json::GetValueFrom<bool>(iJson, sHeader_Activated);
 }
 
-void to_json(nlohmann::json& oJson, const PDyDirLightComponentMetaInfo::DDetails& iDetail)
+void to_json(nlohmann::json& oJson, const PDirLightComponentMetaInfo::DDetails& iDetail)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(const nlohmann::json& iJson, PDyDirLightComponentMetaInfo::DDetails& oDetail)
+void from_json(const nlohmann::json& iJson, PDirLightComponentMetaInfo::DDetails& oDetail)
 {
-  DyJsonGetValueFromTo(iJson, sHeaderLightDirection, oDetail.mDirection);
-  DyJsonGetValueFromTo(iJson, sHeaderLightIntensity, oDetail.mIntensity);
+  json::GetValueFromTo(iJson, sHeaderLightDirection, oDetail.mDirection);
+  json::GetValueFromTo(iJson, sHeaderLightIntensity, oDetail.mIntensity);
 
-  oDetail.mDiffuse  = DyJsonGetValueFrom<DDyColorRGB>(iJson, sHeaderLightDiffuse);
+  oDetail.mDiffuse  = json::GetValueFrom<DColorRGB>(iJson, sHeaderLightDiffuse);
 
-  DyJsonGetValueFromTo(iJson, sHeaderShadowType, oDetail.mShadowType);
-  DyJsonGetValueFromTo(iJson, sHeaderShadowStrength, oDetail.mShadowStrength);
-  DyJsonGetValueFromTo(iJson, sHeaderShadowBias, oDetail.mShadowBias);
-  DyJsonGetValueFromTo(iJson, sHeaderShadowResolution,oDetail.mShadowResolution);
-  DyJsonGetValueFromTo(iJson, sHeaderShadowCullingMaskLayer, oDetail.mShadowCullingMaskLayer);
-  DyJsonGetValueFromTo(iJson, sHeaderIsUsingGlobalShadowResolution, oDetail.mIsUsingGlobalShadowResolution);
-  DyJsonGetValueFromTo(iJson, sHeaderIsCastingLight, oDetail.mIsCastingLight);
-  DyJsonGetValueFromTo(iJson, sHeaderIsCastingShadow, oDetail.mIsCastingShadow);
+  json::GetValueFromTo(iJson, sHeaderShadowType, oDetail.mShadowType);
+  json::GetValueFromTo(iJson, sHeaderShadowStrength, oDetail.mShadowStrength);
+  json::GetValueFromTo(iJson, sHeaderShadowBias, oDetail.mShadowBias);
+  json::GetValueFromTo(iJson, sHeaderShadowResolution,oDetail.mShadowResolution);
+  json::GetValueFromTo(iJson, sHeaderShadowCullingMaskLayer, oDetail.mShadowCullingMaskLayer);
+  json::GetValueFromTo(iJson, sHeaderIsUsingGlobalShadowResolution, oDetail.mIsUsingGlobalShadowResolution);
+  json::GetValueFromTo(iJson, sHeaderIsCastingLight, oDetail.mIsCastingLight);
+  json::GetValueFromTo(iJson, sHeaderIsCastingShadow, oDetail.mIsCastingShadow);
 }
 
 } /// ::dy namespace

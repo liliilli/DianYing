@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 
 //!
 //! Forward declaration
@@ -23,8 +23,8 @@
 namespace dy
 {
 class FDyAttachmentInformation;
-enum class EDyGlBufferDataInternalFormat : unsigned char;
-enum class EDyTextureStyleType : unsigned char;
+enum class EGlBufferDataInternalFormat : unsigned char;
+enum class ETextureStyleType : unsigned char;
 } /// ::dy namespace
 
 //!
@@ -53,10 +53,10 @@ public:
   MDY_NODISCARD bool IsRenderBuffer() const noexcept { return this->mIsRenderBuffer; }
   
   /// @brief Get buffer type for intenal pixel.
-  MDY_NODISCARD const EDyGlBufferDataInternalFormat& GetBufferType() const noexcept;
+  MDY_NODISCARD const EGlBufferDataInternalFormat& GetBufferType() const noexcept;
 
   /// @brief Get attachment type for this attachment.
-  MDY_NODISCARD const EDyTextureStyleType& GetAttachmentType() const noexcept;
+  MDY_NODISCARD const ETextureStyleType& GetAttachmentType() const noexcept;
 
   /// @brief Get specified mipmap generation level for this attachment.
   MDY_NODISCARD TU32 GetMipmapLevel() const noexcept;

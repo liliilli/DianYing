@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/ColorRGB.h>
+#include <Dy/Helper/Type/DColorRGB.h>
 #include <Dy/Core/Reflection/RReflection.h>
 
 #define MDY_BYTEPADDING(__Type__) MDY_NOTUSED __Type__ MDY_TOKENPASTE2(____padding, __LINE__){};
@@ -21,16 +21,16 @@
 namespace dy
 {
 
-/// @struct DDyUboPointLight
+/// @struct DUboPointLight
 /// @brief This structure must be aligned by 16 bytes. (for std140 GL standard block layout)
-struct alignas(16) DDyUboPointLight final
+struct alignas(16) DUboPointLight final
 {
-  REGISTER_UNIFORM_STRUCT(DDyUboPointLight)
+  REGISTER_UNIFORM_STRUCT(DUboPointLight)
 
   /// @brief Light's position.
-  alignas(16) mutable DDyVector3 mPosition = DDyVector3{};
+  alignas(16) mutable DVector3 mPosition = DVector3{};
   /// @brief Light color
-  alignas(16) DDyColorRGB mColor = DDyColorRGB::Black;
+  alignas(16) DColorRGB mColor = DColorRGB::Black;
   /// @brief Light intensity for point light component.
               TF32 mIntensity = 0.0f;
   /// @brief Light range for point light component.
@@ -39,11 +39,11 @@ struct alignas(16) DDyUboPointLight final
 
 MDyReflectionStart
 {
-  REGISTER_TYPE(DDyUboPointLight, uDyLightPoint)
-    .REGISTER_VARIABLE(DDyUboPointLight, mPosition, mWorldPosition)
-    .REGISTER_VARIABLE(DDyUboPointLight, mColor, mColor)
-    .REGISTER_VARIABLE(DDyUboPointLight, mIntensity, mIntensity)
-    .REGISTER_VARIABLE(DDyUboPointLight, mRange, mRange)
+  REGISTER_TYPE(DUboPointLight, uDyLightPoint)
+    .REGISTER_VARIABLE(DUboPointLight, mPosition, mWorldPosition)
+    .REGISTER_VARIABLE(DUboPointLight, mColor, mColor)
+    .REGISTER_VARIABLE(DUboPointLight, mIntensity, mIntensity)
+    .REGISTER_VARIABLE(DUboPointLight, mRange, mRange)
 };
 
 } /// ::dy namespace

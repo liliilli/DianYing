@@ -13,12 +13,12 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyMaterialResource.h>
+#include <Dy/Builtin/Abstract/AMaterialResource.h>
 
 namespace dy::builtin
 {
 
-class FDyBtMtCheckerWorldPos final : public ADyMaterialResource
+class FDyBtMtCheckerWorldPos final : public AMaterialResource
 {
   MDY_REGISTER_RESOURCE_MATERIAL(FDyBtMtCheckerWorldPos, "dyBtMtCheckerWorldPos")
 };

@@ -13,15 +13,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLAttachmentResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
 
 /// @class FDyBtAtUiId
 /// @brief UI unique id information.
-class FDyBtAtUiId final : public ADyGLAttachmentResource
+class FDyBtAtUiId final : public AGLAttachmentResource
 {
   MDY_REGISTER_RESOURCE_ATTACHMENT(FDyBtAtUiId, "dyBtAtUiId")
 };

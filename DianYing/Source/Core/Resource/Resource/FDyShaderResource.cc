@@ -16,8 +16,8 @@
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLShaderFragmentDescriptor.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Helper/MCS/GLShaderParser.h>
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <Dy/Core/Reflection/RReflection.h>
@@ -66,8 +66,9 @@ void DyPrintShaderProgramErrorLog(_MIN_ TU32 shaderProgramId)
 namespace dy
 {
 
-FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& information) 
-  : mBinderShader{information.GetSpecifierName()}
+FDyShaderResource::FDyShaderResource(const FDyShaderInformation& information) 
+  : mBinderShader{information.GetSpecifierName()},
+    mIsSupportingInstancing{information.IsInstantiable()}
 {
   this->mSpecifierName = information.GetSpecifierName();
 
@@ -94,7 +95,7 @@ FDyShaderResource::FDyShaderResource(_MIN_ const FDyShaderInformation& informati
   this->MDY_PRIVATE(TryConstructDefaultUniformList)(*this);
 
   // Profiling.
-  SDyProfilingHelper::IncreaseOnBindShaderCount(1);
+  SProfilingHelper::IncreaseOnBindShaderCount(1);
 }
 
 std::optional<TFragmentList>
@@ -110,7 +111,7 @@ FDyShaderResource::pCreateShaderFragments(_MIN_ const FDyShaderInformation::TSha
 
     // Create shader fragment.
     TU32 fragmentId = 0;
-    const auto optShaderFragmentId = FDyGLWrapper::CreateShaderFragment(fragDesc);
+    const auto optShaderFragmentId = XGLWrapper::CreateShaderFragment(fragDesc);
     MDY_ASSERT_MSG(optShaderFragmentId.has_value() == true, "Shader fragment compilation must be succeeded.");
     fragmentId = optShaderFragmentId.value();
 
@@ -135,7 +136,7 @@ FDyShaderResource::pCreateShaderFragments(_MIN_ const FDyShaderInformation::TSha
 
 std::optional<TU32> FDyShaderResource::pInitializeShaderProgram(_MIN_ const TFragmentList& fragmentList)
 {
-  std::optional<TU32> optProgramId = FDyGLWrapper::CreateShaderProgram(fragmentList);
+  std::optional<TU32> optProgramId = XGLWrapper::CreateShaderProgram(fragmentList);
   MDY_ASSERT_MSG(optProgramId.has_value() == true, "Unexpected error occurred.");
 
   // Check shader program linking status only in debug mode.
@@ -156,19 +157,19 @@ void FDyShaderResource::pDeleteShaderFragments(const TFragmentList& fragmentList
 {
   for (const auto& [_, validFragmentId] : fragmentList)
   {
-    FDyGLWrapper::DeleteShaderFragment(validFragmentId);
+    XGLWrapper::DeleteShaderFragment(validFragmentId);
   }
 }
 
 void FDyShaderResource::pStoreAttributeProperties() noexcept
 {
-  const TU32 activatedAttrCount = FDyGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_ATTRIBUTES);
+  const TU32 activatedAttrCount = XGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_ATTRIBUTES);
   this->mAttributeVariableList.reserve(activatedAttrCount);
 
   // Retrieve attirbute variable information.
   for (TU32 i = 0; i < activatedAttrCount; ++i)
   {
-    auto result = FDyGLWrapper::GetShaderProgramAttributeInfo(this->mShaderProgramId, i);
+    auto result = XGLWrapper::GetShaderProgramAttributeInfo(this->mShaderProgramId, i);
     MDY_ASSERT_MSG(result.has_value() == true, "Unexpected error occurred.");
 
     auto [specifier, length, size, type, locId] = result.value();
@@ -190,37 +191,37 @@ void FDyShaderResource::pStoreAttributeProperties() noexcept
 void FDyShaderResource::pStoreUniformProperties() noexcept
 {
   const TU32 activatedUniformCount = 
-    FDyGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_UNIFORMS);
+    XGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_UNIFORMS);
   this->mUniformVariableList.reserve(activatedUniformCount);
 
   // Retrieve uniform variable information.
   for (TU32 i = 0; i < activatedUniformCount; ++i)
   { // If process was failed because of uniform variable is UBO, just do next thing.
-    auto result = FDyGLWrapper::GetShaderProgramUniformInfo(this->mShaderProgramId, i);
+    auto result = XGLWrapper::GetShaderProgramUniformInfo(this->mShaderProgramId, i);
     if (result.has_value() == false) { continue; }
 
     auto [specifier, length, size, type, locId] = result.value();
 
     // Check whether this is structurized uniform variable specifier.
     static MDY_SET_IMMUTABLE_STRING(kStructurized, R"dy((\w+)[\[\d+\]]*[.](\w+))dy");
-    if (RegexIsMatched(specifier, kStructurized) == true)
+    if (regex::IsMatched(specifier, kStructurized) == true)
     {
       // If regex is matched to array version, 
       static MDY_SET_IMMUTABLE_STRING(kArrayVersion, R"dy((\w+)\[(\d+)\]*[.](\w+))dy");
-      if (RegexIsMatched(specifier, kArrayVersion) == true)
+      if (regex::IsMatched(specifier, kArrayVersion) == true)
       {
-        const auto optValue = DyRegexGetMatchedKeyword(specifier, kArrayVersion);
+        const auto optValue = regex::GetMatchedKeywordFrom(specifier, kArrayVersion);
         const auto prefix   = (*optValue)[0];
         const auto number   = static_cast<size_t>(std::stoi((*optValue)[1]));
         const auto postfix  = (*optValue)[2];
         MDY_ASSERT_FORCE(reflect::RUniformReflection::IsSubNameExist(prefix) == true);
 
         // Check prefix structure is in map.
-        if (DyIsMapContains(this->mUniformStructVarListMap, prefix) == false)
+        if (Contains(this->mUniformStructVarListMap, prefix) == false)
         {
           this->mUniformStructVarListMap.try_emplace(
             prefix, 
-            std::pair(prefix, std::vector<DDyUniformStructVarInformation>{})
+            std::pair(prefix, std::vector<DUniformStructVarInformation>{})
           );
         }
 
@@ -243,16 +244,16 @@ void FDyShaderResource::pStoreUniformProperties() noexcept
       }
       else
       {
-        const auto optValue = DyRegexGetMatchedKeyword(specifier, kStructurized);
+        const auto optValue = regex::GetMatchedKeywordFrom(specifier, kStructurized);
         const auto prefix   = (*optValue)[0];
         const auto postfix  = (*optValue)[1];
 
         // Check prefix structure is in map.
-        if (DyIsMapContains(this->mUniformStructVarItemMap, prefix) == false)
+        if (Contains(this->mUniformStructVarItemMap, prefix) == false)
         {
           this->mUniformStructVarItemMap.try_emplace(
             prefix, 
-            std::pair(prefix, DDyUniformStructVarInformation{})
+            std::pair(prefix, DUniformStructVarInformation{})
           );
         }
         auto& [_, uniformStructVarList] = this->mUniformStructVarItemMap[prefix];
@@ -287,12 +288,12 @@ void FDyShaderResource::pStoreUniformProperties() noexcept
 
 void FDyShaderResource::pStoreUniformBufferObjectProperties() noexcept
 {
-  const TU32 activatedUboCount = FDyGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_UNIFORM_BLOCKS);
+  const TU32 activatedUboCount = XGLWrapper::QueryShaderProgramIV(this->mShaderProgramId, GL_ACTIVE_UNIFORM_BLOCKS);
   this->mUniformBufferObjectList.reserve(activatedUboCount);
 
   for (TU32 i = 0; i < activatedUboCount; ++i)
   { // If process was failed, just do next thing.
-    std::optional<std::string> optResult = FDyGLWrapper::GetShaderProgramUniformBlockInfo(this->mShaderProgramId, i);
+    std::optional<std::string> optResult = XGLWrapper::GetShaderProgramUniformBlockInfo(this->mShaderProgramId, i);
     if (optResult.has_value() == false) { continue; }
 
     this->mUniformBufferObjectList.emplace_back(optResult.value());
@@ -312,9 +313,9 @@ void FDyShaderResource::pStoreUniformBufferObjectProperties() noexcept
 FDyShaderResource::~FDyShaderResource()
 {
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteShaderProgram(this->mShaderProgramId);
+    XGLWrapper::DeleteShaderProgram(this->mShaderProgramId);
   }
-  SDyProfilingHelper::DecreaseOnBindShaderCount(1);
+  SProfilingHelper::DecreaseOnBindShaderCount(1);
 }
 
 TU32 FDyShaderResource::GetShaderProgramId() const noexcept
@@ -325,15 +326,15 @@ TU32 FDyShaderResource::GetShaderProgramId() const noexcept
 void FDyShaderResource::UseShader() const noexcept
 {
   MDY_ASSERT_MSG(this->mShaderProgramId > 0, "Shader program must be valid.");
-  FDyGLWrapper::UseShaderProgram(this->mShaderProgramId);
+  XGLWrapper::UseShaderProgram(this->mShaderProgramId);
 }
 
 void FDyShaderResource::DisuseShader() const noexcept
 {
-  FDyGLWrapper::DisuseShaderProgram();
+  XGLWrapper::DisuseShaderProgram();
 }
 
-const std::vector<DDyUniformVariableInformation>& 
+const std::vector<DUniformVariableInformation>& 
 FDyShaderResource::GetUniformVariableList() const noexcept
 {
   return this->mUniformVariableList;
@@ -349,6 +350,11 @@ const FDyShaderResource::TUniformStructItemMap&
 FDyShaderResource::GetUniformStructItemMap() const noexcept
 {
   return this->mUniformStructVarItemMap;
+}
+
+bool FDyShaderResource::IsSupportingInstancing() const noexcept
+{
+  return this->mIsSupportingInstancing;
 }
 
 } /// ::dy namespace

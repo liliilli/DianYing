@@ -19,6 +19,7 @@
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 #include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
 #include <Dy/Meta/Components/PCompPointLightMetaInfo.h>
+#include <Dy/Meta/Components/PCompSpotLightMetaInfo.h>
 
 //!
 //! Forward declaration & local translation unit functions.
@@ -49,7 +50,7 @@ void from_json(const nlohmann::json& iJson, TComponentMetaList& oMeta)
 {
   for (const auto& componentAtlas : iJson)
   {
-    const auto type = DyJsonGetValueFrom<EDyComponentMetaType>(componentAtlas, sHeader_Type);
+    const auto type = json::GetValueFrom<EDyComponentMetaType>(componentAtlas, sHeader_Type);
     switch (type)
     {
     default: MDY_UNEXPECTED_BRANCH(); break;
@@ -60,10 +61,13 @@ void from_json(const nlohmann::json& iJson, TComponentMetaList& oMeta)
       oMeta.emplace_back(type, componentAtlas.get<PDyScriptComponentMetaInfo>());
       break;
     case EDyComponentMetaType::DirectionalLight:
-      oMeta.emplace_back(type, componentAtlas.get<PDyDirLightComponentMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PDirLightComponentMetaInfo>());
       break;
     case EDyComponentMetaType::PointLight:
-      oMeta.emplace_back(type, componentAtlas.get<PDyCompPointLightMetaInfo>());
+      oMeta.emplace_back(type, componentAtlas.get<PCompPointLightMetaInfo>());
+      break;
+    case EDyComponentMetaType::SpotLight:
+      oMeta.emplace_back(type, componentAtlas.get<PCompSpotLightMetaInfo>());
       break;
     case EDyComponentMetaType::ModelFilter:
       oMeta.emplace_back(type, componentAtlas.get<PDyModelFilterComponentMetaInfo>());
@@ -109,8 +113,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyTransformComponentMetaIn
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyTransformComponentMetaInfo& p)
 {
   using TDDetails = PDyTransformComponentMetaInfo::DDetails;
-  DyJsonGetValueFromTo<EDyComponentMetaType>(j, sHeader_Type, p.mType);
-  DyJsonGetValueFromTo<TDDetails>           (j, sHeader_Details, p.mDetails);
+  json::GetValueFromTo<EDyComponentMetaType>(j, sHeader_Type, p.mType);
+  json::GetValueFromTo<TDDetails>           (j, sHeader_Details, p.mDetails);
 }
 
 void to_json(nlohmann::json& j, const PDyTransformComponentMetaInfo::DDetails& p)
@@ -129,13 +133,13 @@ void to_json(nlohmann::json& j, const PDyTransformComponentMetaInfo::DDetails& p
 
 void from_json(const nlohmann::json& j, PDyTransformComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo<DDyVector3>(j, sHeaderLocalPosition, p.mLocalPosition);
-  DyJsonGetValueFromTo<DDyVector3>(j, sHeaderLocalAngle, p.mLocalRotation);
-  DyJsonGetValueFromTo<DDyVector3>(j, sHeaderLocalScale, p.mLocalScale);
+  json::GetValueFromTo<DVector3>(j, sHeaderLocalPosition, p.mLocalPosition);
+  json::GetValueFromTo<DVector3>(j, sHeaderLocalAngle, p.mLocalRotation);
+  json::GetValueFromTo<DVector3>(j, sHeaderLocalScale, p.mLocalScale);
 
-  DyJsonGetValueFromTo<DDyVector3>(j, sHeaderWorldPosition, p.mWorldPosition);
-  DyJsonGetValueFromTo<DDyVector3>(j, sHeaderWorldAngle, p.mWorldRotation);
-  DyJsonGetValueFromTo<DDyVector3>(j, sHeaderWorldScale, p.mWorldScale);
+  json::GetValueFromTo<DVector3>(j, sHeaderWorldPosition, p.mWorldPosition);
+  json::GetValueFromTo<DVector3>(j, sHeaderWorldAngle, p.mWorldRotation);
+  json::GetValueFromTo<DVector3>(j, sHeaderWorldScale, p.mWorldScale);
 }
 
 //!
@@ -155,9 +159,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyScriptComponentMetaInfo&
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyScriptComponentMetaInfo& p)
 {
   using TDDetails = PDyScriptComponentMetaInfo::DDetails;
-  DyJsonGetValueFromTo<EDyComponentMetaType>(j, sHeader_Type,       p.mType);
-  DyJsonGetValueFromTo<TDDetails>           (j, sHeader_Details,    p.mDetails);
-  DyJsonGetValueFromTo<bool>                (j, sHeader_Activated,  p.mInitiallyActivated);
+  json::GetValueFromTo<EDyComponentMetaType>(j, sHeader_Type,       p.mType);
+  json::GetValueFromTo<TDDetails>           (j, sHeader_Details,    p.mDetails);
+  json::GetValueFromTo<bool>                (j, sHeader_Activated,  p.mInitiallyActivated);
 }
 
 //!
@@ -176,8 +180,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelFilterComponentMeta
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ PDyModelFilterComponentMetaInfo& p)
 {
   using TDDetails = PDyModelFilterComponentMetaInfo::DDetails;
-  DyJsonGetValueFromTo<EDyComponentMetaType>(j, sHeader_Type,       p.mType);
-  DyJsonGetValueFromTo<TDDetails>           (j, sHeader_Details,    p.mDetails);
+  json::GetValueFromTo<EDyComponentMetaType>(j, sHeader_Type,       p.mType);
+  json::GetValueFromTo<TDDetails>           (j, sHeader_Details,    p.mDetails);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelFilterComponentMetaInfo::DDetails& p)
@@ -190,7 +194,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelFilterComponentMeta
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelFilterComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo<std::string>(j, sHeaderModelName, p.mModelSpecifierName);
+  json::GetValueFromTo<std::string>(j, sHeaderModelName, p.mModelSpecifierName);
 }
 
 //!
@@ -210,9 +214,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelRendererComponentMe
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelRendererComponentMetaInfo& p)
 {
   using TDDetails = PDyModelRendererComponentMetaInfo::DDetails;
-  DyJsonGetValueFromTo<EDyComponentMetaType>(j, sHeader_Type,       p.mType);
-  DyJsonGetValueFromTo<TDDetails>           (j, sHeader_Details,    p.mDetails);
-  DyJsonGetValueFromTo<bool>                (j, sHeader_Activated,  p.mInitiallyActivated);
+  json::GetValueFromTo<EDyComponentMetaType>(j, sHeader_Type,       p.mType);
+  json::GetValueFromTo<TDDetails>           (j, sHeader_Details,    p.mDetails);
+  json::GetValueFromTo<bool>                (j, sHeader_Activated,  p.mInitiallyActivated);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelRendererComponentMetaInfo::DDetails& p)
@@ -225,7 +229,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelRendererComponentMe
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelRendererComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo<bool>(j, sHeaderShadow, p.mIsEnabledCreateShadow);
+  json::GetValueFromTo<bool>(j, sHeaderShadow, p.mIsEnabledCreateShadow);
 }
 
 //!
@@ -245,9 +249,9 @@ void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelAnimatorComponent
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelAnimatorComponentMetaInfo& p)
 {
   using TDDetails = PDyModelAnimatorComponentMetaInfo::DDetails;
-  DyJsonGetValueFromTo<EDyComponentMetaType>(j, sHeader_Type,       p.mType);
-  DyJsonGetValueFromTo<TDDetails>           (j, sHeader_Details,    p.mDetails);
-  DyJsonGetValueFromTo<bool>                (j, sHeader_Activated,  p.mInitiallyActivated);
+  json::GetValueFromTo<EDyComponentMetaType>(j, sHeader_Type,       p.mType);
+  json::GetValueFromTo<TDDetails>           (j, sHeader_Details,    p.mDetails);
+  json::GetValueFromTo<bool>                (j, sHeader_Activated,  p.mInitiallyActivated);
 }
 
 void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelAnimatorComponentMetaInfo::DDetails& p)
@@ -261,8 +265,8 @@ void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelAnimatorComponent
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelAnimatorComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo(j, "TempAnimation",      p.mTempAnimationScrap);
-  DyJsonGetValueFromTo(j, "SkeletonSpecifier",  p.mSkeletonSpecifier);
+  json::GetValueFromTo(j, "TempAnimation",      p.mTempAnimationScrap);
+  json::GetValueFromTo(j, "SkeletonSpecifier",  p.mSkeletonSpecifier);
 }
 
 //!
@@ -281,9 +285,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyCameraComponentMetaInfo&
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCameraComponentMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
-  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
-  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+  json::GetValueFromTo(j, sHeader_Type,       p.mType);
+  json::GetValueFromTo(j, sHeader_Details,    p.mDetails);
+  json::GetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyCameraComponentMetaInfo::DDetails& p)
@@ -305,16 +309,16 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyCameraComponentMetaInfo:
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCameraComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo(j, sHeaderFieldOfView,       p.mInitialFieldOfView);
-  DyJsonGetValueFromTo(j, sHeaderProjection,        p.mProjectionType);
+  json::GetValueFromTo(j, sHeaderFieldOfView,       p.mInitialFieldOfView);
+  json::GetValueFromTo(j, sHeaderProjection,        p.mProjectionType);
 
-  DyJsonGetValueFromTo(j, sHeaderClippingNear,      p.mNear);
-  DyJsonGetValueFromTo(j, sHeaderClippingFar,       p.mFar);
-  DyJsonGetValueFromTo(j, sHeaderViewportRect,      p.mViewportSize);
+  json::GetValueFromTo(j, sHeaderClippingNear,      p.mNear);
+  json::GetValueFromTo(j, sHeaderClippingFar,       p.mFar);
+  json::GetValueFromTo(j, sHeaderViewportRect,      p.mViewportSize);
 
-  DyJsonGetValueFromTo(j, sHeaderIsFocusInstantly,  p.mIsFocusInstantly);
-  DyJsonGetValueFromTo(j, sHeaderIsMeshUnclipped,   p.mIsEnableMeshUnClipped);
-  DyJsonGetValueFromTo(j, "Is3DListener",           p.mIs3DListener);
+  json::GetValueFromTo(j, sHeaderIsFocusInstantly,  p.mIsFocusInstantly);
+  json::GetValueFromTo(j, sHeaderIsMeshUnclipped,   p.mIsEnableMeshUnClipped);
+  json::GetValueFromTo(j, "Is3DListener",           p.mIs3DListener);
 }
 
 //!
@@ -333,9 +337,9 @@ void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundSourceComponentMe
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
-  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
-  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+  json::GetValueFromTo(j, sHeader_Type,       p.mType);
+  json::GetValueFromTo(j, sHeader_Details,    p.mDetails);
+  json::GetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
 }
 
 void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundSourceComponentMetaInfo::DDetails& p)
@@ -347,80 +351,80 @@ void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundSourceComponentMe
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo(j, "SoundSpecifier", p.mSoundSpecifier);
+  json::GetValueFromTo(j, "SoundSpecifier", p.mSoundSpecifier);
 
-  DyJsonGetValueFromTo(j, "2DSound",  p.m2DSound);
-  DyJsonGetValueFromTo(j, "Muted",    p.mMuted);
-  DyJsonGetValueFromTo(j, "Looped",   p.mLooped);
+  json::GetValueFromTo(j, "2DSound",  p.m2DSound);
+  json::GetValueFromTo(j, "Muted",    p.mMuted);
+  json::GetValueFromTo(j, "Looped",   p.mLooped);
 
-  DyJsonGetValueFromTo(j, "VolumeMultiplier", p.mVolumeMultiplier);
-  DyJsonGetValueFromTo(j, "PitchMultiplier",  p.mPitchMultiplier);
-  DyJsonGetValueFromTo(j, "Channel",          p.mChannelSpecifier);
+  json::GetValueFromTo(j, "VolumeMultiplier", p.mVolumeMultiplier);
+  json::GetValueFromTo(j, "PitchMultiplier",  p.mPitchMultiplier);
+  json::GetValueFromTo(j, "Channel",          p.mChannelSpecifier);
 
-  DyJsonGetValueFromTo(j, "Attenuation", p.mAttenuation);
+  json::GetValueFromTo(j, "Attenuation", p.mAttenuation);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundSourceComponentMetaInfo::DAttenuation& p)
 {
-  DyJsonGetValueFromTo(j, "Activated", p.mActivated);
-  DyJsonGetValueFromTo(j, "Near", p.mNearDistance);
-  DyJsonGetValueFromTo(j, "Far",  p.mFarDistance);
+  json::GetValueFromTo(j, "Activated", p.mActivated);
+  json::GetValueFromTo(j, "Near", p.mNearDistance);
+  json::GetValueFromTo(j, "Far",  p.mFarDistance);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
-  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
-  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+  json::GetValueFromTo(j, sHeader_Type,       p.mType);
+  json::GetValueFromTo(j, sHeader_Details,    p.mDetails);
+  json::GetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyRigidbodyComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo(j, "IsSimulatePhysics", p.mIsSimulatePhysics);
-  DyJsonGetValueFromTo(j, "IsEnableGravity", p.mIsEnableGravity);
+  json::GetValueFromTo(j, "IsSimulatePhysics", p.mIsSimulatePhysics);
+  json::GetValueFromTo(j, "IsEnableGravity", p.mIsEnableGravity);
 
-  DyJsonGetValueFromTo(j, "MassInKg", p.mMassInKg);
+  json::GetValueFromTo(j, "MassInKg", p.mMassInKg);
   
-  DyJsonGetValueFromTo(j, "LinearDamping", p.mLinearDamping);
-  DyJsonGetValueFromTo(j, "AngularDamping", p.mAngularDamping);
+  json::GetValueFromTo(j, "LinearDamping", p.mLinearDamping);
+  json::GetValueFromTo(j, "AngularDamping", p.mAngularDamping);
 
-  DyJsonGetValueFromTo(j, "LockPos", p.mLockPosition);
-  DyJsonGetValueFromTo(j, "LockRot", p.mLockPosition);
-  DyJsonGetValueFromTo(j, "LockPreset", p.mLockPreset);
+  json::GetValueFromTo(j, "LockPos", p.mLockPosition);
+  json::GetValueFromTo(j, "LockRot", p.mLockPosition);
+  json::GetValueFromTo(j, "LockPreset", p.mLockPreset);
 
-  DyJsonGetValueFromTo(j, "Type", p.mType);
+  json::GetValueFromTo(j, "Type", p.mType);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
-  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
-  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+  json::GetValueFromTo(j, sHeader_Type,       p.mType);
+  json::GetValueFromTo(j, sHeader_Details,    p.mDetails);
+  json::GetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo(j, "IsNotifyEvent", p.mNotifyHitEvent);
-  DyJsonGetValueFromTo(j, "IsOverlapEvent", p.mNotifyOverlapEvent);
-  DyJsonGetValueFromTo(j, "ColliderType", p.mColliderType);
+  json::GetValueFromTo(j, "IsNotifyEvent", p.mNotifyHitEvent);
+  json::GetValueFromTo(j, "IsOverlapEvent", p.mNotifyOverlapEvent);
+  json::GetValueFromTo(j, "ColliderType", p.mColliderType);
 
   switch (p.mColliderType)
   {
   case EDyColliderType::Sphere: 
-  { p.mColliderDetails = DyJsonGetValueFrom<TColliderBindingType<EDyColliderType::Sphere>::Type>(j, "ColliderDetails");
+  { p.mColliderDetails = json::GetValueFrom<TColliderBindingType<EDyColliderType::Sphere>::Type>(j, "ColliderDetails");
   } break;
   case EDyColliderType::Capsule:
-  { p.mColliderDetails = DyJsonGetValueFrom<TColliderBindingType<EDyColliderType::Capsule>::Type>(j, "ColliderDetails");
+  { p.mColliderDetails = json::GetValueFrom<TColliderBindingType<EDyColliderType::Capsule>::Type>(j, "ColliderDetails");
   } break;
   case EDyColliderType::Box:
-  { p.mColliderDetails = DyJsonGetValueFrom<TColliderBindingType<EDyColliderType::Box>::Type>(j, "ColliderDetails");
+  { p.mColliderDetails = json::GetValueFrom<TColliderBindingType<EDyColliderType::Box>::Type>(j, "ColliderDetails");
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
-  DyJsonGetValueFromTo(j, "FilterPresetSpecifier", p.mCollisionFilterPresetSpecifier);
-  DyJsonGetValueFromTo(j, "CollisionFilter", p.mCollisionFilter);
-  DyJsonGetValueFromTo(j, "LayerName", p.mCollisionLayerName);
+  json::GetValueFromTo(j, "FilterPresetSpecifier", p.mCollisionFilterPresetSpecifier);
+  json::GetValueFromTo(j, "CollisionFilter", p.mCollisionFilter);
+  json::GetValueFromTo(j, "LayerName", p.mCollisionLayerName);
 }
 
 //!
@@ -429,18 +433,18 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyColliderComponentMetaI
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_Type,       p.mType);
-  DyJsonGetValueFromTo(j, sHeader_Details,    p.mDetails);
-  DyJsonGetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
+  json::GetValueFromTo(j, sHeader_Type,       p.mType);
+  json::GetValueFromTo(j, sHeader_Details,    p.mDetails);
+  json::GetValueFromTo(j, sHeader_Activated,  p.mInitiallyActivated);
 }
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySkyboxComponentMetaInfo::DDetails& p)
 {
-  DyJsonGetValueFromTo(j, "Exposure", p.mExposure);
-  DyJsonGetValueFromTo(j, "Rotation", p.mRotation);
-  DyJsonGetValueFromTo(j, "TintColor", p.mTintColor);
+  json::GetValueFromTo(j, "Exposure", p.mExposure);
+  json::GetValueFromTo(j, "Rotation", p.mRotation);
+  json::GetValueFromTo(j, "TintColor", p.mTintColor);
 
-  DyJsonGetValueFromTo(j, "CubemapSpecifier", p.mCubemapSpecifier);
+  json::GetValueFromTo(j, "CubemapSpecifier", p.mCubemapSpecifier);
 }
 
 } /// ::dy namespace

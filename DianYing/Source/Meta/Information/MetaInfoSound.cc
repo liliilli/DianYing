@@ -30,9 +30,9 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDySoundInstanceMetaInfo& p
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySoundInstanceMetaInfo& p)
 {
   p.mSourceType = EDyResourceSource::External;
-  DyJsonGetValueFromTo(j, "ExternalPath", p.mExternalPath);
+  json::GetValueFromTo(j, "ExternalPath", p.mExternalPath);
 
-  MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(p.mExternalPath) == true, "Given sound path is not valid.");
+  MDY_ASSERT_MSG_FORCE(IsFileExist(p.mExternalPath) == true, "Given sound path is not valid.");
 }
 
 } /// ::dy namespace

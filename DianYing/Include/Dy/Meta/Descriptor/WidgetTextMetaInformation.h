@@ -13,46 +13,44 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DyString.h>
-#include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Helper/Type/ColorRGBA.h>
+#include <Dy/Helper/Type/DString.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 
 namespace dy
 {
 
-///
 /// @struct PDyMetaWidgetTextDescriptor
 /// @brief Text component of widget descriptor
-///
 struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {
   /// Size (px) of text widget (leaf widget).
-  DDyVectorInt2 mWidgetSize         = {};
+  DVectorInt2 mWidgetSize         = {};
   /// Initial position of canvas.
-  DDyVectorInt2 mInitialPosition    = {};
+  DVectorInt2 mInitialPosition    = {};
   /// Originable to parent frame (except for list layout)
-  EDyOrigin     mOrigin             = EDyOrigin::Center_Center;
+  EDyOrigin   mOrigin             = EDyOrigin::Center_Center;
 
   /// UCS-2 string
-  DDyString     mInitialString;
+  DString     mTextString;
   /// InitialColor(rgb) + InitialAlpha(a)
-  DDyColorRGBA  mInitialColor       = DDyColorRGBA::White;
+  DColorRGBA  mTextColor = DColorRGBA::White;
   /// Edge color of text. `mIsUsingEdge` must be enabled to use this.
-  DDyColorRGBA  mEdgeColor          = DDyColorRGBA{0, 0, 0, 0};
+  DColorRGBA  mEdgeColor = DColorRGBA{0, 0, 0, 0};
   /// Background color of text. `mIsUsingBackground` must be enabled to use this.
-  DDyColorRGBA  mBackgroundColor    = DDyColorRGBA{0, 0, 0, 0};
+  DColorRGBA  mBackgroundColor = DColorRGBA{0, 0, 0, 0};
   /// Font Size (px?)
-  TU32          mFontSize           = MDY_INITIALIZE_DEFUINT;
+  TU32        mFontSize = 10;
   /// If empty, just use default font.
-  std::string   mFontSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
+  std::string mFontName;
   /// Text alignment.
   EDyHorizontalAlignment mAlignment = EDyHorizontalAlignment::Left;
   /// Check rendering edge to text.
-  bool          mIsUsingEdge        = false;
+  bool        mIsUsingEdge        = false;
   /// Check use background outside of font region.
-  bool          mIsUsingBackground  = false;
+  bool        mIsUsingBackground  = false;
 
   ///
   /// @brief Factory function for PDyMetaWidgetTextDescriptor.

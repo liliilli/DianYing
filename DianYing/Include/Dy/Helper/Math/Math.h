@@ -21,10 +21,10 @@
 
 namespace dy
 {
-class DDyQuaternion;
-struct DDyVector2;
-struct DDyVector3;
-struct DDyVector4;
+class DQuaternion;
+struct DVector2;
+struct DVector3;
+struct DVector4;
 }
 
 //!
@@ -106,17 +106,17 @@ template <typename TType>
 ///
 /// @brief Check if vector is all zero or nearly equal to zero.
 ///
-[[nodiscard]] bool IsAllZero(const DDyVector2& vector) noexcept;
+[[nodiscard]] bool IsAllZero(const DVector2& vector) noexcept;
 
 ///
 /// @brief Check if vector is all zero or nearly equal to zero.
 ///
-[[nodiscard]] bool IsAllZero(const DDyVector3& vector) noexcept;
+[[nodiscard]] bool IsAllZero(const DVector3& vector) noexcept;
 
 ///
 /// @brief Check if vector is all zero or nearly equal to zero.
 ///
-[[nodiscard]] bool IsAllZero(const DDyVector4& vector) noexcept;
+[[nodiscard]] bool IsAllZero(const DVector4& vector) noexcept;
 
 ///
 /// @brief Do linear interpolation with float type.
@@ -131,32 +131,32 @@ template <typename TType>
 [[nodiscard]] double Lerp(double lhs, double rhs, float offset);
 
 ///
-/// @brief Do linear interpolation with DDyVector2 type.
+/// @brief Do linear interpolation with DVector2 type.
 ///
-[[nodiscard]] DDyVector2 Lerp(const DDyVector2& lhs, const DDyVector2& rhs, float offset) noexcept;
+[[nodiscard]] DVector2 Lerp(const DVector2& lhs, const DVector2& rhs, float offset) noexcept;
 
 ///
-/// @brief Do linear interpolation with DDyVector3 type.
+/// @brief Do linear interpolation with DVector3 type.
 ///
-[[nodiscard]] DDyVector3 Lerp(const DDyVector3& lhs, const DDyVector3& rhs, float offset) noexcept;
+[[nodiscard]] DVector3 Lerp(const DVector3& lhs, const DVector3& rhs, float offset) noexcept;
 
 ///
-/// @brief Do linear interpolation with DDyVector4 type.
+/// @brief Do linear interpolation with DVector4 type.
 ///
-[[nodiscard]] DDyVector4 Lerp(const DDyVector4& lhs, const DDyVector4& rhs, float offset) noexcept;
+[[nodiscard]] DVector4 Lerp(const DVector4& lhs, const DVector4& rhs, float offset) noexcept;
 
-/// @brief Do sphere-linear interpolation with DDyQuaternion.
-MDY_NODISCARD DDyQuaternion Slerp(_MIN_ const DDyQuaternion& lhs, _MIN_ const DDyQuaternion& rhs, _MIN_ TF32 offset) noexcept;
-
-///
-/// @brief Get result point through quadratic bezier curve calculation.
-///
-[[nodiscard]] DDyVector2 GetQuadBezierCurvePoint(const DDyVector2& lhs, const DDyVector2& rhs, const DDyVector2& control, float offset);
+/// @brief Do sphere-linear interpolation with DQuaternion.
+MDY_NODISCARD DQuaternion Slerp(_MIN_ const DQuaternion& lhs, _MIN_ const DQuaternion& rhs, _MIN_ TF32 offset) noexcept;
 
 ///
 /// @brief Get result point through quadratic bezier curve calculation.
 ///
-[[nodiscard]] DDyVector3 GetQuadBezierCurvePoint(const DDyVector3& lhs, const DDyVector3& rhs, const DDyVector3& control, float offset);
+[[nodiscard]] DVector2 GetQuadBezierCurvePoint(const DVector2& lhs, const DVector2& rhs, const DVector2& control, float offset);
+
+///
+/// @brief Get result point through quadratic bezier curve calculation.
+///
+[[nodiscard]] DVector3 GetQuadBezierCurvePoint(const DVector3& lhs, const DVector3& rhs, const DVector3& control, float offset);
 
 //!
 //! GetMinMax Functions
@@ -242,22 +242,22 @@ template <typename TValueType, int32_t TSize, typename = std::enable_if_t<std::i
 }
 
 ///
-/// @brief Get min and max arithmetic value from DDyVector2.
+/// @brief Get min and max arithmetic value from DVector2.
 /// Result container's first value has min, second value has max.
 ///
-[[nodiscard]] TMinMaxResult<float> GetMinMax(const dy::DDyVector2& vector) noexcept;
+[[nodiscard]] TMinMaxResult<float> GetMinMax(const dy::DVector2& vector) noexcept;
 
 ///
-/// @brief Get min and max arithmetic value from DDyVector3.
+/// @brief Get min and max arithmetic value from DVector3.
 /// Result container's first value has min, second value has max.
 ///
-[[nodiscard]] TMinMaxResult<float> GetMinMax(const dy::DDyVector3& vector) noexcept;
+[[nodiscard]] TMinMaxResult<float> GetMinMax(const dy::DVector3& vector) noexcept;
 
 ///
-/// @brief Get min and max arithmetic value from DDyVector3.
+/// @brief Get min and max arithmetic value from DVector3.
 /// Result container's first value has min, second value has max.
 ///
-[[nodiscard]] TMinMaxResult<float> GetMinMax(const dy::DDyVector4& vector) noexcept;
+[[nodiscard]] TMinMaxResult<float> GetMinMax(const dy::DVector4& vector) noexcept;
 
 ///
 /// @brief Get degree rotation angle from 0 to 360' automatically.
@@ -300,9 +300,9 @@ template <typename TValueType, int32_t TSize, typename = std::enable_if_t<std::i
 [[nodiscard]] double ConvertDegreeToRadian(double degree) noexcept;
 
 /// @brief Convert quaternion to radian degree.
-[[nodiscard]] DDyVector3 ConvertQuaternionToRadianEuler(_MIN_ const DDyQuaternion& iQuat);
+[[nodiscard]] DVector3 ConvertQuaternionToRadianEuler(_MIN_ const DQuaternion& iQuat);
 /// @brief Convert quaterion w,x,y,z to radian degree.
-[[nodiscard]] DDyVector3 ConvertQuaternionToRadianEuler(_MIN_ TF32 w, _MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z);
+[[nodiscard]] DVector3 ConvertQuaternionToRadianEuler(_MIN_ TF32 w, _MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z);
 
 } /// ::dy::math namespace
 

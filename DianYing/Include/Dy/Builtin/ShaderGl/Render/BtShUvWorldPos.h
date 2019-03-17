@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -22,7 +22,7 @@ namespace dy::builtin
 /// @class FDyBtShGlUvWorldPos
 /// @brief Builtin default deferred opqaue static mesh gl shader but use world position as uv.
 ///
-class FDyBtShGlUvWorldPos final : public ADyGLShaderResource
+class FDyBtShGlUvWorldPos final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBtShGlUvWorldPos, "dyBtShGlUvWorldPos")
 public:

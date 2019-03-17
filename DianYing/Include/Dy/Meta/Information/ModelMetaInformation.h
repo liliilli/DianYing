@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Element/Interface/IDyToString.h>
+#include <Dy/Element/Interface/IToString.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <nlohmann/json_fwd.hpp>
 

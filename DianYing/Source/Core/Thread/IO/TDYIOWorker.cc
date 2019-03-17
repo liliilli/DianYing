@@ -19,7 +19,6 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
-#include <Dy/Core/Resource/Internal/FDyModelVBOIntermediate.h>
 #include <Dy/Core/Resource/Information/FDyTextureCubemapInformation.h>
 #include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
 #include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
@@ -35,9 +34,11 @@
 #include <Dy/Core/Resource/Resource/FDyTextureCubemapResource.h>
 #include <Dy/Core/Resource/Resource/Attachment/FDyAttachmentGeneralResource.h>
 #include <Dy/Core/Resource/Resource/Attachment/FDyAttachmentPingpongResource.h>
-#include <Dy/Management/IO/MDyIOData.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
+#include <Dy/Management/IO/MIORescInfo.h>
+#include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
+#include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
+#include <Dy/Builtin/Constant/GeneralValue.h>
 
 namespace dy
 {
@@ -130,13 +131,22 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
 
   switch (result.mResourceType)
   {
-  case EDyResourceType::GLShader:
+  case EResourceType::GLShader:
+  {
+    const auto shaderName = TryRemovePostfix(assignedTask.mSpecifierName, kInstancingPostfix);
+    // Check this is instancing material
+    auto isInstanced  = false;
+    if (shaderName != assignedTask.mSpecifierName) 
+    { 
+      isInstanced = true; 
+    }
+
     result.mSmtPtrResultInstance = new FDyShaderInformation
-    (this->mMetaManager.GetGLShaderMetaInformation(assignedTask.mSpecifierName));
-    break;
-  case EDyResourceType::Texture:
+    (this->mMetaManager.GetGLShaderMetaInformation(shaderName), isInstanced);
+  } break;
+  case EResourceType::Texture:
   { const auto metaInfo = this->mMetaManager.GetTextureMetaInformation(assignedTask.mSpecifierName);
-    if (metaInfo.mTextureType == EDyTextureStyleType::D2Cubemap)
+    if (metaInfo.mTextureType == ETextureStyleType::D2Cubemap)
     { // When cubemap, we should use separated information type.
       result.mSmtPtrResultInstance = new FDyTextureCubemapInformation(metaInfo);
     }
@@ -145,35 +155,40 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceInformation(_MIN_ const DDyIOT
       result.mSmtPtrResultInstance = new FDyTextureGeneralInformation(metaInfo);
     }
   } break;
-  case EDyResourceType::Mesh:
+  case EResourceType::Mesh:
     result.mSmtPtrResultInstance = new FDyMeshInformation
     (this->mMetaManager.GetBtMeshMetaInformation(assignedTask.mSpecifierName));
     break;
-  case EDyResourceType::Model:
+  case EResourceType::Model:
     result.mSmtPtrResultInstance = new FDyModelInformation
     (this->mMetaManager.GetModelMetaInformation(assignedTask.mSpecifierName));
     break;
-  case EDyResourceType::Skeleton:
+  case EResourceType::Skeleton:
     result.mSmtPtrResultInstance = new FDyModelSkeletonInformation
     (this->mMetaManager.GetModelSkeletonMetaInformation(assignedTask.mSpecifierName));
     break;
-  case EDyResourceType::AnimationScrap:
+  case EResourceType::AnimationScrap:
     result.mSmtPtrResultInstance = new FDyModelAnimScrapInformation
     (this->mMetaManager.GetModelAnimScrapMetaInformation(assignedTask.mSpecifierName));
     break;
-  case EDyResourceType::Material:
+  case EResourceType::Material:
+  {
+    const auto materialName = TryRemovePostfix(assignedTask.mSpecifierName, kInstancingPostfix);
+    // Check this is instancing material
+    const auto isInstanced  = materialName != assignedTask.mSpecifierName;
+
     result.mSmtPtrResultInstance = new FDyMaterialInformation
-    (this->mMetaManager.GetMaterialMetaInformation(assignedTask.mSpecifierName));
-    break;
-  case EDyResourceType::GLAttachment:
+    (this->mMetaManager.GetMaterialMetaInformation(materialName), isInstanced);
+  } break;
+  case EResourceType::GLAttachment:
     result.mSmtPtrResultInstance = new FDyAttachmentInformation
     (this->mMetaManager.GetGLAttachmentMetaInformation(assignedTask.mSpecifierName));
     break;
-  case EDyResourceType::GLFrameBuffer:
+  case EResourceType::GLFrameBuffer:
     result.mSmtPtrResultInstance = new FDyFrameBufferInformation
     (this->mMetaManager.GetGlFrameBufferMetaInformation(assignedTask.mSpecifierName));
     break;
-  case EDyResourceType::Sound:
+  case EResourceType::Sound:
     result.mSmtPtrResultInstance = new FDySoundInformation
     (this->mMetaManager.GetSoundMetaInformation(assignedTask.mSpecifierName));
     break;
@@ -191,18 +206,18 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
   result.mSpecifierName = assignedTask.mSpecifierName;
   result.mIsHaveDeferredTask = false;
 
-  const auto& infoManager = MDyIOData::GetInstance();
+  const auto& infoManager = MIORescInfo::GetInstance();
   switch (result.mResourceType)
   {
-  case EDyResourceType::GLShader:
+  case EResourceType::GLShader:
   { // https://www.khronos.org/opengl/wiki/OpenGL_Object#Object_Sharing
     // Shader can not create from other thread.
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
   } break;
-  case EDyResourceType::Texture:
+  case EResourceType::Texture:
   { // Texture buffer can be created on another context. (It can be shared)
-    const auto* ptr = infoManager.GetPtrInformation<EDyResourceType::Texture>(result.mSpecifierName);
-    if (ptr->GetType() == EDyTextureStyleType::D2Cubemap)
+    const auto* ptr = infoManager.GetPtrInformation<EResourceType::Texture>(result.mSpecifierName);
+    if (ptr->GetType() == ETextureStyleType::D2Cubemap)
     {
       result.mSmtPtrResultInstance = new FDyTextureCubemapResource(
           static_cast<const FDyTextureCubemapInformation&>(*ptr)); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
@@ -213,23 +228,25 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
         static_cast<const FDyTextureGeneralInformation&>(*ptr)); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     }
   } break;
-  case EDyResourceType::__MeshVBO:
+  case EResourceType::__MeshVBO:
   { // Builtin mesh not be created on another context... so forward it to main thread.
-    //result.mSmtPtrResultInstance = new FDyMeshResource(*infoManager.GetPtrInformation<EDyResourceType::Mesh>(result.mSpecifierName));
     auto task = assignedTask;
-    task.mResourceType = EDyResourceType::Mesh;
-    task.mRawInstanceForUsingLater = new FDyMeshVBOIntermediate(
-      *infoManager.GetPtrInformation<EDyResourceType::Mesh>(result.mSpecifierName)
-    );
+    task.mResourceType = EResourceType::Mesh;
+    const auto meshName = TryRemovePostfix(assignedTask.mSpecifierName, kInstancingPostfix);
+    const auto isInstanced  = meshName != assignedTask.mSpecifierName;
+
+    task.mRawInstanceForUsingLater = new FMeshVBOIntermediate(
+      *infoManager.GetPtrInformation<EResourceType::Mesh>(meshName), isInstanced);
+
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(task);
   } break;
-  case EDyResourceType::Model:
+  case EResourceType::Model:
   { // 
     result.mSmtPtrResultInstance = new FDyModelResource(
-      *infoManager.GetPtrInformation<EDyResourceType::Model>(result.mSpecifierName)
+      *infoManager.GetPtrInformation<EResourceType::Model>(result.mSpecifierName)
     );
   } break;
-  case EDyResourceType::Material:
+  case EResourceType::Material:
   { // Material resource is just for binding allocated textures and shader instance ptr list.
     if (assignedTask.mRawInstanceForUsingLater.has_value() == true)
     {
@@ -239,14 +256,14 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
     else
     {
       result.mSmtPtrResultInstance = new FDyMaterialResource(
-        *infoManager.GetPtrInformation<EDyResourceType::Material>(result.mSpecifierName)
+        *infoManager.GetPtrInformation<EResourceType::Material>(result.mSpecifierName)
       );
     }
   } break;
-  case EDyResourceType::GLAttachment:
+  case EResourceType::GLAttachment:
   { // Attachment resource can be created on another context. (It can be shared)
     const auto& refInfo = 
-      *infoManager.GetPtrInformation<EDyResourceType::GLAttachment>(result.mSpecifierName);
+      *infoManager.GetPtrInformation<EResourceType::GLAttachment>(result.mSpecifierName);
     if (refInfo.IsPingPong() == false)
     { // Create general attachment.
       result.mSmtPtrResultInstance = new FDyAttachmentGeneralResource(refInfo);
@@ -256,7 +273,7 @@ DDyIOWorkerResult TDyIOWorker::pPopulateIOResourceResource(_MIN_ const DDyIOTask
       result.mSmtPtrResultInstance = new FDyAttachmentPingpongResource(refInfo);
     }
   } break;
-  case EDyResourceType::GLFrameBuffer:
+  case EResourceType::GLFrameBuffer:
   { // Framebuffer object must be created on main thread. so forward it to main deferred list.
     SDyIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
   } break;

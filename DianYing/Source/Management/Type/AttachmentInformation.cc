@@ -36,7 +36,7 @@ GLenum DyGetAttachmentTypeValue(EDyGlAttachmentType iAttType) noexcept
 
 PBlendingEquation::PBlendingEquation(
   EFunc iSrc, EMode iMode, EFunc iDst, 
-  const DDyColorRGBA& iConstantColor) 
+  const DColorRGBA& iConstantColor) 
   : mBlendMode{iMode},
     mSrcFunc{iSrc},
     mDstFunc{iDst},

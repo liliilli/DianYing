@@ -17,7 +17,7 @@
 
 #include <Dy/Builtin/Texture/Checker.h>
 #include <Dy/Builtin/ShaderGl/Render/BtShUvWorldPos.h>
-#include <Dy/Core/Resource/Internal/MaterialType.h>
+#include <Dy/Core/Resource/Internal/EMaterialBlendMode.h>
 
 //!
 //! Implementation
@@ -30,10 +30,10 @@ void FDyBtMtCheckerWorldPos::ConstructBuffer(PDyMaterialInstanceMetaInfo& proper
 {
   property.mSpecifierName   = FDyBtMtCheckerWorldPos::sName;
   property.mShaderSpecifier = FDyBtShGlUvWorldPos::sName;
-  property.mBlendMode       = EDyMaterialBlendMode::Opaque;
+  property.mBlendMode       = EMaterialBlendMode::Opaque;
 
-  property.mTextureNames[0] = {(FDyBuiltinTextureChecker::sName), EDyTextureMapType::Unknown};
-  PDyMaterialInstanceMetaInfo::InsertValue<EDyUniformVariableType::Float>(property, "uRoughness", 0.35f);
+  property.mTextureNames[0] = {(FDyBuiltinTextureChecker::sName), ETextureMapType::Unknown};
+  PDyMaterialInstanceMetaInfo::InsertValue<EUniformVariableType::Float>(property, "uRoughness", 0.35f);
 }
 
 } /// ::dy::builtin namespac

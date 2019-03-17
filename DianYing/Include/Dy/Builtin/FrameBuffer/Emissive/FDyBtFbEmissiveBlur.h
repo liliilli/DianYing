@@ -13,15 +13,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLFrameBufferResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLFrameBufferResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBtFbEmissiveBlur
 /// @brief Framebuffer for blurring (any-way) emissive attachment.
-class FDyBtFbEmissiveBlur final : public ADyGLFrameBufferResource
+class FDyBtFbEmissiveBlur final : public AGLFrameBufferResource
 {
   MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFbEmissiveBlur, "dyBtFbEmissiveBlur")
 };

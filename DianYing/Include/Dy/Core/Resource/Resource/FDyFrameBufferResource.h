@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
 
 //!
@@ -46,7 +46,7 @@ public:
   /// @brief Get framebuffer id.
   MDY_NODISCARD virtual TU32 GetTargetFrameBufferId() const noexcept = 0;
   /// @brief Get framebuffer size.
-  MDY_NODISCARD const DDyVectorInt2& GetFrameBufferSize();
+  MDY_NODISCARD const DVectorInt2& GetFrameBufferSize();
 
   /// @brief Bind Framebuffer.
   EDySuccess virtual BindFrameBuffer() const noexcept = 0;
@@ -63,7 +63,7 @@ public:
 
 protected:
   std::string   mSpecifierName;
-  DDyVectorInt2 mFrameBufferSize  = {};
+  DVectorInt2 mFrameBufferSize  = {};
 
   using TAttachmentBinder = std::unique_ptr<TDyResourceBinderAttachment>;
   using TAttachmentBinderList = std::vector<TAttachmentBinder>;

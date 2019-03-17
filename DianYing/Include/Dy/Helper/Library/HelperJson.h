@@ -20,14 +20,22 @@
 //! Implementation
 //!
 
-namespace dy
+namespace dy::json
 {
 
 /// @brief Check key is exist in present json instance.
-bool DyIsJsonKeyExist(const nlohmann::json& json, const std::string& key) noexcept;
+[[nodiscard]] bool HasJsonKey(const nlohmann::json& json, const std::string& key) noexcept;
 
-/// @brief Read json file and return json container. If any error has happened just return nullopt.
-MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::string& filePath) noexcept;
+/// @brief Read json file and return json container. 
+/// If any error has happended, just return nullptr.
+MDY_NODISCARD std::optional<nlohmann::json> 
+GetAtlasFromFile(const std::string& iFilePath) noexcept;
+
+MDY_NODISCARD std::optional<nlohmann::json> 
+GetAtlasFromFile(const std::filesystem::path& iFilePath) noexcept;
+
+MDY_NODISCARD std::optional<nlohmann::json> 
+GetAtlasFromString(const std::string& iSerializedString) noexcept;
 
 /// @brief  Exceptionable.
 /// @param  jsonAtlas Immutable valid json atlas like-a types.
@@ -35,34 +43,25 @@ MDY_NODISCARD std::optional<nlohmann::json> DyGetJsonAtlasFromFile(const std::st
 /// @tparam TReturnType Type to retrieve from json atlas instance.
 /// @tparam TParam1 Json binding type parameter
 template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const char* name);
+MDY_NODISCARD TReturnType GetValueFrom(const TParam1& jsonAtlas, const char* name);
 
 template <typename TReturnType, typename TParam1>
-MDY_NODISCARD TReturnType DyJsonGetValueFrom(_MIN_ const TParam1& jsonAtlas, _MIN_ const std::string_view& name);
+MDY_NODISCARD TReturnType GetValueFrom(const TParam1& jsonAtlas, const std::string_view& name);
 
-/// @brief  Get value from json and bind value to destination automatically.
+/// @brief  Get value from json and bind value to oDestination automatically.
 /// Destination type must implement copy assignment operator or default behavior.
 /// @param  jsonAtlas Immutable valid json atlas like-a types.
 /// @param  iKey Header string to find.
-/// @param  destination Destination value.
+/// @param  oDestination Destination value.
 /// @tparam TReturnType Type to retrieve from json atlas instance.
 /// @tparam TJsonAtlas Json binding type paramter.
 template <typename TReturnType, typename TJsonAtlas>
-void DyJsonGetValueFromTo(
-    _MIN_ const TJsonAtlas& jsonAtlas, 
-    _MIN_ const std::string& iKey, 
-    _MINOUT_ TReturnType& destination);
+void GetValueFromTo(
+    const TJsonAtlas& jsonAtlas, 
+    const std::string& iKey, 
+    TReturnType& oDestination);
 
-/// @brief  Find "Header" String is exist on given json atlas.
-/// @param  atlas Valid immutable json atlas instance.
-/// @param  iString Header string to verify.
-/// @return If found, return DY_SUCCESS or DY_FAILURE.
-MDY_NODISCARD inline EDySuccess
-DyCheckHeaderIsExist(
-    _MIN_ const nlohmann::json& atlas, 
-    _MIN_ const std::string& iString) noexcept;
-
-} /// ::dy namespace
+} /// ::dy::json namespace
 
 #endif /// GUARD_DY_HELPER_JSON_HELPER_H
 #include <Dy/Helper/Library/HelperJson.inl>

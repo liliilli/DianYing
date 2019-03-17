@@ -235,11 +235,35 @@
     <Filter Include="JUCE Library Code">
       <UniqueIdentifier>{7ED5A90E-41AF-A1EF-659B-37CEEAB9BA61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DyModelGenerator\Include">
+      <UniqueIdentifier>{8824560c-9003-4fc7-a7cb-b84e43ae391c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DyModelGenerator\Include\Panels">
+      <UniqueIdentifier>{73952a0b-e477-4eea-8924-e1d26f267025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DyModelGenerator\Source\Panels">
+      <UniqueIdentifier>{9be633c8-d7bc-456e-ac6e-318d84133a37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DyModelGenerator\Include\Data">
+      <UniqueIdentifier>{34c36e6e-94fe-44cd-9f4e-9353a463ce1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DyModelGenerator\Include\Type">
+      <UniqueIdentifier>{914bbb99-89de-4fa4-9181-ebdfbde01221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DyModelGenerator\Source\Type">
+      <UniqueIdentifier>{ffa14ca2-63cf-4502-a70a-9e2c40f7bdbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DyModelGenerator\Source\Data">
+      <UniqueIdentifier>{f1720a38-2dcb-4fec-abe9-53d728645f2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DyModelGenerator\Include\Helper">
+      <UniqueIdentifier>{37d4b13a-f4f2-4853-aa31-310791b06111}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DyModelGenerator\Source\Helper">
+      <UniqueIdentifier>{6d4975ce-1fa8-479f-aca1-55294310ea52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\MainComponent.cpp">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>DyModelGenerator\Source</Filter>
     </ClCompile>
@@ -1491,55 +1515,55 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_opengl.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="ProgressDIalog_ReadModel.cpp">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Singleton_ModelInstance.cc">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Data_AssimpModelNode.cc">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="GridUp_BriefInformation.cc">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="ProgressDialog_ExportModel.cc">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Data_Vector2.cc">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Data_Vector3.cc">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Data_Vector4.cc">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Data_Matrix4.cc">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Data_MeshData.cc">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Libraries\fmt5.3.0\src\format.cc" />
     <ClCompile Include="Libraries\fmt5.3.0\src\posix.cc" />
-    <ClCompile Include="Helper_JsonLz4.cc">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClCompile Include="..\..\Source\MainComponent.cpp">
+      <Filter>DyModelGenerator\Source\Panels</Filter>
     </ClCompile>
-    <ClCompile Include="Data_SkeletonBone.cc">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClCompile Include="Source\Data\Data_AssimpModelNode.cc">
+      <Filter>DyModelGenerator\Source\Data</Filter>
     </ClCompile>
-    <ClCompile Include="Data_Material.cc">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClCompile Include="Source\Data\Data_Material.cc">
+      <Filter>DyModelGenerator\Source\Data</Filter>
     </ClCompile>
-    <ClCompile Include="Data_Quaternion.cc">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClCompile Include="Source\Data\Data_SkeletonBone.cc">
+      <Filter>DyModelGenerator\Source\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Data\Data_MeshData.cc">
+      <Filter>DyModelGenerator\Source\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Type\Data_Matrix4.cc">
+      <Filter>DyModelGenerator\Source\Type</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Type\Data_Quaternion.cc">
+      <Filter>DyModelGenerator\Source\Type</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Type\Data_Vector2.cc">
+      <Filter>DyModelGenerator\Source\Type</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Type\Data_Vector3.cc">
+      <Filter>DyModelGenerator\Source\Type</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Type\Data_Vector4.cc">
+      <Filter>DyModelGenerator\Source\Type</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Panel\GridUp_BriefInformation.cc">
+      <Filter>DyModelGenerator\Source\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Library\Helper_JsonLz4.cc">
+      <Filter>DyModelGenerator\Source\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Panel\ProgressDialog_ExportModel.cc">
+      <Filter>DyModelGenerator\Source\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Panel\ProgressDIalog_ReadModel.cpp">
+      <Filter>DyModelGenerator\Source\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Library\Singleton_ModelInstance.cc">
+      <Filter>DyModelGenerator\Source\Helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\MainComponent.h">
-      <Filter>DyModelGenerator\Source</Filter>
-    </ClInclude>
     <ClInclude Include="C:\JUCE\modules\juce_core\containers\juce_AbstractFifo.h">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClInclude>
@@ -2824,86 +2848,86 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
       <Filter>JUCE Library Code</Filter>
     </ClInclude>
-    <ClInclude Include="GridLeftModelInformation.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="..\..\Source\MainComponent.h">
+      <Filter>DyModelGenerator\Include\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="GridRightController.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Data\Data_Material.h">
+      <Filter>DyModelGenerator\Include\Data</Filter>
     </ClInclude>
-    <ClInclude Include="HelperPointer.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Data\Data_AssimpModelNode.h">
+      <Filter>DyModelGenerator\Include\Data</Filter>
     </ClInclude>
-    <ClInclude Include="ProgressDialog_ReadModel.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Data\Data_MeshData.h">
+      <Filter>DyModelGenerator\Include\Data</Filter>
     </ClInclude>
-    <ClInclude Include="HelperContracts.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Data\Data_SkeletonBone.h">
+      <Filter>DyModelGenerator\Include\Data</Filter>
     </ClInclude>
-    <ClInclude Include="HelperConstant.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Data\Data_Animation.h">
+      <Filter>DyModelGenerator\Include\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Interface_Singleton.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Library\Helper_JsonLz4.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="HelperMacroes.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Library\HelperContracts.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Global_EnumSuccess.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Library\HelperPointer.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Singleton_ModelInstance.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Type\Data_Quaternion.h">
+      <Filter>DyModelGenerator\Include\Type</Filter>
     </ClInclude>
-    <ClInclude Include="Data_AssimpModelNode.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Type\Data_Matrix4.h">
+      <Filter>DyModelGenerator\Include\Type</Filter>
     </ClInclude>
-    <ClInclude Include="GridUp_BriefInformation.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Type\Data_Vector2.h">
+      <Filter>DyModelGenerator\Include\Type</Filter>
     </ClInclude>
-    <ClInclude Include="ProgressDialog_ExportModel.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Type\Data_Vector3.h">
+      <Filter>DyModelGenerator\Include\Type</Filter>
     </ClInclude>
-    <ClInclude Include="Enum_ExportFlags.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Type\Data_Vector4.h">
+      <Filter>DyModelGenerator\Include\Type</Filter>
     </ClInclude>
-    <ClInclude Include="Data_MeshData.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Type\Data_VectorInt4.h">
+      <Filter>DyModelGenerator\Include\Type</Filter>
     </ClInclude>
-    <ClInclude Include="Data_Vector3.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Helper\Enum_ExportFlags.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Data_Vector2.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Helper\Enum_MaterialType.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Data_Vector4.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Helper\Global_EnumSuccess.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Data_Matrix4.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Panel\GridLeft_Controller.h">
+      <Filter>DyModelGenerator\Include\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="Helper_JsonLz4.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Panel\GridRight_ModelInformation.h">
+      <Filter>DyModelGenerator\Include\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="Helper_Filesystem.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Panel\GridUp_BriefInformation.h">
+      <Filter>DyModelGenerator\Include\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="Data_SkeletonBone.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Helper\HelperConstant.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Data_Material.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Helper\HelperMacroes.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Enum_MaterialType.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Panel\ProgressDialog_ExportModel.h">
+      <Filter>DyModelGenerator\Include\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="Data_Animation.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Panel\ProgressDialog_ReadModel.h">
+      <Filter>DyModelGenerator\Include\Panels</Filter>
     </ClInclude>
-    <ClInclude Include="Data_Quaternion.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Helper\Singleton_ModelInstance.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
-    <ClInclude Include="Data_VectorInt4.h">
-      <Filter>DyModelGenerator\Source</Filter>
+    <ClInclude Include="Include\Helper\Interface_Singleton.h">
+      <Filter>DyModelGenerator\Include\Helper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Management/IO/MetaInfoManager.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/IO/MIOMeta.h>
+#include <Dy/Helper/Library/HelperContainer.h>
 
 namespace dy
 {
@@ -43,18 +43,18 @@ const FDyModelHandlerManager::TContainer& FDyModelHandlerManager::GetContainer()
 
 bool FDyModelHandlerManager::IsBoundModelExist(_MIN_ const std::string& iModelSpecifier) const noexcept
 {
-  return DyIsMapContains(this->mModelHandlerContainer, iModelSpecifier);
+  return Contains(this->mModelHandlerContainer, iModelSpecifier);
 }
 
 EDySuccess FDyModelHandlerManager::TryCreateHandler(_MIN_ const std::string& iModelSpecifier) noexcept
 {
   if (SDyIOConnectionHelper::IsReferenceInstanceExist(
       iModelSpecifier, 
-      EDyResourceType::Model, 
+      EResourceType::Model, 
       EDyResourceStyle::Resource) == false)
   {
     // Check if model is exist in meta information manager (so, Model can be required)
-    const auto& metaManager = MDyMetaInfo::GetInstance();
+    const auto& metaManager = MIOMeta::GetInstance();
     if (metaManager.IsModelMetaInfoExist(iModelSpecifier) == false) { return DY_FAILURE; }
 
     // If model (not instantiated) is exist on container, just create and require model resource.
@@ -75,7 +75,7 @@ EDySuccess FDyModelHandlerManager::TryCreateHandler(_MIN_ const std::string& iMo
   }
 }
 
-EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter& iFilter)
+EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelFilter& iFilter)
 {
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
@@ -92,7 +92,7 @@ EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpeci
   return DY_SUCCESS;
 }
 
-EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer& iComponent)
+EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelRenderer& iComponent)
 {
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
@@ -109,7 +109,7 @@ EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpeci
   return DY_SUCCESS;
 }
 
-EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelAnimator& iComponent)
+EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelAnimator& iComponent)
 {
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
@@ -126,7 +126,7 @@ EDySuccess FDyModelHandlerManager::BindToHandler(_MIN_ const std::string& iSpeci
   return DY_SUCCESS;
 }
 
-EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelFilter&)
+EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelFilter&)
 {
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
@@ -140,7 +140,7 @@ EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpe
   return DY_SUCCESS;
 }
 
-EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelRenderer&)
+EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelRenderer&)
 {
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
@@ -154,7 +154,7 @@ EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpe
   return DY_SUCCESS;
 }
 
-EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor, _MIN_ CDyModelAnimator&)
+EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor, _MIN_ CModelAnimator&)
 {
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) { return DY_FAILURE; }
@@ -168,7 +168,7 @@ EDySuccess FDyModelHandlerManager::UnbindToHandler(_MIN_ const std::string& iSpe
   return DY_SUCCESS;
 }
 
-bool FDyModelHandlerManager::IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor) const noexcept
+bool FDyModelHandlerManager::IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor) const noexcept
 {
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false) 
@@ -188,7 +188,7 @@ bool FDyModelHandlerManager::IsActorInfoNeedToBeGc(_MIN_ const std::string& iSpe
   return ptrsmtHandler->IsActorNeedToBeGc(iRefActor);
 }
 
-EDySuccess FDyModelHandlerManager::TryRemoveBoundActor(_MIN_ const std::string& iSpecifier, _MIN_ FDyActor& iRefActor)
+EDySuccess FDyModelHandlerManager::TryRemoveBoundActor(_MIN_ const std::string& iSpecifier, _MIN_ FActor& iRefActor)
 {
   // Check
   if (this->IsBoundModelExist(iSpecifier) == false)

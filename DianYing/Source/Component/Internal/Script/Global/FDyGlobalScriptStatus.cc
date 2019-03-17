@@ -13,14 +13,14 @@
 ///
 
 /// Header file
-#include <Dy/Component/Internal/Script/FDyGlobalScriptStatus.h>
-#include <Dy/Component/Internal/Global/CDyGlobalScriptCpp.h>
+#include <Dy/Component/Internal/Script/FGlobalScriptState.h>
+#include <Dy/Component/Internal/Global/CGlobalScriptCpp.h>
 
 namespace dy
 {
 
-FDyGlobalScriptState::FDyGlobalScriptState(_MIN_ const PDyScriptInstanceMetaInfo& descriptor) :
-    mType{descriptor.mScriptType}
+FGlobalScriptState::FGlobalScriptState(const PDyScriptInstanceMetaInfo& descriptor) 
+  : mType{descriptor.mScriptType}
 {
   switch (this->mType)
   {
@@ -36,23 +36,23 @@ FDyGlobalScriptState::FDyGlobalScriptState(_MIN_ const PDyScriptInstanceMetaInfo
   }
 }
 
-void FDyGlobalScriptState::CallStart()
+void FGlobalScriptState::CallStart()
 {
   this->mScriptInstance->OnStart();
 }
 
-void FDyGlobalScriptState::CallEnd()
+void FGlobalScriptState::CallEnd()
 {
   this->mScriptInstance->OnEnd();
 }
 
-EDyScriptType FDyGlobalScriptState::GetScriptType() const noexcept
+EDyScriptType FGlobalScriptState::GetScriptType() const noexcept
 {
   MDY_ASSERT_MSG(this->mType != decltype(this->mType)::NoneError, "Script type must be specified properly.");
   return this->mType;
 }
 
-CDyGlobalScriptBase* FDyGlobalScriptState::__GetPtrInternalGlobalScript() const noexcept
+CBaseGlobalScript* FGlobalScriptState::__GetPtrInternalGlobalScript() const noexcept
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mScriptInstance), "Internal script instance must be valid.");
   return this->mScriptInstance.get();

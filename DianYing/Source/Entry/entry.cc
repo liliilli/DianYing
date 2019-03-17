@@ -39,9 +39,9 @@ EDySuccess MDY_PRIVATE(DyInitializeWin32Debug)()
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
   _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
 
-  typedef void (*SignalHandlerPointer)(int);  
-  SignalHandlerPointer previousHandler = signal(SIGABRT, __SignalHandler); 
 
+  typedef void (*SignalHandlerPointer)(int);  
+  signal(SIGABRT, __SignalHandler); 
   return DY_SUCCESS;
 }
 
@@ -66,9 +66,9 @@ int APIENTRY WinMain(_MIN_ HINSTANCE hInstance, _MIN_ HINSTANCE hPrevInstance, _
   //_crtBreakAlloc = 681;
 
   MDY_WIN32_TRY_TURN_ON_DEBUG();
-  MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Initialize());
-  dy::DyEngine::GetInstance()();
-  MDY_CALL_ASSERT_SUCCESS(dy::DyEngine::Release());
+  MDY_CALL_ASSERT_SUCCESS(dy::GDyEngine::Initialize());
+  dy::GDyEngine::GetInstance()();
+  MDY_CALL_ASSERT_SUCCESS(dy::GDyEngine::Release());
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
   return 0;
 }

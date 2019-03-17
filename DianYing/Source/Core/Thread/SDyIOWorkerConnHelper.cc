@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
-#include <Dy/Core/DyEngine.h>
+#include <Dy/Core/GDyEngine.h>
 
 namespace dy
 {

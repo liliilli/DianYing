@@ -27,8 +27,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyModelSkelInstanceMetaInf
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyModelSkelInstanceMetaInfo& p)
 {
   p.mSourceType = decltype(p.mSourceType)::External;
-  DyJsonGetValueFromTo(j, "ExternalPath", p.mExternalPath);
-  DyJsonGetValueFromTo(j, "IsCompressed", p.mIsCompressed);
+  json::GetValueFromTo(j, "ExternalPath", p.mExternalPath);
+  json::GetValueFromTo(j, "IsCompressed", p.mIsCompressed);
 }
 
 } /// ::dy namespace

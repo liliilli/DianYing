@@ -13,12 +13,12 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
 {
 
-inline static DDyVector3 kLevelUpDir = {0, 1, 0};
+inline static DVector3 kLevelUpDir = {0, 1, 0};
 
 } /// ::dy namespace
 

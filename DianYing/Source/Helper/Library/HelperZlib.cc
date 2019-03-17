@@ -43,7 +43,7 @@ struct DHeaderStructure final
 namespace dy::zlib
 {
 
-std::string DyCompressString(_MIN_ const std::string& uncompressedString)
+std::string yCompressString(_MIN_ const std::string& uncompressedString)
 {
   ///
   /// @param buffer
@@ -118,7 +118,7 @@ std::string DyCompressString(_MIN_ const std::string& uncompressedString)
   return {structureString.begin(), structureString.end()};
 }
 
-std::string DyDecompressString(_MIN_ const std::string& compressedBuffer)
+std::string DecompressString(_MIN_ const std::string& compressedBuffer)
 {
   static auto GetHeaderInformation = [](const std::string& buffer) -> DHeaderStructure
   {

@@ -16,8 +16,8 @@
 #include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferGeneralResource.h>
 #include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
-#include <Dy/Management/IO/MDyIOResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Management/IO/MIOResource.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Helper/System/Idioms.h>
 
 namespace dy
@@ -44,7 +44,7 @@ FDyFrameBufferGeneralResource::FDyFrameBufferGeneralResource(const FDyFrameBuffe
         "colorAttachment pointer must not be null. (TEMPORAL)");
 
       const auto& [specifier, attachmentType] = binderInfo;
-      DySafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
+      SafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
 
       MDY_ASSERT_MSG(
         this->mBinderAttachmentList.back()->IsResourceExist() == true, 
@@ -78,7 +78,7 @@ FDyFrameBufferGeneralResource::FDyFrameBufferGeneralResource(const FDyFrameBuffe
   // Create frame buffer.
   std::optional<TU32> optFrameBufferId;
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    optFrameBufferId = FDyGLWrapper::CreateFrameBuffer(descriptor);
+    optFrameBufferId = XGLWrapper::CreateFrameBuffer(descriptor);
   }
   MDY_ASSERT_MSG(optFrameBufferId.has_value() == true, "Frame buffer creation must be succeeded.");
 
@@ -88,7 +88,7 @@ FDyFrameBufferGeneralResource::FDyFrameBufferGeneralResource(const FDyFrameBuffe
 FDyFrameBufferGeneralResource::~FDyFrameBufferGeneralResource()
 {
   MDY_GRAPHIC_SET_CRITICALSECITON();
-  MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
+  MDY_CALL_ASSERT_SUCCESS(XGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
 }
 
 TU32 FDyFrameBufferGeneralResource::GetTargetFrameBufferId() const noexcept
@@ -100,7 +100,7 @@ EDySuccess FDyFrameBufferGeneralResource::BindFrameBuffer() const noexcept
 {
   if (this->GetTargetFrameBufferId() == 0) { return DY_FAILURE; }
 
-  FDyGLWrapper::BindFrameBufferObject(this->GetTargetFrameBufferId());
+  XGLWrapper::BindFrameBufferObject(this->GetTargetFrameBufferId());
   return DY_SUCCESS;
 }
 

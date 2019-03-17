@@ -15,30 +15,30 @@
 
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 #include <Dy/Meta/Type/EDyComponentTypes.h>
-#include <Dy/Helper/Type/Clamp.h>
-#include <Dy/Helper/Type/ColorRGBA.h>
+#include <Dy/Helper/Type/DClamp.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
 
 namespace dy
 {
 
-/// @struct PDyDirLightComponentMetaInfo
+/// @struct PDirLightComponentMetaInfo
 /// @brief Dependency information to DDyObjectInformation::mMetaComponentInfo when mType is FDyDirectionalLight.
-struct PDyDirLightComponentMetaInfo final : public IDyMetaInformation
+struct PDirLightComponentMetaInfo final : public IDyMetaInformation
 {
   struct DDetails final
   {
     /// Shadow type. (@TODO IMPLEMENT THIS)
     EDyShadowType mShadowType = EDyShadowType::__Error;
     /// Shadow strength. 
-    DDyClamp<float, 0, 1> mShadowStrength = MDY_INITIALIZE_DEFINT;
+    DClamp<float, 0, 1> mShadowStrength = MDY_INITIALIZE_DEFINT;
     /// Shadow bias.
-    DDyClamp<float, 0, 2> mShadowBias = 0.02;
+    DClamp<float, 0, 2> mShadowBias = 0.02;
     /// NOT USED
-    MDY_NOTUSED DDyVector2    mShadowResolution = {};
+    MDY_NOTUSED DVector2    mShadowResolution = {};
     /// Normalized light direction vector.
-    DDyVector3    mDirection  = {};
+    DVector3    mDirection  = {};
     /// Tinting color
-    DDyColorRGBA  mDiffuse    = DDyColorRGBA::White;
+    DColorRGBA  mDiffuse    = DColorRGBA::White;
     /// Intensity of light must be set up to 0~.
     TF32          mIntensity  = MDY_INITIALIZE_DEFINT;
     /// 
@@ -58,11 +58,11 @@ struct PDyDirLightComponentMetaInfo final : public IDyMetaInformation
 
 };
 
-void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyDirLightComponentMetaInfo& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyDirLightComponentMetaInfo& p);
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDirLightComponentMetaInfo& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDirLightComponentMetaInfo& p);
 
-void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyDirLightComponentMetaInfo::DDetails& p);
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyDirLightComponentMetaInfo::DDetails& p);
+void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDirLightComponentMetaInfo::DDetails& p);
+void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDirLightComponentMetaInfo::DDetails& p);
 
 } /// ::dy namespace
 

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyMeshResource.h>
+#include <Dy/Builtin/Abstract/AMeshResource.h>
 
 namespace dy
 {
@@ -22,7 +22,7 @@ namespace dy
 /// @class FDyBtMsUiImageQuad
 /// @brief Create mesh for ui image rendering information and resources.
 ///
-class FDyBtMsUiImageQuad final : public ADyMeshResource
+class FDyBtMsUiImageQuad final : public AMeshResource
 {
   MDY_REGISTER_RESOURCE_MESH(FDyBtMsUiImageQuad, "dyBtMsUiImageQuad");
 };

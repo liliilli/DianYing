@@ -28,6 +28,8 @@ struct PDyGLVaoBindDescriptor final
   TU32 mBoundVboId        = MDY_INITIALIZE_DEFUINT;
   TU32 mBoundEboId        = MDY_INITIALIZE_DEFUINT;
   DDyGLVaoBindInformation mAttributeInfo {};
+  /// @brief Instancing ID will be used as binding number 1.
+  std::optional<TU32> mInstancingVboId;
 };
 
 } /// ::dy namespace

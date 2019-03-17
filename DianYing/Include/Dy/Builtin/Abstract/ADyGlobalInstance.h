@@ -40,7 +40,7 @@ public: \
 /// @brief Set essential properties of given Global instance type.
 #define MDY_GLOBALINSTANCE_PROPERTY(__MAGlobalInstance__) \
 inline static constexpr auto kHashVal = ::dy::TDyGlobalInstance<hash::DyToCrc32Hash(MDY_TO_STRING(__MAGlobalInstance__))>::kHashVal; \
-inline static ::dy::reflect::RDyGlobalInstanceRegistration<__MAGlobalInstance__> __rfc__Register{kHashVal};
+inline static ::dy::reflect::RGlobalInstanceRegistration<__MAGlobalInstance__> __rfc__Register{kHashVal};
 
 /// @class ADyGlobalInstance
 /// @brief Dy global instance base type that presist until end of application.

@@ -14,10 +14,10 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyTextureCubemapResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Information/FDyTextureCubemapInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 
 namespace dy
 {
@@ -27,9 +27,9 @@ FDyTextureCubemapResource::FDyTextureCubemapResource(_MIN_ const FDyTextureCubem
 {
   const auto& temp = static_cast<const FDyTextureCubemapInformation&>(information);
 
-  const auto optGlImageFormat = DyGLGetImageFormatFrom(information.GetFormat());
+  const auto optGlImageFormat = GlGetImageFormatFrom(information.GetFormat());
   MDY_ASSERT_MSG_FORCE(optGlImageFormat.has_value() == true, "Image format type must be valid.");
-  const auto glImagePixelType = DyGlGetImagePixelTypeFrom(information.GetPixelReadType());
+  const auto glImagePixelType = GlGetImagePixelTypeFrom(information.GetPixelReadType());
   MDY_ASSERT_MSG_FORCE(glImagePixelType != GL_NONE, "Image pixel format must be valid.");
 
   PDyGLTextureCubemapDescriptor descriptor {};
@@ -59,20 +59,20 @@ FDyTextureCubemapResource::FDyTextureCubemapResource(_MIN_ const FDyTextureCubem
   // Create texture from shared context.
   std::optional<TU32> optTextureId;
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    optTextureId = FDyGLWrapper::CreateTexture(descriptor);
+    optTextureId = XGLWrapper::CreateTexture(descriptor);
   }
   MDY_ASSERT_MSG(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
   this->mTextureResourceId = *optTextureId;
 
-  SDyProfilingHelper::IncreaseOnBindTextureCount(1);
+  SProfilingHelper::IncreaseOnBindTextureCount(1);
 }
 
 FDyTextureCubemapResource::~FDyTextureCubemapResource()
 {
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
+    XGLWrapper::DeleteTexture(this->mTextureResourceId);
   }
-  SDyProfilingHelper::DecreaseOnBindTextureCount(1);
+  SProfilingHelper::DecreaseOnBindTextureCount(1);
 }
 
 } /// ::dy namespace

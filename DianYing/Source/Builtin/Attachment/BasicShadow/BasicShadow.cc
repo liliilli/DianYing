@@ -21,7 +21,7 @@ namespace dy
 void FDyBtAttachmentBasicShadow::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
-  property.mAttachmentSize = DDyVectorInt2{512, 512};
+  property.mAttachmentSize = DVectorInt2{512, 512};
   property.mParameterList  =
   {
     PDyGlTexParameterInformation\
@@ -30,7 +30,7 @@ void FDyBtAttachmentBasicShadow::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceM
     {EDyGlParameterName::TextureWrappingS, EDyGlParameterValue::ClampToBorder},
     {EDyGlParameterName::TextureWrappingT, EDyGlParameterValue::ClampToBorder},
   };
-  property.mBufferFormat = EDyGlBufferDataInternalFormat::DEPTH32;
+  property.mBufferFormat = EGlBufferDataInternalFormat::DEPTH32;
 }
 
 } /// ::dy namespace

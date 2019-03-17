@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderColorGeometry
 /// @brief Just instantiate render color geometry shader information and resources.
 ///
-class FDyBuiltinShaderGLRenderColorGeometry final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderColorGeometry final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderColorGeometry, "dyBtShaderGlRenderColGeom")
 public:

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
 
@@ -33,10 +33,10 @@ public:
   /// @param type  Resource type.
   /// @param style Resource style mode.
   ///
-  MDY_NODISCARD bool IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD bool IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief Move instance from gc list as return value.
-  MDY_NODISCARD std::optional<DDyIOReferenceInstance> MoveInstanceFromGC(_MIN_ const std::string& speicifer, _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD std::optional<DDyIOReferenceInstance> MoveInstanceFromGC(_MIN_ const std::string& speicifer, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
 
   /// @brief Insert RI gc-ed candidate into container.
   void InsertGcCandidate(_MIN_ DDyIOReferenceInstance iRICandidateList) noexcept;

@@ -19,9 +19,9 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
-#include <Dy/Management/WindowManager.h>
-#include <Dy/Management/SettingManager.h>
-#include <Dy/Core/Reflection/RDyGlobalInstanceManager.h>
+#include <Dy/Management/MWindow.h>
+#include <Dy/Management/MSetting.h>
+#include <Dy/Core/Reflection/RGlobalInstanceManager.h>
 #include <Dy/Builtin/GlobalInstance/FDyBtGiDebugStatus.h>
 #include <Dy/Helper/MCS/Functions.h>
 
@@ -83,7 +83,7 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
           ImGui::Separator();
 
           // Export files with override option.
-          mcs::Compress(MDySetting::GetInstance().__GetEntrySettingFile(), true);
+          mcs::Compress(MSetting::GetInstance().__GetEntrySettingFile(), true);
           // Create overaly dialogue window.
 
           // End
@@ -116,7 +116,7 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
       u8"自分の出生に関わるさらなる謎の核心へとせまっていく。");
 #endif
 
-    auto& settingManager = MDySetting::GetInstance();
+    auto& settingManager = MSetting::GetInstance();
     
     {
       const auto modelRenderingModeFlag = settingManager.GetRenderingMode();
@@ -128,19 +128,19 @@ void FDyEditor_MainMenu::Draw(_MIN_ MDY_NOTUSED TF32 dt) noexcept
         if (originValue != underlyingValue)
         {
           // Do logging process
-          const auto newFlag = static_cast<EDyModelRenderingMode>(underlyingValue);
+          const auto newFlag = static_cast<ERenderingModelMode>(underlyingValue);
           switch (newFlag)
           {
-          case EDyModelRenderingMode::FillNormal: 
+          case ERenderingModelMode::FillNormal: 
           { DyPushLogInfo("Changed model rendering mode flag to {}.", "Normal");
           } break;
-          case EDyModelRenderingMode::WireFrame: 
+          case ERenderingModelMode::WireFrame: 
           { DyPushLogInfo("Changed model rendering mode flag to {}.", "Wireframe");
           } break;
           }
 
           // Change value.
-          MDySetting::GetInstance().SetRenderingMode(newFlag);
+          MSetting::GetInstance().SetRenderingMode(newFlag);
         }
       }
     }
@@ -204,7 +204,7 @@ void FDyEditor_MainMenu::DrawWindow(_MIN_ TF32 dt) noexcept
       ImGui::Separator();
       if (ImGui::MenuItem("Exit Editor"))
       {
-        const auto ptr = MDyWindow::GetInstance().GetGLMainWindow();
+        const auto ptr = MWindow::GetInstance().GetGLMainWindow();
         glfwSetKeyCallback(ptr, nullptr);
         glfwSetCursorPosCallback(ptr, nullptr);
         glfwDestroyWindow(ptr);

@@ -119,7 +119,7 @@ private:
   // Ubo given buffer index.
   TU32              mBufferIndex      = MDY_INITIALIZE_DEFUINT;
 
-  friend class MDyUniformBufferObject;
+  friend class MUniformBufferObject;
 };
 
 } /// ::dy namespace

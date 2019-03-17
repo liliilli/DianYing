@@ -1,5 +1,5 @@
 #include <precompiled.h>
-#include "Dy/Core/Resource/Internal/MaterialType.h"
+#include "Dy/Core/Resource/Internal/EMaterialBlendMode.h"
 #if defined(MDY_FLAG_IN_EDITOR)
 ///
 /// MIT License

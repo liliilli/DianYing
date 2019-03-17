@@ -13,13 +13,13 @@
 ///
 
 /// Header file
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 #include <Dy/Meta/Information/GLShaderMetaInformation.h>
 
 namespace dy
 {
 
-std::any ADyGLShaderResource::GetMetaInfo()
+std::any AGLShaderResource::GetMetaInfo()
 {
   PDyGLShaderInstanceMetaInfo metaInfo {};
   metaInfo.mSpecifierName = this->mSpecifierName.data();

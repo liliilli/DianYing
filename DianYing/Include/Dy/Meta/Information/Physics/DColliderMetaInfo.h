@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/Clamp.h>
-#include <Dy/Helper/Type/Vector3.h>
+#include <Dy/Helper/Type/DClamp.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
 {
@@ -25,7 +25,7 @@ namespace dy
 struct PDySphereColliderMetaInfo final
 {
   /// A PxSphereGeometry is specified by one attribute, its radius, and is centered at the origin.
-  DDyClamp<TF32, 0, 1'000'000> mRadius = 0;
+  DClamp<TF32, 0, 1'000'000> mRadius = 0;
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDySphereColliderMetaInfo& p);
@@ -39,8 +39,8 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDySphereColliderMetaInfo
 struct PDyCapsulesColliderMetaInfo final
 {
   // We have to retate quater-sphere to Z-axis because default capsule is forwarding to X-axis.
-  DDyClamp<TF32, 0, 1'000'000> mHalfHeight = 0;
-  DDyClamp<TF32, 0, 1'000'000> mRadius = 0;
+  DClamp<TF32, 0, 1'000'000> mHalfHeight = 0;
+  DClamp<TF32, 0, 1'000'000> mRadius = 0;
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyCapsulesColliderMetaInfo& p);
@@ -54,7 +54,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCapsulesColliderMetaIn
 struct PDyBoxColliderMetaInfo final
 {
   // We have to retate quater-sphere to Z-axis because default capsule is forwarding to X-axis.
-  DDyVector3 mHalfExtent{};
+  DVector3 mHalfExtent{};
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyBoxColliderMetaInfo& p);

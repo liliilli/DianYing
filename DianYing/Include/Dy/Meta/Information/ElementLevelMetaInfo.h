@@ -18,8 +18,8 @@
 #include <unordered_set>
 #include <nlohmann/json_fwd.hpp>
 
-#include <Dy/Helper/Type/ColorRGBA.h>
-#include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
+#include <Dy/Helper/Type/DColorRGB24.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
 #include <Dy/Meta/Information/ElementObjectMetaInfo.h>
 
@@ -42,17 +42,15 @@ struct PDyLevelConstructMetaInfo final
   struct DMeta final
   {
     /// Initial level name
-    std::string   mLevelName                    = MDY_INITIALIZE_EMPTYSTR;
-    /// Is Using UUID For Specification
-    bool          mIsUsingUUIDForSpecification  = false;
+    std::string mLevelName;
     /// Initial background of scene to create
-    DDyColorRGB   mLevelBackgroundColor         = DDyColorRGB{1, 1, 1};
+    DColorRGB mLevelBackgroundColor = DColorRGB{1, 1, 1};
   };
 
   /// DMeta scene common information.
-  DMeta               mMetaCategory             = {};
+  DMeta mMeta = {};
   /// Object meta information
-  TObjectMetaInfoList mLevelObjectMetaInfoList  = {};
+  TObjectMetaInfoList mLevelObjectMetaInfoList = {};
 
   /// @brief Get level resource set.
   /// Duplicated resource speicifer on this level is shrinked into one.

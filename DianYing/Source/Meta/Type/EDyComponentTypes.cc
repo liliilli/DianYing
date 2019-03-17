@@ -17,7 +17,7 @@
 #include <nlohmann/json.hpp>
 
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
-#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 
 //!
 //! Forward declaration & local translation unit.
@@ -32,20 +32,21 @@ namespace
 MDY_NODISCARD dy::EDyComponentMetaType
 DyGetComponentTypeFrom(const std::string& typeString) noexcept
 {
-  switch (dy::DyStrSwitchInput(typeString))
+  switch (dy::SwitchStrInput(typeString))
   {
-  case dy::DyStrCase("DirectionalLight"): return dy::EDyComponentMetaType::DirectionalLight; 
-  case dy::DyStrCase("PointLight"):       return dy::EDyComponentMetaType::PointLight;
-  case dy::DyStrCase("Script"):           return dy::EDyComponentMetaType::Script; 
-  case dy::DyStrCase("Transform"):        return dy::EDyComponentMetaType::Transform; 
-  case dy::DyStrCase("ModelFilter"):      return dy::EDyComponentMetaType::ModelFilter;
-  case dy::DyStrCase("ModelRenderer"):    return dy::EDyComponentMetaType::ModelRenderer; 
-  case dy::DyStrCase("ModelAnimator"):    return dy::EDyComponentMetaType::ModelAnimator;
-  case dy::DyStrCase("Camera"):           return dy::EDyComponentMetaType::Camera;
-  case dy::DyStrCase("SoundSource"):      return dy::EDyComponentMetaType::SoundSource;
-  case dy::DyStrCase("PhysicsRigidbody"): return dy::EDyComponentMetaType::Rigidbody;
-  case dy::DyStrCase("PhysicsCollider"):  return dy::EDyComponentMetaType::Collider;
-  case dy::DyStrCase("Skybox"):           return dy::EDyComponentMetaType::Skybox;
+  case dy::CaseStr("DirectionalLight"): return dy::EDyComponentMetaType::DirectionalLight; 
+  case dy::CaseStr("PointLight"):       return dy::EDyComponentMetaType::PointLight;
+  case dy::CaseStr("SpotLight"):        return dy::EDyComponentMetaType::SpotLight;
+  case dy::CaseStr("Script"):           return dy::EDyComponentMetaType::Script; 
+  case dy::CaseStr("Transform"):        return dy::EDyComponentMetaType::Transform; 
+  case dy::CaseStr("ModelFilter"):      return dy::EDyComponentMetaType::ModelFilter;
+  case dy::CaseStr("ModelRenderer"):    return dy::EDyComponentMetaType::ModelRenderer; 
+  case dy::CaseStr("ModelAnimator"):    return dy::EDyComponentMetaType::ModelAnimator;
+  case dy::CaseStr("Camera"):           return dy::EDyComponentMetaType::Camera;
+  case dy::CaseStr("SoundSource"):      return dy::EDyComponentMetaType::SoundSource;
+  case dy::CaseStr("PhysicsRigidbody"): return dy::EDyComponentMetaType::Rigidbody;
+  case dy::CaseStr("PhysicsCollider"):  return dy::EDyComponentMetaType::Collider;
+  case dy::CaseStr("Skybox"):           return dy::EDyComponentMetaType::Skybox;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::EDyComponentMetaType::NoneError);
   }
 }

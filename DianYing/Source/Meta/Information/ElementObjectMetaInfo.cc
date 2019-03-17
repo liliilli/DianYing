@@ -17,7 +17,7 @@
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <Dy/Helper/System/Idioms.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MSetting.h>
 
 //!
 //! Forward declaration & local translation unit data
@@ -91,10 +91,10 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyObjectMetaInfo& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_Object_Name,          p.mSpecifierName);
-  DyJsonGetValueFromTo(j, sHeader_Object_Type,          p.mObjectType);
-  DyJsonGetValueFromTo(j, sHeader_Object_CommonProp,    p.mProperties);
-  DyJsonGetValueFromTo(j, sHeader_Object_ComponentList, p.mMetaComponentInfo);
+  json::GetValueFromTo(j, sHeader_Object_Name,          p.mSpecifierName);
+  json::GetValueFromTo(j, sHeader_Object_Type,          p.mObjectType);
+  json::GetValueFromTo(j, sHeader_Object_CommonProp,    p.mProperties);
+  json::GetValueFromTo(j, sHeader_Object_ComponentList, p.mMetaComponentInfo);
 }
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyObjectMetaInfo::DCommonProperties& p)
@@ -104,15 +104,15 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const PDyObjectMetaInfo::DCommonP
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyObjectMetaInfo::DCommonProperties& p)
 {
-  DyJsonGetValueFromTo(j, sHeader_Prop_ParentName,  p.mParentSpecifierName);
-  DyJsonGetValueFromTo(j, sHeader_Prop_PrefabName,  p.mPrefabSpecifierName);
-  DyJsonGetValueFromTo(j, sHeader_Prop_Activated,   p.mInitialActivated);
-  DyJsonGetValueFromTo(j, sHeader_Prop_IsFromPrefab,p.mIsUsingPrefab);
-  DyJsonGetValueFromTo(j, "ObjectTag",              p.mTagSpecifier);
-  DyJsonGetValueFromTo(j, "IsOverridePrefabTag",    p.mIsOverridePrefabTag);
+  json::GetValueFromTo(j, sHeader_Prop_ParentName,  p.mParentSpecifierName);
+  json::GetValueFromTo(j, sHeader_Prop_PrefabName,  p.mPrefabSpecifierName);
+  json::GetValueFromTo(j, sHeader_Prop_Activated,   p.mInitialActivated);
+  json::GetValueFromTo(j, sHeader_Prop_IsFromPrefab,p.mIsUsingPrefab);
+  json::GetValueFromTo(j, "ObjectTag",              p.mTagSpecifier);
+  json::GetValueFromTo(j, "IsOverridePrefabTag",    p.mIsOverridePrefabTag);
 
   /// Validity Test
-  MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(p.mTagSpecifier));
+  MDY_CALL_ASSERT_SUCCESS(MSetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(p.mTagSpecifier));
 }
 
 void to_json(nlohmann::json& j, const TObjectMetaInfoList& p)
@@ -133,16 +133,16 @@ void from_json(const nlohmann::json& j, TObjectMetaInfoList& p)
   for (auto& object : p)
   {
     if (MDY_CHECK_ISEMPTY(object)) { continue; }
-    if (object->mObjectType == EDyMetaObjectType::Actor
+    if (object->mObjectType == EWorldObjectType::Actor
     &&  object->mProperties.mParentSpecifierName.empty() == false)
     { // If object type is Actor, and have parents specifier name as dec
-      const auto list = DyRegexCreateObjectParentSpecifierList(object->mProperties.mParentSpecifierName);
+      const auto list = regex::CreateObjectParentSpecifierList(object->mProperties.mParentSpecifierName);
       MoveMetaObjectIntoParentRecursively(p, list, 0, object);
     }
   }
 
   // (3) Realign object meta list.
-  DyEraseRemove(p, nullptr);
+  EraseRemove(p, nullptr);
 }
 
 } /// ::dy namespace

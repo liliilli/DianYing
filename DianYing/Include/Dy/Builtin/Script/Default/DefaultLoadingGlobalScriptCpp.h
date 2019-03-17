@@ -13,15 +13,15 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyLoadingGlobalResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/ALoadingGlobalResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
 
 /// @struct __FDyDefaultLoadingGlobalScript
 /// @brief DO NOT TOUCH THIS. Default global resource loading script.
-class __FDyDefaultLoadingGlobalScript final : public ADyLoadingGlobalResource
+class __FDyDefaultLoadingGlobalScript final : public ALoadingGlobalResource
 {
   MDY_REGISTER_GLOBAL_RESOURCE_LIST(__FDyDefaultLoadingGlobalScript)
 };

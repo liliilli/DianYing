@@ -16,9 +16,7 @@
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Dy/Core/Resource/Information/FDyTextureInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
-#include "Dy/Core/Resource/Information/FDyTextureGeneralInformation.h"
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 
 namespace dy
 {
@@ -43,7 +41,7 @@ TU32 FDyTextureResource::GetTextureId() const noexcept
   return this->mTextureResourceId;
 }
 
-EDyTextureStyleType FDyTextureResource::GetTextureType() const noexcept
+ETextureStyleType FDyTextureResource::GetTextureType() const noexcept
 {
   return this->mTextureType;
 }
