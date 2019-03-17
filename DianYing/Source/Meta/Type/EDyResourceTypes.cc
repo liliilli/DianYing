@@ -14,21 +14,21 @@
 
 /// Header file
 #include <Dy/Meta/Type/EDyResourceTypes.h>
-#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 
 namespace dy
 {
 
 EDyShaderFragmentType DyConvertStringToEDyShaderFragmentType(_MIN_ const std::string& iString) noexcept
 {
-  switch (DyStrSwitchInput(iString))
+  switch (SwitchStrInput(iString))
   {
-  case DyStrCase("Vert"): return EDyShaderFragmentType::Vertex; 
-  case DyStrCase("Hull"): return EDyShaderFragmentType::Hull; 
-  case DyStrCase("Domn"): return EDyShaderFragmentType::Domain; 
-  case DyStrCase("Geom"): return EDyShaderFragmentType::Geometry; 
-  case DyStrCase("Pixl"): return EDyShaderFragmentType::Pixel; 
-  case DyStrCase("Comp"): return EDyShaderFragmentType::Compute; 
+  case CaseStr("Vert"): return EDyShaderFragmentType::Vertex; 
+  case CaseStr("Hull"): return EDyShaderFragmentType::Hull; 
+  case CaseStr("Domn"): return EDyShaderFragmentType::Domain; 
+  case CaseStr("Geom"): return EDyShaderFragmentType::Geometry; 
+  case CaseStr("Pixl"): return EDyShaderFragmentType::Pixel; 
+  case CaseStr("Comp"): return EDyShaderFragmentType::Compute; 
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDyShaderFragmentType::NoneError);
   }
 }

@@ -13,14 +13,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyTextureResource.h>
+#include <Dy/Builtin/Abstract/ATextureResource.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBtTexCheckerBright
 /// @brief Checker texture with bright color.
-class FDyBtTexCheckerBright final : public ADyTextureResource
+class FDyBtTexCheckerBright final : public ATextureResource
 {
   MDY_REGISTER_RESOURCE_TEXTURE(FDyBtTexCheckerBright, "dyBtTexCheckerBright")
 };

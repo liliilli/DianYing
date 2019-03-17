@@ -13,18 +13,19 @@
 ///
 
 #include <Dy/Builtin/RenderItem/Level/FBtLevelOITDefault.h>
-#include <Dy/Management/WorldManager.h>
-#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
+#include <Dy/Management/MWorld.h>
+#include <Dy/Management/Rendering/MUniformBufferObject.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Component/CDyModelRenderer.h>
-#include <Dy/Element/Actor.h>
+#include <Dy/Component/CModelRenderer.h>
+#include <Dy/Element/FActor.h>
 #include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Type/EDyDrawType.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Type/EDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Rendering/MRendering.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
@@ -37,25 +38,33 @@ void FBtRenderLevelOitDefault::__ConstructionHelper
 
 EDySuccess FBtRenderLevelOitDefault::OnPreRenderCheckCondition()
 {
-  auto& list = MDyRendering::GetInstance().GetTranclucentOitMeshQueueList();
+  auto& list = MRendering::GetInstance().GetTranclucentOitMeshQueueList();
   return list.empty() == false
       && this->mBinderFrameBuffer.IsResourceExist() == true ? DY_SUCCESS : DY_FAILURE;
 }
 
 void FBtRenderLevelOitDefault::OnFailedCheckCondition()
 {
+  if (this->mBinderFrameBuffer.IsResourceExist() == false) { return; }
+
   /* Do nothing */
+  { 
+    this->mBinderFrameBuffer->BindFrameBuffer();
+    glClearBufferfv(GL_COLOR, 0, &DColorRGBA::Black.R);
+    glClearBufferfv(GL_COLOR, 1, &DColorRGBA::White.R);
+    this->mBinderFrameBuffer->UnbindFrameBuffer();
+  }
 }
 
 void FBtRenderLevelOitDefault::OnSetupRenderingSetting()
 {
   this->mBinderFrameBuffer->BindFrameBuffer();
-  DDyGlGlobalStates status;
-  using EMode   = DDyGlGlobalStates::DPolygonMode::EMode;
-  using EValue  = DDyGlGlobalStates::DPolygonMode::EValue;
-  using EEqut   = DDyGlGlobalStates::DBlendMode::EEqut;
-  using EFunc   = DDyGlGlobalStates::DBlendMode::EFunc;
-  using DBlendMode = DDyGlGlobalStates::DBlendMode;
+  DGlGlobalStates status;
+  using EMode   = DGlGlobalStates::DPolygonMode::EMode;
+  using EValue  = DGlGlobalStates::DPolygonMode::EValue;
+  using EEqut   = DGlGlobalStates::DBlendMode::EEqut;
+  using EFunc   = DGlGlobalStates::DBlendMode::EFunc;
+  using DBlendMode = DGlGlobalStates::DBlendMode;
 
   status.mIsEnableBlend = true;
   status.mIsEnableDepthTest = false;
@@ -66,17 +75,17 @@ void FBtRenderLevelOitDefault::OnSetupRenderingSetting()
   blendingList.mBlendingSettingList.emplace_back(EEqut::SrcAddDst, EFunc::Zero, EFunc::OneMinusSrcColor);
   status.mBlendMode = blendingList;
 
-  FDyGLWrapper::PushInternalGlobalState(status);
+  XGLWrapper::PushInternalGlobalState(status);
 
-  glClearBufferfv(GL_COLOR, 0, &DDyColorRGBA::Black.R);
-  glClearBufferfv(GL_COLOR, 1, &DDyColorRGBA::White.R);
+  glClearBufferfv(GL_COLOR, 0, &DColorRGBA::Black.R);
+  glClearBufferfv(GL_COLOR, 1, &DColorRGBA::White.R);
 
   this->mBinderFrameBuffer->BindFrameBuffer();
 }
 
 void FBtRenderLevelOitDefault::OnRender()
 {
-  auto& drawList = MDyRendering::GetInstance().GetTranclucentOitMeshQueueList();
+  auto& drawList = MRendering::GetInstance().GetTranclucentOitMeshQueueList();
   for (auto& [iPtrModel, iPtrValidMesh, iPtrValidMat] : drawList)
   { // Render
     this->RenderObject(
@@ -86,12 +95,12 @@ void FBtRenderLevelOitDefault::OnRender()
     );
   }
 
-  SDyProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(drawList.size()));
+  SProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(drawList.size()));
   drawList.clear();
 }
 
 void FBtRenderLevelOitDefault::RenderObject(
-  CDyModelRenderer& iRefRenderer, 
+  CModelRenderer& iRefRenderer, 
   FDyMeshResource& iRefMesh,
   FDyMaterialResource& iRefMaterial)
 {
@@ -100,14 +109,14 @@ void FBtRenderLevelOitDefault::RenderObject(
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();
   if (shaderBinder.IsResourceExist() == false) { return; }
 
-  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>(
+  shaderBinder->TryUpdateUniform<EUniformVariableType::Matrix4>(
     "uModelMatrix", 
     ptrModelTransform->GetTransform());
-  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Matrix4>(
+  shaderBinder->TryUpdateUniform<EUniformVariableType::Matrix4>(
     "uRotationMatrix", 
     ptrModelTransform->GetRotationMatrix());
-  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Float>("uAlphaOffset", 0.75f);
-  shaderBinder->TryUpdateUniform<EDyUniformVariableType::Float>("uDepthScale",  0.1f);
+  shaderBinder->TryUpdateUniform<EUniformVariableType::Float>("uAlphaOffset", 0.75f);
+  shaderBinder->TryUpdateUniform<EUniformVariableType::Float>("uDepthScale",  0.1f);
 
   shaderBinder->UseShader();
   shaderBinder->TryUpdateUniformList();
@@ -116,13 +125,13 @@ void FBtRenderLevelOitDefault::RenderObject(
 
   // Call function call drawing array or element. 
   if (iRefMesh.IsEnabledIndices() == true)
-  { FDyGLWrapper::Draw(EDyDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
+  { XGLWrapper::Draw(EDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); }
   else
-  { FDyGLWrapper::Draw(EDyDrawType::Triangle, false, iRefMesh.GetVertexCounts()); }
+  { XGLWrapper::Draw(EDrawType::Triangle, false, iRefMesh.GetVertexCounts()); }
 
   // Unbind present submesh vertex array object.
   // Unbind, unset, deactivate settings for this submesh and material.
-  FDyGLWrapper::UnbindVertexArrayObject();
+  XGLWrapper::UnbindVertexArrayObject();
   shaderBinder->DisuseShader();
 }
 
@@ -130,7 +139,7 @@ void FBtRenderLevelOitDefault::OnReleaseRenderingSetting()
 {
   this->mBinderFrameBuffer->UnbindFrameBuffer();
 
-  FDyGLWrapper::PopInternalGlobalState();
+  XGLWrapper::PopInternalGlobalState();
 }
 
 void FBtRenderLevelOitDefault::OnPostRender()

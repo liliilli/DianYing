@@ -14,66 +14,66 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
-#include <Dy/Core/Resource/Type/FDyBinderBase.h>
+#include <Dy/Core/Resource/Type/IBinderBase.h>
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Helper/ContainerHelper.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Helper/Library/HelperContainer.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {
 
-bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type) const noexcept
+bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type) const noexcept
 {
   switch (type)
   {
-  case EDyResourceType::GLShader: return DyIsMapContains(this->mMapGLShaderReference, specifier);
-  case EDyResourceType::Texture:  return DyIsMapContains(this->mMapTextureReference, specifier);
-  case EDyResourceType::Mesh:     return DyIsMapContains(this->mMapMeshReference, specifier);
-  case EDyResourceType::Model:    return DyIsMapContains(this->mMapModelReference, specifier);
-  case EDyResourceType::Skeleton:       return DyIsMapContains(this->mMapModelSkeletonReference, specifier);
-  case EDyResourceType::AnimationScrap: return DyIsMapContains(this->mMapModelAnimScrapReference, specifier);
-  case EDyResourceType::Material:       return DyIsMapContains(this->mMapMaterialReference, specifier);
-  case EDyResourceType::GLAttachment:   return DyIsMapContains(this->mMapAttachmentReference, specifier);
-  case EDyResourceType::GLFrameBuffer:  return DyIsMapContains(this->mMapFrameBufferReference, specifier);
-  case EDyResourceType::Sound:          return DyIsMapContains(this->mMapSoundReference, specifier);
+  case EResourceType::GLShader: return Contains(this->mMapGLShaderReference, specifier);
+  case EResourceType::Texture:  return Contains(this->mMapTextureReference, specifier);
+  case EResourceType::Mesh:     return Contains(this->mMapMeshReference, specifier);
+  case EResourceType::Model:    return Contains(this->mMapModelReference, specifier);
+  case EResourceType::Skeleton:       return Contains(this->mMapModelSkeletonReference, specifier);
+  case EResourceType::AnimationScrap: return Contains(this->mMapModelAnimScrapReference, specifier);
+  case EResourceType::Material:       return Contains(this->mMapMaterialReference, specifier);
+  case EResourceType::GLAttachment:   return Contains(this->mMapAttachmentReference, specifier);
+  case EResourceType::GLFrameBuffer:  return Contains(this->mMapFrameBufferReference, specifier);
+  case EResourceType::Sound:          return Contains(this->mMapSoundReference, specifier);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
 
-bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EDyResourceType type) const noexcept
+bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EResourceType type) const noexcept
 {
   switch (type)
   {
-  case EDyResourceType::GLShader: return this->mMapGLShaderReference.at(specifier).mIsResourceValid;
-  case EDyResourceType::Texture:  return this->mMapTextureReference.at(specifier).mIsResourceValid;
-  case EDyResourceType::Mesh:     return this->mMapMeshReference.at(specifier).mIsResourceValid;
-  case EDyResourceType::Model:    return this->mMapModelReference.at(specifier).mIsResourceValid;
-  case EDyResourceType::Skeleton:       return this->mMapModelSkeletonReference.at(specifier).mIsResourceValid;
-  case EDyResourceType::AnimationScrap: return this->mMapModelAnimScrapReference.at(specifier).mIsResourceValid;
-  case EDyResourceType::Material:       return this->mMapMaterialReference.at(specifier).mIsResourceValid;
-  case EDyResourceType::GLAttachment:   return this->mMapAttachmentReference.at(specifier).mIsResourceValid;
-  case EDyResourceType::GLFrameBuffer:  return this->mMapFrameBufferReference.at(specifier).mIsResourceValid;
-  case EDyResourceType::Sound:          return this->mMapSoundReference.at(specifier).mIsResourceValid;
+  case EResourceType::GLShader: return this->mMapGLShaderReference.at(specifier).mIsResourceValid;
+  case EResourceType::Texture:  return this->mMapTextureReference.at(specifier).mIsResourceValid;
+  case EResourceType::Mesh:     return this->mMapMeshReference.at(specifier).mIsResourceValid;
+  case EResourceType::Model:    return this->mMapModelReference.at(specifier).mIsResourceValid;
+  case EResourceType::Skeleton:       return this->mMapModelSkeletonReference.at(specifier).mIsResourceValid;
+  case EResourceType::AnimationScrap: return this->mMapModelAnimScrapReference.at(specifier).mIsResourceValid;
+  case EResourceType::Material:       return this->mMapMaterialReference.at(specifier).mIsResourceValid;
+  case EResourceType::GLAttachment:   return this->mMapAttachmentReference.at(specifier).mIsResourceValid;
+  case EResourceType::GLFrameBuffer:  return this->mMapFrameBufferReference.at(specifier).mIsResourceValid;
+  case EResourceType::Sound:          return this->mMapSoundReference.at(specifier).mIsResourceValid;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
 
-bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN_ const std::string& specifier, _MIN_ EDyResourceType type)
+bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EResourceScope scope, _MIN_ const std::string& specifier, _MIN_ EResourceType type)
 {
   // Find given resource type instance. Given specifier and type must be valid on list.
   DDyIOReferenceInstance* instance;
   switch (type)
   {
-  case EDyResourceType::GLShader: { instance = &this->mMapGLShaderReference[specifier]; } break;
-  case EDyResourceType::Texture:  { instance = &this->mMapTextureReference[specifier]; }  break;
-  case EDyResourceType::Mesh:     { instance = &this->mMapMeshReference[specifier]; } break;
-  case EDyResourceType::Model:    { instance = &this->mMapModelReference[specifier]; }    break;
-  case EDyResourceType::Material: { instance = &this->mMapMaterialReference[specifier]; } break;
-  case EDyResourceType::GLAttachment:   { instance = &this->mMapAttachmentReference[specifier]; } break;
-  case EDyResourceType::GLFrameBuffer:  { instance = &this->mMapFrameBufferReference[specifier]; } break;
-  case EDyResourceType::Skeleton:       { instance = &this->mMapModelSkeletonReference[specifier]; } break;
-  case EDyResourceType::AnimationScrap: { instance = &this->mMapModelAnimScrapReference[specifier]; } break;
-  case EDyResourceType::Sound:          { instance = &this->mMapSoundReference[specifier]; } break; 
+  case EResourceType::GLShader: { instance = &this->mMapGLShaderReference[specifier]; } break;
+  case EResourceType::Texture:  { instance = &this->mMapTextureReference[specifier]; }  break;
+  case EResourceType::Mesh:     { instance = &this->mMapMeshReference[specifier]; } break;
+  case EResourceType::Model:    { instance = &this->mMapModelReference[specifier]; }    break;
+  case EResourceType::Material: { instance = &this->mMapMaterialReference[specifier]; } break;
+  case EResourceType::GLAttachment:   { instance = &this->mMapAttachmentReference[specifier]; } break;
+  case EResourceType::GLFrameBuffer:  { instance = &this->mMapFrameBufferReference[specifier]; } break;
+  case EResourceType::Skeleton:       { instance = &this->mMapModelSkeletonReference[specifier]; } break;
+  case EResourceType::AnimationScrap: { instance = &this->mMapModelAnimScrapReference[specifier]; } break;
+  case EResourceType::Sound:          { instance = &this->mMapSoundReference[specifier]; } break; 
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 
@@ -84,8 +84,8 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EDyScope scope, _MIN
 
 EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
     _MIN_ const std::string& iSpecifier,
-    _MIN_ EDyResourceType iType,
-    _MIN_ const __FDyBinderBase* iPtrBinder)
+    _MIN_ EResourceType iType,
+    _MIN_ const __IBinderBase* iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -93,16 +93,16 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
   // Attach binder to RI container.
   switch (iType)
   {
-  case EDyResourceType::Model:    this->mMapModelReference[iSpecifier].AttachBinder(iPtrBinder);    break;
-  case EDyResourceType::GLShader: this->mMapGLShaderReference[iSpecifier].AttachBinder(iPtrBinder); break;
-  case EDyResourceType::Texture:  this->mMapTextureReference[iSpecifier].AttachBinder(iPtrBinder);  break;
-  case EDyResourceType::Mesh:     this->mMapMeshReference[iSpecifier].AttachBinder(iPtrBinder);     break;
-  case EDyResourceType::Material: this->mMapMaterialReference[iSpecifier].AttachBinder(iPtrBinder); break;
-  case EDyResourceType::GLAttachment:   this->mMapAttachmentReference[iSpecifier].AttachBinder(iPtrBinder);       break;
-  case EDyResourceType::GLFrameBuffer:  this->mMapFrameBufferReference[iSpecifier].AttachBinder(iPtrBinder);      break;
-  case EDyResourceType::Skeleton:       this->mMapModelSkeletonReference[iSpecifier].AttachBinder(iPtrBinder);    break;
-  case EDyResourceType::AnimationScrap: this->mMapModelAnimScrapReference[iSpecifier].AttachBinder(iPtrBinder);   break;
-  case EDyResourceType::Sound:          this->mMapSoundReference[iSpecifier].AttachBinder(iPtrBinder);   break;
+  case EResourceType::Model:    this->mMapModelReference[iSpecifier].AttachBinder(iPtrBinder);    break;
+  case EResourceType::GLShader: this->mMapGLShaderReference[iSpecifier].AttachBinder(iPtrBinder); break;
+  case EResourceType::Texture:  this->mMapTextureReference[iSpecifier].AttachBinder(iPtrBinder);  break;
+  case EResourceType::Mesh:     this->mMapMeshReference[iSpecifier].AttachBinder(iPtrBinder);     break;
+  case EResourceType::Material: this->mMapMaterialReference[iSpecifier].AttachBinder(iPtrBinder); break;
+  case EResourceType::GLAttachment:   this->mMapAttachmentReference[iSpecifier].AttachBinder(iPtrBinder);       break;
+  case EResourceType::GLFrameBuffer:  this->mMapFrameBufferReference[iSpecifier].AttachBinder(iPtrBinder);      break;
+  case EResourceType::Skeleton:       this->mMapModelSkeletonReference[iSpecifier].AttachBinder(iPtrBinder);    break;
+  case EResourceType::AnimationScrap: this->mMapModelAnimScrapReference[iSpecifier].AttachBinder(iPtrBinder);   break;
+  case EResourceType::Sound:          this->mMapSoundReference[iSpecifier].AttachBinder(iPtrBinder);   break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
   return DY_SUCCESS;
@@ -110,8 +110,8 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
 
 EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
     _MIN_ const std::string& iSpecifier, 
-    _MIN_ EDyResourceType iType, 
-    _MIN_ const __FDyBinderBase* iPtrBinder)
+    _MIN_ EResourceType iType, 
+    _MIN_ const __IBinderBase* iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
@@ -120,16 +120,16 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   decltype(mMapModelReference)* ptrRiMap;
   switch (iType)
   {
-  case EDyResourceType::Model:    ptrRiMap = &this->mMapModelReference;     break;
-  case EDyResourceType::GLShader: ptrRiMap = &this->mMapGLShaderReference;  break;
-  case EDyResourceType::Texture:  ptrRiMap = &this->mMapTextureReference;   break;
-  case EDyResourceType::Mesh:     ptrRiMap = &this->mMapMeshReference;      break;
-  case EDyResourceType::Material: ptrRiMap = &this->mMapMaterialReference;  break;
-  case EDyResourceType::GLAttachment:   ptrRiMap = &this->mMapAttachmentReference;  break;
-  case EDyResourceType::GLFrameBuffer:  ptrRiMap = &this->mMapFrameBufferReference; break;
-  case EDyResourceType::Skeleton:       ptrRiMap = &this->mMapModelSkeletonReference; break;
-  case EDyResourceType::AnimationScrap: ptrRiMap = &this->mMapModelAnimScrapReference; break;
-  case EDyResourceType::Sound:          ptrRiMap = &this->mMapSoundReference; break;
+  case EResourceType::Model:    ptrRiMap = &this->mMapModelReference;     break;
+  case EResourceType::GLShader: ptrRiMap = &this->mMapGLShaderReference;  break;
+  case EResourceType::Texture:  ptrRiMap = &this->mMapTextureReference;   break;
+  case EResourceType::Mesh:     ptrRiMap = &this->mMapMeshReference;      break;
+  case EResourceType::Material: ptrRiMap = &this->mMapMaterialReference;  break;
+  case EResourceType::GLAttachment:   ptrRiMap = &this->mMapAttachmentReference;  break;
+  case EResourceType::GLFrameBuffer:  ptrRiMap = &this->mMapFrameBufferReference; break;
+  case EResourceType::Skeleton:       ptrRiMap = &this->mMapModelSkeletonReference; break;
+  case EResourceType::AnimationScrap: ptrRiMap = &this->mMapModelAnimScrapReference; break;
+  case EResourceType::Sound:          ptrRiMap = &this->mMapSoundReference; break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
@@ -148,7 +148,7 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
 }
 
 std::vector<DDyIOReferenceInstance> 
-DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EDyScope iScope)
+DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EResourceScope iScope)
 {
   std::vector<DDyIOReferenceInstance> result;
   this->ForwardCandidateRIFromList(iScope, this->mMapTextureReference, result);
@@ -165,7 +165,7 @@ DDyIOReferenceContainer::GetForwardCandidateRIAsList(_MIN_ EDyScope iScope)
 }
 
 void DDyIOReferenceContainer::ForwardCandidateRIFromList(
-    _MIN_ EDyScope iScope,
+    _MIN_ EResourceScope iScope,
     _MINOUT_ TStringHashMap<DDyIOReferenceInstance>& iContainer, 
     _MOUT_ std::vector<DDyIOReferenceInstance>& iResult)
 {
@@ -184,22 +184,22 @@ void DDyIOReferenceContainer::ForwardCandidateRIFromList(
 
 EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
     _MIN_ const std::string& specifier,
-    _MIN_ EDyResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EDyScope scope)
+    _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EResourceScope scope)
 {
   TStringHashMap<DDyIOReferenceInstance>* ptrRIHashMap;
 
   switch (type)
   {
-  case EDyResourceType::GLShader: { ptrRIHashMap = &this->mMapGLShaderReference; } break;
-  case EDyResourceType::Texture:  { ptrRIHashMap = &this->mMapTextureReference; } break;
-  case EDyResourceType::Mesh:     { ptrRIHashMap = &this->mMapMeshReference; } break;
-  case EDyResourceType::Model:    { ptrRIHashMap = &this->mMapModelReference; } break;
-  case EDyResourceType::Material: { ptrRIHashMap = &this->mMapMaterialReference; } break;
-  case EDyResourceType::GLAttachment:   { ptrRIHashMap = &this->mMapAttachmentReference; } break;
-  case EDyResourceType::GLFrameBuffer:  { ptrRIHashMap = &this->mMapFrameBufferReference; } break;
-  case EDyResourceType::Skeleton:       { ptrRIHashMap = &this->mMapModelSkeletonReference; } break;
-  case EDyResourceType::AnimationScrap: { ptrRIHashMap = &this->mMapModelAnimScrapReference; } break;
-  case EDyResourceType::Sound:          { ptrRIHashMap = &this->mMapSoundReference; } break;
+  case EResourceType::GLShader: { ptrRIHashMap = &this->mMapGLShaderReference; } break;
+  case EResourceType::Texture:  { ptrRIHashMap = &this->mMapTextureReference; } break;
+  case EResourceType::Mesh:     { ptrRIHashMap = &this->mMapMeshReference; } break;
+  case EResourceType::Model:    { ptrRIHashMap = &this->mMapModelReference; } break;
+  case EResourceType::Material: { ptrRIHashMap = &this->mMapMaterialReference; } break;
+  case EResourceType::GLAttachment:   { ptrRIHashMap = &this->mMapAttachmentReference; } break;
+  case EResourceType::GLFrameBuffer:  { ptrRIHashMap = &this->mMapFrameBufferReference; } break;
+  case EResourceType::Skeleton:       { ptrRIHashMap = &this->mMapModelSkeletonReference; } break;
+  case EResourceType::AnimationScrap: { ptrRIHashMap = &this->mMapModelAnimScrapReference; } break;
+  case EResourceType::Sound:          { ptrRIHashMap = &this->mMapSoundReference; } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
@@ -213,16 +213,16 @@ EDySuccess DDyIOReferenceContainer::MoveReferenceInstance(_MINOUT_ DDyIOReferenc
   TStringHashMap<DDyIOReferenceInstance>* ptrRIHashMap = nullptr;
   switch (iRi.mResourceType)
   {
-  case EDyResourceType::GLShader: { ptrRIHashMap = &this->mMapGLShaderReference; } break;
-  case EDyResourceType::Texture:  { ptrRIHashMap = &this->mMapTextureReference; } break;
-  case EDyResourceType::Mesh:     { ptrRIHashMap = &this->mMapMeshReference; } break;
-  case EDyResourceType::Model:    { ptrRIHashMap = &this->mMapModelReference; } break;
-  case EDyResourceType::Material: { ptrRIHashMap = &this->mMapMaterialReference; } break;
-  case EDyResourceType::GLAttachment:   { ptrRIHashMap = &this->mMapAttachmentReference; } break;
-  case EDyResourceType::GLFrameBuffer:  { ptrRIHashMap = &this->mMapFrameBufferReference; } break;
-  case EDyResourceType::Skeleton:       { ptrRIHashMap = &this->mMapModelSkeletonReference; } break;
-  case EDyResourceType::AnimationScrap: { ptrRIHashMap = &this->mMapModelAnimScrapReference; } break;
-  case EDyResourceType::Sound:          { ptrRIHashMap = &this->mMapSoundReference; } break;
+  case EResourceType::GLShader: { ptrRIHashMap = &this->mMapGLShaderReference; } break;
+  case EResourceType::Texture:  { ptrRIHashMap = &this->mMapTextureReference; } break;
+  case EResourceType::Mesh:     { ptrRIHashMap = &this->mMapMeshReference; } break;
+  case EResourceType::Model:    { ptrRIHashMap = &this->mMapModelReference; } break;
+  case EResourceType::Material: { ptrRIHashMap = &this->mMapMaterialReference; } break;
+  case EResourceType::GLAttachment:   { ptrRIHashMap = &this->mMapAttachmentReference; } break;
+  case EResourceType::GLFrameBuffer:  { ptrRIHashMap = &this->mMapFrameBufferReference; } break;
+  case EResourceType::Skeleton:       { ptrRIHashMap = &this->mMapModelSkeletonReference; } break;
+  case EResourceType::AnimationScrap: { ptrRIHashMap = &this->mMapModelAnimScrapReference; } break;
+  case EResourceType::Sound:          { ptrRIHashMap = &this->mMapSoundReference; } break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
@@ -232,7 +232,7 @@ EDySuccess DDyIOReferenceContainer::MoveReferenceInstance(_MINOUT_ DDyIOReferenc
 }
 
 EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
-    _MIN_ EDyResourceType type, 
+    _MIN_ EResourceType type, 
     _MIN_ const std::string& specifier, 
     _MIN_ bool isValid,
     _MIN_ void* iPtrInstance)
@@ -241,16 +241,16 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
   TStringHashMap<DDyIOReferenceInstance>* map;
   switch (type)
   {
-  case EDyResourceType::Mesh:     map = &this->mMapMeshReference;     break;
-  case EDyResourceType::Model:    map = &this->mMapModelReference;    break;
-  case EDyResourceType::GLShader: map = &this->mMapGLShaderReference; break;
-  case EDyResourceType::Texture:  map = &this->mMapTextureReference;  break;
-  case EDyResourceType::Material: map = &this->mMapMaterialReference; break;
-  case EDyResourceType::GLAttachment:   map = &this->mMapAttachmentReference;       break;
-  case EDyResourceType::GLFrameBuffer:  map = &this->mMapFrameBufferReference;      break;
-  case EDyResourceType::Skeleton:       map = &this->mMapModelSkeletonReference;    break;
-  case EDyResourceType::AnimationScrap: map = &this->mMapModelAnimScrapReference;   break;
-  case EDyResourceType::Sound:          map = &this->mMapSoundReference;   break;
+  case EResourceType::Mesh:     map = &this->mMapMeshReference;     break;
+  case EResourceType::Model:    map = &this->mMapModelReference;    break;
+  case EResourceType::GLShader: map = &this->mMapGLShaderReference; break;
+  case EResourceType::Texture:  map = &this->mMapTextureReference;  break;
+  case EResourceType::Material: map = &this->mMapMaterialReference; break;
+  case EResourceType::GLAttachment:   map = &this->mMapAttachmentReference;       break;
+  case EResourceType::GLFrameBuffer:  map = &this->mMapFrameBufferReference;      break;
+  case EResourceType::Skeleton:       map = &this->mMapModelSkeletonReference;    break;
+  case EResourceType::AnimationScrap: map = &this->mMapModelAnimScrapReference;   break;
+  case EResourceType::Sound:          map = &this->mMapSoundReference;   break;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }
 
@@ -265,7 +265,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
       for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
       {
         if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
-        const_cast<__FDyBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance.mPtrInstance);
+        const_cast<__IBinderBase*>(ptrBinderBase)->TryUpdateResourcePtr(instance.mPtrInstance);
       }
     }
     else
@@ -275,7 +275,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
       for (const auto& ptrBinderBase : instance.mPtrBoundBinderList)
       {
         if (MDY_CHECK_ISNULL(ptrBinderBase)) { continue; }
-        const_cast<__FDyBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
+        const_cast<__IBinderBase*>(ptrBinderBase)->TryDetachResourcePtr();
       }
     }
     return DY_SUCCESS; 

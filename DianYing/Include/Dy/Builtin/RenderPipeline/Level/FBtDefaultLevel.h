@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Builtin/Abstract/ARenderPipeline.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
 
 namespace dy

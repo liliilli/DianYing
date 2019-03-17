@@ -13,13 +13,13 @@
 ///
 
 /// Header file
-#include <Dy/Element/Abstract/ADyGeneralBaseComponent.h>
+#include <Dy/Element/Abstract/AGeneralBaseComponent.h>
 
 namespace dy
 {
 
-ADyGeneralBaseComponent::ADyGeneralBaseComponent(FDyActor& actorReference) :
-    ADyBaseComponent(actorReference)
+AGeneralBaseComponent::AGeneralBaseComponent(FActor& actorReference) 
+  : ABaseComponent(actorReference)
 { }
 
 } /// ::dy namespace

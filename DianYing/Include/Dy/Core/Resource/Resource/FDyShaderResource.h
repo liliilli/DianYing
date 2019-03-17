@@ -16,8 +16,8 @@
 #include <vector>
 #include <Dy/Meta/Type/EDyResourceTypes.h>
 #include <Dy/Core/Resource/Information/FDyShaderInformation.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
-#include <Dy/Core/Resource/Type/Shader/ADyUniformContainer.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
+#include <Dy/Core/Resource/Type/Shader/AUniformValueContainer.h>
 
 //!
 //! Forward declaration
@@ -37,17 +37,17 @@ namespace dy
 
 /// @class FDyShaderResource
 /// @brief Shader resource class that serve heap instance.
-class FDyShaderResource final : public ADyUniformContainer
+class FDyShaderResource final : public AUniformValueContainer
 {
 public:
-  using TUniformVariableList  = std::vector<DDyUniformVariableInformation>;
+  using TUniformVariableList  = std::vector<DUniformVariableInformation>;
   using TUniformStructListMap = std::unordered_map<
     std::string, 
-    std::pair<std::string, std::vector<DDyUniformStructVarInformation>>
+    std::pair<std::string, std::vector<DUniformStructVarInformation>>
   >;
   using TUniformStructItemMap = std::unordered_map<
     std::string, 
-    std::pair<std::string, DDyUniformStructVarInformation>>;
+    std::pair<std::string, DUniformStructVarInformation>>;
 
   /// @warning input parameter must be atomic!
   FDyShaderResource(_MIN_ const FDyShaderInformation& information);
@@ -75,6 +75,9 @@ public:
   /// @breif Get uniform struct item map.
   MDY_NODISCARD const TUniformStructItemMap& GetUniformStructItemMap() const noexcept;
 
+  /// @brief Check shader is supporting instancing.
+  MDY_NODISCARD bool IsSupportingInstancing() const noexcept;
+
 private:
   /// @brief Create shader fragment list and return.
   MDY_NODISCARD std::optional<TFragmentList> 
@@ -93,7 +96,7 @@ private:
   TU32        mShaderProgramId;
 
   /// Shader attribute variable list  <Name, ByteSize, Type and Id>
-  std::vector<DDyAttributeVariableInformation>  mAttributeVariableList;
+  std::vector<DAttributeVariableInformation>  mAttributeVariableList;
   /// Shader uniform variable list    <Name, ByteSize, Type and Id>
   TUniformVariableList  mUniformVariableList;
   /// @brief Shader uniform sturcture (not block but structurized) variable list.
@@ -103,9 +106,10 @@ private:
   /// <PrefixName, <PrefixName, <Name, ByteSize, Type and Id>>>
   TUniformStructItemMap mUniformStructVarItemMap;
   /// Shader uniform buffer object list <Name>
-  std::vector<DDyUniformBufferObjectInformation>mUniformBufferObjectList;
+  std::vector<DUniformBufferObjectInformation>mUniformBufferObjectList;
 
   TDyInformationBinderShader mBinderShader;
+  bool mIsSupportingInstancing = false;
 };
 
 } /// ::dy namespace

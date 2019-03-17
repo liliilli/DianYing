@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderScreenOutput
 /// @brief Render to screen or framebuffer attachment with scene final render texture and Ui render texture.
 ///
-class FDyBuiltinShaderGLRenderScreenOutput final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderScreenOutput final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderScreenOutput, "dyBtShaderGlScreenOut");
 public:

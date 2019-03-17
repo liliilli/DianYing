@@ -21,7 +21,7 @@ namespace dy
 void FDyBtFrameBufferDeferred::ConstructBuffer(PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName   = "dyBtBasicRender";
-  property.mFrameBufferSize = DDyVectorInt2{1280, 720};
+  property.mFrameBufferSize = DVectorInt2{1280, 720};
 
   property.mColorAttachmentList.emplace_back("dyBtUnlit",    EDyGlAttachmentType::Color0);
   property.mColorAttachmentList.emplace_back("dyBtNormal",   EDyGlAttachmentType::Color1);

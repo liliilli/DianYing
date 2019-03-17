@@ -14,8 +14,8 @@
 ///
 
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 
 namespace dy
 {
@@ -27,7 +27,7 @@ namespace dy
 class FDyModelResource final
 {
 public:
-  FDyModelResource(_MINOUT_ const FDyModelInformation& input);
+  FDyModelResource(const FDyModelInformation& ioInput);
   ~FDyModelResource() = default;
 
   /// @brief Get specifier name of model resource.
@@ -56,12 +56,13 @@ public:
   MDY_NODISCARD TDyResourceBinderMaterial* GetMaterialBinder(_MIN_ TU32 iIndex) noexcept;
 
 private:
-  std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  TDyInformationBinderModel    mBinderInformation;
+  std::string               mSpecifierName;
+  TDyInformationBinderModel mBinderInformation;
   std::vector<std::unique_ptr<TDyResourceBinderMesh>>      mMeshResource     = {};
   std::vector<std::unique_ptr<TDyResourceBinderMaterial>>  mMaterialResource = {};
+  std::vector<bool> mSupportInstancingFlags;
 
-  DDyMatrix4x4 mModelInitialTransform = DDyMatrix4x4::IdentityMatrix();
+  DMatrix4x4 mModelInitialTransform = DMatrix4x4::IdentityMatrix();
 };
 
 } /// ::dy namespace

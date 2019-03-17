@@ -13,14 +13,14 @@
 ///
 
 /// Header file
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 #include <Dy/Core/Resource/Information/FDyModelInformation.h>
 
 namespace dy
 {
 
-const DDyGLVaoBindInformation& FDyGLWrapper::GetDefaultAttributeFormatDescriptor() noexcept
+const DDyGLVaoBindInformation& XGLWrapper::GetDefaultAttributeFormatDescriptor() noexcept
 {
   static DDyGLVaoBindInformation descriptor;
   static bool mIsInitialized = false;
@@ -28,15 +28,15 @@ const DDyGLVaoBindInformation& FDyGLWrapper::GetDefaultAttributeFormatDescriptor
   {
     descriptor.mIsUsingDefaultDyAttributeModel = false;
     descriptor.mOffsetByteSize = 0;
-    descriptor.mStrideByteSize = sizeof(DDyVertexInformation);
-    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDyVertexInformation, mPosition));
-    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDyVertexInformation, mNormal));
-    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, offsetof(DDyVertexInformation, mTexCoord0));
-    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, offsetof(DDyVertexInformation, mTexCoord1));
-    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDyVertexInformation, mTangent));
-    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDyVertexInformation, mBitangent));
-    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Int,   false, 4, offsetof(DDyVertexInformation, mBoneId));
-    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 4, offsetof(DDyVertexInformation, mWeights));
+    descriptor.mStrideByteSize = sizeof(DDefaultVertexInfo);
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDefaultVertexInfo, mPosition));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDefaultVertexInfo, mNormal));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, offsetof(DDefaultVertexInfo, mTexCoord0));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, offsetof(DDefaultVertexInfo, mTexCoord1));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDefaultVertexInfo, mTangent));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, offsetof(DDefaultVertexInfo, mBitangent));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Int,   false, 4, offsetof(DDefaultVertexInfo, mBoneId));
+    descriptor.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 4, offsetof(DDefaultVertexInfo, mWeights));
     mIsInitialized = true;
   }
 

@@ -19,7 +19,7 @@
 namespace dy
 {
 
-bool DyFsIsFileExist(_MIN_ const std::string& iFilePath)
+bool IsFileExist(const std::string& iFilePath)
 {
   namespace fs = std::filesystem;
   return fs::exists(iFilePath);

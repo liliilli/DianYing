@@ -14,10 +14,10 @@
 
 /// Header file
 #include <Dy/Core/Resource/Resource/FDyTextureGeneralResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
-#include <Dy/Management/Helper/SDyProfilingHelper.h>
+#include <Dy/Management/Helper/SProfilingHelper.h>
 
 namespace dy
 {
@@ -28,9 +28,9 @@ FDyTextureGeneralResource::FDyTextureGeneralResource(_MIN_ const FDyTextureGener
   const auto& temp = static_cast<const FDyTextureGeneralInformation&>(information);
   this->mTextureSize = temp.GetSize();
 
-  const auto optGlImageFormat = DyGLGetImageFormatFrom(information.GetFormat());
+  const auto optGlImageFormat = GlGetImageFormatFrom(information.GetFormat());
   MDY_ASSERT_MSG_FORCE(optGlImageFormat.has_value() == true, "Image format type must be valid.");
-  const auto glImagePixelType = DyGlGetImagePixelTypeFrom(information.GetPixelReadType());
+  const auto glImagePixelType = GlGetImagePixelTypeFrom(information.GetPixelReadType());
   MDY_ASSERT_MSG_FORCE(glImagePixelType != GL_NONE, "Image pixel format must be valid.");
 
   PDyGLTextureDescriptor descriptor {};
@@ -48,28 +48,28 @@ FDyTextureGeneralResource::FDyTextureGeneralResource(_MIN_ const FDyTextureGener
 
   switch (this->mTextureType)
   { // Align size of texture following texture type.
-  case EDyTextureStyleType::D1: this->mTextureSize.Y = 1; break;
+  case ETextureStyleType::D1: this->mTextureSize.Y = 1; break;
   default: /* Do nothing */ break;
-  case EDyTextureStyleType::NoneError: MDY_UNEXPECTED_BRANCH();
+  case ETextureStyleType::NoneError: MDY_UNEXPECTED_BRANCH();
   }
 
   // Create texture from shared context.
   std::optional<TU32> optTextureId;
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    optTextureId = FDyGLWrapper::CreateTexture(descriptor);
+    optTextureId = XGLWrapper::CreateTexture(descriptor);
   }
   MDY_ASSERT_MSG(optTextureId.has_value() == true, "Texture id creation must be succeeded.");
   this->mTextureResourceId = *optTextureId;
 
-  SDyProfilingHelper::IncreaseOnBindTextureCount(1);
+  SProfilingHelper::IncreaseOnBindTextureCount(1);
 }
 
 FDyTextureGeneralResource::~FDyTextureGeneralResource()
 {
   { MDY_GRAPHIC_SET_CRITICALSECITON();
-    FDyGLWrapper::DeleteTexture(this->mTextureResourceId);
+    XGLWrapper::DeleteTexture(this->mTextureResourceId);
   }
-  SDyProfilingHelper::DecreaseOnBindTextureCount(1);
+  SProfilingHelper::DecreaseOnBindTextureCount(1);
 }
 
 } /// ::dy namespace

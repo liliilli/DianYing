@@ -14,22 +14,22 @@
 
 #include <Dy/Builtin/RenderItem/FBtLevelIntegeration.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
-#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/MWorld.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Type/EDyDrawType.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Type/EDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
-#include <Dy/Management/Rendering/UniformBufferObjectManager.h>
-#include <Dy/Component/CDyLightDirectional.h>
-#include <Dy/Element/Level.h>
+#include <Dy/Management/Rendering/MRendering.h>
+#include <Dy/Management/Rendering/MUniformBufferObject.h>
+#include <Dy/Component/CLightDirectional.h>
+#include <Dy/Element/FLevel.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Component/Internal/Lights/DUboPointLight.h>
-#include <Dy/Component/CDyLightPoint.h>
+#include <Dy/Component/CLightPoint.h>
 #include "Dy/Core/Reflection/RReflection.h"
-#include "Dy/Component/CDyCamera.h"
+#include "Dy/Component/CCamera.h"
 
 namespace dy
 {
@@ -62,15 +62,15 @@ void FBtRenderItemLevelIntegeration::pSetupOpaqueCSMIntegration()
   this->pUpdateUboPointLightsInfo();
 
   this->mBinderFrameBuffer->BindFrameBuffer();
-  const auto& backgroundColor = MDyWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
+  const auto& backgroundColor = MWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
   glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void FBtRenderItemLevelIntegeration::pUpdateUboShadowInfo()
 {
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
-  if (const auto* ptr = MDyRendering::GetInstance().GetPtrMainDirectionalShadow();
+  auto& uboManager = MUniformBufferObject::GetInstance();
+  if (const auto* ptr = MRendering::GetInstance().GetPtrMainDirectionalShadow();
       ptr != nullptr) 
   { 
     DDyUboDirShadow shadow = ptr->GetUboShadowInfo();
@@ -85,32 +85,32 @@ void FBtRenderItemLevelIntegeration::pUpdateUboShadowInfo()
 
 void FBtRenderItemLevelIntegeration::pUpdateUboDirectionalLightInfo()
 {
-  auto& uboManager = MDyUniformBufferObject::GetInstance();
-  auto* ptrLight = MDyRendering::GetInstance().GetPtrMainDirectionalLight();
+  auto& uboManager = MUniformBufferObject::GetInstance();
+  auto* ptrLight = MRendering::GetInstance().GetPtrMainDirectionalLight();
   if (this->mAddrMainLight != reinterpret_cast<ptrdiff_t>(ptrLight))
   {
     this->mAddrMainLight = reinterpret_cast<ptrdiff_t>(ptrLight);
     if (this->mAddrMainLight == 0)
     {
-      DDyUboDirectionalLight light;
-      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light);
+      DUboDirectionalLight light;
+      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DUboDirectionalLight), &light);
     }
     else
     {
-      DDyUboDirectionalLight light = ptrLight->GetUboLightInfo();
-      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DDyUboDirectionalLight), &light);
+      DUboDirectionalLight light = ptrLight->GetUboLightInfo();
+      uboManager.UpdateUboContainer("dyBtUboDirLight", 0, sizeof(DUboDirectionalLight), &light);
     }
   }
 }
 
 void FBtRenderItemLevelIntegeration::pUpdateUboPointLightsInfo()
 {
-  auto& activateLightPtrList  = MDyRendering::GetInstance().__GetActivatedPointLights();
-  std::vector<DDyUboPointLight> pointLightChunk; 
+  auto& activateLightPtrList  = MRendering::GetInstance().__GetActivatedPointLights();
+  std::vector<DUboPointLight> pointLightChunk; 
   pointLightChunk.reserve(16);
 
   // Do cpu frustum culling.
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
+  const auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
   for (auto& ptrLight : activateLightPtrList)
   {
     const auto& lightInfo = ptrLight->GetUboLightInfo();
@@ -127,7 +127,7 @@ void FBtRenderItemLevelIntegeration::pUpdateUboPointLightsInfo()
 
   for (size_t i = pointLightChunk.size(); i < 16; ++i)
   {
-    static const DDyUboPointLight blank{};
+    static const DUboPointLight blank{};
     this->mBinderOpaqueShader->TryUpdateUniformStruct(i, blank);
   }
 }
@@ -161,7 +161,7 @@ void FBtRenderItemLevelIntegeration::OnRender()
     this->mBinderOpaqueShader->UseShader();
     this->mBinderOpaqueShader->TryUpdateUniformList();
 
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    XGLWrapper::Draw(EDrawType::Triangle, true, 3);
   }
 
   {
@@ -173,13 +173,13 @@ void FBtRenderItemLevelIntegeration::OnRender()
     this->mBinderTransShader->UseShader();
     this->mBinderTransShader->TryUpdateUniformList();
 
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    XGLWrapper::Draw(EDrawType::Triangle, true, 3);
 
     this->mBinderTransShader->DisuseShader();
     this->mBinderFbTranslucent->UnbindFrameBuffer();
   }
 
-  FDyGLWrapper::UnbindVertexArrayObject();
+  XGLWrapper::UnbindVertexArrayObject();
 }
 
 void FBtRenderItemLevelIntegeration::OnReleaseRenderingSetting()

@@ -14,14 +14,14 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/FDyIOGC.h>
-#include <Dy/Management/LoggingManager.h>
-#include <Dy/Management/IO/MDyIOData.h>
-#include <Dy/Management/IO/MDyIOResource.h>
+#include <Dy/Management/MLog.h>
+#include <Dy/Management/IO/MIORescInfo.h>
+#include <Dy/Management/IO/MIOResource.h>
 
 namespace dy
 {
 
-bool FDyIOGC::IsReferenceInstanceExist(const std::string& specifier, EDyResourceType type, EDyResourceStyle style)
+bool FDyIOGC::IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EDyResourceStyle style)
 {
   return ContainsIf(
     this->mRIGarbageCandidateList, 
@@ -36,7 +36,7 @@ bool FDyIOGC::IsReferenceInstanceExist(const std::string& specifier, EDyResource
 }
 
 std::optional<DDyIOReferenceInstance> 
-FDyIOGC::MoveInstanceFromGC(const std::string& specifier, EDyResourceType type, EDyResourceStyle style)
+FDyIOGC::MoveInstanceFromGC(const std::string& specifier, EResourceType type, EDyResourceStyle style)
 {
   // Check nullility.
   auto it = std::find_if(
@@ -53,7 +53,7 @@ FDyIOGC::MoveInstanceFromGC(const std::string& specifier, EDyResourceType type, 
 
   // Get value and remove memory space of item in list.
   auto result = *it;
-  DyFastErase(this->mRIGarbageCandidateList, it);
+  FaseErase(this->mRIGarbageCandidateList, it);
   return std::move(result);
 }
 
@@ -79,7 +79,7 @@ EDySuccess FDyIOGC::TryGarbageCollectCandidateList() noexcept
     decltype(mRIGarbageCandidateList) mGClist = this->mRIGarbageCandidateList;
     this->mRIGarbageCandidateList.clear();
     for (const auto& ri : mGClist)
-    { // If garbase exist, detach from MDyIOData & MDyIOResource.
+    { // If garbase exist, detach from MIORescInfo & MIOResource.
       const auto& name  = ri.mSpecifierName;
       const auto type   = ri.mResourceType;
       const auto style  = ri.mResourcecStyle;
@@ -88,11 +88,11 @@ EDySuccess FDyIOGC::TryGarbageCollectCandidateList() noexcept
       {
       case EDyResourceStyle::Information: 
       { // Try remove informaiton instance. This function call must be succeeded.
-        MDY_CALL_ASSERT_SUCCESS(MDyIOData::GetInstance().MDY_PRIVATE(TryRemove)(name, type));
+        MDY_CALL_ASSERT_SUCCESS(MIORescInfo::GetInstance().MDY_PRIVATE(TryRemove)(name, type));
       } break;
       case EDyResourceStyle::Resource: 
       { // Try remove resource instance. This funtion call must be succeeded.
-        MDY_CALL_ASSERT_SUCCESS(MDyIOResource::GetInstance().MDY_PRIVATE(TryRemove)(name, type));
+        MDY_CALL_ASSERT_SUCCESS(MIOResource::GetInstance().MDY_PRIVATE(TryRemove)(name, type));
       } break;
       default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
       }

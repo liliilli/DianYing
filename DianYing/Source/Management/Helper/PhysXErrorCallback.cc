@@ -13,13 +13,13 @@
 ///
 
 /// Header file
-#include <Dy/Management/Helper/PhysXErrorCallback.h>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/Helper/FPhysXErrorCallback.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {
 
-void FDyPhysXErrorCallback::reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line)
+void FPhysXErrorCallback::reportError(physx::PxErrorCode::Enum code, const char* message, const char* file, int line)
 {
   static constexpr const char* logTemplate = "PhysX | {} | {} | {} Line. {}";
 

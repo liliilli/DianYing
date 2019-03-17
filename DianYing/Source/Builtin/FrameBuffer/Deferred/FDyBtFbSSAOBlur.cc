@@ -22,7 +22,7 @@ namespace dy::builtin
 void FDyBtFbSSAOBlur::ConstructBuffer(_MOUT_ PDyGlFrameBufferInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName   = sName;
-  property.mFrameBufferSize = DDyVectorInt2{1280, 720};
+  property.mFrameBufferSize = DVectorInt2{1280, 720};
   property.mIsUsingDepthBuffer = false;
 
   property.mColorAttachmentList.emplace_back((FDyBtAtSSAOOutputFinal::sName), EDyGlAttachmentType::Color0);

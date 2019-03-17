@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Interface/IDyResource.h>
-#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Builtin/Interface/IResource.h>
+#include <Dy/Meta/Type/EResourceType.h>
 #include <Dy/Core/Rendering/Interface/IRenderPipeline.h>
 
 namespace dy
@@ -26,7 +26,7 @@ namespace dy
 #define MDY_REGISTER_RESOURCE_RENDER_PIPELINE(__MAType__, __MASpecifier__) \
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MASpecifier__); \
 public: \
-  class __ConstructionHelper final : public ::dy::IDyResource \
+  class __ConstructionHelper final : public ::dy::IResource \
   { \
     using TPipelineFunction = ::dy::PDyRenderPipelineInstanceMetaInfo::TPipelineFunction; \
     using TFunctionReturn = std::invoke_result_t<TPipelineFunction>; \
@@ -49,10 +49,10 @@ private:
 /// @struct ARenderPipeline
 /// @brief Pipeline for rendering items in rendering phase.
 /// Rendering must be held in these types.
-struct ARenderPipeline : public IDyResource, IRenderPipeline
+struct ARenderPipeline : public IResource, IRenderPipeline
 {
 public:
-  static constexpr auto value = EDyResourceType::RenderPipeline;
+  static constexpr auto value = EResourceType::RenderPipeline;
 
 private:
   std::any GetMetaInfo() override final { return 0; };

@@ -47,20 +47,16 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyWidgetComponentType& p);
 struct PDyMetaWidgetChildableBaseDesc;
 struct PDyMetaWidgetCommonBaseDesc;
 
-///
 /// @struct PDyMetaWidgetChildableBaseDesc
 /// @brief  Widget component base descriptor type that is able to have children component.
-///
 struct PDyMetaWidgetChildableBaseDesc
 {
   using TElementType = std::pair<EDyWidgetComponentType, std::unique_ptr<PDyMetaWidgetCommonBaseDesc>>;
   std::unordered_map<std::string, TElementType> mChildComponentList = {};
 };
 
-///
 /// @struct PDyMetaWidgetCommonBaseDesc
 /// @brief  Widget component base descriptor type
-///
 struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
 { /// Specification name
   std::string                   mUiObjectSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
@@ -73,6 +69,8 @@ struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
   /// Z-order value of overall UI ordering from root.
   /// Slots with larger ZOrder values will draw above slots with smaller ZOrder values.
   TU32                          mZOrder = 0;
+  /// @brief Check widget component is activated initially.
+  bool                          mIsActivated = false;
 
   //!
   //! Json header file
@@ -88,20 +86,22 @@ struct PDyMetaWidgetCommonBaseDesc : public PDyMetaWidgetChildableBaseDesc
 /// @brief Text component of widget descriptor
 struct PDyMetaWidgetRootDescriptor final : public PDyMetaWidgetChildableBaseDesc
 {
-  /// Widget specifier name
+  /// @brief Widget specifier name
   std::string mWidgetSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  /// Zorder value for ordering UI rendering.
+  /// @brief Zorder value for ordering UI rendering.
   TU32        mZOrder = 0;
-  /// Using script.
+  /// @brief Using script.
   bool        mIsUsingScript = false;
-  /// Script component variable.
+  /// @brief Check widget component is activated initially.
+  bool        mIsActivated = false;
+  /// @brief Script component variable.
   PDyScriptComponentMetaInfo mScriptReference = {};
 
   /// @brief Factory function for PDyMetaWidgetTextDescriptor.
   /// @param itemAtlas valid json atlas instance.
   /// @return If succeeded, return heap instance of PDyMetaWidgetTextDescriptor.
   static std::unique_ptr<PDyMetaWidgetRootDescriptor>
-  CreateMetaInformation(_MIN_ const nlohmann::json& itemAtlas);
+  CreateMetaInformation(const nlohmann::json& itemAtlas);
 
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Name,  "Name");
   inline static MDY_SET_IMMUTABLE_STRING(sHeader_Script,"Script");

@@ -14,9 +14,9 @@
 ///
 
 #include <Dy/Builtin/Abstract/ARenderItem.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
-#include <Dy/Core/Resource/Type/TDyResourceBinder.h>
+#include <Dy/Core/Resource/Type/TResourceBinder.h>
 #include <Dy/Management/Type/Render/DDyModelHandler.h>
 
 namespace dy
@@ -57,7 +57,7 @@ private:
   TDyResourceBinderShader      mBinderShSSAOBlur   { "dyBtPostEffectSsaoBlur" };
   TDyResourceBinderAttachment  mBinderAttSSAOOpt   { "dyBtAtSSAOOutput" };
 
-  std::vector<DDyVector3> mRayContainer;
+  std::vector<DVector3> mRayContainer;
   bool mIsRayInserted = false;
 };
 

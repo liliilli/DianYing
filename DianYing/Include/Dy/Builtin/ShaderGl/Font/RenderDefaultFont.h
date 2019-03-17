@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderDefaultFont
 /// @brief OpenGL Shader for rendering font without SDF, just default (blurred).
 ///
-class FDyBuiltinShaderGLRenderDefaultFont final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderDefaultFont final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderDefaultFont, "dyBtShaderGlDefaultFont")
 public:

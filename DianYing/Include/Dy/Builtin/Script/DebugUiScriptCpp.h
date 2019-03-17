@@ -13,20 +13,20 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Component/Abstract/ADyWidgetCppScript.h>
-#include <Dy/Component/Abstract/ADyActorCppScript.h>
-#include <Dy/Component/Abstract/ADyGlobalCppScript.h>
-#include <Dy/Builtin/Abstract/ADyScriptResource.h>
+#include <Dy/Component/Abstract/AWidgetCppScript.h>
+#include <Dy/Component/Abstract/AActorCppScript.h>
+#include <Dy/Component/Abstract/AGlobalCppScript.h>
+#include <Dy/Builtin/Abstract/AScriptResource.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
-#include <Dy/Element/Type/Timer/FDyTimerHandle.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
+#include <Dy/Element/Type/Timer/FTimerHandle.h>
 
 namespace dy
 {
-class MDyTime;
-class MDyProfiling;
+class MTime;
+class MProfiling;
 
-class FDyBuiltinDebugUiScript final : public ADyScriptResource, public ADyWidgetCppScript
+class FDyBuiltinDebugUiScript final : public AScriptResource, public AWidgetCppScript
 {
   MDY_REGISTER_RESOURCE_SCRIPT(FDyBuiltinDebugUiScript, "FDyBuiltinDebugUiScript");
 public:
@@ -41,11 +41,11 @@ public:
   void EndApplication() noexcept;
 
 private:
-  MDyTime*      mTimeManager      = nullptr;
-  MDyProfiling* mProfilingManger  = nullptr;
+  MTime*      mTimeManager      = nullptr;
+  MProfiling* mProfilingManger  = nullptr;
 
-  FDyTimerHandle mTimerHandle;
-  FDyTimerHandle mTimerHandle2;
+  FTimerHandle mTimerHandle;
+  FTimerHandle mTimerHandle2;
 
   void CbMoveBar();
   void CbChangeImageTexture();

@@ -16,8 +16,8 @@
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <nlohmann/json.hpp>
 
-#include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 
 //!
 //! Forward declaration & local translation unit data
@@ -68,11 +68,11 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyHorizontalAlignment& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyHorizontalAlignment& p)
 {
-  switch (DyStrSwitchInput(j.get<std::string>()))
+  switch (SwitchStrInput(j.get<std::string>()))
   {
-  case DyStrCase("Left"): { p = EDyHorizontalAlignment::Left; } break;
-  case DyStrCase("Center"): { p = EDyHorizontalAlignment::Center; } break;
-  case DyStrCase("Right"): { p = EDyHorizontalAlignment::Right; } break;
+  case CaseStr("Left"): { p = EDyHorizontalAlignment::Left; } break;
+  case CaseStr("Center"): { p = EDyHorizontalAlignment::Center; } break;
+  case CaseStr("Right"): { p = EDyHorizontalAlignment::Right; } break;
   default: MDY_UNEXPECTED_BRANCH();
   }
 }
@@ -116,18 +116,18 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyOrigin& p)
   else                                          { MDY_UNEXPECTED_BRANCH(); }
 }
 
-DDyVector2 DyGetPositionWithOrigin(const DDyVector2& position, const DDyVectorInt2& frameSize, EDyOrigin origin)
+DVector2 DyGetPositionWithOrigin(const DVector2& position, const DVectorInt2& frameSize, EDyOrigin origin)
 {
   switch (origin)
   {
   case EDyOrigin::Left_Bottom:  return position - (frameSize / 2);
-  case EDyOrigin::Left_Center:  return position - DDyVectorInt2{ frameSize.X >> 1, 0 };
-  case EDyOrigin::Left_Top:     return position + DDyVectorInt2{ -(frameSize.X >> 1), frameSize.Y >> 1 };
-  case EDyOrigin::Center_Bottom:return position - DDyVectorInt2{ 0, frameSize.Y >> 1 };
+  case EDyOrigin::Left_Center:  return position - DVectorInt2{ frameSize.X >> 1, 0 };
+  case EDyOrigin::Left_Top:     return position + DVectorInt2{ -(frameSize.X >> 1), frameSize.Y >> 1 };
+  case EDyOrigin::Center_Bottom:return position - DVectorInt2{ 0, frameSize.Y >> 1 };
   case EDyOrigin::Center_Center:return position;
-  case EDyOrigin::Center_Top:   return position + DDyVectorInt2{ 0, frameSize.Y >> 1 };
-  case EDyOrigin::Right_Bottom: return position + DDyVectorInt2{ frameSize.X >> 1, -(frameSize.Y >> 1) };
-  case EDyOrigin::Right_Center: return position + DDyVectorInt2{ frameSize.X >> 1, 0 };
+  case EDyOrigin::Center_Top:   return position + DVectorInt2{ 0, frameSize.Y >> 1 };
+  case EDyOrigin::Right_Bottom: return position + DVectorInt2{ frameSize.X >> 1, -(frameSize.Y >> 1) };
+  case EDyOrigin::Right_Center: return position + DVectorInt2{ frameSize.X >> 1, 0 };
   case EDyOrigin::Right_Top:    return position + (frameSize / 2);
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

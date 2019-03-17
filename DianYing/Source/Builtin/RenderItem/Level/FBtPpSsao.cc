@@ -13,17 +13,17 @@
 ///
 
 #include <Dy/Builtin/RenderItem/Level/FBtPpSsao.h>
-#include <Dy/Management/WorldManager.h>
+#include <Dy/Management/MWorld.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Component/CModelRenderer.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Type/EDyDrawType.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Type/EDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
+#include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Builtin/Constant/SSAO.h>
 #include <Dy/Helper/Math/Random.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MSetting.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
@@ -41,7 +41,7 @@ FBtRenderItemSsao::FBtRenderItemSsao()
 {
   for (TU32 i = 0; i < kSSAORayCount; ++i)
   {
-    DDyVector3 sample = DDyVector3{
+    DVector3 sample = DVector3{
         random::RandomFloatRange(-1, 1), 
         random::RandomFloatRange(-1, 1), 
         random::RandomFloatRange(0, 1)
@@ -58,7 +58,7 @@ FBtRenderItemSsao::FBtRenderItemSsao()
 
 EDySuccess FBtRenderItemSsao::OnPreRenderCheckCondition()
 {
-  const auto& information = MDySetting::GetInstance().GetGameplaySettingInformation();
+  const auto& information = MSetting::GetInstance().GetGameplaySettingInformation();
   if (information.mGraphics.mIsEnabledDefaultSsao == false)
   {
     return DY_FAILURE;
@@ -97,7 +97,7 @@ void FBtRenderItemSsao::OnSetupRenderingSetting()
   // SSAO Blur (SSAO Output -> SSAO Blurred) does not have to setup.
   if (this->mIsRayInserted == false)
   {
-    using EUniform = EDyUniformVariableType;
+    using EUniform = EUniformVariableType;
     this->mBinderShSSAO->TryUpdateUniform<EUniform::Vector3Array>("uRaySamples[0]", this->mRayContainer);
     this->mIsRayInserted = true;
   }
@@ -118,7 +118,7 @@ void FBtRenderItemSsao::OnRender()
     this->mBinderShSSAO->UseShader();
     this->mBinderShSSAO->TryUpdateUniformList();
 
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    XGLWrapper::Draw(EDrawType::Triangle, true, 3);
   }
 
   { // Box Blurring (Fast and easy!)
@@ -127,13 +127,13 @@ void FBtRenderItemSsao::OnRender()
     this->mBinderShSSAOBlur->UseShader();
     this->mBinderShSSAOBlur->TryUpdateUniformList();
 
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    XGLWrapper::Draw(EDrawType::Triangle, true, 3);
 
     this->mBinderShSSAOBlur->DisuseShader();
     this->mBinderFbSSAOBlur->UnbindFrameBuffer();
   }
 
-  FDyGLWrapper::UnbindVertexArrayObject();
+  XGLWrapper::UnbindVertexArrayObject();
 }
 
 void FBtRenderItemSsao::OnReleaseRenderingSetting()

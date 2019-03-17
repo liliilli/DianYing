@@ -14,7 +14,7 @@
 ///
 
 #include <nlohmann/json_fwd.hpp>
-#include <Dy/Helper/Type/Vector2.h>
+#include <Dy/Helper/Type/DVector2.h>
 
 //!
 //! Forward declaration
@@ -22,7 +22,7 @@
 
 namespace dy
 {
-struct DDyVectorInt2;
+struct DVectorInt2;
 }
 
 //!
@@ -105,7 +105,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyOrigin& p);
 /// @param
 /// @return
 ///
-MDY_NODISCARD DDyVector2 DyGetPositionWithOrigin(const DDyVector2& position, const DDyVectorInt2& frameSize, EDyOrigin origin);
+MDY_NODISCARD DVector2 DyGetPositionWithOrigin(const DVector2& position, const DVectorInt2& frameSize, EDyOrigin origin);
 
 } /// ::dy namespace
 

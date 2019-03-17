@@ -14,14 +14,14 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyModelResource.h>
+#include <Dy/Builtin/Abstract/AModelResource.h>
 
 namespace dy::builtin
 {
 
 /// @class FDyBuiltinModelEmissiveSphere
 /// @brief Model emissive sphere
-class FDyBuiltinModelEmissiveSphere final : public ADyModelResource
+class FDyBuiltinModelEmissiveSphere final : public AModelResource
 {
   MDY_REGISTER_RESOURCE_MODEL(FDyBuiltinModelEmissiveSphere, "dyBtModelEmissiveSphere");
 };

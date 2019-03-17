@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
 namespace dy

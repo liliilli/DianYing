@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Internal/ShaderType.h>
+#include <Dy/Core/Resource/Internal/XShaderTypes.h>
 
 //!
 //! Forward declaration
@@ -38,19 +38,16 @@ namespace dy
 class FDyShaderInformation final
 {
 public:
-  using TShaderFragmentList = std::vector<PDyShaderFragmentInformation>;
+  using TShaderFragmentList = std::vector<PShaderFragmentInformation>;
 
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyShaderInformation);
 
   /// @brief Construct shader information.
-  FDyShaderInformation(_MIN_ const PDyGLShaderInstanceMetaInfo& metaInfo);
+  FDyShaderInformation(const PDyGLShaderInstanceMetaInfo& metaInfo, bool iIsInstantiable);
   ~FDyShaderInformation() = default;
 
   /// @brief Get shader's specifier name.
-  FORCEINLINE MDY_NODISCARD const std::string& GetSpecifierName() const noexcept
-  {
-    return this->mSpecifierName;
-  }
+  MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
   /// @brief Get valid shader's shader fragment list.
   MDY_NODISCARD const auto& GetShaderFragmentList() const noexcept
@@ -58,9 +55,13 @@ public:
     return this->mShaderFragmentList;
   }
 
+  /// @brief Check this shader is instantiable (Instancing)
+  MDY_NODISCARD bool IsInstantiable() const noexcept;
+
 private:
-  std::string         mSpecifierName      = MDY_INITIALIZE_EMPTYSTR;
+  std::string mSpecifierName;
   TShaderFragmentList mShaderFragmentList = {};
+  bool mIsInstantiable = false;
 };
 
 } /// ::dy namespace

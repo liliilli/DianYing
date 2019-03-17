@@ -16,10 +16,10 @@
 #include <Dy/Core/Resource/Information/FDyMeshInformation.h>
 
 #include <nlohmann/json.hpp>
-#include <Dy/Core/Resource/Type/ModelMesh/DDyMeshCompressedBuffer.h>
+#include <Dy/Core/Resource/Type/ModelMesh/DMeshCompressedBuffer.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <future>
-#include "Dy/Helper/Library/HelperFilesystem.h"
+#include <Dy/Helper/Library/HelperFilesystem.h>
 
 namespace dy
 {
@@ -41,7 +41,7 @@ FDyMeshInformation::FDyMeshInformation(_MIN_ const PDyMeshInstanceMetaInfo& meta
       /* i(char) icount(unsigned_32bit) ...
        * v(char) vcount(unsigned_32bit) pos(float3) nrm(float3) uv0(float2) uv1(float2) tan(float3) bit(float3) bone(float4) wgh(float4)...
        */
-      MDY_ASSERT_MSG_FORCE(DyFsIsFileExist(metaInfo.mExternalPath) == true, "Mesh file could not find.");
+      MDY_ASSERT_MSG_FORCE(IsFileExist(metaInfo.mExternalPath) == true, "Mesh file could not find.");
 
       std::FILE* fd = fopen(metaInfo.mExternalPath.c_str(), "rb");
       // Read index list.
@@ -85,7 +85,7 @@ const std::string& FDyMeshInformation::GetSpecifierName() const noexcept
   return this->mSpecifierName;
 }
 
-const DDyMeshData& FDyMeshInformation::GetMeshInformationList() const noexcept
+const DMeshData& FDyMeshInformation::GetMeshInformationList() const noexcept
 {
   return this->mProperty;
 }

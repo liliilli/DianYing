@@ -15,7 +15,8 @@
 
 #include <Dy/Helper/GlobalType.h>
 
-namespace dy::hash {
+namespace dy::hash 
+{
 
 static constexpr TU32 __Crc32Tbl[] = {
   0, 0x77073096, 0xEE0E612C, 0x990951BA,

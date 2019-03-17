@@ -13,12 +13,12 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Internal/TextureEnums.h>
+#include <Dy/Core/Resource/Internal/ETextureEnums.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 #include <Dy/Meta/Type/EDyResourceTypes.h>
-#include <Dy/Helper/Type/VectorInt2.h>
-#include <Dy/Helper/Type/ColorRGBA.h>
-#include <Dy/Helper/Type/Clamp.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
+#include <Dy/Helper/Type/DClamp.h>
 
 //!
 //! Forward declaration
@@ -53,13 +53,13 @@ public:
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
 
    /// @brief Get attachment size.
-  MDY_NODISCARD const DDyVectorInt2& GetBufferSize() const noexcept { return this->mAttachmentSize; }
+  MDY_NODISCARD const DVectorInt2& GetBufferSize() const noexcept { return this->mAttachmentSize; }
 
   /// @brief Get attachments' parameter list.
   MDY_NODISCARD const auto& GetParameterList() const noexcept { return this->mParameterList; }
 
   /// @brief Get Border color of attachment.
-  MDY_NODISCARD const DDyColorRGBA& GetBorderColor() const noexcept { return this->mBorderColor; }
+  MDY_NODISCARD const DColorRGBA& GetBorderColor() const noexcept { return this->mBorderColor; }
 
   /// @brief Get buffer type for intenal pixel.
   MDY_NODISCARD const auto& GetBufferType() const noexcept { return this->mBufferType; }
@@ -79,11 +79,11 @@ public:
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TTextureParameterList         mParameterList  = {};
-  DDyVectorInt2                 mAttachmentSize = {};
-  DDyColorRGBA                  mBorderColor    = DDyColorRGBA::Black;
-  EDyGlBufferDataInternalFormat mBufferType     = EDyGlBufferDataInternalFormat::NoneError;
-  EDyTextureStyleType           mAttachmentType = EDyTextureStyleType::D2;
-  DDyClamp<TU32, 1, 16>         mMipmapLevels   = 1;
+  DVectorInt2                 mAttachmentSize = {};
+  DColorRGBA                  mBorderColor    = DColorRGBA::Black;
+  EGlBufferDataInternalFormat mBufferType     = EGlBufferDataInternalFormat::NoneError;
+  ETextureStyleType           mAttachmentType = ETextureStyleType::D2;
+  DClamp<TU32, 1, 16>         mMipmapLevels   = 1;
   /// @brief This variable is only enabled if only mAttachmentType is `Array` type.
   TU32                          mDepthNumber    = 0;
   /// @brief When enabled, attachment will be created as ping-pong (two-attachment) attachment.

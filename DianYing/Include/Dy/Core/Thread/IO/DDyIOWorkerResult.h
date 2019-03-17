@@ -15,7 +15,7 @@
 
 #include <any>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
@@ -28,7 +28,7 @@ struct DDyIOWorkerResult final
 {
   std::string       mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   EDyResourceStyle  mResourceStyle  = EDyResourceStyle::NoneError;
-  EDyResourceType   mResourceType   = EDyResourceType::NoneError;
+  EResourceType   mResourceType   = EResourceType::NoneError;
   bool              mIsHaveDeferredTask = false;
   // @TODO NEED TO CHANGE TYPE TO MORE LIABLE TYPE.
   void*             mSmtPtrResultInstance;

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Meta/Type/EDyResourceType.h>
+#include <Dy/Meta/Type/EResourceType.h>
 #include <unordered_set>
 
 namespace dy
@@ -23,10 +23,10 @@ namespace dy
 /// `GLOBAL` is async but `BOOTING` is sync.
 struct DDyResourceName final
 {
-  EDyResourceType mResourceType = EDyResourceType::NoneError;
+  EResourceType mResourceType = EResourceType::NoneError;
   std::string     mName         = MDY_INITIALIZE_EMPTYSTR;
 
-  DDyResourceName(_MIN_ EDyResourceType type, _MIN_ const std::string& name)
+  DDyResourceName(_MIN_ EResourceType type, _MIN_ const std::string& name)
       : mResourceType{type}, mName{name} {};
 };
 

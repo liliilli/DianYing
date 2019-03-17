@@ -16,8 +16,8 @@
 #include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferPingPongResource.h>
 #include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
-#include <Dy/Management/IO/MDyIOResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Management/IO/MIOResource.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Helper/System/Idioms.h>
 
 namespace dy
@@ -40,7 +40,7 @@ FDyFrameBufferPingPongResource::FDyFrameBufferPingPongResource(
       "colorAttachment pointer must not be null. (TEMPORAL)");
 
     const auto& [specifier, _] = binderInfo;
-    DySafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
+    SafeUniquePtrEmplaceBack(this->mBinderAttachmentList, specifier);
 
     MDY_ASSERT_MSG(
       this->mBinderAttachmentList.back()->IsResourceExist() == true, 
@@ -107,7 +107,7 @@ FDyFrameBufferPingPongResource::FDyFrameBufferPingPongResource(
   {
     std::optional<TU32> optFrameBufferId;
     { MDY_GRAPHIC_SET_CRITICALSECITON();
-      optFrameBufferId = FDyGLWrapper::CreateFrameBuffer(descriptors[i]);
+      optFrameBufferId = XGLWrapper::CreateFrameBuffer(descriptors[i]);
     }
     MDY_ASSERT_MSG(
       optFrameBufferId.has_value() == true, 
@@ -122,7 +122,7 @@ FDyFrameBufferPingPongResource::~FDyFrameBufferPingPongResource()
   for (size_t i = 0; i < 2; ++i)
   {
     MDY_GRAPHIC_SET_CRITICALSECITON();
-    MDY_CALL_ASSERT_SUCCESS(FDyGLWrapper::DeleteFrameBuffer(this->mFrameBufferIds[i]));
+    MDY_CALL_ASSERT_SUCCESS(XGLWrapper::DeleteFrameBuffer(this->mFrameBufferIds[i]));
   }
 }
 
@@ -136,7 +136,7 @@ EDySuccess FDyFrameBufferPingPongResource::BindFrameBuffer() const noexcept
 {
   if (this->GetTargetFrameBufferId() == 0) { return DY_FAILURE; }
 
-  FDyGLWrapper::BindFrameBufferObject(this->GetTargetFrameBufferId());
+  XGLWrapper::BindFrameBufferObject(this->GetTargetFrameBufferId());
   return DY_SUCCESS;
 }
 

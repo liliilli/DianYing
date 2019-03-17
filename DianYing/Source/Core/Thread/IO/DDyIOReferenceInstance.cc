@@ -15,24 +15,24 @@
 /// Header file
 #include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
 #include <Dy/Helper/System/Idioms.h>
-#include <Dy/Core/Resource/Type/FDyBinderBase.h>
+#include <Dy/Core/Resource/Type/IBinderBase.h>
 
 namespace dy
 {
 
-void DDyIOReferenceInstance::AttachBinder(_MIN_ const __FDyBinderBase* iPtrBase) noexcept
+void DDyIOReferenceInstance::AttachBinder(_MIN_ const __IBinderBase* iPtrBase) noexcept
 {
   this->mPtrBoundBinderList.emplace_back(iPtrBase);
 }
 
-void DDyIOReferenceInstance::DetachBinder(const __FDyBinderBase* iPtrBase) noexcept
+void DDyIOReferenceInstance::DetachBinder(const __IBinderBase* iPtrBase) noexcept
 {
   MDY_ASSERT_MSG(this->mPtrBoundBinderList.empty() == false, "Reference count must be positive value when detach any binder.");
 
   const auto itPtr = std::find(MDY_BIND_BEGIN_END(this->mPtrBoundBinderList), iPtrBase);
   MDY_ASSERT_MSG(itPtr != this->mPtrBoundBinderList.end(), "Given binder pointer address must be exist in given RI list.");
 
-  DyFastErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
+  FaseErase(this->mPtrBoundBinderList, std::distance(this->mPtrBoundBinderList.begin(), itPtr));
 }
 
 void DDyIOReferenceInstance::SetValid(_MIN_ void*& iPtrInstance) noexcept
@@ -50,7 +50,7 @@ void DDyIOReferenceInstance::SetNotValid() noexcept
 bool DDyIOReferenceInstance::IsNeedToBeGced() const noexcept
 {
   if (this->mIsResourceValid == true
-  &&  this->mScope == EDyScope::Temporal 
+  &&  this->mScope == EResourceScope::Temporal 
   &&  this->mPtrBoundBinderList.empty() == true) { return true; }
   else { return false; }
 }

@@ -13,10 +13,12 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Helper/Library/HelperContainer.h>
+
 namespace dy
 {
 
-void MDySound::Impl::Update(TF32 iDt)
+void MSound::Impl::Update(TF32 iDt)
 {
   // When using FMOD Studio, 
   // call Studio::System::update, which internally will also update the Low Level system. 
@@ -25,7 +27,7 @@ void MDySound::Impl::Update(TF32 iDt)
 
   // If any `new` `focused camera` is exist on system, and this camera is using 3D Listener, activate or deactivate.
   // @TODO CODE SMELL, NEED TO REFACTOR CODE.
-  auto& worldManager = MDyWorld::GetInstance();
+  auto& worldManager = MWorld::GetInstance();
   if (worldManager.GetFocusedCameraCount() > 0)
   {
     auto ptrCamera  = worldManager.GetFocusedCameraValidReference(0);
@@ -46,12 +48,12 @@ void MDySound::Impl::Update(TF32 iDt)
   for (auto& ptrsmtInstance : this->mInstantSound2DList)
   {
     // If instance is not valid, we have to check sound is valid so able to initialize.
-    if (const auto status = ptrsmtInstance->GetStatus(); status == EDySoundStatus::NotValid) 
+    if (const auto status = ptrsmtInstance->GetStatus(); status == ESoundState::NotValid) 
     { 
       ptrsmtInstance->TryInitialize(); 
     }
     // Otherwise, we have to check instance is stopped so have to release.
-    else if (status == EDySoundStatus::Stop) { ptrsmtInstance = nullptr; }
+    else if (status == ESoundState::Stop) { ptrsmtInstance = nullptr; }
   }
   // Remove empty 2d instant sound instance item.
   this->mInstantSound2DList.remove_if([](const auto& ptrsmtInstance) { return ptrsmtInstance == nullptr; });
@@ -61,12 +63,12 @@ void MDySound::Impl::Update(TF32 iDt)
   for (auto& ptrsmtInstance : this->mInstantSound3DList)
   {
     // If instance is not valid, we have to check sound is valid so able to initialize.
-    if (const auto status = ptrsmtInstance->GetStatus(); status == EDySoundStatus::NotValid) 
+    if (const auto status = ptrsmtInstance->GetStatus(); status == ESoundState::NotValid) 
     { 
       ptrsmtInstance->TryInitialize(); 
     }
     // Otherwise, we have to check instance is stopped so have to release.
-    else if (status == EDySoundStatus::Stop) { ptrsmtInstance = nullptr; }
+    else if (status == ESoundState::Stop) { ptrsmtInstance = nullptr; }
   }
   // Remove empty 3d instant sound instance item.
   this->mInstantSound3DList.remove_if([](const auto& ptrsmtInstance) { return ptrsmtInstance == nullptr; });
@@ -80,19 +82,19 @@ void MDySound::Impl::Update(TF32 iDt)
 
     ptrsmtInstance->Update(iDt);
     // If instance must be removed, remove.
-    if (ptrsmtInstance->GetStatus() == EDySoundStatus::Component_Vanished) { ptrsmtInstance = nullptr; }
+    if (ptrsmtInstance->GetStatus() == ESoundState::Component_Vanished) { ptrsmtInstance = nullptr; }
   }
-  DyEraseRemove(this->mGeneralSoundInstanceList, nullptr);
+  EraseRemove(this->mGeneralSoundInstanceList, nullptr);
 
   // Update system to make sound.
   this->mSoundSystem->update(); 
 }
 
-inline std::unique_ptr<FDyInstantSound2D> MDySound::Impl::CreateSound2D(
+inline std::unique_ptr<FInstantSound2D> MSound::Impl::CreateSound2D(
   const std::string& iSoundSpecifier,
   const std::string& iSoundChannel, 
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier,
+  const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iDelay)
 {
   // Check error.
@@ -102,8 +104,8 @@ inline std::unique_ptr<FDyInstantSound2D> MDySound::Impl::CreateSound2D(
     return nullptr; 
   }
 
-  // Create `FDyInstantSound2D`.
-  return std::make_unique<FDyInstantSound2D>(
+  // Create `FInstantSound2D`.
+  return std::make_unique<FInstantSound2D>(
     iSoundSpecifier, 
     iSoundChannel, 
     iVolumeMultiplier, 
@@ -112,11 +114,11 @@ inline std::unique_ptr<FDyInstantSound2D> MDySound::Impl::CreateSound2D(
     false);
 }
 
-inline void MDySound::Impl::PlaySound2D(
+inline void MSound::Impl::PlaySound2D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier, 
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier, 
+  const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iDelay)
 {
   // Check error.
@@ -126,9 +128,9 @@ inline void MDySound::Impl::PlaySound2D(
     return; 
   }
 
-  // Create `FDyInstantSound2D`.
+  // Create `FInstantSound2D`.
   this->mInstantSound2DList.emplace_front(
-    std::make_unique<FDyInstantSound2D>(
+    std::make_unique<FInstantSound2D>(
       iSoundSpecifier, 
       iSoundChannel, 
       iVolumeMultiplier, 
@@ -138,11 +140,11 @@ inline void MDySound::Impl::PlaySound2D(
   );
 }
 
-inline std::optional<TDyBinderSound2D> MDySound::Impl::PlaySound2DLooped(
+inline std::optional<FSound2DBinder> MSound::Impl::PlaySound2DLooped(
   const std::string& iSoundSpecifier,
   const std::string& iSoundChannel, 
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier)
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier,
+  const DClamp<TF32, 0, 5>& iPitchMultiplier)
 {
   // Check error.
   if (this->IsSoundClipExist(iSoundSpecifier) == false)
@@ -151,19 +153,19 @@ inline std::optional<TDyBinderSound2D> MDySound::Impl::PlaySound2DLooped(
     return std::nullopt;
   }
 
-  // Create `FDyInstantSound2D`.
+  // Create `FInstantSound2D`.
   auto& refInstance = this->mInstantSound2DList.emplace_front(
-    std::make_unique<FDyInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, 0.0f, true)
+    std::make_unique<FInstantSound2D>(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, 0.0f, true)
   );
-  return TDyBinderSound2D{ *refInstance };
+  return FSound2DBinder{ *refInstance };
 }
 
-inline void MDySound::Impl::PlaySound3D(
+inline void MSound::Impl::PlaySound3D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
-  const DDyVector3& iWorldPosition, 
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier,
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+  const DVector3& iWorldPosition, 
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier,
+  const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iDelay, 
   TF32 iMinDistance, 
   TF32 iMaxDistance)
@@ -175,9 +177,9 @@ inline void MDySound::Impl::PlaySound3D(
     return;
   }
 
-  // Create `FDyInstantSound3D`.
+  // Create `FInstantSound3D`.
   this->mInstantSound3DList.emplace_front(
-    std::make_unique<FDyInstantSound3D>(
+    std::make_unique<FInstantSound3D>(
       iSoundSpecifier,
       iSoundChannel,
       iWorldPosition, iVolumeMultiplier, iPitchMultiplier, iDelay,
@@ -186,12 +188,12 @@ inline void MDySound::Impl::PlaySound3D(
   );
 }
 
-inline std::optional<TDyBinderSound3D> MDySound::Impl::PlaySound3DLooped(
+inline std::optional<FSound3DBinder> MSound::Impl::PlaySound3DLooped(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel, 
-  const DDyVector3& iWorldPosition, 
-  const DDyClamp<TF32, 0, 5>& iVolumeMultiplier, 
-  const DDyClamp<TF32, 0, 5>& iPitchMultiplier, 
+  const DVector3& iWorldPosition, 
+  const DClamp<TF32, 0, 5>& iVolumeMultiplier, 
+  const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iMinDistance, 
   TF32 iMaxDistance)
 {
@@ -202,22 +204,22 @@ inline std::optional<TDyBinderSound3D> MDySound::Impl::PlaySound3DLooped(
     return std::nullopt; 
   } 
 
-  // Create `FDyInstantSound3D`.
+  // Create `FInstantSound3D`.
   auto& refInstance = this->mInstantSound3DList.emplace_front(
-      std::make_unique<FDyInstantSound3D>(
+      std::make_unique<FInstantSound3D>(
           iSoundSpecifier, 
           iSoundChannel, 
           iWorldPosition, iVolumeMultiplier, iPitchMultiplier, 0.0f, 
           iMinDistance, iMaxDistance,
           true)
   );
-  return TDyBinderSound3D{*refInstance};
+  return FSound3DBinder{*refInstance};
 }
 
-inline FDySoundChannel* MDySound::Impl::GetPtrChannel(const std::string& iSpecifier)
+inline FSoundChannel* MSound::Impl::GetPtrChannel(const std::string& iSpecifier)
 {
   // Check validity.
-  if (DyIsMapContains(this->mChannelContainer, iSpecifier) == false)
+  if (Contains(this->mChannelContainer, iSpecifier) == false)
   {
     DyPushLogError("Failed to find sound channel, {}.", iSpecifier);
     return nullptr;
@@ -227,7 +229,7 @@ inline FDySoundChannel* MDySound::Impl::GetPtrChannel(const std::string& iSpecif
   return &this->mChannelContainer.find(iSpecifier)->second;
 }
 
-inline FDySoundGroup& MDySound::Impl::MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier)
+inline FSoundGroup& MSound::Impl::MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier)
 {
   auto it = this->mGroupContainer.find(iSpecifier);
   MDY_ASSERT_MSG_FORCE(
@@ -237,7 +239,7 @@ inline FDySoundGroup& MDySound::Impl::MDY_PRIVATE(GetGroupChannel)(const std::st
   return it->second;
 }
 
-inline FMOD::System& MDySound::Impl::MDY_PRIVATE(GetSystem)()
+inline FMOD::System& MSound::Impl::MDY_PRIVATE(GetSystem)()
 {
   MDY_ASSERT_MSG(
     this->mIsSoundSystemAvailable == true, 
@@ -246,9 +248,9 @@ inline FMOD::System& MDySound::Impl::MDY_PRIVATE(GetSystem)()
   return *this->mSoundSystem;
 }
 
-inline FDySoundInstance* MDySound::Impl::__CreateSoundInstance(
+inline FSoundInstance* MSound::Impl::__CreateSoundInstance(
   const PDySoundSourceComponentMetaInfo& iMetaInfo,
-  FDyActor& iRefActor)
+  FActor& iRefActor)
 {
   PDySoundSourceComponentMetaInfo metaInfo = iMetaInfo;
 
@@ -256,33 +258,33 @@ inline FDySoundInstance* MDySound::Impl::__CreateSoundInstance(
   if (metaInfo.mDetails.mSoundSpecifier.empty() == false)
   {
     // If not found given sound specifier, just leave it blank.
-    if (const auto flag = MDyMetaInfo::GetInstance().IsSoundMetaInfoExist(metaInfo.mDetails.mSoundSpecifier);
+    if (const auto flag = MIOMeta::GetInstance().IsSoundMetaInfoExist(metaInfo.mDetails.mSoundSpecifier);
         flag == false)
     { metaInfo.mDetails.mSoundSpecifier.clear(); }
   }
   if (metaInfo.mDetails.mChannelSpecifier.empty() == false)
   {
     // If not found given channel, just leave it master channel.
-    if (DyIsMapContains(this->mChannelContainer, metaInfo.mDetails.mChannelSpecifier) == false)
+    if (Contains(this->mChannelContainer, metaInfo.mDetails.mChannelSpecifier) == false)
     {
       metaInfo.mDetails.mChannelSpecifier.clear();
     }
   }
 
   // Insert and get.
-  auto ptrsmtInstance = std::make_unique<FDySoundInstance>(metaInfo, iRefActor);
+  auto ptrsmtInstance = std::make_unique<FSoundInstance>(metaInfo, iRefActor);
   auto& ref = this->mGeneralSoundInstanceList.emplace_back(std::move(ptrsmtInstance));
   return ref.get();
 }
 
-inline void MDySound::Impl::Set3DListenerSetting(bool iActivated)
+inline void MSound::Impl::Set3DListenerSetting(bool iActivated)
 {
   if (this->mIsUsing3DListener == iActivated) { return; }
 
   this->mIsUsing3DListener = iActivated;
   if (this->mIsUsing3DListener == true)
   {
-    const auto& soundInstance = MDySetting::GetInstance().GetSoundSetting();
+    const auto& soundInstance = MSetting::GetInstance().GetSoundSetting();
     const auto& setting3D = soundInstance.m3DSetting;
     this->mSoundSystem->set3DSettings(
       setting3D.mDopplerOffset, 
@@ -291,7 +293,7 @@ inline void MDySound::Impl::Set3DListenerSetting(bool iActivated)
   }
   else
   {
-    const auto& soundInstance = MDySetting::GetInstance().GetSoundSetting();
+    const auto& soundInstance = MSetting::GetInstance().GetSoundSetting();
     const auto& setting3D = soundInstance.m3DSetting;
     this->mSoundSystem->set3DSettings(
       setting3D.mDopplerOffset, 
@@ -300,7 +302,7 @@ inline void MDySound::Impl::Set3DListenerSetting(bool iActivated)
   }
 }
 
-inline void MDySound::Impl::Set3DListenerActorSetting(TU32 iId, CDyCamera& iCamera)
+inline void MSound::Impl::Set3DListenerActorSetting(TU32 iId, CCamera& iCamera)
 {
   const auto& worldPos = iCamera.GetPosition();
   const FMOD_VECTOR applyPos      = {worldPos.X, worldPos.Y, worldPos.Z};
@@ -317,7 +319,7 @@ inline void MDySound::Impl::Set3DListenerActorSetting(TU32 iId, CDyCamera& iCame
   MDY_ASSERT_MSG(flag == FMOD_OK, "Unexpected error occurred.");
 }
 
-inline EDySuccess MDySound::Impl::InitializeSoundSystem()
+inline EDySuccess MSound::Impl::InitializeSoundSystem()
 {
   // Check sound system is available.
   if (this->mIsSoundSystemAvailable == false)
@@ -377,7 +379,7 @@ inline EDySuccess MDySound::Impl::InitializeSoundSystem()
     return DY_FAILURE;
   }
   
-  const auto& settingManager = MDySetting::GetInstance();
+  const auto& settingManager = MSetting::GetInstance();
   const auto& soundInstance  = settingManager.GetSoundSetting();
 
   // Set 3D properties to system.
@@ -389,7 +391,7 @@ inline EDySuccess MDySound::Impl::InitializeSoundSystem()
   for (const auto& [specifier, detail] : soundInstance.mGroup)
   {
     // 
-    auto [it, isSucceeded] = this->mGroupContainer.try_emplace(specifier, FDySoundGroup{});
+    auto [it, isSucceeded] = this->mGroupContainer.try_emplace(specifier, FSoundGroup{});
     MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error.");
     // 
     auto& [_, instance] = *it;
@@ -400,7 +402,7 @@ inline EDySuccess MDySound::Impl::InitializeSoundSystem()
   for (const auto& [specifier, detail] : soundInstance.mChannel)
   {
     // 
-    auto [it, isSucceeded] = this->mChannelContainer.try_emplace(specifier, FDySoundChannel{});
+    auto [it, isSucceeded] = this->mChannelContainer.try_emplace(specifier, FSoundChannel{});
     MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error.");
     // 
     auto& [_, instance] = *it;
@@ -411,7 +413,7 @@ inline EDySuccess MDySound::Impl::InitializeSoundSystem()
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDySound::Impl::ReleaseSoundSystem()
+inline EDySuccess MSound::Impl::ReleaseSoundSystem()
 {
   // Check
   if (this->mIsSoundSystemAvailable == false)

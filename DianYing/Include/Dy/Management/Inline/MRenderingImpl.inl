@@ -14,18 +14,19 @@
 ///
 
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
+#include <Dy/Component/CTransform.h>
 
 namespace dy
 {
 
-inline EDySuccess MDyRendering::Impl::Initialize()
+inline EDySuccess MRendering::Impl::Initialize()
 {
   // Initialize framebuffer management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Initialize());
-  MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Initialize());
+  MDY_CALL_ASSERT_SUCCESS(MUniformBufferObject::Initialize());
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Initialize());
 
-  const auto renderingApiType = MDySetting::GetInstance().GetRenderingType();
+  const auto renderingApiType = MSetting::GetInstance().GetRenderingType();
   switch (renderingApiType)
   {
   case EDyRenderingApi::OpenGL: 
@@ -33,7 +34,7 @@ inline EDySuccess MDyRendering::Impl::Initialize()
     glEnable(GL_PRIMITIVE_RESTART);
     glPrimitiveRestartIndex(kIndiceSeparator);
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-    FDyGLWrapper::SetupInitialGlobalStatus();
+    XGLWrapper::SetupInitialGlobalStatus();
   } break;
   case EDyRenderingApi::Vulkan: 
   case EDyRenderingApi::DirectX11: 
@@ -60,7 +61,7 @@ inline EDySuccess MDyRendering::Impl::Initialize()
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
 
-    ImGui_ImplGlfw_InitForOpenGL(MDyWindow::GetInstance().GetGLMainWindow(), true);
+    ImGui_ImplGlfw_InitForOpenGL(MWindow::GetInstance().GetGLMainWindow(), true);
     ImGui_ImplOpenGL3_Init("#version 430");
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
@@ -70,7 +71,7 @@ inline EDySuccess MDyRendering::Impl::Initialize()
   {
     // Get imgui IO module.
     ImGuiIO& io = ImGui::GetIO();
-    const auto& windowManager = MDyWindow::GetInstance();
+    const auto& windowManager = MWindow::GetInstance();
 
     {
       std::string japaneseFontName = "";
@@ -123,15 +124,15 @@ inline EDySuccess MDyRendering::Impl::Initialize()
   }
 
   //! Set common properties.
-  auto& refSetting  = MDySetting::GetInstance();
+  auto& refSetting  = MSetting::GetInstance();
   const auto width  = refSetting.GetWindowSizeWidth();
   const auto height = refSetting.GetWindowSizeHeight();
-  this->mUiGeneralProjectionMatrix = DDyMatrix4x4::OrthoProjection(0.f, TF32(width), 0.f, TF32(height), -1.f, 100.0f);
+  this->mUiGeneralProjectionMatrix = DMatrix4x4::OrthoProjection(0.f, TF32(width), 0.f, TF32(height), -1.f, 100.0f);
 
   return DY_SUCCESS;
 }
 
-inline EDySuccess MDyRendering::Impl::CreateRenderPipeline(const std::string& iPipelineSpecifier)
+inline EDySuccess MRendering::Impl::CreateRenderPipeline(const std::string& iPipelineSpecifier)
 {
   if (ContainsIf(this->mEntryRenderPipelines, 
     [iPipelineSpecifier](const auto& pipeline)
@@ -143,7 +144,7 @@ inline EDySuccess MDyRendering::Impl::CreateRenderPipeline(const std::string& iP
     return DY_FAILURE;
   }
 
-  const auto& managerMeta = MDyMetaInfo::GetInstance();
+  const auto& managerMeta = MIOMeta::GetInstance();
   // At first, check render pipeline is exist.
   if (managerMeta.IsRenderPipelineExist(iPipelineSpecifier) == false)
   {
@@ -168,7 +169,7 @@ inline EDySuccess MDyRendering::Impl::CreateRenderPipeline(const std::string& iP
   (*optPipelineList).emplace(iPipelineSpecifier);
   for (auto& renderPipelineName : (*optPipelineList))
   {
-    if (DyIsMapContains(this->mRenderPipelines, renderPipelineName) == false)
+    if (Contains(this->mRenderPipelines, renderPipelineName) == false)
     {
       const auto& metaRenderPipeline = managerMeta.GetRenderPipeline(renderPipelineName);
       auto[_, isSucceeded] = this->mRenderPipelines.try_emplace(
@@ -185,7 +186,7 @@ inline EDySuccess MDyRendering::Impl::CreateRenderPipeline(const std::string& iP
 
   for (auto& renderItemName : (*optItemList))
   {
-    if (DyIsMapContains(this->mRenderItems, renderItemName) == false)
+    if (Contains(this->mRenderItems, renderItemName) == false)
     {
       const auto& metaRenderItem = managerMeta.GetRenderItem(renderItemName);
       auto[_, isSucceeded] = this->mRenderItems.try_emplace(
@@ -201,7 +202,7 @@ inline EDySuccess MDyRendering::Impl::CreateRenderPipeline(const std::string& iP
   return EDySuccess();
 }
 
-inline void MDyRendering::Impl::CreateHandleRenderPipeline(
+inline void MRendering::Impl::CreateHandleRenderPipeline(
   const PDyRenderPipelineInstanceMetaInfo& iEntryRenderPipeline)
 {
   this->mEntryRenderPipelines.emplace_back(iEntryRenderPipeline);
@@ -210,13 +211,13 @@ inline void MDyRendering::Impl::CreateHandleRenderPipeline(
     iEntryRenderPipeline.mUuid.ToString());
 }
 
-inline void MDyRendering::Impl::Release()
+inline void MRendering::Impl::Release()
 {
 }
 
-inline MDyRendering::Impl::~Impl()
+inline MRendering::Impl::~Impl()
 {
-  switch (MDySetting::GetInstance().GetRenderingType())
+  switch (MSetting::GetInstance().GetRenderingType())
   {
   case EDyRenderingApi::Vulkan: 
   case EDyRenderingApi::DirectX11: 
@@ -249,10 +250,10 @@ inline MDyRendering::Impl::~Impl()
   // Initialize internal management singleton instance.
   MDY_CALL_ASSERT_SUCCESS(FDyModelHandlerManager::Release());
   MDY_CALL_ASSERT_SUCCESS(MDyFramebuffer::Release());
-  MDY_CALL_ASSERT_SUCCESS(MDyUniformBufferObject::Release());
+  MDY_CALL_ASSERT_SUCCESS(MUniformBufferObject::Release());
 }
 
-inline EDySuccess MDyRendering::Impl::RemoveRenderPipeline(const std::string& iPipelineSpecifier)
+inline EDySuccess MRendering::Impl::RemoveRenderPipeline(const std::string& iPipelineSpecifier)
 {
   // Check there is a render pipeline.
   if (ContainsIf(this->mEntryRenderPipelines, 
@@ -268,16 +269,16 @@ inline EDySuccess MDyRendering::Impl::RemoveRenderPipeline(const std::string& iP
   }
 
   // Remove.
-  DyEraseRemoveIf(this->mEntryRenderPipelines, 
+  EraseRemoveIf(this->mEntryRenderPipelines, 
     [iPipelineSpecifier](const auto& pipeline) { return pipeline.GetName() == iPipelineSpecifier; }
   );
   return DY_SUCCESS;
 }
 
-inline void MDyRendering::Impl::PreRender(TF32 dt)
+inline void MRendering::Impl::PreRender(TF32 dt)
 {
   // Get skybox pointer from present level.
-  auto& refWorld = MDyWorld::GetInstance();
+  auto& refWorld = MWorld::GetInstance();
   auto optSkybox = refWorld.GetPtrMainLevelSkybox();
   if (optSkybox.has_value() == true)
   { // Bind
@@ -285,8 +286,9 @@ inline void MDyRendering::Impl::PreRender(TF32 dt)
   }
 
   // Do cpu frustum culling.
-  const auto* ptrCamera = MDyWorld::GetInstance().GetPtrMainLevelCamera();
-  DyEraseRemoveIf(this->mOpaqueMeshDrawingList, [ptrCamera](TMeshDrawCallItem& iPtrOpaqueRenderer)
+#ifdef false
+  const auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
+  EraseRemoveIf(this->mOpaqueMeshDrawingList, [ptrCamera](TMeshDrawCallItem& iPtrOpaqueRenderer)
   {
     auto& [actorInfo, _, __] = iPtrOpaqueRenderer;
     const auto& worldPos = actorInfo->mPtrCompModelFilter
@@ -295,6 +297,7 @@ inline void MDyRendering::Impl::PreRender(TF32 dt)
     // Check
     return ptrCamera->IsSphereInFrustum(worldPos, 10) == false;
   });
+#endif
 
   // Set ordering of UI (If Debug and Loading UI is exist, also include them but as highest order. 
   // (so rendered as final.)
@@ -308,7 +311,7 @@ inline void MDyRendering::Impl::PreRender(TF32 dt)
   this->mUiObjectDrawingList.insert(this->mUiObjectDrawingList.end(), MDY_BIND_BEGIN_END(candidateUIList));
 }
 
-inline void MDyRendering::Impl::SetupDrawModelTaskQueue()
+inline void MRendering::Impl::SetupDrawModelTaskQueue()
 {
   auto& handlerManager = FDyModelHandlerManager::GetInstance();
 
@@ -353,18 +356,18 @@ inline void MDyRendering::Impl::SetupDrawModelTaskQueue()
   }
 }
 
-inline void MDyRendering::Impl::EnqueueDrawMesh(
+inline void MRendering::Impl::EnqueueDrawMesh(
   DDyModelHandler::DActorInfo& iRefModelRenderer,
   const FDyMeshResource& iRefValidMesh, 
   const FDyMaterialResource& iRefValidMat)
 {
   switch (iRefValidMat.GetBlendMode())
   {
-  case EDyMaterialBlendMode::Opaque: 
+  case EMaterialBlendMode::Opaque: 
   {
     this->mOpaqueMeshDrawingList.emplace_back(&iRefModelRenderer, &iRefValidMesh, &iRefValidMat);
   } break;
-  case EDyMaterialBlendMode::TranslucentOIT: 
+  case EMaterialBlendMode::TranslucentOIT: 
   {
     this->mTranslucentMeshDrawingList.emplace_back(&iRefModelRenderer, &iRefValidMesh, &iRefValidMat);
   } break;
@@ -372,14 +375,14 @@ inline void MDyRendering::Impl::EnqueueDrawMesh(
   }
 }
 
-inline void MDyRendering::Impl::EnqueueDebugDrawCollider(
-  CDyPhysicsCollider& iRefCollider, 
-  const DDyMatrix4x4& iTransformMatrix)
+inline void MRendering::Impl::EnqueueDebugDrawCollider(
+  CBasePhysicsCollider& iRefCollider, 
+  const DMatrix4x4& iTransformMatrix)
 {
   this->mDebugColliderDrawingList.emplace_back(std::make_pair(&iRefCollider, iTransformMatrix));
 }
 
-inline void MDyRendering::Impl::RenderPipelines()
+inline void MRendering::Impl::RenderPipelines()
 {
   //this->pClearRenderingFramebufferInstances();
   for (auto& renderPipeline : this->mEntryRenderPipelines)
@@ -396,17 +399,17 @@ inline void MDyRendering::Impl::RenderPipelines()
   this->mUiObjectDrawingList.clear();
 }
 
-inline CDyLightDirectional* MDyRendering::Impl::GetPtrMainDirectionalLight() const noexcept
+inline CLightDirectional* MRendering::Impl::GetPtrMainDirectionalLight() const noexcept
 {
   return this->mMainDirectionalLight;
 }
 
-inline void MDyRendering::Impl::MDY_PRIVATE(BindMainDirectionalLight)(CDyLightDirectional& iRefLight)
+inline void MRendering::Impl::MDY_PRIVATE(BindMainDirectionalLight)(CLightDirectional& iRefLight)
 {
   this->mMainDirectionalLight = &iRefLight;
 }
 
-inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalLight)(CDyLightDirectional& iRefLight)
+inline EDySuccess MRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalLight)(CLightDirectional& iRefLight)
 {
   if (this->mMainDirectionalLight == &iRefLight) 
   {
@@ -416,17 +419,17 @@ inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalLight)(CD
   else { return DY_FAILURE; }
 }
 
-inline CDyLightDirectional* MDyRendering::Impl::GetPtrMainDirectionalShadow() const noexcept
+inline CLightDirectional* MRendering::Impl::GetPtrMainDirectionalShadow() const noexcept
 {
   return this->mMainDirectionalShadow;
 }
 
-inline void MDyRendering::Impl::MDY_PRIVATE(BindMainDirectionalShadow)(CDyLightDirectional& iRefLight)
+inline void MRendering::Impl::MDY_PRIVATE(BindMainDirectionalShadow)(CLightDirectional& iRefLight)
 {
   this->mMainDirectionalShadow = &iRefLight;
 }
 
-inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalShadow)(CDyLightDirectional& iRefLight)
+inline EDySuccess MRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalShadow)(CLightDirectional& iRefLight)
 {
   if (this->mMainDirectionalShadow == &iRefLight) 
   {
@@ -436,14 +439,14 @@ inline EDySuccess MDyRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalShadow)(C
   else { return DY_FAILURE; }
 }
 
-inline const DDyMatrix4x4& MDyRendering::Impl::GetGeneralUiProjectionMatrix() const noexcept
+inline const DMatrix4x4& MRendering::Impl::GetGeneralUiProjectionMatrix() const noexcept
 {
   return this->mUiGeneralProjectionMatrix;
 }
 
-inline void MDyRendering::Impl::SwapBuffers()
+inline void MRendering::Impl::SwapBuffers()
 {
-  auto& managerWindow = MDyWindow::GetInstance();
+  auto& managerWindow = MWindow::GetInstance();
   
   if (managerWindow.IsWindowShouldClose() == true) { return; }
   glfwSwapBuffers(managerWindow.GetGLMainWindow());

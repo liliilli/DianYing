@@ -13,13 +13,13 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyLoadingBootResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/ALoadingBootResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
 
-class FDyDefaultLoadingBootScript final : public ADyLoadingBootResource
+class FDyDefaultLoadingBootScript final : public ALoadingBootResource
 {
   MDY_REGISTER_BOOT_RESOURCE_LIST(FDyDefaultLoadingBootScript)
 };

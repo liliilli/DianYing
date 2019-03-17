@@ -16,10 +16,10 @@
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <regex>
 
-namespace dy
+namespace dy::regex
 {
 
-std::vector<std::string> DyRegexCreateObjectParentSpecifierList(_MIN_ std::string iParentNameFullList)
+std::vector<std::string> CreateObjectParentSpecifierList(std::string iParentNameFullList)
 {
   // If buffer is empty, just return empty list.
   if (iParentNameFullList.empty() == true) { return {}; }
@@ -39,7 +39,7 @@ std::vector<std::string> DyRegexCreateObjectParentSpecifierList(_MIN_ std::strin
   return parentSpecifierList;
 }
 
-bool DyRegexCheckIsCompressedDataFile(_MIN_ const std::string& iFileName)
+bool IsCompressedDataFile(const std::string& iFileName)
 {
   if (iFileName.empty() == true) { return false; }
 
@@ -48,7 +48,7 @@ bool DyRegexCheckIsCompressedDataFile(_MIN_ const std::string& iFileName)
 }
 
 std::optional<std::vector<std::string>> 
-DyRegexGetMatchedKeyword(_MIN_ std::string iBuffer, _MIN_ const std::string& iRegex)
+GetMatchedKeywordFrom(std::string iBuffer, const std::string& iRegex)
 {
   // If buffer is empty, just return empty list.
   if (iBuffer.empty() == true) { return {}; }
@@ -71,7 +71,7 @@ DyRegexGetMatchedKeyword(_MIN_ std::string iBuffer, _MIN_ const std::string& iRe
   return result;
 }
 
-bool RegexIsMatched(const std::string& iString, const std::string& iRegex)
+bool IsMatched(const std::string& iString, const std::string& iRegex)
 {
   if (iString.empty() == true) { return false; }
 
@@ -79,4 +79,4 @@ bool RegexIsMatched(const std::string& iString, const std::string& iRegex)
   return std::regex_match(iString, regexPattern);
 }
 
-} /// ::dy namespace
+} /// ::dy::regex namespace

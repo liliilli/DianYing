@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLAttachmentResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLAttachmentResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
@@ -22,7 +22,7 @@ namespace dy
 /// @class FDyBtAttachmentEmissiveResult
 /// @brief Emissive information attachment for used to store blurred iamge.
 /// This attachment only supports normalized float [0, 1] RGBA.
-class FDyBtAttachmentEmissiveResult final : public ADyGLAttachmentResource
+class FDyBtAttachmentEmissiveResult final : public AGLAttachmentResource
 {
   MDY_REGISTER_RESOURCE_ATTACHMENT(
     FDyBtAttachmentEmissiveResult, 

@@ -13,8 +13,8 @@
 ///
 
 #include <Dy/Core/Resource/Resource/Attachment/FDyAttachmentPingpongResource.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
-#include <Dy/Core/Rendering/Wrapper/PDyGLAttachmentDescriptor.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/PGLAttachmentDescriptor.h>
 
 namespace dy
 {
@@ -24,7 +24,7 @@ FDyAttachmentPingpongResource::FDyAttachmentPingpongResource(const FDyAttachment
   this->mInformationBinder.TryRequireResource(this->mSpecifierName);
   this->mIsPingpong = true;
 
-  PDyGLAttachmentDescriptor descriptor;
+  PGLAttachmentDescriptor descriptor;
   descriptor.mBorderColor           = iInformation.GetBorderColor();
   descriptor.mBufferSize            = iInformation.GetBufferSize();
   descriptor.mParameterList         = iInformation.GetParameterList();
@@ -42,7 +42,7 @@ FDyAttachmentPingpongResource::FDyAttachmentPingpongResource(const FDyAttachment
   for (auto& id : this->mAttachmentIds)
   {
     MDY_GRAPHIC_SET_CRITICALSECITON();
-    const auto optAttachmentId = FDyGLWrapper::CreateAttachment(descriptor);
+    const auto optAttachmentId = XGLWrapper::CreateAttachment(descriptor);
     MDY_ASSERT_MSG(optAttachmentId.has_value() == true, "Attachment creation must be succeeded.");
     id = optAttachmentId.value();
   }
@@ -54,7 +54,7 @@ FDyAttachmentPingpongResource::~FDyAttachmentPingpongResource()
   {
     MDY_GRAPHIC_SET_CRITICALSECITON();
     MDY_CALL_ASSERT_SUCCESS(
-      FDyGLWrapper::DeleteAttachment(id, this->IsRenderBuffer())
+      XGLWrapper::DeleteAttachment(id, this->IsRenderBuffer())
     )
   }
 }

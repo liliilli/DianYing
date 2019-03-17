@@ -56,15 +56,16 @@ PDyMetaWidgetHorizontalLayout::CreateMetaInformation(_MIN_ const nlohmann::json&
   using TPDyMWCBD = PDyMetaWidgetCommonBaseDesc;
 
   auto instance = std::make_unique<PDyMetaWidgetHorizontalLayout>();
-  instance->mUiObjectSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
+  instance->mUiObjectSpecifierName = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   instance->mComponentType          = EDyWidgetComponentType::HorizontalLayout;
-  instance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
-  DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
+  instance->mParentSpecifierName    = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  json::GetValueFromTo(itemAtlas, "IsActivated", instance->mIsActivated);
+  json::GetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   // Detail (PDyMetaWidgetHorizontalLayout)
   const auto& detailAtlas     = itemAtlas[(TPDyMWCBD::sHeader_Details)];
-  instance->mAlignment        = DyJsonGetValueFrom<EDyHorizontalAlignment>(detailAtlas, sHeader_Alignment);
-  instance->mArea             = DyJsonGetValueFrom<DDyArea2D>             (detailAtlas, sHeader_Area);
+  instance->mAlignment        = json::GetValueFrom<EDyHorizontalAlignment>(detailAtlas, sHeader_Alignment);
+  instance->mArea             = json::GetValueFrom<DArea2D>             (detailAtlas, sHeader_Area);
 
   return instance;
 }
@@ -90,15 +91,15 @@ PDyMetaWidgetVerticalLayout::CreateMetaInformation(_MIN_ const nlohmann::json& i
   using TPDyMWCBD = PDyMetaWidgetCommonBaseDesc;
 
   auto instance = std::make_unique<PDyMetaWidgetVerticalLayout>();
-  instance->mUiObjectSpecifierName = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
+  instance->mUiObjectSpecifierName = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Name);
   instance->mComponentType          = EDyWidgetComponentType::VerticalLayout;
-  instance->mParentSpecifierName    = DyJsonGetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
-  DyJsonGetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
+  instance->mParentSpecifierName    = json::GetValueFrom<std::string>(itemAtlas, TPDyMWCBD::sHeader_Parent);
+  json::GetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   // Detail (PDyMetaWidgetHorizontalLayout)
   const auto& detailAtlas     = itemAtlas[(TPDyMWCBD::sHeader_Details)];
-  instance->mAlignment        = DyJsonGetValueFrom<EDyVerticalAlignment>(detailAtlas, sHeader_Alignment);
-  instance->mArea             = DyJsonGetValueFrom<DDyArea2D>           (detailAtlas, sHeader_Area);
+  instance->mAlignment        = json::GetValueFrom<EDyVerticalAlignment>(detailAtlas, sHeader_Alignment);
+  instance->mArea             = json::GetValueFrom<DArea2D>           (detailAtlas, sHeader_Area);
 
   return instance;
 }

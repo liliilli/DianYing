@@ -44,7 +44,7 @@ struct DDyActionBindingInformation final
 
   ///
   /// @brief Construct axis information from `DAction`.
-  /// @param actionInfo Information from setting (MDySetting).
+  /// @param actionInfo Information from setting (MSetting).
   ///
   DDyActionBindingInformation(_MIN_ const DDySettingInput::DAction& actionInfo);
 };

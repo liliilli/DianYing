@@ -14,12 +14,12 @@
 
 #include <Dy/Builtin/RenderItem/Level/FBtPpEmissive.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Component/CDyModelRenderer.h>
+#include <Dy/Component/CModelRenderer.h>
 #include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Rendering/Type/EDyDrawType.h>
-#include <Dy/Core/Rendering/Wrapper/FDyGLWrapper.h>
+#include <Dy/Core/Rendering/Type/EDrawType.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Management/Rendering/RenderingManager.h>
+#include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 
@@ -92,11 +92,11 @@ void FBtRenderItemEmissive::OnRender()
       i == 0 
       ? this->mAtEmissive->GetSourceAttachmentId()
       : this->mAtBlur->GetSourceAttachmentId());
-    this->mShBlur->TryUpdateUniform<EDyUniformVariableType::Bool>("uIsHorizon", i % 2 == 0 ? true : false);
+    this->mShBlur->TryUpdateUniform<EUniformVariableType::Bool>("uIsHorizon", i % 2 == 0 ? true : false);
     this->mShBlur->UseShader();
     this->mShBlur->TryUpdateUniformList();
 
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    XGLWrapper::Draw(EDrawType::Triangle, true, 3);
     this->mFbBlur->Swap();
   }
 
@@ -107,13 +107,13 @@ void FBtRenderItemEmissive::OnRender()
     this->mShTone->UseShader();
     this->mShTone->TryUpdateUniformList();
 
-    FDyGLWrapper::Draw(EDyDrawType::Triangle, true, 3);
+    XGLWrapper::Draw(EDrawType::Triangle, true, 3);
 
     this->mShTone->DisuseShader();
     this->mFbTone->UnbindFrameBuffer();
   }
 
-  FDyGLWrapper::UnbindVertexArrayObject();
+  XGLWrapper::UnbindVertexArrayObject();
 }
 
 } /// ::dy namespace

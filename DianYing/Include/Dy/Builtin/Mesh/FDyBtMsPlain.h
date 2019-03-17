@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyMeshResource.h>
+#include <Dy/Builtin/Abstract/AMeshResource.h>
 
 namespace dy
 {
@@ -22,7 +22,7 @@ namespace dy
 /// @class FDyBtMsPlain
 /// @brief Create mesh plain information and resources.
 ///
-class FDyBtMsPlain final : public ADyMeshResource
+class FDyBtMsPlain final : public AMeshResource
 {
   MDY_REGISTER_RESOURCE_MESH(FDyBtMsPlain, "dyBtMsPlain");
 };

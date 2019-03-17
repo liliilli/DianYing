@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyTextureResource.h>
+#include <Dy/Builtin/Abstract/ATextureResource.h>
 
 namespace dy::builtin
 {
@@ -22,7 +22,7 @@ namespace dy::builtin
 /// @class FDyBuiltinTextureChecker
 /// @brief Checker texture
 ///
-class FDyBuiltinTextureChecker final : public ADyTextureResource
+class FDyBuiltinTextureChecker final : public ATextureResource
 {
   MDY_REGISTER_RESOURCE_TEXTURE(FDyBuiltinTextureChecker, "dyBtTextureChecker")
 };

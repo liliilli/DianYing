@@ -14,7 +14,7 @@
 ///
 
 #include <nlohmann/json_fwd.hpp>
-#include <Dy/Component/Interface/IDyScriptable.h>
+#include <Dy/Component/Interface/IScriptable.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 
 namespace dy
@@ -76,7 +76,7 @@ struct PDyScriptInstanceMetaInfo : public PDyCommonResourceMetaInfo
   std::string   mFilePath      = "";
   bool          mIsCompressed  = false;
 
-  using TScriptableFunction = std::unique_ptr<IDyScriptable>(*)();
+  using TScriptableFunction = std::unique_ptr<IScriptable>(*)();
   TScriptableFunction mBtInstantiationFunction = nullptr;
 };
 

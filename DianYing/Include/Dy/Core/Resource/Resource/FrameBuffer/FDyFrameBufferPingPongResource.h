@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Type/TDyInformationBinder.h>
+#include <Dy/Core/Resource/Type/TInformationBinder.h>
 #include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
 
 namespace dy

@@ -13,12 +13,12 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyMaterialResource.h>
+#include <Dy/Builtin/Abstract/AMaterialResource.h>
 
 namespace dy::builtin
 {
 
-class FDyBtStaticTransparentChecker final : public ADyMaterialResource
+class FDyBtStaticTransparentChecker final : public AMaterialResource
 {
   MDY_REGISTER_RESOURCE_MATERIAL(FDyBtStaticTransparentChecker, "dyBtMtSTransChecker")
 };

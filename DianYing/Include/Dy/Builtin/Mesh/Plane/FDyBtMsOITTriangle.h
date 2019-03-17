@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyMeshResource.h>
+#include <Dy/Builtin/Abstract/AMeshResource.h>
 
 namespace dy::builtin
 {
@@ -22,7 +22,7 @@ namespace dy::builtin
 /// @class FDyBtMsScrOITTriangle
 /// @brief Create mesh big-triangle information and resources for OIT integration.
 ///
-class FDyBtMsScrOITTriangle final : public ADyMeshResource
+class FDyBtMsScrOITTriangle final : public AMeshResource
 {
   MDY_REGISTER_RESOURCE_MESH(FDyBtMsScrOITTriangle, "dyBtMsScrOITTriangle");
 };

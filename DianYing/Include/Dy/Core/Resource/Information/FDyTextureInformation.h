@@ -40,10 +40,10 @@ public:
   MDY_NODISCARD EDyGlImagePixelReadType GetPixelReadType() const noexcept;
 
   /// @brief Get texture's type (1d, 2d, etc)
-  MDY_NODISCARD EDyTextureStyleType GetType() const noexcept;
+  MDY_NODISCARD ETextureStyleType GetType() const noexcept;
 
   /// @brief Get Border color of texture.
-  MDY_NODISCARD const DDyColorRGBA& GetBorderColor() const noexcept;
+  MDY_NODISCARD const DColorRGBA& GetBorderColor() const noexcept;
 
   /// @brief
   MDY_NODISCARD bool IsUsingCustomizedParamater() const noexcept;
@@ -55,12 +55,12 @@ public:
   MDY_NODISCARD const TTextureParameterList& GetParameterList() const noexcept;
 
 protected:
-  EDyTextureStyleType       mTextureType            = EDyTextureStyleType::NoneError;
+  ETextureStyleType       mTextureType            = ETextureStyleType::NoneError;
   std::string               mSpecifierName          = MDY_INITIALIZE_EMPTYSTR;
 
   EDyImageColorFormatStyle  mImageActualPixelFormat = EDyImageColorFormatStyle::NoneError;
   EDyGlImagePixelReadType   mInternalPixelReadType  = EDyGlImagePixelReadType::NoneError;
-  DDyColorRGBA              mBorderColor;
+  DColorRGBA              mBorderColor;
   TTextureParameterList     mParameterOptionList;
   bool                      mIsUsingDefaultMipmap   = false;
   bool                      mIsUsingCustomParams    = false;

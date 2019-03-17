@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Meta/Information/MetaInfoModelMesh.h>
-#include <Dy/Core/Resource/Type/ModelMesh/DDyMeshData.h>
+#include <Dy/Core/Resource/Type/ModelMesh/DMeshData.h>
 
 namespace dy
 {
@@ -36,11 +36,11 @@ public:
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept;
 
   /// @brief Get submesh information list.
-  MDY_NODISCARD const DDyMeshData& GetMeshInformationList() const noexcept;
+  MDY_NODISCARD const DMeshData& GetMeshInformationList() const noexcept;
 
 private:
   std::string mSpecifierName = MDY_INITIALIZE_EMPTYSTR;
-  DDyMeshData mProperty;
+  DMeshData mProperty;
 };
 
 

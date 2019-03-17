@@ -20,8 +20,8 @@
 //!
 
 namespace dy {
-struct DDyVector2;
-struct DDyVector3;
+struct DVector2;
+struct DVector3;
 } /// ::opgs16 namespace
 
 //!
@@ -80,24 +80,24 @@ enum class EDyRandomPolicy {
 [[nodiscard]] float RandomFloatRange(const float from, const float prior_to) noexcept;
 
 ///
-/// @brief Get DDyVector2 (x, y) instance have length 'length'.
+/// @brief Get DVector2 (x, y) instance have length 'length'.
 ///
-[[nodiscard]] DDyVector2 RandomVector2Length(float length) noexcept;
+[[nodiscard]] DVector2 RandomVector2Length(float length) noexcept;
 
 ///
-/// @brief Get DDyVector3 (x, y, z) instance have length 'length'.
+/// @brief Get DVector3 (x, y, z) instance have length 'length'.
 ///
-[[nodiscard]] DDyVector3 RandomVector3Length(float length) noexcept;
+[[nodiscard]] DVector3 RandomVector3Length(float length) noexcept;
 
 ///
-/// @brief Get DDyVector2 (x, y) which have length that in range from 'from' to 'priorTo'
+/// @brief Get DVector2 (x, y) which have length that in range from 'from' to 'priorTo'
 ///
-[[nodiscard]] DDyVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float priorTo);
+[[nodiscard]] DVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float priorTo);
 
 ///
-/// @brief Get DDyVector3 (x, y, z) which have length that in range from 'from' to 'priorTo'
+/// @brief Get DVector3 (x, y, z) which have length that in range from 'from' to 'priorTo'
 ///
-[[nodiscard]] DDyVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float priorTo);
+[[nodiscard]] DVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float priorTo);
 
 } /// ::opgs16::math namespace
 

@@ -17,15 +17,15 @@ namespace dy
 {
 
 template<class TComponent, typename... TArgs>
-TComponent* FDyActor::AddComponent(TArgs&&... args)
+TComponent* FActor::AddComponent(TArgs&&... args)
 {
   return nullptr;
 #ifdef false
   // Validation test
-  MDY_TEST_IS_BASE_OF(ADyBaseComponent, TComponent);
+  MDY_TEST_IS_BASE_OF(ABaseComponent, TComponent);
 
   // If component is script, process the other subroutine. 
-  if constexpr (std::is_same_v<CDyActorScript, TComponent> == true)
+  if constexpr (std::is_same_v<CActorScript, TComponent> == true)
   {
     // Add and initialize component itself.
     // If component which just added is CDyScript, Call Initiate script first.
@@ -40,19 +40,19 @@ TComponent* FDyActor::AddComponent(TArgs&&... args)
     MDY_CALL_ASSERT_SUCCESS(componentPtr->Initialize(std::forward<TArgs>(args)...));
 
     // If it is transform, move it to separated space. 
-    if constexpr (std::is_same_v<CDyTransform, TComponent> == true)
+    if constexpr (std::is_same_v<CTransform, TComponent> == true)
     { // If component is not CDyScript but related to ADyBaseTransform (Transform components)
       MDY_ASSERT_MSG_FORCE(
         this->mTransform != nullptr, 
-        "FDyActor::mTransform must be empty when insert transform component.");
+        "FActor::mTransform must be empty when insert transform component.");
       this->mTransform = std::move(componentPtr);
       return DyMakeNotNull(this->mTransform.get());
     }
-    else if constexpr (IsSameClass<TComponent, CDyPhysicsRigidbody> == true)
-    { // If component is CDyPhysicsRigidbody...
+    else if constexpr (IsSameClass<TComponent, CPhysicsRigidbody> == true)
+    { // If component is CPhysicsRigidbody...
       MDY_ASSERT_MSG_FORCE(
         this->mRigidbody != nullptr, 
-        "FDyActor::mRigidbody must be empty when insert rigidbody component.");
+        "FActor::mRigidbody must be empty when insert rigidbody component.");
       this->mRigidbody = std::move(componentPtr);
       return DyMakeNotNull(this->mRigidbody.get());
     }
@@ -68,10 +68,10 @@ TComponent* FDyActor::AddComponent(TArgs&&... args)
 }
 
 template<class TGeneralComponent>
-std::optional<TGeneralComponent*> FDyActor::GetGeneralComponent()
+std::optional<TGeneralComponent*> FActor::GetGeneralComponent()
 {
   static_assert(
-    IsInheritancedFrom<TGeneralComponent, ADyGeneralBaseComponent>,
+    IsInheritancedFrom<TGeneralComponent, AGeneralBaseComponent>,
     "Failed to compile GetGeneralComponent function.");
 
   // Component matching process is using recursion of each component
@@ -91,11 +91,11 @@ std::optional<TGeneralComponent*> FDyActor::GetGeneralComponent()
 }
 
 template <class TGeneralComponent>
-std::vector<NotNull<TGeneralComponent*>> FDyActor::GetGeneralComponentList()
+std::vector<NotNull<TGeneralComponent*>> FActor::GetGeneralComponentList()
 {
   static_assert(
-    IsInheritancedFrom<TGeneralComponent, ADyGeneralBaseComponent>,
-    "Failed to get component list, required component type is not inheritenced from ADyBaseComponent");
+    IsInheritancedFrom<TGeneralComponent, AGeneralBaseComponent>,
+    "Failed to get component list, required component type is not inheritenced from ABaseComponent");
 
   // Component matching process is using recursion of each component
   // from last derived component class to highest base component class.
@@ -115,14 +115,13 @@ std::vector<NotNull<TGeneralComponent*>> FDyActor::GetGeneralComponentList()
 }
 
 template <class TComponent, typename... TArgs>
-EDySuccess FDyActor::RemoveComponent(TArgs&&... args)
+EDySuccess FActor::RemoveComponent(TArgs&&... args)
 {
   static_assert(
-    IsInheritancedFrom<TComponent, ADyBaseComponent>,
-    "Failed to remove component, required component type is not inheritenced from ADyBaseComponent");
-  DyCheckComponentRemoveFunctionParams<TComponent, TArgs...>();
+    IsInheritancedFrom<TComponent, ABaseComponent>,
+    "Failed to remove component, required component type is not inheritenced from ABaseComponent");
 
-  if constexpr (std::is_base_of_v<ADyGeneralBaseComponent, TComponent>)
+  if constexpr (std::is_base_of_v<AGeneralBaseComponent, TComponent>)
   {
     auto& componentList = this->pGetComponentList();
     auto it = std::find_if(
@@ -135,7 +134,7 @@ EDySuccess FDyActor::RemoveComponent(TArgs&&... args)
     componentList.erase(it);
     return DY_SUCCESS;
   }
-  else if constexpr (std::is_same_v<CDyActorScript, TComponent>)
+  else if constexpr (std::is_same_v<CActorScript, TComponent>)
   {
     // @TODO IMPLEMENT SCRIPT DELETION USING DESCRIPTOR OR SCRIPT NAME.
     return this->RemoveScriptComponent(std::forward<TArgs>(args)...);

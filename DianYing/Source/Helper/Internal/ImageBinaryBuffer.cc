@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Helper/Internal/ImageBinaryBuffer.h>
+#include <Dy/Helper/Internal/DImageBinaryBuffer.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_FAILURE_STRINGS
@@ -26,7 +26,7 @@
 
 #include <stb_image.h>
 #include <nlohmann/json.hpp>
-#include <Dy/Management/LoggingManager.h>
+#include <Dy/Management/MLog.h>
 
 #if defined(_WIN32)
 #pragma warning(pop)
@@ -80,7 +80,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyImageColorFormatStyle&
   else { MDY_UNEXPECTED_BRANCH(); }
 }
 
-std::optional<GLenum> DyGLGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept
+std::optional<GLenum> GlGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept
 {
   switch (style)
   {
@@ -111,7 +111,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlImagePixelReadType& 
   else { MDY_UNEXPECTED_BRANCH(); }
 }
 
-GLenum DyGlGetImagePixelTypeFrom(_MIN_ EDyGlImagePixelReadType iType) noexcept
+GLenum GlGetImagePixelTypeFrom(_MIN_ EDyGlImagePixelReadType iType) noexcept
 {
   switch (iType)
   {
@@ -121,7 +121,7 @@ GLenum DyGlGetImagePixelTypeFrom(_MIN_ EDyGlImagePixelReadType iType) noexcept
   }
 }
 
-DDyImageBinaryDataBuffer::DDyImageBinaryDataBuffer(const std::string& imagePath)
+DImageBinaryBuffer::DImageBinaryBuffer(const std::string& imagePath)
 {
   stbi_set_flip_vertically_on_load(true);
 
@@ -143,7 +143,7 @@ DDyImageBinaryDataBuffer::DDyImageBinaryDataBuffer(const std::string& imagePath)
   }
 }
 
-DDyImageBinaryDataBuffer::~DDyImageBinaryDataBuffer()
+DImageBinaryBuffer::~DImageBinaryBuffer()
 {
   if (mIsBufferCreatedProperly)
   {

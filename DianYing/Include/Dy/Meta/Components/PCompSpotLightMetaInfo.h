@@ -18,17 +18,17 @@
 namespace dy
 {
 
-/// @struct PDyCompSpotLightMetaInfo
+/// @struct PCompSpotLightMetaInfo
 /// @brief Dependency information to DDyObjectInformation::mMetaComponentInfo 
 /// when mType is FDySpotLight.
-struct PDyCompSpotLightMetaInfo final : public IDyMetaInformation
+struct PCompSpotLightMetaInfo final : public IDyMetaInformation
 {
   struct DDetails final
   {
     /// Tinting color
-    DDyColorRGB mColor = DDyColorRGB::White;
+    DColorRGB mColor = DColorRGB::White;
     /// Direction
-    DDyVector3  mDirection;
+    DVector3  mDirection;
     /// Intensity of light must be set up to 0~. (Total energy of light)
     TF32 mIntensity = 1.0f;
     /// Range (radius) of light.
@@ -45,11 +45,11 @@ struct PDyCompSpotLightMetaInfo final : public IDyMetaInformation
   bool     mInitiallyActivated = false;
 };
 
-void to_json(nlohmann::json& oJson, const PDyCompSpotLightMetaInfo& iMeta);
-void from_json(const nlohmann::json& iJson, PDyCompSpotLightMetaInfo& oMeta);
+void to_json(nlohmann::json& oJson, const PCompSpotLightMetaInfo& iMeta);
+void from_json(const nlohmann::json& iJson, PCompSpotLightMetaInfo& oMeta);
 
-void to_json(nlohmann::json& oJson, const PDyCompSpotLightMetaInfo::DDetails& iMeta);
-void from_json(const nlohmann::json& iJson, PDyCompSpotLightMetaInfo::DDetails& oMeta);
+void to_json(nlohmann::json& oJson, const PCompSpotLightMetaInfo::DDetails& iMeta);
+void from_json(const nlohmann::json& iJson, PCompSpotLightMetaInfo::DDetails& oMeta);
 
 } /// ::dy namespace
 

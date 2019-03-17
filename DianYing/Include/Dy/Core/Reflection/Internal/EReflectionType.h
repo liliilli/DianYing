@@ -14,20 +14,18 @@
 ///
 
 #include <string>
-#include <Dy/Core/Resource/Internal/ShaderType.h>
-
-#define MDY_MAKENAME(__LHS__, __RHS__) MDY_TOKENPASTE2(__LHS__, __RHS__)
+#include <Dy/Core/Resource/Internal/XShaderTypes.h>
 
 namespace dy
 {
-struct DDyVector2;
-struct DDyVector3;
-struct DDyVector4;
-class DDyMatrix3x3;
-class DDyMatrix4x4;
-struct DDyVectorInt2;
-struct DDyVectorInt4;
-struct DDyColorRGB;
+struct DVector2;
+struct DVector3;
+struct DVector4;
+class DMatrix3x3;
+class DMatrix4x4;
+struct DVectorInt2;
+struct DVectorInt4;
+struct DColorRGB;
 } /// ::dy namespace
 
 namespace dy::reflect
@@ -52,7 +50,7 @@ enum class EReflectScopeType
 };
 
 /// @brief Convert given reflect type to uniform variable type.
-[[nodiscard]] EDyUniformVariableType ToUniformVariableType(EReflectScopeType iReflectType);
+[[nodiscard]] EUniformVariableType ToUniformVariableType(EReflectScopeType iReflectType);
 
 template <EReflectScopeType TValue> struct ToActualType;
 template <typename TType> struct ToVariableType;
@@ -65,14 +63,14 @@ REFLECTION_REGISTER_TYPE(Int,     int)
 REFLECTION_REGISTER_TYPE(Float,   float)
 REFLECTION_REGISTER_TYPE(Double,  double)
 REFLECTION_REGISTER_TYPE(String,  std::string)
-REFLECTION_REGISTER_TYPE(Vector2, DDyVector2)
-REFLECTION_REGISTER_TYPE(Vector3, DDyVector3)
-REFLECTION_REGISTER_TYPE(Vector4, DDyVector4)
-REFLECTION_REGISTER_TYPE(Matrix3, DDyMatrix3x3)
-REFLECTION_REGISTER_TYPE(Matrix4, DDyMatrix4x4)
-REFLECTION_REGISTER_TYPE(VectorInt2, DDyVectorInt2)
-REFLECTION_REGISTER_TYPE(VectorInt4, DDyVectorInt4)
-REFLECTION_REGISTER_TYPE(ColorRGB, DDyColorRGB)
+REFLECTION_REGISTER_TYPE(Vector2, DVector2)
+REFLECTION_REGISTER_TYPE(Vector3, DVector3)
+REFLECTION_REGISTER_TYPE(Vector4, DVector4)
+REFLECTION_REGISTER_TYPE(Matrix3, DMatrix3x3)
+REFLECTION_REGISTER_TYPE(Matrix4, DMatrix4x4)
+REFLECTION_REGISTER_TYPE(VectorInt2, DVectorInt2)
+REFLECTION_REGISTER_TYPE(VectorInt4, DVectorInt4)
+REFLECTION_REGISTER_TYPE(ColorRGB, DColorRGB)
 
 } /// ::dy::reflect namespace
 

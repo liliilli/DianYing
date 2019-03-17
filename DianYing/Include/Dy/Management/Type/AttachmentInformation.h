@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/ColorRGBA.h>
-#include <Dy/Helper/Type/VectorInt2.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
+#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 
 namespace dy
@@ -79,12 +79,12 @@ struct PBlendingEquation final
   EFunc mDstFunc   = EFunc::OneMinusSrcAlpha;
   /// @brief This variable will be used 
   /// when using EFunc::ConstColor, EFunc::OneMinusConstColor
-  DDyColorRGBA mConstantColor = DDyColorRGBA{};
+  DColorRGBA mConstantColor = DColorRGBA{};
 
   PBlendingEquation() = default;
   PBlendingEquation(
     EFunc iSrc, EMode iMode, EFunc iDst, 
-    const DDyColorRGBA& iConstantColor = DDyColorRGBA{});
+    const DColorRGBA& iConstantColor = DColorRGBA{});
 
   MDY_NODISCARD static GLenum ToGLenum(EMode iMode);
   MDY_NODISCARD static EMode  ToMode(GLenum iGlMode);
@@ -115,8 +115,8 @@ struct PDyGlAttachmentInformation final
 {
   std::string                               mAttachmentName = MDY_INITIALIZE_EMPTYSTR;
   std::vector<PDyGlTexParameterInformation> mParameterList  = {};
-  DDyVectorInt2                             mAttachmentSize = {};
-  DDyColorRGBA                              mBorderColor    = DDyColorRGBA::Black;
+  DVectorInt2                             mAttachmentSize = {};
+  DColorRGBA                              mBorderColor    = DColorRGBA::Black;
 
   ///
   /// @brief  Get attachment id. If attachment is not initialized yet, just return 0.

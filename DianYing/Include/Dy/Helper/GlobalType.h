@@ -25,6 +25,12 @@
 #undef min
 #endif
 
+enum EDySuccess : bool 
+{
+  DY_FAILURE = false,
+  DY_SUCCESS = true
+};
+
 //!
 //! If you want to use real type as double, remove comment "//" to activate macro option.
 //!

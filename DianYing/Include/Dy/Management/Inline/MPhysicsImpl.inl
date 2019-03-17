@@ -13,10 +13,12 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Component/CTransform.h>
+
 namespace dy
 {
 
-inline MDyPhysics::Impl::Impl()
+inline MPhysics::Impl::Impl()
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
@@ -28,7 +30,7 @@ inline MDyPhysics::Impl::Impl()
 
   // Get scale from setting manager, but we use defualt value temporary. 
   physx::PxTolerancesScale temporalScale{};
-  // MDySetting::GetInstance().GetGridScale();
+  // MSetting::GetInstance().GetGridScale();
 
   this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, temporalScale, false, this->gPvd);
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PhysX Physics Instance must be created successfully.");
@@ -54,133 +56,10 @@ inline MDyPhysics::Impl::Impl()
   //
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mDefaultMaterial), "PhysX Default material must be created.");
 
-#ifdef false
-  ///
-  /// @function CreateStack
-  /// @brief Test function for create stack actors which consist of shape and rigidbody (dynamic)
-  ///
-  static auto CreateStack = [&](const physx::PxTransform &t, physx::PxU32 size, physx::PxReal halfExtent)
-  {
-    using namespace physx;
-
-    PxShape *shape = gPhysicx->createShape(PxBoxGeometry(halfExtent, halfExtent, halfExtent), *mDefaultMaterial);
-
-    TI32 nmb = 0;
-    for (PxU32 i = 0; i < size; i++)
-    {
-      for (PxU32 j = 0; j < size - i; j++)
-      {
-        const PxTransform localTm(PxVec3(PxReal(j * 2) - PxReal(size - i), PxReal(i * 2 + 1), 0) * halfExtent);
-
-        PxRigidDynamic *body = gPhysicx->createRigidDynamic(t.transform(localTm));
-        body->attachShape(*shape);
-
-        // @TODO FOR DEBUG, REMOVE THIS AT PRODUCTION CODE
-        sDebugActorName.push_back(fmt::format("{}_{}", "Stack", nmb));
-        body->setName(sDebugActorName.rbegin()->c_str());
-
-        //DySetupFiltering(DyMakeNotNull(body), EDyTempCollisionLayer::Stack, EDyTempCollisionLayer::Stack);
-
-        PxRigidBodyExt::updateMassAndInertia(*body, 10.0f);
-        gScene->addActor(*body);
-
-        sRigidbodies.emplace_back(DyMakeNotNull(body));
-        nmb += 1;
-      }
-    }
-    shape->release();
-  };
-
-  ///
-  /// @function CreateDynamic
-  /// @brief Test function for creating spherical actor which consists of sphere shape and rigidbody
-  /// by using helper function from PhysX SDK.
-  ///
-  static auto CreateDynamic = [&](const physx::PxTransform &t, const physx::PxGeometry &geometry,
-    const physx::PxVec3 &velocity = physx::PxVec3(0)) -> physx::PxRigidDynamic*
-  {
-    using namespace physx;
-
-    PxRigidDynamic *dynamic = PxCreateDynamic(*gPhysicx, t, geometry, *mDefaultMaterial, 10.0f);
-    dynamic->setAngularDamping(0.5f);
-    dynamic->setLinearVelocity(velocity);
-    DySetupFiltering(DyMakeNotNull(dynamic), EDyTempCollisionLayer::Sphere, EDyTempCollisionLayer::Stack | EDyTempCollisionLayer::Floor);
-
-    // @TODO FOR DEBUG, REMOVE THIS AT PRODUCTION CODE
-    sDebugActorName.push_back(fmt::format("{}_0", "Sphere"));
-    dynamic->setName(sDebugActorName.rbegin()->c_str());
-
-    gScene->addActor(*dynamic);
-    sRigidbodies.emplace_back(DyMakeNotNull(dynamic));
-
-    return dynamic;
-  };
-  static physx::PxDefaultErrorCallback gDefaultErrorCallback;
-
-  this->gFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, this->defaultAllocatorCallback, gDefaultErrorCallback);
-  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gFoundation), "PxCreateFoundation Failed!");
-
-  this->gPhysicx = PxCreatePhysics(PX_PHYSICS_VERSION, *this->gFoundation, physx::PxTolerancesScale(), true, this->gPvd);
-  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gPhysicx), "PxCreatePhysics Failed!");
-
-  physx::PxSceneDesc sceneDescriptor{ this->gPhysicx->getTolerancesScale() };
-  sceneDescriptor.filterShader = DyFilterShader;
-  sceneDescriptor.simulationEventCallback = &this->mCallback;
-  //sceneDescriptor.flags                    |= physx::PxSceneFlag::eREQUIRE_RW_LOCK;
-  //sceneDesc.frictionType = PxFrictionType::eTWO_DIRECTIONAL;
-  //sceneDesc.frictionType = PxFrictionType::eONE_DIRECTIONAL;
-  //sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
-  //sceneDesc.flags |= PxSceneFlag::eENABLE_AVERAGE_POINT;
-  //sceneDesc.flags |= PxSceneFlag::eADAPTIVE_FORCE;
-  sceneDescriptor.flags |= physx::PxSceneFlag::eENABLE_PCM;
-  sceneDescriptor.flags |= physx::PxSceneFlag::eENABLE_STABILIZATION;
-  sceneDescriptor.flags |= physx::PxSceneFlag::eENABLE_ACTIVE_ACTORS;
-  sceneDescriptor.sceneQueryUpdateMode = physx::PxSceneQueryUpdateMode::eBUILD_ENABLED_COMMIT_DISABLED;
-  sceneDescriptor.gpuMaxNumPartitions = 8;
-  sceneDescriptor.gravity = physx::PxVec3{ 0, -9.81f, 0 };
-
-  if (sceneDescriptor.cpuDispatcher == nullptr)
-  {
-    this->gDispatcher = physx::PxDefaultCpuDispatcherCreate(2);
-    MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PxDefaultCpuDispatcherCreate Failed!");
-    sceneDescriptor.cpuDispatcher = this->gDispatcher;
-  }
-  if (sceneDescriptor.filterShader == nullptr)
-  {
-    sceneDescriptor.filterShader = physx::PxDefaultSimulationFilterShader;
-  }
-
-  this->gScene = this->gPhysicx->createScene(sceneDescriptor);
-  physx::PxSceneWriteLock scopedLock(*this->gScene);
-
-  physx::PxPvdSceneClient* pvdClient = this->gScene->getScenePvdClient();
-  if (pvdClient)
-  {
-    pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-    pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
-    pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, true);
-  }
-
-  //mDefaultMaterial = gPhysicx->createMaterial(0.5f, 0.5f, 0.6f);
-  //physx::PxRigidStatic *groundPlane = PxCreatePlane(*gPhysicx, physx::PxPlane(0, 1, 0, 0), *mDefaultMaterial);
-  //DySetupFiltering(DyMakeNotNull(groundPlane), EDyTempCollisionLayer::Floor, EDyTempCollisionLayer::Sphere);
-
-  // @TODO FOR DEBUG, REMOVE THIS AT PRODUCTION CODE
-  sDebugActorName.push_back(fmt::format("{}_0", "Floor"));
-  groundPlane->setName(sDebugActorName.rbegin()->c_str());
-
-  gScene->addActor(*groundPlane);
-
-  for (physx::PxU32 i = 0; i < 5; i++)
-  {
-    CreateStack(physx::PxTransform(physx::PxVec3(0, 0, stackZ -= 10.0f)), 10, 2.0f);
-  }
-  CreateDynamic(physx::PxTransform(physx::PxVec3(0, 40, 100)), physx::PxSphereGeometry(10), physx::PxVec3(0, -50, -100));
-#endif
   // Do nothing because when initialize level, all resource will be populated.
 }
 
-inline MDyPhysics::Impl::~Impl()
+inline MPhysics::Impl::~Impl()
 {
   this->mDefaultMaterial->release();
   this->mDefaultMaterial = nullptr;
@@ -211,7 +90,7 @@ inline MDyPhysics::Impl::~Impl()
   MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gFoundation), "PhysX foundation is not released before release Physics manager.");
 }
 
-inline void MDyPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
+inline void MPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
 {
   // Lock
   physx::PxSceneWriteLock scopedLock(*this->gScene);
@@ -234,14 +113,14 @@ inline void MDyPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
 
       // Set AABB (Axis-aligned bounding box) bound to each collider.
       const auto pxBound = physx::PxShapeExt::getWorldBounds(*shape, refRigidActor);
-      auto* ptrCollider = static_cast<CDyPhysicsCollider*>(shape->userData);
+      auto* ptrCollider = static_cast<CBasePhysicsCollider*>(shape->userData);
       MDY_ASSERT_MSG(ptrCollider != nullptr, "Unexpected error occurred.");
       ptrCollider->UpdateBound(pxBound);
     }
   }
 }
 
-inline void MDyPhysics::Impl::CallCallbackIssueOnce()
+inline void MPhysics::Impl::CallCallbackIssueOnce()
 {
   while (this->mCollisionCallbackIssueQueue.empty() == false)
   {
@@ -257,7 +136,7 @@ inline void MDyPhysics::Impl::CallCallbackIssueOnce()
   // List will be cleard automatically.
 }
 
-inline void MDyPhysics::Impl::Update(TF32 iDt)
+inline void MPhysics::Impl::Update(TF32 iDt)
 {
   if (iDt > 0)
   {
@@ -268,19 +147,21 @@ inline void MDyPhysics::Impl::Update(TF32 iDt)
   }
 }
 
-inline void MDyPhysics::Impl::InitScene()
+inline void MPhysics::Impl::InitLevel()
 {
+  // Set gravity of level.
+  const auto& physicsSetting = MSetting::GetInstance().GetPhysicsSetting();
   physx::PxSceneDesc tempSceneDesc{ this->gPhysicx->getTolerancesScale() };
-  tempSceneDesc.gravity = physx::PxVec3{ 0.0f, -9.81f, 0.0f };
+  tempSceneDesc.gravity = physx::PxVec3{ 0.0f, -physicsSetting.mCommonProperty.mGravity, 0.0f };
 
-  if (MDY_CHECK_ISNULL(tempSceneDesc.cpuDispatcher))
+  if (tempSceneDesc.cpuDispatcher == nullptr)
   {
     this->gDispatcher = physx::PxDefaultCpuDispatcherCreate(1);
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PhysX Cpu dispatcher must be created validly.");
     tempSceneDesc.cpuDispatcher = this->gDispatcher;
   }
 
-  if (MDY_CHECK_ISNULL(tempSceneDesc.filterShader))
+  if (tempSceneDesc.filterShader == nullptr)
   { tempSceneDesc.filterShader = this->MDY_PRIVATE(GetSampleFilterShader)(); } 
 
   // Set scene descriptor flags
@@ -308,7 +189,7 @@ inline void MDyPhysics::Impl::InitScene()
     this->gScene->setSimulationEventCallback(this);
 
     physx::PxPvdSceneClient* pvdClient = this->gScene->getScenePvdClient();
-    if (MDY_CHECK_ISNOTNULL(pvdClient))
+    if (pvdClient != nullptr)
     {
       pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
       pvdClient->setScenePvdFlag(physx::PxPvdSceneFlag::eTRANSMIT_CONTACTS, true);
@@ -317,7 +198,7 @@ inline void MDyPhysics::Impl::InitScene()
   }
 }
 
-inline void MDyPhysics::Impl::ReleaseScene()
+inline void MPhysics::Impl::ReleaseScene()
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gScene), "PhysX Scene must be valid.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->gDispatcher), "PhysX Dispatcher must be valid.");
@@ -334,10 +215,10 @@ inline void MDyPhysics::Impl::ReleaseScene()
   this->gDispatcher = nullptr;
 }
 
-inline void MDyPhysics::Impl::UpdateInternalPxSceneParameter()
+inline void MPhysics::Impl::UpdateInternalPxSceneParameter()
 {
   // If gScene is null, just return to outside and do nothing.
-  if (MDY_CHECK_ISNULL(this->gScene)) { return; }
+  if (this->gScene == nullptr) { return; }
 
   static constexpr TF32 enable = 1.0f;
   static constexpr TF32 disable = 0.0f;
@@ -345,7 +226,7 @@ inline void MDyPhysics::Impl::UpdateInternalPxSceneParameter()
 
   // Set collision shape.
   // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/apireference/files/structPxVisualizationParameter.html
-  if (MDySetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
+  if (MSetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
   {
     if (this->gScene->getVisualizationParameter(PxVP::eCOLLISION_SHAPES) == disable)
     { this->gScene->setVisualizationParameter(PxVP::eCOLLISION_SHAPES, enable); }
@@ -357,12 +238,12 @@ inline void MDyPhysics::Impl::UpdateInternalPxSceneParameter()
   }
 }
 
-inline void MDyPhysics::Impl::TryEnqueueDebugDrawCall()
+inline void MPhysics::Impl::TryEnqueueDebugDrawCall()
 {
   // If gScene is null, just return to outside and do nothing.
-  if (MDY_CHECK_ISNULL(this->gScene)) { return; }
+  if (this->gScene == nullptr) { return; }
 
-  auto& renderingManager = MDyRendering::GetInstance();
+  auto& renderingManager = MRendering::GetInstance();
 
   // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
   // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/BestPractices.html
@@ -376,7 +257,7 @@ inline void MDyPhysics::Impl::TryEnqueueDebugDrawCall()
     {
       auto* ptrPxShape = ptrCollider->MDY_PRIVATE(GetPtrInternalShape)();
       const auto localPose = ptrPxShape->getLocalPose();
-      const auto transformMatrix = DDyMatrix4x4(globalTransform * localPose);
+      const auto transformMatrix = DMatrix4x4(globalTransform * localPose);
       // Enqueue draw list.
       // Iterate `Collider` and insert queue with transform + mesh.
       renderingManager.EnqueueDebugDrawCollider(*ptrCollider, transformMatrix);
@@ -384,7 +265,7 @@ inline void MDyPhysics::Impl::TryEnqueueDebugDrawCall()
   }
 }
 
-inline void MDyPhysics::Impl::onRelease(
+inline void MPhysics::Impl::onRelease(
     const physx::PxBase* observed, 
     void* userData,
     physx::PxDeletionEventFlag::Enum deletionEvent)
@@ -403,27 +284,27 @@ inline void MDyPhysics::Impl::onRelease(
 #endif
 }
 
-inline void MDyPhysics::Impl::pTryEnqueueCollisionIssue(
-    EDyCollisionCbType iHitType, 
+inline void MPhysics::Impl::pTryEnqueueCollisionIssue(
+    ECollisionCallbackType iHitType, 
     physx::PxPairFlags iInternalFlag,
-    CDyPhysicsCollider* i0, 
-    CDyPhysicsCollider* i1, 
-    const FDyHitResult& iHitResult)
+    CBasePhysicsCollider* i0, 
+    CBasePhysicsCollider* i1, 
+    const FHitResult& iHitResult)
 {
   // Make Collision issue item to be accessed when calling collision callback function.
-  DDyCollisionIssueItem item;
+  DCollisionIssueItem item;
   item.mType = iHitType;
   item.mHitResult = iHitResult;
 
   // Check flags.
-  bool (CDyPhysicsCollider::*ConditionFunction)() const = nullptr;
+  bool (CBasePhysicsCollider::*ConditionFunction)() const = nullptr;
   switch (iHitType)
   {
-  case EDyCollisionCbType::OnHit:
-    ConditionFunction = &CDyPhysicsCollider::IsNotifyHitEvent; break;
-  case EDyCollisionCbType::OnOverlapBegin:
-  case EDyCollisionCbType::OnOverlapEnd:
-    ConditionFunction = &CDyPhysicsCollider::IsNotifyOverlapEvent; break;
+  case ECollisionCallbackType::OnHit:
+    ConditionFunction = &CBasePhysicsCollider::IsNotifyHitEvent; break;
+  case ECollisionCallbackType::OnOverlapBegin:
+  case ECollisionCallbackType::OnOverlapEnd:
+    ConditionFunction = &CBasePhysicsCollider::IsNotifyOverlapEvent; break;
   }
 
   if ((i0->*ConditionFunction)() == true)
@@ -440,7 +321,7 @@ inline void MDyPhysics::Impl::pTryEnqueueCollisionIssue(
   }
 }
 
-inline void MDyPhysics::Impl::onContact(
+inline void MPhysics::Impl::onContact(
     const physx::PxContactPairHeader& pairHeader,
     const physx::PxContactPair* pairs, 
     physx::PxU32 nbPairs)
@@ -469,20 +350,20 @@ inline void MDyPhysics::Impl::onContact(
       const auto* shape1 = cp.shapes[1]; MDY_ASSERT_MSG_FORCE(shape1 != nullptr, "Test failed.");
 
       // Get collider components.
-      auto* ptrCollider0 = static_cast<CDyPhysicsCollider*>(shape0->userData);
+      auto* ptrCollider0 = static_cast<CBasePhysicsCollider*>(shape0->userData);
       MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrCollider0), "Unexpected error occurred.");
-      auto* ptrCollider1 = static_cast<CDyPhysicsCollider*>(shape1->userData);
+      auto* ptrCollider1 = static_cast<CBasePhysicsCollider*>(shape1->userData);
       MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrCollider1), "Unexpected error occurred.");
 
       const auto filterFlag0 = shape0->getSimulationFilterData();
       const auto filterFlag1 = shape1->getSimulationFilterData();
 
-      // Make FDyHitResult
-      FDyHitResult result;
+      // Make FHitResult
+      FHitResult result;
       result.mContactPosition = internalBuffer.position;
 
       // We do not process when `ignored` status because `ignored` status will be killed by physx internal system logic.
-      using ECbType = EDyCollisionCbType;
+      using ECbType = ECollisionCallbackType;
       auto[lhsFlag, rhsFlag] = GetFilterResult(filterFlag0, filterFlag1);
       if (lhsFlag == rhsFlag)
       {
@@ -511,4 +392,4 @@ inline void MDyPhysics::Impl::onContact(
 
 }
 
-#endif /// GUARD_DY_MANAGEMENT_PHYSICSMANAGER_IMPL_INL
+#endif /// GUARD_DY_MANAGEMENT_PHYSICSMANAGER_IMPL_INL_PHYSICSMANAGER_IMPL_INL

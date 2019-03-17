@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @brief Integrate Weight-blended OIT A-buffer and opaque rendered screen texture.
 /// @reference https://github.com/NVIDIAGameWorks/GraphicsSamples/tree/master/samples/gl4-kepler/WeightedBlendedOIT
 ///
-class FDyBtShOITIntegration final : public ADyGLShaderResource
+class FDyBtShOITIntegration final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBtShOITIntegration, "dyBtShOITIntegration")
 public:

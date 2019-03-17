@@ -15,7 +15,7 @@
 
 #include <vector>
 #include <nlohmann/json_fwd.hpp>
-#include <Dy/Element/Descriptor/GlobalEnums.h>
+#include <Dy/Element/Descriptor/EWorldObjectType.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 
 namespace dy
@@ -38,9 +38,9 @@ struct PDyObjectMetaInfo final
     std::string mPrefabSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
     /// @brief Prefab object tag.
     std::string mTagSpecifier         = MDY_INITIALIZE_EMPTYSTR;
-    /// @brief FDyObject is initially activated or not.
+    /// @brief AWorldObject is initially activated or not.
     bool        mInitialActivated     = false;
-    /// @brief FDyObject is using prefab.
+    /// @brief AWorldObject is using prefab.
     bool        mIsUsingPrefab        = false;
     /// @brief Is using prefab specified object tag? \n 
     /// If prefab is not exist, just use specified `TagSpecifier`.
@@ -52,7 +52,7 @@ struct PDyObjectMetaInfo final
   /// Object properties.
   DCommonProperties mProperties       = {};
   /// The type (light, pawn, pp block etc...) of object
-  EDyMetaObjectType mObjectType       = EDyMetaObjectType::NoneError;
+  EWorldObjectType mObjectType       = EWorldObjectType::NoneError;
 
   /// Dependency information which are varied along with mType.
   TComponentMetaList mMetaComponentInfo;

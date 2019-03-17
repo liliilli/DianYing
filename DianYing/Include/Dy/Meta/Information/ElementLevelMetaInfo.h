@@ -18,8 +18,8 @@
 #include <unordered_set>
 #include <nlohmann/json_fwd.hpp>
 
-#include <Dy/Helper/Type/ColorRGBA.h>
-#include <Dy/Helper/Type/ColorRGB24.h>
+#include <Dy/Helper/Type/DColorRGBA.h>
+#include <Dy/Helper/Type/DColorRGB24.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
 #include <Dy/Meta/Information/ElementObjectMetaInfo.h>
 
@@ -44,7 +44,7 @@ struct PDyLevelConstructMetaInfo final
     /// Initial level name
     std::string mLevelName;
     /// Initial background of scene to create
-    DDyColorRGB mLevelBackgroundColor = DDyColorRGB{1, 1, 1};
+    DColorRGB mLevelBackgroundColor = DColorRGB{1, 1, 1};
   };
 
   /// DMeta scene common information.

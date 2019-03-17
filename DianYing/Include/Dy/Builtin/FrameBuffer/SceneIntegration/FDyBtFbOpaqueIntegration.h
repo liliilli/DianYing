@@ -13,8 +13,8 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/ADyGLFrameBufferResource.h>
-#include <Dy/Core/Reflection/RDyBuiltinResources.h>
+#include <Dy/Builtin/Abstract/AGLFrameBufferResource.h>
+#include <Dy/Core/Reflection/RBuiltinResources.h>
 
 namespace dy
 {
@@ -23,7 +23,7 @@ namespace dy
 /// @class FDyBtFbOpaqueIntegration
 /// @brief Basic Shadow framebuffer object descriptor.
 ///
-class FDyBtFbOpaqueIntegration final : public ADyGLFrameBufferResource
+class FDyBtFbOpaqueIntegration final : public AGLFrameBufferResource
 {
   MDY_REGISTER_RESOURCE_FRAMEBUFFER(FDyBtFbOpaqueIntegration, "dyBtFbScrFin")
 };

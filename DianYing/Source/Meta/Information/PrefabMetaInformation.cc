@@ -16,7 +16,7 @@
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Management/SettingManager.h>
+#include <Dy/Management/MSetting.h>
 
 namespace dy
 {
@@ -36,10 +36,10 @@ void from_json(const nlohmann::json& j, PDyPrefabInstanceMetaInfo& p)
 {
   using TDCommonProperties  = PDyPrefabInstanceMetaInfo::DCommonProperties;
 
-  DyJsonGetValueFromTo(j, "Name",             p.mSpecifierName);
-  DyJsonGetValueFromTo(j, "Type",             p.mPrefabType);
-  DyJsonGetValueFromTo(j, "CommonProperties", p.mCommonProperties);
-  DyJsonGetValueFromTo(j, "ComponentList",    p.mMetaComponentInfo);
+  json::GetValueFromTo(j, "Name",             p.mSpecifierName);
+  json::GetValueFromTo(j, "Type",             p.mPrefabType);
+  json::GetValueFromTo(j, "CommonProperties", p.mCommonProperties);
+  json::GetValueFromTo(j, "ComponentList",    p.mMetaComponentInfo);
 }
 
 void to_json(nlohmann::json& j, const PDyPrefabInstanceMetaInfo::DCommonProperties& p)
@@ -49,11 +49,11 @@ void to_json(nlohmann::json& j, const PDyPrefabInstanceMetaInfo::DCommonProperti
 
 void from_json(const nlohmann::json& j, PDyPrefabInstanceMetaInfo::DCommonProperties& p)
 {
-  DyJsonGetValueFromTo(j, "ParentSpecifierName", p.mParentSpecifierName);
-  DyJsonGetValueFromTo(j, "ObjectTag", p.mTagSpecifier);
+  json::GetValueFromTo(j, "ParentSpecifierName", p.mParentSpecifierName);
+  json::GetValueFromTo(j, "ObjectTag", p.mTagSpecifier);
 
   /// Validity Test
-  MDY_CALL_ASSERT_SUCCESS(MDySetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(p.mTagSpecifier));
+  MDY_CALL_ASSERT_SUCCESS(MSetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(p.mTagSpecifier));
 }
 
 } /// ::dy namespace

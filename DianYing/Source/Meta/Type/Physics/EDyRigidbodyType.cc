@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Meta/Type/Physics/EDyRigidbodyType.h>
 #include <nlohmann/json.hpp>
-#include <Dy/Helper/StringSwitch.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 
 namespace dy
 {
@@ -24,15 +24,15 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyRigidbodyType& p)
 {
   const auto string = j.get<std::string>();
 
-  switch (DyStrSwitchInput(string))
+  switch (SwitchStrInput(string))
   {
-  case DyStrCase("Static"):
+  case CaseStr("Static"):
   { p = EDyRigidbodyType::Static;
   } break;
-  case DyStrCase("Kinematic"):
+  case CaseStr("Kinematic"):
   { p = EDyRigidbodyType::Kinematic;
   } break;
-  case DyStrCase("Dynamic"):
+  case CaseStr("Dynamic"):
   { p = EDyRigidbodyType::Dynamic;
   } break;
   default: MDY_ASSERT_MSG_FORCE(false, "Rigidbody type is not valid."); break;

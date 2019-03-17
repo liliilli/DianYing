@@ -77,16 +77,16 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyGLShaderInstanceMetaIn
     // Read builtin shader code or external file path of shader fragment.
     auto&       refFragment = p.GetFragment(fragmentType);
     const auto& refFragmentItemValue = it.value();
-    const auto  compressedShaderCode = DyJsonGetValueFrom<std::string>(refFragmentItemValue, "ShaderCode");
+    const auto  compressedShaderCode = json::GetValueFrom<std::string>(refFragmentItemValue, "ShaderCode");
     if (compressedShaderCode.empty() == false)
     { // If builtin shader code is exist, insert it and pass external path.
       refFragment.mBuiltinBuffer = compressedShaderCode;
     }
     else
     { // If builtin shader code is not exist, read external path.
-      const auto filePath = DyJsonGetValueFrom<std::string>(refFragmentItemValue, "ExternalShaderPath");
+      const auto filePath = json::GetValueFrom<std::string>(refFragmentItemValue, "ExternalShaderPath");
       MDY_ASSERT_MSG_FORCE(
-          filePath.empty() == false && DyFsIsFileExist(filePath) == true, 
+          filePath.empty() == false && IsFileExist(filePath) == true, 
           "External shader fragment file path is not valid.");
       refFragment.mExternalFilePath = filePath;
     }

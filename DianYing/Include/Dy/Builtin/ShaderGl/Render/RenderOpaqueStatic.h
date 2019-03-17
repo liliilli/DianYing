@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderOpaqueStatic
 /// @brief Builtin default deferred opqaue static mesh gl shader.
 ///
-class FDyBuiltinShaderGLRenderOpaqueStatic final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderOpaqueStatic final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderOpaqueStatic, "dyBtShaderGlOpaqueStatic")
 public:

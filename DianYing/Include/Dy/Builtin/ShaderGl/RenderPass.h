@@ -14,7 +14,7 @@
 ///
 
 #include <string_view>
-#include <Dy/Builtin/Abstract/ADyGLShaderResource.h>
+#include <Dy/Builtin/Abstract/AGLShaderResource.h>
 
 namespace dy::builtin
 {
@@ -23,7 +23,7 @@ namespace dy::builtin
 /// @class FDyBuiltinShaderGLRenderPass
 /// @brief Instantiate rendering pass.
 ///
-class FDyBuiltinShaderGLRenderPass final : public ADyGLShaderResource
+class FDyBuiltinShaderGLRenderPass final : public AGLShaderResource
 {
   MDY_REGISTER_RESOURCE_WITH_SPECIFIER(FDyBuiltinShaderGLRenderPass, "dyBtShaderGlRenderPass")
 public:

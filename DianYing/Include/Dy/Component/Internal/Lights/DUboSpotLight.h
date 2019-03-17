@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/ColorRGB.h>
+#include <Dy/Helper/Type/DColorRGB.h>
 #include <Dy/Core/Reflection/RReflection.h>
 
 #define MDY_BYTEPADDING(__Type__) MDY_NOTUSED __Type__ MDY_TOKENPASTE2(____padding, __LINE__){};
@@ -21,19 +21,19 @@
 namespace dy
 {
 
-/// @struct DDyUboSpotLight
+/// @struct DUboSpotLight
 /// @brief This structure is for spot light information binding.
 /// Does not need to be specified ubo140.
-struct DDyUboSpotLight final
+struct DUboSpotLight final
 {
-  REGISTER_UNIFORM_STRUCT(DDyUboPointLight)
+  REGISTER_UNIFORM_STRUCT(DUboSpotLight)
 
   /// @brief Light's position.
-  mutable DDyVector3 mPosition = DDyVector3{};
+  mutable DVector3 mPosition = DVector3{};
   /// @brief Light direction.
-  DDyVector3  mDirection = DDyVector3{};
+  DVector3  mDirection = DVector3{};
   /// @brief Light color
-  DDyColorRGB mColor = DDyColorRGB::Black;
+  DColorRGB mColor = DColorRGB::Black;
   /// @brief Light intensity for spot light component.
   TF32 mIntensity = 0.0f;
   /// @brief Light range for spot light component.
@@ -44,13 +44,13 @@ struct DDyUboSpotLight final
 
 MDyReflectionStart
 {
-  REGISTER_TYPE(DDyUboSpotLight, uDySpotLight)
-    .REGISTER_VARIABLE(DDyUboSpotLight, mPosition, mWorldPosition)
-    .REGISTER_VARIABLE(DDyUboSpotLight, mDirection, mDirection)
-    .REGISTER_VARIABLE(DDyUboSpotLight, mColor, mColor)
-    .REGISTER_VARIABLE(DDyUboSpotLight, mIntensity, mIntensity)
-    .REGISTER_VARIABLE(DDyUboSpotLight, mRange, mRange)
-    .REGISTER_VARIABLE(DDyUboSpotLight, mRangeAngle, mRangeAngle)
+  REGISTER_TYPE(DUboSpotLight, uDySpotLight)
+    .REGISTER_VARIABLE(DUboSpotLight, mPosition, mWorldPosition)
+    .REGISTER_VARIABLE(DUboSpotLight, mDirection, mDirection)
+    .REGISTER_VARIABLE(DUboSpotLight, mColor, mColor)
+    .REGISTER_VARIABLE(DUboSpotLight, mIntensity, mIntensity)
+    .REGISTER_VARIABLE(DUboSpotLight, mRange, mRange)
+    .REGISTER_VARIABLE(DUboSpotLight, mRangeAngle, mRangeAngle)
 };
 
 } /// ::dy namespace
