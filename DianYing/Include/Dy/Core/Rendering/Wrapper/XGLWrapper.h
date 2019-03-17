@@ -162,6 +162,8 @@ public:
 
   /// @brief Draw command.
   static void Draw(_MIN_ EDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount);
+  /// @brief Instancing drawing command.
+  static void DrawInstanced(EDrawType iType, bool iIsElement, TU32 iCount, TU32 iInstanceCount);
 
   /// @brief Query command. Shader program id must be valid and query enum also.
   MDY_NODISCARD static TI32 QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum);

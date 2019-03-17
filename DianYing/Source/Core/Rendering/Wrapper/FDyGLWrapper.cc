@@ -928,6 +928,30 @@ void XGLWrapper::Draw(_MIN_ EDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 i
   }
 }
 
+void XGLWrapper::DrawInstanced(EDrawType iType, bool iIsElement, TU32 iCount, TU32 iInstanceCount)
+{
+  GLenum drawType = GL_POINT;
+  switch (iType)
+  {
+  case EDrawType::Point:  drawType = GL_POINT;  break;
+  case EDrawType::Line:   drawType = GL_LINE;   break;
+  case EDrawType::LineStrip: drawType = GL_LINE_STRIP; break;
+  case EDrawType::LineLoop:   drawType = GL_LINE_LOOP; break;
+  case EDrawType::Triangle:   drawType = GL_TRIANGLES; break;
+  case EDrawType::TriangleStip: drawType = GL_TRIANGLE_STRIP; break;
+  case EDrawType::TriangleFan:  drawType = GL_TRIANGLE_FAN;   break;
+  }
+
+  if (iIsElement == true)
+  {
+    glDrawElementsInstanced(drawType, iCount, GL_UNSIGNED_INT, 0, iInstanceCount);
+  }
+  else
+  {
+    glDrawArraysInstanced(drawType, 0, iCount, iInstanceCount);
+  }
+}
+
 TI32 XGLWrapper::QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum)
 {
   TI32 result = 0;

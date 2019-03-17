@@ -229,14 +229,11 @@ void FBtRenderItemOpaqueDefault::RenderStaticInstancingObjects(
   // Call function call drawing array or element. 
   if (iRefMesh.IsEnabledIndices() == true)
   { 
-    glDrawElementsInstanced(GL_TRIANGLES, iRefMesh.GetIndicesCounts(), GL_UNSIGNED_INT, 0, iCount);
-    //XGLWrapper::Draw(EDrawType::Triangle, true, iRefMesh.GetIndicesCounts()); 
+    XGLWrapper::DrawInstanced(EDrawType::Triangle, true, iRefMesh.GetIndicesCounts(), iCount); 
   }
   else
   { 
-    glDrawArraysInstanced(GL_TRIANGLES, 0, iRefMesh.GetVertexCounts(), iCount);
-    //glDrawElementsInstanced(GL_TRIANGLES, iRefMesh.GetIndicesCounts(), GL_UNSIGNED_INT, 0, iCount);
-    //XGLWrapper::Draw(EDrawType::Triangle, false, iRefMesh.GetVertexCounts()); 
+    XGLWrapper::DrawInstanced(EDrawType::Triangle, false, iRefMesh.GetVertexCounts(), iCount); 
   }
 
   // Unbind, unset, deactivate settings for this submesh and material.
