@@ -94,7 +94,7 @@ bool FFrustumTester::IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) con
     // Calculate the plane equation and check if the point is behind a side of the frustum.
     if (mFrustum[i].CheckPointStatusOnPlane(iPoint) == DPlane::EStatus::Behind) 
     { 
-      const auto distance = mFrustum[i].GetDistanceFrom(iPoint);
+      const auto distance = mFrustum[i].GetDistanceFrom(iPoint, true);
       if (distance > iRadius) 
       { 
         return false; 

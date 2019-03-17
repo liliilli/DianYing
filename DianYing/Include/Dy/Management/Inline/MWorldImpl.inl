@@ -86,6 +86,11 @@ inline void MWorld::Impl::UpdateObjects(TF32 iDt)
     }
 
     // After update, check
+    if (auto* ptrMainCamera = this->GetPtrMainLevelCamera(); 
+        ptrMainCamera != nullptr)
+    {
+      ptrMainCamera->Update(iDt);
+    }
   }
 }
 

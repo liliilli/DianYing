@@ -253,6 +253,7 @@
     <ClCompile Include="Source\Builtin\Shader\Debug\BtShDebugLine.cc" />
     <ClCompile Include="Source\Builtin\Shader\Level\BtShOITAccumulation.cc" />
     <ClCompile Include="Source\Builtin\Shader\Level\BtShOITIntegration.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Level\RenderCSMInstancing.cc" />
     <ClCompile Include="Source\Builtin\Shader\Level\RenderCSMLightNormal.cc" />
     <ClCompile Include="Source\Builtin\Shader\Level\RendIntegrationLevelCSM.cc" />
     <ClCompile Include="Source\Builtin\Shader\PostEffect\Emissive\BtShEmissiveBlur.cc" />
@@ -711,6 +712,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Debug\BtShDebugLine.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITAccumulation.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITIntegration.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RenderCSMInstancing.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RendIntegrationLevelCSM.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RenderCSMLightNormal.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\Emissive\BtShEmissiveBlur.h" />

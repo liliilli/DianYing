@@ -34,8 +34,8 @@ DVector3 DPlane::GetNormalVector() const noexcept
 
 DPlane::EStatus DPlane::CheckPointStatusOnPlane(const DVector3& iPoint) const noexcept
 {
-  const auto result = GetDistanceFrom(iPoint);
-  if (math::IsNearlyZero(result, 0.001f) == true) 
+  const auto result = GetDistanceFrom(iPoint, false);
+  if (math::IsNearlyZero(result, 0.0001f) == true) 
   { return DPlane::EStatus::OnPlane; }
   else if (result > 0.0f) 
   { return DPlane::EStatus::Front; }
@@ -46,13 +46,14 @@ DPlane::EStatus DPlane::CheckPointStatusOnPlane(const DVector3& iPoint) const no
 TF32 DPlane::GetDistanceFrom(const DVector3& iPoint, bool iIsAbs) const noexcept
 {
   const auto result = iPoint.X * this->A + iPoint.Y * this->B * iPoint.Z * this->C + this->D;
+  const auto parent = this->GetNormalVector().GetLength();
   if (result < 0 && iIsAbs == true)
   {
-    return std::abs(result);
+    return std::abs(result) / parent;
   }
   else
   {
-    return result;
+    return result / parent;
   }
 }
 

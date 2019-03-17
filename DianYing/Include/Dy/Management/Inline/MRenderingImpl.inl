@@ -286,6 +286,7 @@ inline void MRendering::Impl::PreRender(TF32 dt)
   }
 
   // Do cpu frustum culling.
+#ifdef false
   const auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
   EraseRemoveIf(this->mOpaqueMeshDrawingList, [ptrCamera](TMeshDrawCallItem& iPtrOpaqueRenderer)
   {
@@ -296,6 +297,7 @@ inline void MRendering::Impl::PreRender(TF32 dt)
     // Check
     return ptrCamera->IsSphereInFrustum(worldPos, 10) == false;
   });
+#endif
 
   // Set ordering of UI (If Debug and Loading UI is exist, also include them but as highest order. 
   // (so rendered as final.)
