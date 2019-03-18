@@ -23,14 +23,17 @@ template <typename TType>
 class ADyActorBinderContainer
 {
 public:
+  using TBinderContainer = std::vector<DActorBinder*>;
+
   virtual ~ADyActorBinderContainer()
   {
-    while (this->mPtrBinderList.empty() == false)
-    { this->mPtrBinderList.back()->__DetachDescriptor(ptrObject); }
+    auto binderList = this->mPtrBinderList;
+    for (auto& ptrBinder : binderList) { ptrBinder->__DetachDescriptor(this->ptrObject); }
+
+    this->mPtrBinderList.clear();
   }
 
-  MDY_NODISCARD EDySuccess 
-  MDY_PRIVATE(DetachBinderFromList)(_MIN_ DActorBinder& iRefBinder) noexcept
+  EDySuccess MDY_PRIVATE(DetachBinderFromList)(DActorBinder& iRefBinder) noexcept
   {
     TU32 id = 0;
     const TU32 size = this->mPtrBinderList.size();
@@ -44,18 +47,26 @@ public:
     return DY_SUCCESS;
   }
 
-  MDY_NODISCARD EDySuccess 
-  MDY_PRIVATE(AttachBinderFromList)(_MIN_ DActorBinder& iRefBinder) noexcept
+  EDySuccess MDY_PRIVATE(AttachBinderFromList)(DActorBinder& iRefBinder) noexcept
   {
     this->mPtrBinderList.emplace_back(&iRefBinder);
     return DY_SUCCESS;
   }
 
   /// @brief
-  void MDY_PRIVATE(SetPtr)(_MIN_ TType& ptrObject) noexcept { this->ptrObject = ptrObject; }
+  void MDY_PRIVATE(SetPtr)(TType& ptrObject) noexcept 
+  { 
+    this->ptrObject = ptrObject; 
+  }
+
+  /// @brief 
+  TBinderContainer& GetActorBinderContainer() noexcept
+  {
+    return this->mPtrBinderList;
+  }
 
 private:
-  std::vector<NotNull<DActorBinder*>> mPtrBinderList;
+  TBinderContainer mPtrBinderList;
   TType* ptrObject = nullptr;
 };
 

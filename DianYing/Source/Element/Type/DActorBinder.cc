@@ -22,43 +22,65 @@ namespace dy
 
 DActorBinder::~DActorBinder() noexcept
 {
-  if (MDY_CHECK_ISNOTNULL(this->mPtrActor)) 
-  { MDY_CALL_ASSERT_SUCCESS(this->mPtrActor->MDY_PRIVATE(DetachBinderFromList)(*this)); }
+  if (this->mPtrActor != nullptr) 
+  { 
+    this->mPtrActor->MDY_PRIVATE(DetachBinderFromList)(*this); 
+    this->mPtrActor = nullptr;
+  }
 
-  if (MDY_CHECK_ISNOTNULL(this->mPtrCreationDesc)) 
-  { MDY_CALL_ASSERT_SUCCESS(this->mPtrCreationDesc->MDY_PRIVATE(DetachBinderFromList)(*this)); }
+  if (this->mPtrCreationDesc != nullptr) 
+  { 
+    this->mPtrCreationDesc->MDY_PRIVATE(DetachBinderFromList)(*this); 
+    this->mPtrCreationDesc = nullptr;
+  }
 }
 
-DActorBinder::DActorBinder(_MIN_ const DActorBinder& mRefBinder) noexcept :
-  mPtrActor {mRefBinder.mPtrActor},
-  mPtrCreationDesc {mRefBinder.mPtrCreationDesc}
+DActorBinder::DActorBinder(const DActorBinder& mRefBinder) noexcept 
+  : mPtrActor {mRefBinder.mPtrActor},
+    mPtrCreationDesc {mRefBinder.mPtrCreationDesc}
 {
-  if (MDY_CHECK_ISNOTNULL(this->mPtrActor))
-  { MDY_CALL_ASSERT_SUCCESS(this->mPtrActor->MDY_PRIVATE(AttachBinderFromList)(*this)); }
+  if (this->mPtrActor != nullptr)
+  { 
+    this->mPtrActor->MDY_PRIVATE(AttachBinderFromList)(*this); 
+  }
 
-  if (MDY_CHECK_ISNOTNULL(this->mPtrCreationDesc))
-  { MDY_CALL_ASSERT_SUCCESS(this->mPtrCreationDesc->MDY_PRIVATE(AttachBinderFromList)(*this)); }
+  if (this->mPtrCreationDesc != nullptr)
+  { 
+    this->mPtrCreationDesc->MDY_PRIVATE(AttachBinderFromList)(*this); 
+  }
 }
 
-DActorBinder& DActorBinder::operator=(_MIN_ const DActorBinder& mRefBinder) noexcept
+DActorBinder& DActorBinder::operator=(const DActorBinder& mRefBinder) noexcept
 {
   if (this == &mRefBinder) { return *this; }
   if (this->mPtrActor != mRefBinder.mPtrActor)
   {
-    if (MDY_CHECK_ISNOTNULL(this->mPtrActor)) 
-    { MDY_CALL_ASSERT_SUCCESS(this->mPtrActor->MDY_PRIVATE(DetachBinderFromList)(*this)); }
+    if (this->mPtrActor != nullptr) 
+    { 
+      this->mPtrActor->MDY_PRIVATE(DetachBinderFromList)(*this); 
+      this->mPtrActor = nullptr;
+    }
+
     this->mPtrActor = mRefBinder.mPtrActor;
-    if (MDY_CHECK_ISNOTNULL(this->mPtrActor))
-    { MDY_CALL_ASSERT_SUCCESS(this->mPtrActor->MDY_PRIVATE(AttachBinderFromList)(*this)); }
+    if (this->mPtrActor != nullptr)
+    { 
+      this->mPtrActor->MDY_PRIVATE(AttachBinderFromList)(*this); 
+    }
   }
 
   if (this->mPtrCreationDesc != mRefBinder.mPtrCreationDesc)
   {
-    if (MDY_CHECK_ISNOTNULL(this->mPtrCreationDesc)) 
-    { MDY_CALL_ASSERT_SUCCESS(this->mPtrCreationDesc->MDY_PRIVATE(DetachBinderFromList)(*this)); }
+    if (this->mPtrCreationDesc != nullptr) 
+    { 
+      this->mPtrCreationDesc->MDY_PRIVATE(DetachBinderFromList)(*this); 
+      this->mPtrCreationDesc = nullptr;
+    }
+
     this->mPtrCreationDesc = mRefBinder.mPtrCreationDesc;
-    if (MDY_CHECK_ISNOTNULL(this->mPtrCreationDesc))
-    { MDY_CALL_ASSERT_SUCCESS(this->mPtrCreationDesc->MDY_PRIVATE(AttachBinderFromList)(*this)); }
+    if (this->mPtrCreationDesc != nullptr)
+    { 
+      this->mPtrCreationDesc->MDY_PRIVATE(AttachBinderFromList)(*this); 
+    }
   }
 
   return *this;
@@ -66,36 +88,59 @@ DActorBinder& DActorBinder::operator=(_MIN_ const DActorBinder& mRefBinder) noex
 
 bool DActorBinder::IsActorCreated() const noexcept
 {
-  return MDY_CHECK_ISNOTNULL(this->mPtrActor);
+  return this->mPtrActor != nullptr;
 }
 
-void DActorBinder::MDY_PRIVATE(BindDescriptor)(_MIN_ PActorCreationDescriptor* mPtrDesc) noexcept
+void DActorBinder::MDY_PRIVATE(BindDescriptor)(PActorCreationDescriptor* mPtrDesc) noexcept
 {
+  if (this->mPtrCreationDesc == mPtrDesc) { return; }
+
+  if (this->mPtrCreationDesc != nullptr)
+  {
+    this->mPtrCreationDesc->MDY_PRIVATE(DetachBinderFromList)(*this);
+    this->mPtrCreationDesc = nullptr;
+  }
+
   this->mPtrCreationDesc = mPtrDesc;
-  MDY_CALL_ASSERT_SUCCESS(this->mPtrCreationDesc->MDY_PRIVATE(AttachBinderFromList)(*this));
+  if (this->mPtrCreationDesc != nullptr)
+  {
+    this->mPtrCreationDesc->MDY_PRIVATE(AttachBinderFromList)(*this);
+  }
 }
 
 void DActorBinder::MDY_PRIVATE(DetachDescriptor)(PActorCreationDescriptor*) noexcept
 {
-  this->mPtrCreationDesc = nullptr;
-}
-
-void DActorBinder::MDY_PRIVATE(BindDescriptor)(_MIN_ FActor* mPtrDesc) noexcept
-{
-  this->mPtrActor = mPtrDesc;
-  MDY_CALL_ASSERT_SUCCESS(this->mPtrActor->MDY_PRIVATE(AttachBinderFromList)(*this));
-
   if (this->mPtrCreationDesc != nullptr)
   {
-    if (MDY_CHECK_ISNOTNULL(this->mPtrCreationDesc)) 
-    { MDY_CALL_ASSERT_SUCCESS(this->mPtrCreationDesc->MDY_PRIVATE(DetachBinderFromList)(*this)); }
+    this->mPtrCreationDesc->MDY_PRIVATE(AttachBinderFromList)(*this);
     this->mPtrCreationDesc = nullptr;
+  }
+}
+
+void DActorBinder::MDY_PRIVATE(BindDescriptor)(FActor* mPtrDesc) noexcept
+{
+  if (this->mPtrActor == mPtrDesc) { return; }
+
+  if (this->mPtrActor != nullptr)
+  {
+    this->mPtrActor->MDY_PRIVATE(DetachBinderFromList)(*this);
+    this->mPtrActor = nullptr;
+  }
+
+  this->mPtrActor = mPtrDesc;
+  if (this->mPtrActor != nullptr)
+  {
+    this->mPtrActor->MDY_PRIVATE(AttachBinderFromList)(*this);
   }
 }
 
 void DActorBinder::MDY_PRIVATE(DetachDescriptor)(FActor*) noexcept
 {
-  this->mPtrActor = nullptr;
+  if (this->mPtrActor != nullptr)
+  {
+    this->mPtrActor->MDY_PRIVATE(AttachBinderFromList)(*this);
+    this->mPtrActor = nullptr;
+  }
 }
 
 
