@@ -94,6 +94,12 @@ public:
   /// @brief  Return valid parent FActor pointer instance with wrapping optional.
   /// @return If parent is binded and exist, return optional valid pointer but just no value.
   MDY_NODISCARD FActor* GetPtrParent() const noexcept;
+  /// @brief Return valid or nullptr FActor child instance pointer.
+  /// This function will process processing recursively traversing child actors.
+  MDY_NODISCARD FActor* GetActorWithFullName(const std::vector<std::string>& iKeywords) const noexcept;
+  /// @brief Return valid or nullptr FActor child instance pointer.
+  /// This function will process processing recursively traversing child actors.
+  MDY_NODISCARD FActor* GetActorWithFullName(const std::string& iFullName) const noexcept;
 
   /// @brief  Return this actor has children object, empty object will be neglected.
   /// @return If having children, return true.
@@ -125,6 +131,9 @@ public:
   /// @brief Return actor's information
   /// @return information string.
   MDY_NODISCARD std::string ToString() override;
+
+  /// @brief Create actor instantly in this level.
+  void CreateActorInstantly(const PActorCreationDescriptor& iDescriptor);
 
   /// @brief  Add component and bind to this object instance.
   /// @tparam TComponent  Component type class argument.

@@ -76,15 +76,17 @@ public:
 
   /// @brief Try get actor with given full name, from root to actor.
   /// If iFullName did not satisfy full name format, just return nullptr.
-  MDY_NODISCARD FActor* GetActorWithFullName(_MIN_ const std::string& iFullName) const noexcept;
+  MDY_NODISCARD FActor* GetActorWithFullName(const std::string& iFullName) const noexcept;
+  /// @brief Try get actor with given full name, from root to actor.
+  /// If iFullName did not satisfy full name format, just return nullptr.
+  MDY_NODISCARD FActor* GetActorWithFullName(const std::vector<std::string>& iKeywords) const noexcept;
 
   /// @brief Return level actor container.
   MDY_NODISCARD FActor::TActorMap& GetActorContainer() noexcept;
 
   /// @brief Create actor instantly in this level.
-  void CreateActorInstantly(_MIN_ const PActorCreationDescriptor& descriptor);
+  void CreateActorInstantly(const PActorCreationDescriptor& iDescriptor);
 
-  
 private:
   /// Level's name. not modifiable
   std::string         mLevelName            = MDY_INITIALIZE_EMPTYSTR;

@@ -18,6 +18,7 @@
 #include <Dy/Element/Type/PActorCreationDescriptor.h>
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 #include <Dy/Component/CTransform.h>
+#include <Dy/Helper/Library/HelperRegex.h>
 
 //!
 //! Local translation unit function & data
@@ -154,9 +155,41 @@ FLevel::GetAllActorsWithNameRecursive(_MIN_ const std::string& iNameSpecifier) c
   return result;;
 }
 
-FActor* FLevel::GetActorWithFullName(_MIN_ const std::string& iFullName) const noexcept
+FActor* FLevel::GetActorWithFullName(const std::string& iFullName) const noexcept
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  auto optKeywords = regex::GetMatchedKeywordFrom(iFullName, R"regex(([\w]+))regex");
+  if (optKeywords.has_value() == false)
+  {
+    return nullptr;
+  }
+
+  return this->GetActorWithFullName(*optKeywords);
+}
+
+FActor* FLevel::GetActorWithFullName(const std::vector<std::string>& iKeywords) const noexcept
+{
+  if (iKeywords.empty() == true) { return nullptr; }
+
+  // Find actor by searching with name.
+  for (auto& [actorSpecifier, smtptrActor] : this->mActorMap)
+  {
+    if (smtptrActor == nullptr) { continue; }
+    if (actorSpecifier == iKeywords.front())
+    {
+      // If keyword is last keyword, return actor's pointer.
+      if (iKeywords.size() == 1)
+      {
+        return smtptrActor.get();
+      }
+
+      // Otherwise, do recursion one more..
+      std::vector<std::string> nextKeywords;
+      nextKeywords.insert(nextKeywords.end(), iKeywords.cbegin() + 1, iKeywords.cend());
+
+      return smtptrActor->GetActorWithFullName(nextKeywords);
+    }
+  }
+
   return nullptr;
 }
 
@@ -165,16 +198,16 @@ FActor::TActorMap& FLevel::GetActorContainer() noexcept
   return this->mActorMap;
 }
 
-void FLevel::CreateActorInstantly(_MIN_ const PActorCreationDescriptor& descriptor)
+void FLevel::CreateActorInstantly(const PActorCreationDescriptor& iDescriptor)
 {
   // If parent full specifier name is empty so descripor requires make actor on root.
-  if (descriptor.mParentFullSpecifierName.empty() == true)
+  if (iDescriptor.mParentFullSpecifierName.empty() == true)
   {
     // Get Auto generated name.
-    PActorCreationDescriptor desc = descriptor;
-    desc.mActorSpecifierName = this->TryGetGeneratedName(descriptor.mActorSpecifierName);
+    PActorCreationDescriptor desc = iDescriptor;
+    desc.mActorSpecifierName = this->TryGetGeneratedName(iDescriptor.mActorSpecifierName);
 
-    auto instancePtr  = std::make_unique<FActor>(desc);
+    auto instancePtr  = std::make_unique<FActor>(desc, nullptr);
     auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
     MDY_ASSERT_MSG(result == true, "Unexpected error occured in inserting FActor to object map.");
      
@@ -187,11 +220,17 @@ void FLevel::CreateActorInstantly(_MIN_ const PActorCreationDescriptor& descript
   }
   else
   { // Or otherwise...
-    auto* ptrParent = this->GetActorWithFullName(descriptor.mParentFullSpecifierName);
+    auto* ptrParent = this->GetActorWithFullName(iDescriptor.mParentFullSpecifierName);
     // If parent is not exist because removed or will be removed on this frame, do nothing and do not create.
-    if (MDY_CHECK_ISNULL(ptrParent)) { return; }
+    if (ptrParent == nullptr) 
+    { 
+      DyPushLogDebugError(
+        "Failed to find parent with full name, {}.", 
+        iDescriptor.mParentFullSpecifierName);
+      return; 
+    }
 
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    ptrParent->CreateActorInstantly(iDescriptor);
   }
 }
 
