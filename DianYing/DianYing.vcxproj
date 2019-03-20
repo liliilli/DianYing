@@ -19,6 +19,7 @@
     <ProjectGuid>{B2B6E771-0680-4E19-AB53-78F5AA9FEB7A}</ProjectGuid>
     <RootNamespace>DianYing</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>DyCore</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -159,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="data\Script\Astronaut\AstroidConstructor.cc" />
+    <ClCompile Include="data\Script\Astronaut\PlanetScript.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
     <ClCompile Include="data\Script\GlobalTestScript.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AGLAttachmentResource.cc" />
@@ -263,11 +265,13 @@
     <ClCompile Include="Source\Builtin\Shader\PostEffect\RenderDefaultSSAO.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\BtShSkyboxDefault.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\BtShUvWorldPos.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Render\FDyBtShOITPlainColor.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\OpaqueEmissiveStatic.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\RenderOpaqueDynamic.cc" />
     <ClCompile Include="Source\Builtin\Shader\Widget\RenderUiBasicGaugeBar.cc" />
     <ClCompile Include="Source\Builtin\Shader\Widget\RenderUIImage.cc" />
     <ClCompile Include="Source\Builtin\Texture\CheckerBright.cc" />
+    <ClCompile Include="Source\Builtin\Texture\FDyBtTexWhiteTexture.cc" />
     <ClCompile Include="Source\Builtin\Texture\SSAONoiseMap.cc" />
     <ClCompile Include="Source\Builtin\Widget\FDyBtWdTestLoadingUi.cc" />
     <ClCompile Include="Source\Component\Abstract\AActorCppScript.cc" />
@@ -601,6 +605,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="data\Script\Astronaut\AstroidConstructor.h" />
+    <ClInclude Include="data\Script\Astronaut\PlanetScript.h" />
     <ClInclude Include="data\Script\DebugActor\BtScCollisionTest1.h" />
     <ClInclude Include="data\Script\GlobalTestScript.h" />
     <ClInclude Include="Include\Dy\Binding\FLuaScriptFrame.h" />
@@ -727,6 +732,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Editor\RenderGrid.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShSkyboxDefault.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\BtShUvWorldPos.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\FDyBtShOITPlainColor.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\OpaqueEmissiveStatic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueDynamic.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\RenderOpaqueStatic.h" />
@@ -737,6 +743,7 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\CheckerBright.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\ErrorBlue.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\Checker.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\FDyBtTexWhiteTexture.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\SSAONoiseMap.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\DebugUiMeta.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
@@ -1146,7 +1153,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Level\Test_Astronaut.json" />
-    <None Include="data\Level\Test_Physics.json" />
     <None Include="data\Level\Test_Scene.json" />
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />
     <None Include="Include\Dy\Component\Interface\Internal\IOnColliderBaseDelegatorTmp.inl" />

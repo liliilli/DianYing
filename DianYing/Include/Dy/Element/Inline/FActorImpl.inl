@@ -40,6 +40,7 @@ inline EDySuccess FActor::Impl::pInitilaize(
 
     metaComponentInfo.insert(metaComponentInfo.end(), MDY_BIND_BEGIN_END(prefab.mMetaComponentInfo));
 
+    // Set Object tag.
     if (objectMetaDesc.mProperties.mIsOverridePrefabTag == true)
     { this->mActorTagSpecifier = objectMetaDesc.mProperties.mTagSpecifier; }
     else
