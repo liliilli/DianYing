@@ -53,10 +53,14 @@ void FDyBuiltinDebugUiScript::Initiate()
   PDyMetaWidgetTextDescriptor testDescriptor;
   testDescriptor.mUiObjectSpecifierName = "CheckingCamera";
   testDescriptor.mTextColor   = DColorRGB::Aqua;
+  testDescriptor.mIsUsingEdge = true;
+  testDescriptor.mEdgeColor   = DColorRGB::Black;
   testDescriptor.mTextString  = "Hello world! This is camera checking string.";
-  testDescriptor.mFontSize    = 12;
+  testDescriptor.mFontSize    = 10;
   testDescriptor.mFontName    = "Arial";
   testDescriptor.mIsActivated = true;
+  testDescriptor.mOrigin = EDyOrigin::Left_Bottom;
+  testDescriptor.mInitialPosition = DVectorInt2{16, 80};
   widgetRef.CreateWidget<FWidgetText>(testDescriptor);
 }
 
@@ -97,7 +101,7 @@ Camera0 : 2
 
   auto t = this->mTimeManager->GetCalendarTime();
   infoText->SetText(MakeStringU8(
-      "DEBUG BUILD {:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
+      "RELEASE BUILD {:05.2f} %, {:0d} fps | Time : {:04}-{:02}-{:02} {:02}:{:02}:{:02}\n"
       "| Obj : {:03} | Tex : {:03} | Shd : {:03} | Vtx : {:03} |\n"
       "| Ren : {:03} |\n"
       "Ram Usage : {:03} MB", 
@@ -114,7 +118,6 @@ Camera0 : 2
   bar->SetPresentValue(usageCpu);
 
   const auto& inputManager = MInput::GetInstance();
-  if (false)
   {
     joystickText->SetText(fmt::format(
       "Analog 01 : X {:05.2f} Y {:05.2f}\n"
@@ -123,7 +126,7 @@ Camera0 : 2
       inputManager.GetJoystickStickValue(5), inputManager.GetJoystickStickValue(2)
     ));
   }
-  joystickText->Deactivate();
+  //joystickText->Deactivate();
 
   if (this->flag == false) // Is material
   {
@@ -131,7 +134,8 @@ Camera0 : 2
     elapsed += dt;
 
     auto* ptrImage = this->GetWidgetReference().GetWidget<FWidgetImage>("TestImage");;
-    if (auto* ptrMat = ptrImage->GetUsingMaterial(); ptrMat != nullptr && ptrMat->IsResourceExist() == true)
+    if (auto* ptrMat = ptrImage->GetUsingMaterial(); 
+        ptrMat != nullptr && ptrMat->IsResourceExist() == true)
     {
       ptrMat->TryUpdateUniform<EUniformVariableType::Float>("uThreshold", (sinf(elapsed * 3) + 1.0f) * 0.5f);
     }
@@ -176,11 +180,12 @@ void FDyBuiltinDebugUiScript::CbMoveBar()
 
 void FDyBuiltinDebugUiScript::CbChangeImageTexture()
 {
+#ifdef false
   auto& refWidget = this->GetWidgetReference();
   FWidgetImage* image = refWidget.GetWidget<FWidgetImage>("TestImage");
   if (flag == false)
   {
-    image->SetRenderableImageName("T_BrickWall1_Diffuse", false);
+    image->SetRenderableImageName("Dy_LogoPrototype", false);
     flag = !flag;
   }
   else
@@ -188,6 +193,7 @@ void FDyBuiltinDebugUiScript::CbChangeImageTexture()
     image->SetRenderableImageName("TestUiImageMat190217", true);
     flag = !flag;
   }
+#endif
 }
 
 } /// ::dy namespace

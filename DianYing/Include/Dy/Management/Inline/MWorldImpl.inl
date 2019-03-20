@@ -146,42 +146,6 @@ inline FActor* MWorld::Impl::GetActorWithObjectId(TU32 iObjectId) noexcept
   return this->mLevel->GetActorWithObjectId(iObjectId);
 }
 
-inline DActorBinder MWorld::Impl::CreateActor(
-  const std::string& iActorName, 
-  const std::string& iPrefabName,
-  const DTransform& iSpawnTransform, 
-  FActor* iPtrParent, 
-  const std::string& iObjectTag, 
-  bool iDoSweep)
-{
-  // Check prefab is exist on meta information manager.
-  MDY_ASSERT_MSG_FORCE(
-    MIOMeta::GetInstance().IsPrefabMetaInformationExist(iPrefabName) == true,
-    "Failed to find prefab with specified `iPrefabName`.");
-
-  PActorCreationDescriptor descriptor = {};
-  descriptor.mParentFullSpecifierName = iPtrParent != nullptr ? iPtrParent->GetActorFullName() : "";
-  // Actor speciier name will be auto-generated when creation.
-  descriptor.mActorSpecifierName = iActorName;
-  descriptor.mTransform = iSpawnTransform;
-  descriptor.mIsDoSweep = iDoSweep;
-  descriptor.mPrefabSpecifierName = iPrefabName;
-  // Check tag is exist, when tag is not empty.
-  if (iObjectTag.empty() == false)
-  { 
-    MDY_CALL_ASSERT_SUCCESS(MSetting::GetInstance().MDY_PRIVATE(CheckObjectTagIsExist)(iObjectTag));
-    descriptor.mObjectTag = iObjectTag;
-  }
-
-  // Push requisition actor item.
-  SafeUniquePtrEmplaceBack(this->mActorCreationDescList, descriptor);
-
-  // Bind actor.
-  DActorBinder resultBinder {};
-  resultBinder.MDY_PRIVATE(BindDescriptor)(this->mActorCreationDescList.back().get());
-  return resultBinder;
-}
-
 inline void MWorld::Impl::DestroyActor(FActor& iRefActor)
 {
   if (iRefActor.HasParent() == true)

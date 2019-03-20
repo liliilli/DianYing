@@ -35,8 +35,8 @@ class DActorBinder final
 public:
   DActorBinder() = default;
   ~DActorBinder() noexcept;
-  DActorBinder(_MIN_ const DActorBinder& mRefBinder) noexcept;
-  DActorBinder& operator=(_MIN_ const DActorBinder& mRefBinder) noexcept;
+  DActorBinder(const DActorBinder& mRefBinder) noexcept;
+  DActorBinder& operator=(const DActorBinder& mRefBinder) noexcept;
 
   /// @brief Check actor is created.
   MDY_NODISCARD bool IsActorCreated() const noexcept;
@@ -44,10 +44,10 @@ public:
   FActor*       operator->() noexcept       { return this->mPtrActor; }
   const FActor* operator->() const noexcept { return this->mPtrActor; }
 
-  void MDY_PRIVATE(BindDescriptor)(_MIN_ PActorCreationDescriptor* mPtrDesc) noexcept;
+  void MDY_PRIVATE(BindDescriptor)(PActorCreationDescriptor* mPtrDesc) noexcept;
   void MDY_PRIVATE(DetachDescriptor)(PActorCreationDescriptor*) noexcept;
 
-  void MDY_PRIVATE(BindDescriptor)(_MIN_ FActor* mPtrDesc) noexcept;
+  void MDY_PRIVATE(BindDescriptor)(FActor* mPtrDesc) noexcept;
   void MDY_PRIVATE(DetachDescriptor)(FActor*) noexcept;
 
 private:

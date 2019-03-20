@@ -90,8 +90,7 @@ TResourceBinderBase<TType>::Get() const noexcept
 }
 
 template <EResourceType TType>
-EDySuccess TResourceBinderBase<TType>::pTryRequireResource
-(_MIN_ const std::string& iNewSpecifier) noexcept
+EDySuccess TResourceBinderBase<TType>::pTryRequireResource(const std::string& iNewSpecifier) noexcept
 {
   MDY_ASSERT_MSG(iNewSpecifier.empty() == false, "Resource specifier name must be valid to require resource.");
 
@@ -113,19 +112,19 @@ template <EResourceType TType>
 EDySuccess TResourceBinderBase<TType>::pTryDetachResource() noexcept
 {
   // Checking 
-  if (MDY_CHECK_ISNULL(this->mPtrResource)) { return DY_FAILURE; }
+  if (this->mPtrResource == nullptr) { return DY_FAILURE; }
 
   // Detach
   MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachResource<TType>(this->mSpecifierName, *this));
-  this->mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  this->mPtrResource    = nullptr;
+  this->mSpecifierName.clear();
+  this->mPtrResource = nullptr;
   return DY_SUCCESS;
 }
 
 template <EResourceType TType>
 bool TResourceBinderBase<TType>::IsResourceExist() const noexcept
 {
-  return MDY_CHECK_ISNOTNULL(this->mPtrResource);
+  return this->mPtrResource != nullptr;
 }
 
 template <EResourceType TType>
@@ -134,9 +133,9 @@ void TResourceBinderBase<TType>::TryUpdateResourcePtr(const void* iPtr) noexcept
   // If there is something already bound to this instance, detach this from resource.
   MDY_CALL_BUT_NOUSE_RESULT(this->pTryDetachResource());
 
-  this->mPtrResource          = static_cast<TPtrResource>(const_cast<void*>(iPtr));
-  this->mSpecifierName        = this->mDelayedSpecifierName;
-  this->mDelayedSpecifierName = MDY_INITIALIZE_EMPTYSTR;
+  this->mPtrResource = static_cast<TPtrResource>(const_cast<void*>(iPtr));
+  this->mSpecifierName = this->mDelayedSpecifierName;
+  this->mDelayedSpecifierName.clear();
 }
 
 template <EResourceType TType>

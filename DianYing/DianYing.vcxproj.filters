@@ -382,6 +382,9 @@
     <ClCompile Include="Source\Builtin\Prefab\FBtPbDefaultSphere.cc" />
     <ClCompile Include="Source\Builtin\Shader\Level\RenderCSMInstancing.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITDepth.cc" />
+    <ClCompile Include="data\Script\Astronaut\PlanetScript.cc" />
+    <ClCompile Include="Source\Builtin\Texture\FDyBtTexWhiteTexture.cc" />
+    <ClCompile Include="Source\Builtin\Shader\Render\FDyBtShOITPlainColor.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -927,6 +930,9 @@
     <ClInclude Include="Include\Dy\Helper\Internal\FHandler.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FHandle.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\XHandleAliases.h" />
+    <ClInclude Include="data\Script\Astronaut\PlanetScript.h" />
+    <ClInclude Include="Include\Dy\Builtin\Texture\FDyBtTexWhiteTexture.h" />
+    <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\FDyBtShOITPlainColor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -950,7 +956,6 @@
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandleTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandlerTmp.inl" />
     <None Include="Include\Dy\Core\Reflection\Inline\RReflectionTmp.inl" />
-    <None Include="data\Level\Test_Physics.json" />
     <None Include="data\Level\Test_Scene.json" />
     <None Include="Include\Dy\Helper\Internal\Inline\FThreadPoolTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FCallStackTmp.inl" />

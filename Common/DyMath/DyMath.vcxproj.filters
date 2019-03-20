@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Include\Common\TGlobalTypes.h" />
+    <ClInclude Include="Include\Common\XRemoveMacroes.h" />
+    <ClInclude Include="Include\Common\XGlobalMacroes.h" />
+    <ClInclude Include="Include\Type\DVector2.h" />
+    <ClInclude Include="Include\Utility\XMath.h" />
+    <ClInclude Include="Include\Type\DArea2D.h" />
+    <ClInclude Include="Include\Common\XGlobalUtilites.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Common\TGlobalTypes.cc" />
+    <ClCompile Include="Source\Type\DVector2.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Include\Type\Inline\DArea2D.inl" />
+    <None Include="Include\Common\Inline\XGlobalUtilities.inl" />
+    <None Include="Include\Common\Inline\TGlobalTypes.inl" />
+    <None Include="Include\Type\Inline\DVector2Int.inl" />
+    <None Include="Include\Type\Inline\DVector2Real.inl" />
+    <None Include="Include\Type\Inline\DVector2Common.inl" />
+  </ItemGroup>
+</Project>

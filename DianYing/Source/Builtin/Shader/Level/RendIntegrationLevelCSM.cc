@@ -163,7 +163,7 @@ vec3 GetOpaqueColor()
     if (dist > uDyLightPoint[i].mRange) { continue; }
 
     float invFactor = 1.0f;
-    if (DyIsNearlyEqual(dist, 0.0f) == false) { invFactor *= pow(dist, 2.0f); }
+    if (DyIsNearlyEqual(dist, 0.0f) == false) { invFactor *= pow(dist, 2.0f) * 0.25f; }
     
     const float factor = 
       GetHalfLambertFactor(normalValue.xyz, normalize(fromTo), 2.0f) 

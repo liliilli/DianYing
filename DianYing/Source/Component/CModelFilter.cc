@@ -27,7 +27,10 @@ EDySuccess CModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaI
 {
   // Bind model first.
   this->mModelSpecifier = metaInfo.mDetails.mModelSpecifierName;
-  this->mBinderModel.TryRequireResource(this->mModelSpecifier);
+  if (this->mModelSpecifier.empty() == false)
+  {
+    this->mBinderModel.TryRequireResource(this->mModelSpecifier);
+  }
 
   // Get model handle manager, and ask for whether model handler is already bound.
   auto& handleManager = FDyModelHandlerManager::GetInstance();

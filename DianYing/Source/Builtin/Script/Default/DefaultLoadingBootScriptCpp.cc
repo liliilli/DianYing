@@ -98,7 +98,6 @@ FDyDefaultLoadingBootScript::FDyDefaultLoadingBootScript()
   MDY_LOADING_RESOURCE_BIND(EResourceType::Mesh, "dyBtMsDebugAABB");
 
   MDY_LOADING_RESOURCE_BIND(EResourceType::GLFrameBuffer, FDyBtFrameBufferDeferred::sName);
-  //MDY_LOADING_RESOURCE_BIND(EResourceType::GLFrameBuffer, FDyBtFBBasicShadow::sName);
   MDY_LOADING_RESOURCE_BIND(EResourceType::GLFrameBuffer, builtin::FDyBtFbCSM::sName);
   MDY_LOADING_RESOURCE_BIND(EResourceType::GLFrameBuffer, FDyBtFbUiBasic::sName);
   MDY_LOADING_RESOURCE_BIND(EResourceType::GLFrameBuffer, builtin::FDyBtFbWeightBlendedOIT::sName);

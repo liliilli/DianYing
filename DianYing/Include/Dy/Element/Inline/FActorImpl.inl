@@ -40,12 +40,19 @@ inline EDySuccess FActor::Impl::pInitilaize(
 
     metaComponentInfo.insert(metaComponentInfo.end(), MDY_BIND_BEGIN_END(prefab.mMetaComponentInfo));
 
+    // Set Object tag.
     if (objectMetaDesc.mProperties.mIsOverridePrefabTag == true)
     { this->mActorTagSpecifier = objectMetaDesc.mProperties.mTagSpecifier; }
     else
     { this->mActorTagSpecifier = prefab.mCommonProperties.mTagSpecifier; }
   }
   else { this->mActorTagSpecifier = objectMetaDesc.mProperties.mTagSpecifier; }
+  
+  // (1-2) Set parent pointer.
+  if (iPtrParent != nullptr) 
+  { 
+    this->SetParent(*iPtrParent); 
+  }
 
   // (2) Create components
   // Check activation flags and execute sub-routines of each components.
@@ -57,10 +64,6 @@ inline EDySuccess FActor::Impl::pInitilaize(
     this->AddComponent<CTransform>(defaultTransform);
   }
 
-  if (iPtrParent == nullptr) 
-  { 
-    this->SetParent(*iPtrParent); 
-  }
   this->pUpdateActivateFlagFromParent();
   if (objectMetaDesc.mProperties.mInitialActivated == true) 
   { 
@@ -106,20 +109,30 @@ inline EDySuccess FActor::Impl::pInitilaize(const PActorCreationDescriptor& iDes
   }
   else { this->mActorTagSpecifier = iDesc.mObjectTag; }
 
+  if (iPtrParent != nullptr) 
+  { 
+    this->SetParent(*iPtrParent); 
+  }
+
   // (2) Create components
   // Check activation flags and execute sub-routines of each components.
   // (3) Create Transform component using Given transform
   this->CreateComponentsWithList(metaComponentInfo);
   this->AddComponent<CTransform>(iDesc.mTransform);
 
-  if (iPtrParent != nullptr) 
-  { 
-    this->SetParent(*iPtrParent); 
-  }
   this->pUpdateActivateFlagFromParent();
   this->mRefActor.Activate(); 
 
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mTransform), "CTransform component must be created to all FActor.");
+  // (4) Move binder from Descriptor into FActor.
+  auto& desc = const_cast<PActorCreationDescriptor&>(iDesc);
+  for (auto& ptrBinder : desc.GetActorBinderContainer())
+  {
+    ptrBinder->__BindDescriptor(&this->mRefActor);
+  }
+
+  MDY_ASSERT_MSG(
+    this->mTransform != nullptr, 
+    "CTransform component must be created to all FActor.");
   SProfilingHelper::IncreaseOnBindActorCount(1);
   
   return DY_SUCCESS;

@@ -32,6 +32,7 @@
 #include <Dy/Management/MWorld.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/Helper/SProfilingHelper.h>
+#include <Dy/Helper/Library/HelperRegex.h>
 
 //!
 //! Implementation
@@ -358,187 +359,249 @@ public:
 
 namespace dy
 {
-  FActor::FActor(const PDyObjectMetaInfo& objectMetaDesc, FActor* iPtrParent)
-  {
-    this->mInternal = new Impl(*this);
-    this->pSetObjectName(objectMetaDesc.mSpecifierName);
-    this->mInternal->Initialize(PImplDesc{&objectMetaDesc, nullptr, iPtrParent});
-  }
 
-  FActor::FActor(const PActorCreationDescriptor& iDesc, FActor* iPtrParent)
-  {
-    this->mInternal = new Impl(*this);
-    this->pSetObjectName(iDesc.mActorSpecifierName);
-    this->mInternal->Initialize(PImplDesc{nullptr, &iDesc, iPtrParent});
-  }
+FActor::FActor(const PDyObjectMetaInfo& objectMetaDesc, FActor* iPtrParent)
+{
+  this->mInternal = new Impl(*this);
+  this->pSetObjectName(objectMetaDesc.mSpecifierName);
+  this->mInternal->Initialize(PImplDesc{&objectMetaDesc, nullptr, iPtrParent});
+}
 
-  FActor::~FActor()
-  {
-    this->mInternal->Release();
-    delete this->mInternal; this->mInternal = nullptr;
-  }
+FActor::FActor(const PActorCreationDescriptor& iDesc, FActor* iPtrParent)
+{
+  this->mInternal = new Impl(*this);
+  this->pSetObjectName(iDesc.mActorSpecifierName);
+  this->mInternal->Initialize(PImplDesc{nullptr, &iDesc, iPtrParent});
+}
 
-  void FActor::DestroySelf()
-  {
-    MWorld::GetInstance().DestroyActor(*this);
-  }
+FActor::~FActor()
+{
+  this->mInternal->Release();
+  delete this->mInternal; this->mInternal = nullptr;
+}
 
-  const std::string& FActor::GetActorName() const noexcept
-  {
-    return this->pGetObjectName();
-  }
+FActor* FActor::GetActorWithFullName(const std::vector<std::string>& iKeywords) const noexcept
+{
+  if (iKeywords.empty() == true) { return nullptr; }
 
-  std::string FActor::GetActorFullName() const noexcept
+  // Find actor by searching with name.
+  for (auto& [actorSpecifier, smtptrActor] : this->mInternal->mChildrenActors)
   {
-    if (this->HasParent() == false) 
-    { 
-      return this->GetActorName(); 
-    }
-    else
+    if (smtptrActor == nullptr) { continue; }
+    if (actorSpecifier == iKeywords.front())
     {
-      const auto headFullSpecifierName = this->GetPtrParent()->GetActorFullName();
-      return MakeStringU8("{}.{}", headFullSpecifierName, this->GetActorName());
+      // If keyword is last keyword, return actor's pointer.
+      if (iKeywords.size() == 1)
+      {
+        return smtptrActor.get();
+      }
+
+      // Otherwise, do recursion one more..
+      std::vector<std::string> nextKeywords;
+      nextKeywords.insert(nextKeywords.end(), iKeywords.cbegin() + 1, iKeywords.cend());
+
+      return smtptrActor->GetActorWithFullName(nextKeywords);
     }
   }
 
-  void FActor::pUpdateActivateFlagFromParent() noexcept
+  return nullptr;
+}
+
+FActor* FActor::GetActorWithFullName(const std::string& iFullName) const noexcept
+{
+  auto optKeywords = regex::GetMatchedKeywordFrom(iFullName, R"regex(([\w]+))regex");
+  if (optKeywords.has_value() == false)
   {
-    this->mInternal->pUpdateActivateFlagFromParent();
+    return nullptr;
   }
 
-  void FActor::MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FActor** iPPtrTarget)
-  {
-    this->mInternal->__AttachPickingTargetFromSystem(iPPtrTarget);
+  return this->GetActorWithFullName(*optKeywords);
+}
+
+void FActor::DestroySelf()
+{
+  MWorld::GetInstance().DestroyActor(*this);
+}
+
+const std::string& FActor::GetActorName() const noexcept
+{
+  return this->pGetObjectName();
+}
+
+std::string FActor::GetActorFullName() const noexcept
+{
+  if (this->HasParent() == false) 
+  { 
+    return this->GetActorName(); 
   }
-
-  EDySuccess FActor::MDY_PRIVATE(DetachPickingTargetFromSystem)()
+  else
   {
-    return this->mInternal->__DetachPickingTargetFromSystem();
+    const auto headFullSpecifierName = this->GetPtrParent()->GetActorFullName();
+    return MakeStringU8("{}.{}", headFullSpecifierName, this->GetActorName());
   }
+}
 
-  void FActor::SetParent(FActor& iValidParent) noexcept
+void FActor::pUpdateActivateFlagFromParent() noexcept
+{
+  this->mInternal->pUpdateActivateFlagFromParent();
+}
+
+void FActor::MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FActor** iPPtrTarget)
+{
+  this->mInternal->__AttachPickingTargetFromSystem(iPPtrTarget);
+}
+
+EDySuccess FActor::MDY_PRIVATE(DetachPickingTargetFromSystem)()
+{
+  return this->mInternal->__DetachPickingTargetFromSystem();
+}
+
+void FActor::SetParent(FActor& iValidParent) noexcept
+{
+  return this->mInternal->SetParent(iValidParent);
+}
+
+void FActor::SetParentAsRoot() noexcept
+{
+  return this->mInternal->SetParentAsRoot();
+}
+
+EWorldObjectType FActor::GetActorType() const noexcept
+{
+  return this->mInternal->GetActorType();
+}
+
+const std::string& FActor::GetActorTag() const noexcept
+{
+  return this->mInternal->GetActorTag();
+}
+
+std::vector<NotNull<FActor*>> 
+FActor::GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept
+{
+  return this->mInternal->GetAllActorsWithTag(iTagSpecifier);
+}
+
+std::vector<NotNull<FActor*>> 
+FActor::GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept
+{
+  return this->mInternal->GetAllActorsWithTagRecursive(iTagSpecifier);
+}
+
+std::vector<NotNull<FActor*>> 
+FActor::GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept
+{
+  return this->mInternal->GetAllActorsWithName(iNameSpecifier);
+}
+
+std::vector<NotNull<FActor*>> 
+FActor::GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept
+{
+  return this->mInternal->GetAllActorsWithNameRecursive(iNameSpecifier);
+}
+
+FActor* FActor::GetActorWithObjectId(TU32 iObjectId) noexcept
+{
+  return this->mInternal->GetActorWithObjectId(iObjectId);
+}
+
+bool FActor::HasParent() const noexcept { return this->mInternal->HasParent(); }
+
+FActor* FActor::GetPtrParent() const noexcept { return this->mInternal->GetPtrParent(); }
+
+bool FActor::HasChildrenActor() const noexcept { return this->mInternal->HasChildrenActor(); }
+
+FActor::TActorMap& FActor::GetChildrenContainer() noexcept
+{
+  return this->mInternal->GetChildrenContainer();
+}
+
+std::string FActor::ToString()
+{
+  return MakeStringU8("Actor name : {}, Id : {}", this->GetActorName(), this->GetId());
+}
+
+void FActor::CreateActorInstantly(const PActorCreationDescriptor& iDescriptor)
+{
+  // Get Auto generated name.
+  PActorCreationDescriptor desc = iDescriptor;
+  desc.mActorSpecifierName = this->mInternal->TryGetGeneratedName(iDescriptor.mActorSpecifierName);
+
+  auto instancePtr  = std::make_unique<FActor>(desc, this);
+  auto [it, isSucceeded] = this->mInternal->mChildrenActors.try_emplace(
+    instancePtr->GetActorName(), 
+    std::move(instancePtr));
+
+  MDY_ASSERT_MSG(
+    isSucceeded == true, 
+    "Unexpected error occured in inserting FActor to object map.");
+   
+  // Try propagate transform.
+  auto& [specifier, ptrsmtActor] = *it;
+  if (ptrsmtActor->HasParent() == true)
   {
-    return this->mInternal->SetParent(iValidParent);
+    ptrsmtActor->GetPtrParent()->GetTransform()->TryPropagateTransformToChildren();
   }
+}
 
-  void FActor::SetParentAsRoot() noexcept
+void FActor::MDY_PRIVATE(TryRemoveScriptInstances)() noexcept
+{
+  this->mInternal->__TryRemoveScriptInstances();
+}
+
+void FActor::MDY_PRIVATE(TryDetachDependentComponents)() noexcept
+{
+  this->mInternal->__TryDetachDependentComponents();
+}
+
+NotNull<CTransform*> FActor::GetTransform() noexcept
+{
+  return this->mInternal->GetTransform();
+}
+
+CPhysicsRigidbody* FActor::GetRigidbody() noexcept
+{
+  return this->mInternal->GetRigidbody();
+}
+
+CActorScript* FActor::pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
+{
+  // Validation check.
+  const auto specifierName = iInfo.mDetails.mSpecifierName;
+  auto& metaManager = MIOMeta::GetInstance();
+  if (metaManager.IsScriptMetaInformationExist(specifierName) == false)
   {
-    return this->mInternal->SetParentAsRoot();
-  }
+    DyPushLogDebugError("Failed to create script, {}. Script information is not exist.", specifierName);
+    return nullptr;
+  };
 
-  EWorldObjectType FActor::GetActorType() const noexcept
-  {
-    return this->mInternal->GetActorType();
-  }
+  // Get information of script to be created.
+  const auto& instanceInfo = metaManager.GetScriptMetaInformation(specifierName);
+  MDY_ASSERT_MSG(
+    instanceInfo.mScriptType != EDyScriptType::NoneError, 
+    "Script type must be valid.");
 
-  const std::string& FActor::GetActorTag() const noexcept
-  {
-    return this->mInternal->GetActorTag();
-  }
+  return this->mInternal->AddScriptComponent(instanceInfo);
+}
 
-  std::vector<NotNull<FActor*>> 
-  FActor::GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept
-  {
-    return this->mInternal->GetAllActorsWithTag(iTagSpecifier);
-  }
+FActor::TComponentList& FActor::pGetComponentList() noexcept
+{
+  return this->mInternal->mComponentList;
+}
 
-  std::vector<NotNull<FActor*>> 
-  FActor::GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept
-  {
-    return this->mInternal->GetAllActorsWithTagRecursive(iTagSpecifier);
-  }
+void FActor::pReleaseComponent(TComponentItem& ioItem)
+{
+  this->mInternal->ReleaseComponent(ioItem);
+}
 
-  std::vector<NotNull<FActor*>> 
-  FActor::GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept
-  {
-    return this->mInternal->GetAllActorsWithName(iNameSpecifier);
-  }
+void FActor::TryActivateInstance()
+{
+  this->mInternal->TryActivateInstance();
+}
 
-  std::vector<NotNull<FActor*>> 
-  FActor::GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept
-  {
-    return this->mInternal->GetAllActorsWithNameRecursive(iNameSpecifier);
-  }
-
-  FActor* FActor::GetActorWithObjectId(TU32 iObjectId) noexcept
-  {
-    return this->mInternal->GetActorWithObjectId(iObjectId);
-  }
-
-  bool FActor::HasParent() const noexcept { return this->mInternal->HasParent(); }
-
-  FActor* FActor::GetPtrParent() const noexcept { return this->mInternal->GetPtrParent(); }
-
-  bool FActor::HasChildrenActor() const noexcept { return this->mInternal->HasChildrenActor(); }
-
-  FActor::TActorMap& FActor::GetChildrenContainer() noexcept
-  {
-    return this->mInternal->GetChildrenContainer();
-  }
-
-  std::string FActor::ToString()
-  {
-    return MakeStringU8("Actor name : {}, Id : {}", this->GetActorName(), this->GetId());
-  }
-
-  void FActor::MDY_PRIVATE(TryRemoveScriptInstances)() noexcept
-  {
-    this->mInternal->__TryRemoveScriptInstances();
-  }
-
-  void FActor::MDY_PRIVATE(TryDetachDependentComponents)() noexcept
-  {
-    this->mInternal->__TryDetachDependentComponents();
-  }
-
-  NotNull<CTransform*> FActor::GetTransform() noexcept
-  {
-    return this->mInternal->GetTransform();
-  }
-
-  CPhysicsRigidbody* FActor::GetRigidbody() noexcept
-  {
-    return this->mInternal->GetRigidbody();
-  }
-
-  CActorScript* FActor::pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
-  {
-    // Validation check.
-    const auto specifierName = iInfo.mDetails.mSpecifierName;
-    auto& metaManager = MIOMeta::GetInstance();
-    if (metaManager.IsScriptMetaInformationExist(specifierName) == false)
-    {
-      DyPushLogDebugError("Failed to create script, {}. Script information is not exist.", specifierName);
-      return nullptr;
-    };
-
-    // Get information of script to be created.
-    const auto& instanceInfo = metaManager.GetScriptMetaInformation(specifierName);
-    MDY_ASSERT_MSG(
-      instanceInfo.mScriptType != EDyScriptType::NoneError, 
-      "Script type must be valid.");
-
-    return this->mInternal->AddScriptComponent(instanceInfo);
-  }
-
-  FActor::TComponentList& FActor::pGetComponentList() noexcept
-  {
-    return this->mInternal->mComponentList;
-  }
-
-  void FActor::pReleaseComponent(TComponentItem& ioItem)
-  {
-    this->mInternal->ReleaseComponent(ioItem);
-  }
-
-  void FActor::TryActivateInstance()
-  {
-    this->mInternal->TryActivateInstance();
-  }
-
-  void FActor::TryDeactivateInstance()
-  {
-    this->mInternal->TryDeactivateInstance();
-  }
+void FActor::TryDeactivateInstance()
+{
+  this->mInternal->TryDeactivateInstance();
+}
 
 } /// ::dy namespace
