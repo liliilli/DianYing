@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{9647DB5E-843D-410C-BF5E-1BDBA3EE4528}</ProjectGuid>
-    <RootNamespace>ProjectWipeOut</RootNamespace>
+    <ProjectGuid>{2C8BEE90-1FCF-45DB-8779-FDF5E167FA6C}</ProjectGuid>
+    <RootNamespace>TestDyMath</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,12 +70,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)DianYing\Include;$(IncludePath)</IncludePath>
-    <SourcePath>$(SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)ThirdParty;$(ProjectDir)Include;$(SolutionDir)Common\DyMath\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)DianYing\Include;$(IncludePath)</IncludePath>
-    <SourcePath>$(SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)ThirdParty;$(ProjectDir)Include;$(SolutionDir)Common\DyMath\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -83,10 +81,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;C:\TPLibraries\PhysX\pxshared\include;C:\TPLibraries\PhysX\physx\include;$(SolutionDir)DianYing\Libraries\msdfgen;$(SolutionDir)DianYing\Libraries\lua\include;$(SolutionDir)DianYing\Libraries\sol2;$(SolutionDir)DianYing\Libraries\phitos;$(SolutionDir)DianYing\Libraries\nlohmann;$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\freetype\include;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;$(SolutionDir)DianYing\Libraries\zlib;$(SolutionDir)DianYing\Libraries\cxxopts\include;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -119,10 +115,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;C:\TPLibraries\PhysX\pxshared\include;C:\TPLibraries\PhysX\physx\include;$(SolutionDir)DianYing\Libraries\msdfgen;$(SolutionDir)DianYing\Libraries\lua\include;$(SolutionDir)DianYing\Libraries\sol2;$(SolutionDir)DianYing\Libraries\phitos;$(SolutionDir)DianYing\Libraries\nlohmann;$(SolutionDir)DianYing\Libraries\glad\include;$(SolutionDir)DianYing\Libraries\stb;$(SolutionDir)DianYing\Libraries\imgui;$(SolutionDir)DianYing\Libraries\glfw\include;$(SolutionDir)DianYing\Libraries\assimp\assimp\$(Platform);$(SolutionDir)DianYing\Libraries\assimp;$(SolutionDir)DianYing\Libraries\glm;$(SolutionDir)DianYing\Libraries\freetype\include;$(SolutionDir)DianYing\Libraries\spdlog\include;$(SolutionDir)DianYing\Libraries\FX11\inc;$(SolutionDir)DianYing\Libraries\zlib;$(SolutionDir)DianYing\Libraries\cxxopts\include;C:\VulkanSDK\1.1.85.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -130,7 +124,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Entry.cc" />
+    <ClInclude Include="ThirdParty\Catch2\catch.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\DVector2.cc" />
+    <ClCompile Include="Source\XTest.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
