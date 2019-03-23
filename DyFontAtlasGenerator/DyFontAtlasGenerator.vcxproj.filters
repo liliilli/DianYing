@@ -36,45 +36,6 @@
     <ClCompile Include="precompiled.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\Bitmap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\Contour.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\edge-coloring.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\EdgeHolder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\edge-segments.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\equation-solver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\msdfgen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\render-sdf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\save-bmp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\Shape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\shape-description.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\SignedDistance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Libraries\msdfgen\core\Vector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\DyFontAtlasGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -97,6 +58,45 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Library\JsonTypeWriterHelper.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Bitmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Contour.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\edge-coloring.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\EdgeHolder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\edge-segments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\equation-solver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\msdfgen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\render-sdf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\save-bmp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\shape-description.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\SignedDistance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Vector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -126,48 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="precompiled.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\arithmetics.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\Bitmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\Contour.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\EdgeColor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\edge-coloring.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\EdgeHolder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\edge-segments.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\equation-solver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\render-sdf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\save-bmp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\Shape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\shape-description.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\SignedDistance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Libraries\msdfgen\core\Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\AConstantLangRange.h">

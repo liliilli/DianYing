@@ -14,6 +14,8 @@
 ///
 
 #include <Dy/Helper/Library/HelperJson.h>
+#define FMT_HEADER_ONLY
+#include <spdlog/fmt/fmt.h>
 
 namespace dy
 {

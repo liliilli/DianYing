@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Management/MLog.h>
 
-#include <spdlog/async.h>
 #include <spdlog/spdlog.h>
+#include <spdlog/async.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/logger.h>
 
