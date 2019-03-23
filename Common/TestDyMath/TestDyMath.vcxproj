@@ -70,10 +70,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)ThirdParty;$(ProjectDir)Include;$(SolutionDir)Common\DyMath\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Common\ThirdParty;$(ProjectDir)Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\DyExpression\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)ThirdParty;$(ProjectDir)Include;$(SolutionDir)Common\DyMath\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Common\ThirdParty;$(ProjectDir)Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\DyExpression\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -127,7 +127,20 @@
     <ClInclude Include="ThirdParty\Catch2\catch.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\DVector2.cc" />
+    <ClCompile Include="Source\DArea2D\TestDArea2DInt.cc" />
+    <ClCompile Include="Source\DArea2D\TestDArea2DReal.cc" />
+    <ClCompile Include="Source\DArea3D\TestDArea3DInt.cc" />
+    <ClCompile Include="Source\DClamp\TestDClamp.cc" />
+    <ClCompile Include="Source\DMatrix\TestDMatrix2.cc" />
+    <ClCompile Include="Source\DMatrix\TestDMatrix3.cc" />
+    <ClCompile Include="Source\DMatrix\TestDMatrix4.cc" />
+    <ClCompile Include="Source\DVector2\TestDVector2.cc" />
+    <ClCompile Include="Source\TestXGlobalUtilities.cc" />
+    <ClCompile Include="Source\XLinearMath\TestCross.cc" />
+    <ClCompile Include="Source\XLinearMath\TestDot.cc" />
+    <ClCompile Include="Source\XLinearMath\TestLerp.cc" />
+    <ClCompile Include="Source\XLinearMath\TestNearlyEqual.cc" />
+    <ClCompile Include="Source\XLinearMath\TestPlane.cc" />
     <ClCompile Include="Source\XTest.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

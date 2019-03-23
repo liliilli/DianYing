@@ -1,24 +1,58 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="Include\Common\TGlobalTypes.h" />
-    <ClInclude Include="Include\Common\XRemoveMacroes.h" />
-    <ClInclude Include="Include\Common\XGlobalMacroes.h" />
-    <ClInclude Include="Include\Type\DVector2.h" />
-    <ClInclude Include="Include\Utility\XMath.h" />
-    <ClInclude Include="Include\Type\DArea2D.h" />
-    <ClInclude Include="Include\Common\XGlobalUtilites.h" />
+    <ClInclude Include="Include\Math\Common\TGlobalTypes.h" />
+    <ClInclude Include="Include\Math\Common\XGlobalMacroes.h" />
+    <ClInclude Include="Include\Math\Common\XGlobalUtilites.h" />
+    <ClInclude Include="Include\Math\Common\XRemoveMacroes.h" />
+    <ClInclude Include="Include\Math\Utility\XMath.h" />
+    <ClInclude Include="Include\Math\Utility\XLinearMath.h" />
+    <ClInclude Include="Include\Math\Type\Math\DArea2D.h" />
+    <ClInclude Include="Include\Math\Type\Math\DArea3D.h" />
+    <ClInclude Include="Include\Math\Type\Math\DClamp.h" />
+    <ClInclude Include="Include\Math\Type\Math\DPlane.h" />
+    <ClInclude Include="Include\Math\Type\Math\DVector2.h" />
+    <ClInclude Include="Include\Math\Type\Math\DVector3.h" />
+    <ClInclude Include="Include\Math\Type\Math\DVector4.h" />
+    <ClInclude Include="Include\Math\Type\Math\DMatrix2.h" />
+    <ClInclude Include="Include\Math\Type\Math\DMatrix3.h" />
+    <ClInclude Include="Include\Math\Type\Math\DMatrix4.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Common\TGlobalTypes.cc" />
-    <ClCompile Include="Source\Type\DVector2.cc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Include\Type\Inline\DArea2D.inl" />
-    <None Include="Include\Common\Inline\XGlobalUtilities.inl" />
-    <None Include="Include\Common\Inline\TGlobalTypes.inl" />
-    <None Include="Include\Type\Inline\DVector2Int.inl" />
-    <None Include="Include\Type\Inline\DVector2Real.inl" />
-    <None Include="Include\Type\Inline\DVector2Common.inl" />
+    <None Include="Include\Math\Common\Inline\TGlobalTypes.inl" />
+    <None Include="Include\Math\Common\Inline\XGlobalUtilities\GetCoverableTypeOf.inl" />
+    <None Include="Include\Math\Common\Inline\XGlobalUtilities\GetBiggerType.inl" />
+    <None Include="Include\Math\Common\Inline\XGlobalUtilities\XGlobalUtilities.inl" />
+    <None Include="Include\Math\Common\Inline\TGlobalTypes\TValueCategory.inl" />
+    <None Include="Include\Math\Common\Inline\TGlobalTypes\TTypeListOf.inl" />
+    <None Include="Include\Math\Type\Inline\DVector2\DVector2Common.inl" />
+    <None Include="Include\Math\Type\Inline\DVector2\DVector2Int.inl" />
+    <None Include="Include\Math\Type\Inline\DVector2\DVector2Real.inl" />
+    <None Include="Include\Math\Type\Inline\DArea2D\DArea2DInt.inl" />
+    <None Include="Include\Math\Type\Inline\DArea2D\DArea2DReal.inl" />
+    <None Include="Include\Math\Type\Inline\DVector3\DVector3Common.inl" />
+    <None Include="Include\Math\Type\Inline\DVector3\DVector3Int.inl" />
+    <None Include="Include\Math\Type\Inline\DVector3\DVector3Real.inl" />
+    <None Include="Include\Math\Utility\Inline\XLinearMath.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\DVector4Common.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\DVector4Int.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\DVector4Real.inl" />
+    <None Include="Include\Math\Type\Inline\DArea3D\DArea3DInt.inl" />
+    <None Include="Include\Math\Type\Inline\DArea3D\DArea3DReal.inl" />
+    <None Include="Include\Math\Type\Inline\DClamp\DClampOperator.inl" />
+    <None Include="Include\Math\Type\Inline\DClamp\DClamp.inl" />
+    <None Include="Include\Math\Common\Inline\XGlobalUtilities\GetRealTypeOf.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\IsNearlyEqual.inl" />
+    <None Include="Include\Math\Type\Inline\DPlane\DPlane.inl" />
+    <None Include="Include\Math\Type\Inline\DMatrix2\DMatrix2Operator.inl" />
+    <None Include="Include\Math\Type\Inline\DMatrix2\DMatrix2.inl" />
+    <None Include="Include\Math\Type\Inline\DMatrix3\DMatrix3Operator.inl" />
+    <None Include="Include\Math\Type\Inline\DMatrix3\DMatrix3.inl" />
+    <None Include="Include\Math\Type\Inline\DMatrix4\DMatrix4Operator.inl" />
+    <None Include="Include\Math\Type\Inline\DMatrix4\DMatrix4.inl" />
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

@@ -53,7 +53,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CONCURRENT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);C:\TPLibraries\boost_1_67_0;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);C:\TPLibraries\boost_1_67_0;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -66,7 +66,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration);$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmaind.lib;freetype.lib;zlibstaticd.lib;Qt5Widgetsd.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Guid.lib;Qt5Concurrentd.lib;Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -90,7 +90,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;WIN64;QT_NO_DEBUG;NDEBUG;QT_WIDGETS_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CONCURRENT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);C:\TPLibraries\boost_1_67_0;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);C:\TPLibraries\boost_1_67_0;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -102,7 +102,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration);$(ProjectDir)Libraries\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(ProjectDir)Libraries\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;freetype.lib;zlibstatic.lib;Qt5Widgets.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Gui.lib;Qt5Concurrent.lib;Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>

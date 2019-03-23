@@ -11,40 +11,40 @@
 /// SOFTWARE.
 ///
 
-#include <Common/TGlobalTypes.h>
-#include <Common/XGlobalMacroes.h>
+#include <Math/Common/TGlobalTypes.h>
+#include <Math/Common/XGlobalMacroes.h>
 
 namespace dy::math
 {
 
-M_UNUSED_VAR = kMaxValueOf<TChr8>;
-M_UNUSED_VAR = kMaxValueOf<TChr16>;
-M_UNUSED_VAR = kMaxValueOf<TChr32>;
-M_UNUSED_VAR = kMaxValueOf<TU8>;
-M_UNUSED_VAR = kMaxValueOf<TU16>;
-M_UNUSED_VAR = kMaxValueOf<TU32>;
-M_UNUSED_VAR = kMaxValueOf<TU64>;
-M_UNUSED_VAR = kMaxValueOf<TI8>;
-M_UNUSED_VAR = kMaxValueOf<TI16>;
-M_UNUSED_VAR = kMaxValueOf<TI32>;
-M_UNUSED_VAR = kMaxValueOf<TI64>;
-M_UNUSED_VAR = kMaxValueOf<TF32>;
-M_UNUSED_VAR = kMaxValueOf<TF64>;
-M_UNUSED_VAR = kMaxValueOf<TIndex>;
+MATH_UNUSED_VAR = kMaxValueOf<TChr8>;
+MATH_UNUSED_VAR = kMaxValueOf<TChr16>;
+MATH_UNUSED_VAR = kMaxValueOf<TChr32>;
+MATH_UNUSED_VAR = kMaxValueOf<TU8>;
+MATH_UNUSED_VAR = kMaxValueOf<TU16>;
+MATH_UNUSED_VAR = kMaxValueOf<TU32>;
+MATH_UNUSED_VAR = kMaxValueOf<TU64>;
+MATH_UNUSED_VAR = kMaxValueOf<TI8>;
+MATH_UNUSED_VAR = kMaxValueOf<TI16>;
+MATH_UNUSED_VAR = kMaxValueOf<TI32>;
+MATH_UNUSED_VAR = kMaxValueOf<TI64>;
+MATH_UNUSED_VAR = kMaxValueOf<TF32>;
+MATH_UNUSED_VAR = kMaxValueOf<TF64>;
+MATH_UNUSED_VAR = kMaxValueOf<TIndex>;
 
-M_UNUSED_VAR = kMinValueOf<TChr8>;
-M_UNUSED_VAR = kMinValueOf<TChr16>;
-M_UNUSED_VAR = kMinValueOf<TChr32>;
-M_UNUSED_VAR = kMinValueOf<TU8>;
-M_UNUSED_VAR = kMinValueOf<TU16>;
-M_UNUSED_VAR = kMinValueOf<TU32>;
-M_UNUSED_VAR = kMinValueOf<TU64>;
-M_UNUSED_VAR = kMinValueOf<TI8>;
-M_UNUSED_VAR = kMinValueOf<TI16>;
-M_UNUSED_VAR = kMinValueOf<TI32>;
-M_UNUSED_VAR = kMinValueOf<TI64>;
-M_UNUSED_VAR = kMinValueOf<TF32>;
-M_UNUSED_VAR = kMinValueOf<TF64>;
-M_UNUSED_VAR = kMinValueOf<TIndex>;
+MATH_UNUSED_VAR = kMinValueOf<TChr8>;
+MATH_UNUSED_VAR = kMinValueOf<TChr16>;
+MATH_UNUSED_VAR = kMinValueOf<TChr32>;
+MATH_UNUSED_VAR = kMinValueOf<TU8>;
+MATH_UNUSED_VAR = kMinValueOf<TU16>;
+MATH_UNUSED_VAR = kMinValueOf<TU32>;
+MATH_UNUSED_VAR = kMinValueOf<TU64>;
+MATH_UNUSED_VAR = kMinValueOf<TI8>;
+MATH_UNUSED_VAR = kMinValueOf<TI16>;
+MATH_UNUSED_VAR = kMinValueOf<TI32>;
+MATH_UNUSED_VAR = kMinValueOf<TI64>;
+MATH_UNUSED_VAR = kMinValueOf<TF32>;
+MATH_UNUSED_VAR = kMinValueOf<TF64>;
+MATH_UNUSED_VAR = kMinValueOf<TIndex>;
 
 } /// ::dy::math namespace
