@@ -141,6 +141,7 @@
     <ClCompile Include="Source\XLinearMath\TestLerp.cc" />
     <ClCompile Include="Source\XLinearMath\TestNearlyEqual.cc" />
     <ClCompile Include="Source\XLinearMath\TestPlane.cc" />
+    <ClCompile Include="Source\XMath\TestMapValue.cc" />
     <ClCompile Include="Source\XTest.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
