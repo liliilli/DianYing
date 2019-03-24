@@ -17,16 +17,37 @@
 namespace dy::expr
 {
 
-template <typename TArg, typename... TArgs>
+template <ETypeRef EValue, typename TArg, typename... TArgs>
 struct STypeList::TFactory final
 {
-  using TTypeList = TTypeList<TArg, typename STypeList::TFactory<TArgs...>::TTypeList>;
+  using TTypeList = TTypeList<
+    typename TResultType<EValue, TArg>::Type, 
+    typename TFactory<EValue, TArgs...>::TTypeList>;
+};
+
+template <ETypeRef EValue, typename TArg> 
+struct STypeList::TFactory<EValue, TArg> final
+{
+  using TTypeList = TTypeListTail<
+    typename TResultType<EValue, TArg>::Type>;
 };
 
 template <typename TArg> 
-struct STypeList::TFactory<TArg> final
+struct STypeList::TResultType<ETypeRef::None, TArg> final
 {
-  using TTypeList = TTypeListTail<TArg>;
+  using Type = TArg;
+};
+
+template <typename TArg> 
+struct STypeList::TResultType<ETypeRef::LValue, TArg> final
+{
+  using Type = std::add_lvalue_reference_t<TArg>;
+};
+
+template <typename TArg> 
+struct STypeList::TResultType<ETypeRef::RValue, TArg> final
+{
+  using Type = std::add_rvalue_reference_t<TArg>;
 };
 
 template <typename TType>
@@ -112,7 +133,7 @@ struct STypeList::TGetIndexOf<TTargetType, TTypeList<TType, TList>, I> final
 template <typename TType, typename... TArgs> 
 struct STypeList::TAppend<TTypeListTail<TType>, TArgs...> final
 {
-  using List = STypeList::MakeList<TType, TArgs...>;
+  using List = STypeList::MakeList<ETypeRef::None, TType, TArgs...>;
 };
 
 template <typename TType, typename TList, typename... TArgs>

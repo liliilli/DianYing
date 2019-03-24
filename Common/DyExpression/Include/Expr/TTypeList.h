@@ -41,13 +41,26 @@ struct TTypeListTail final
   using Type = TType;
 };
 
+enum class ETypeRef
+{
+  None,
+  LValue,
+  RValue,
+};
+
 /// @struct STypeList
 /// @brief Typelist helper API container.
 struct STypeList final
 {
 private:
-  template <typename TArg, typename... TArgs> struct TFactory;
-  template <typename TArg> struct TFactory<TArg>;
+  template <ETypeRef EValue, typename TArg, typename... TArgs> struct TFactory;
+  template <ETypeRef EValue, typename TArg> struct TFactory<EValue, TArg>;
+
+  template <ETypeRef EValue, typename TArg> struct TResultType;
+  template <typename TArg> struct TResultType<ETypeRef::None, TArg>;
+  template <typename TArg> struct TResultType<ETypeRef::LValue, TArg>;
+  template <typename TArg> struct TResultType<ETypeRef::RValue, TArg>;
+
   template <typename TType> struct TLengthOf;
   template <std::size_t I, typename TType> struct TAt;
   template <typename TTargetType, typename TList> struct THasType;
@@ -58,12 +71,20 @@ private:
 public:
   /// @brief Make type list.
   /// @tparam TArgs Type list to input into the type list.
-  template <typename... TArgs>
-  using MakeList = typename TFactory<TArgs...>::TTypeList;
+  template <ETypeRef EValue, typename... TArgs>
+  using MakeList = typename TFactory<EValue, TArgs...>::TTypeList;
 
   /// @def EXPR_MAKE_TYPELIST
   /// @brief Helper macro function for creating typelist.
-  #define EXPR_MAKE_TYPELIST(...) ::dy::expr::STypeList::MakeList<__VA_ARGS__>
+  #define EXPR_MAKE_TYPELIST(...) ::dy::expr::STypeList::MakeList<ETypeRef::None, __VA_ARGS__>
+
+  /// @def EXPR_MAKE_TYPELIST_LREF
+  /// @brief
+  #define EXPR_MAKE_TYPELIST_LREF(...) ::dy::expr::STypeList::MakeList<ETypeRef::LValue, __VA_ARGS__>
+
+  /// @def EXPR_MAKE_TYPELIST_RREF
+  /// @brief
+  #define EXPR_MAKE_TYPELIST_RREF(...) ::dy::expr::STypeList::MakeList<ETypeRef::RValue, __VA_ARGS__>
 
   /// @brief Get length of given Typelist type.
   /// @tparam TList Typelist.
