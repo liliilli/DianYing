@@ -29,6 +29,14 @@ Created TypeList type can do these below things.
 5. Append another type into TypeList.
 6. Getting satisfied type using static functor that has one type parameter.
 
+### TNull
+
+`TNull` is failure type of all compile time processing.
+
+``` c++
+struct TNull final {};
+```
+
 #### Example Code
 
 ``` c++
