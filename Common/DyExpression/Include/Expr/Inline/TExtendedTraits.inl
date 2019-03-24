@@ -27,7 +27,7 @@ struct IsIterable_T final
 template <typename T>
 static auto func(int)
   -> decltype (
-    begin(std::declval<T&>()) != end(std::declval<T&>()), // begin/end and operator !=
+    begin(std::declval<T&>()) != end(std::declval<T&>()),   // begin/end and operator !=
     void(), // Handle evil operator ,
     ++std::declval<decltype(begin(std::declval<T&>()))&>(), // operator ++
     void(*begin(std::declval<T&>())), // operator*
@@ -45,8 +45,7 @@ struct HasBeginEnd_T final
 template <typename T>
 static auto func(int)
   -> decltype(
-    begin(std::declval<T&>()) != end(std::declval<T&>()), // Begin / End and operator !=
-    ++std::declval<decltype(begin(std::declval<T&>()))&>(),
+    begin(std::declval<T&>()) != end(std::declval<T&>()),   // Begin / End and operator !=
     std::true_type{}
   );
 
