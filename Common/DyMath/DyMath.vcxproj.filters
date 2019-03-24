@@ -17,6 +17,9 @@
     <ClInclude Include="Include\Math\Type\Math\DMatrix2.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix3.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix4.h" />
+    <ClInclude Include="Include\Math\Type\Math\DQuat.h" />
+    <ClInclude Include="Include\Math\Type\Math\EAxis.h" />
+    <ClInclude Include="Include\Math\Utility\XMathTrigonometry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Common\TGlobalTypes.cc" />
@@ -54,5 +57,7 @@
     <None Include="Include\Math\Type\Inline\DMatrix4\DMatrix4Operator.inl" />
     <None Include="Include\Math\Type\Inline\DMatrix4\DMatrix4.inl" />
     <None Include="README.md" />
+    <None Include="Include\Math\Type\Inline\DQuat\DQuat.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\MapValue.inl" />
   </ItemGroup>
 </Project>
