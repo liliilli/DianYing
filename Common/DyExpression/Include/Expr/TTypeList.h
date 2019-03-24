@@ -69,22 +69,28 @@ private:
   template <typename TList, template <typename> class TUnaryExecutable> struct TGetTypeIf;
 
 public:
-  /// @brief Make type list.
+  /// @brief Make type list with reference option.
+  /// @tparam EValue reference option value.
   /// @tparam TArgs Type list to input into the type list.
   template <ETypeRef EValue, typename... TArgs>
-  using MakeList = typename TFactory<EValue, TArgs...>::TTypeList;
+  using MakeListExt = typename TFactory<EValue, TArgs...>::TTypeList;
+
+  /// @brief Make type list.
+  /// @tparam TArgs Type list to input into the type list.
+  template <typename... TArgs>
+  using MakeList = typename TFactory<ETypeRef::None, TArgs...>::TTypeList;
 
   /// @def EXPR_MAKE_TYPELIST
   /// @brief Helper macro function for creating typelist.
-  #define EXPR_MAKE_TYPELIST(...) ::dy::expr::STypeList::MakeList<ETypeRef::None, __VA_ARGS__>
+  #define EXPR_MAKE_TYPELIST(...) ::dy::expr::STypeList::MakeList<__VA_ARGS__>
 
   /// @def EXPR_MAKE_TYPELIST_LREF
-  /// @brief
-  #define EXPR_MAKE_TYPELIST_LREF(...) ::dy::expr::STypeList::MakeList<ETypeRef::LValue, __VA_ARGS__>
+  /// @brief Helper macro function for creating typelist with lvalue reference.
+  #define EXPR_MAKE_TYPELIST_LREF(...) ::dy::expr::STypeList::MakeListExt<ETypeRef::LValue, __VA_ARGS__>
 
   /// @def EXPR_MAKE_TYPELIST_RREF
-  /// @brief
-  #define EXPR_MAKE_TYPELIST_RREF(...) ::dy::expr::STypeList::MakeList<ETypeRef::RValue, __VA_ARGS__>
+  /// @brief Helper macro function for creating typelist with rvalue reference.
+  #define EXPR_MAKE_TYPELIST_RREF(...) ::dy::expr::STypeList::MakeListExt<ETypeRef::RValue, __VA_ARGS__>
 
   /// @brief Get length of given Typelist type.
   /// @tparam TList Typelist.

@@ -17,7 +17,7 @@ namespace dy::expr::typelist::make
 {
 
 static_assert(
-  std::is_same_v<STypeList::MakeList<ETypeRef::None, void>, TTypeListTail<void>>, 
+  std::is_same_v<STypeList::MakeListExt<ETypeRef::None, void>, TTypeListTail<void>>, 
   "Test failed");
 static_assert(
   std::is_same_v<EXPR_MAKE_TYPELIST(int), TTypeListTail<int>>, 
@@ -119,18 +119,18 @@ static_assert(STypeList::GetIndexOf<std::size_t&, TestType2> == std::nullopt, "T
 namespace dy::expr::typelist::append
 {
 
-using TestType0 = STypeList::MakeList<ETypeRef::None, void>;
+using TestType0 = STypeList::MakeListExt<ETypeRef::None, void>;
 static_assert(
   std::is_same_v<
     STypeList::Append<TestType0, int, long>,
-    STypeList::MakeList<ETypeRef::None, void, int, long>>,
+    STypeList::MakeListExt<ETypeRef::None, void, int, long>>,
   "Test Failed");
 
-using TestType1 = STypeList::MakeList<ETypeRef::None, void, int>;
+using TestType1 = STypeList::MakeListExt<ETypeRef::None, void, int>;
 static_assert(
   std::is_same_v<
     STypeList::Append<TestType1, int, long>,
-    STypeList::MakeList<ETypeRef::None, void, int, int, long>>,
+    STypeList::MakeListExt<ETypeRef::None, void, int, int, long>>,
   "Test Failed");
 
 } /// ::dy::expr::typelist::append namespace
@@ -157,7 +157,7 @@ struct Functor1
   static constexpr bool kResult = sizeof(TType) > ((15 - div) / 8);
 };
 
-using TestType = STypeList::MakeList<ETypeRef::None, char, short, int, long int>;
+using TestType = STypeList::MakeListExt<ETypeRef::None, char, short, int, long int>;
 static_assert(
   std::is_same_v<
     STypeList::GetTypeIf<TestType, Functor0>,
@@ -177,7 +177,7 @@ namespace dy::expr::typelist::make_ref
 {
 
 static_assert(
-  std::is_same_v<STypeList::MakeList<ETypeRef::LValue, int, long>, 
+  std::is_same_v<STypeList::MakeListExt<ETypeRef::LValue, int, long>, 
   TTypeList<int&, TTypeListTail<long&>>>, 
   "Test failed");
 static_assert(

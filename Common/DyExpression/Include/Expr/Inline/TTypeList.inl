@@ -133,13 +133,13 @@ struct STypeList::TGetIndexOf<TTargetType, TTypeList<TType, TList>, I> final
 template <typename TType, typename... TArgs> 
 struct STypeList::TAppend<TTypeListTail<TType>, TArgs...> final
 {
-  using List = STypeList::MakeList<ETypeRef::None, TType, TArgs...>;
+  using List = MakeList<TType, TArgs...>;
 };
 
 template <typename TType, typename TList, typename... TArgs>
 struct STypeList::TAppend<TTypeList<TType, TList>, TArgs...> final
 {
-  using List = TTypeList<TType, typename STypeList::TAppend<TList, TArgs...>::List>;
+  using List = TTypeList<TType, typename TAppend<TList, TArgs...>::List>;
 };
 
 template <typename TType, template <typename> class TUnaryExecutable>
