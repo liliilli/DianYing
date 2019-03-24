@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyModelGenerator_App", "DyModelGenerator\Builds\VisualStudio2017\DyModelGenerator_App.vcxproj", "{61C059F4-61C6-5884-FEFD-9230EE1971E5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestDyExpr", "Common\TestDyExpr\TestDyExpr.vcxproj", "{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -75,6 +77,14 @@ Global
 		{61C059F4-61C6-5884-FEFD-9230EE1971E5}.Release|x64.ActiveCfg = Release|x64
 		{61C059F4-61C6-5884-FEFD-9230EE1971E5}.Release|x64.Build.0 = Release|x64
 		{61C059F4-61C6-5884-FEFD-9230EE1971E5}.Release|x86.ActiveCfg = Release|x64
+		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Debug|x64.ActiveCfg = Debug|x64
+		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Debug|x64.Build.0 = Debug|x64
+		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Debug|x86.ActiveCfg = Debug|Win32
+		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Debug|x86.Build.0 = Debug|Win32
+		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Release|x64.ActiveCfg = Release|x64
+		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Release|x64.Build.0 = Release|x64
+		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Release|x86.ActiveCfg = Release|Win32
+		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +93,7 @@ Global
 		{14A3024E-EB54-412B-B3DE-444656B184C4} = {0DDF054E-61CB-4412-AB3F-D6EC764ECAB8}
 		{2C8BEE90-1FCF-45DB-8779-FDF5E167FA6C} = {0DDF054E-61CB-4412-AB3F-D6EC764ECAB8}
 		{276D1690-FB35-449E-B85F-8F9E98CA2729} = {0DDF054E-61CB-4412-AB3F-D6EC764ECAB8}
+		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4} = {0DDF054E-61CB-4412-AB3F-D6EC764ECAB8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1CEEEADE-2169-43BA-B962-6C04C6395653}
