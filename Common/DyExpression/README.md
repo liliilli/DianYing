@@ -18,6 +18,12 @@ This library is header-only library. Just add the path of include files into you
 ``` c++
 /// Same to STypeList::MakeList<std::size_t*, long, float, void, int>;
 EXPR_MAKE_TYPELIST(std::size_t*, long, float, void, int);
+
+/// Same to STypeList::MakeListExt<ETypeRef::LValue, long, float, void, int>;
+EXPR_MAKE_TYPELIST_LREF(long, float, void, int);
+
+/// Same to STypeList::MakeListExt<ETypeRef::RValue, long, float, void, int>;
+EXPR_MAKE_TYPELIST_RREF(long, float, void, int);
 ```
 
 Created TypeList type can do these below things.
@@ -28,14 +34,6 @@ Created TypeList type can do these below things.
 4. Getting the index of given type when exist in TypeList.
 5. Append another type into TypeList.
 6. Getting satisfied type using static functor that has one type parameter.
-
-### TNull
-
-`TNull` is failure type of all compile time processing.
-
-``` c++
-struct TNull final {};
-```
 
 #### Example Code
 
@@ -103,9 +101,89 @@ static_assert(
 }
 ```
 
+### TNull
+
+`TNull` is failure type of all compile time processing.
+
+``` c++
+struct TNull final {};
+```
+
+### TZip
+
+`TZip` provides heterogeneous types binding and iteration of these. All types (static, dynamic) are must be same size(length) to use this API.
+If any of size are different to others, there is UB.
+
+``` c++
+SECTION("TZip begin, end and ranged for loop")
+{
+  int   value[5]  = {11, 12, 13, 14, 15};
+  float value2[5] = {2.f, 3.f, 5.f, 7.f, 11.f};
+  std::vector<std::string> value3 = {"Hello", "World", "My", "Name", "Neu."};
+
+  // Use `Zip`.
+  auto zip = Zip(value, value2, value3);
+
+  std::array<std::tuple<int, float, std::string>, 5> result = {
+    std::tuple{11, 2.f, "Hello"},
+    {12, 3.f, "World"},
+    {13, 5.f, "My"},
+    {14, 7.f, "Name"},
+    {15, 11.f, "Neu."},
+  };
+
+  int i = 0;
+  for (auto it = zip.cbegin(); it != zip.cend(); ++it)
+  {
+    auto& [lhs, rhs, str] = *it;
+    REQUIRE(*lhs == std::get<0>(result[i]));
+    REQUIRE(*rhs == std::get<1>(result[i]));
+    REQUIRE(*str == std::get<2>(result[i]));
+    ++i;
+  }
+
+  i = 0;
+  for (const auto& [lhs, rhs, str] : Zip(value, value2, value3))
+  {
+    REQUIRE(*lhs == std::get<0>(result[i]));
+    REQUIRE(*rhs == std::get<1>(result[i]));
+    REQUIRE(*str == std::get<2>(result[i]));
+    ++i;
+  }
+}
+```
+
+### Extended `type_traits`
+
+Extended type_trait API provides more complicated compile time type cabatility checking.
+
+* `IsIterable` : Check type is iterable. this checks given type is c-array, or have begin(), and() so forward iterable.
+* `HasBeginEnd` : Check given type has begin(), and() function.
+
+``` c++
+SECTION("TZip initialization")
+{
+  STATIC_REQUIRE(IsIterable<int[5]> == true);
+  STATIC_REQUIRE(IsIterable<float[5]> == true);
+  STATIC_REQUIRE(IsIterable<std::string(&)[5]> == true);
+  STATIC_REQUIRE(IsIterable<const float[5]> == true);
+
+  STATIC_REQUIRE(IsIterable<const float[]> == false);
+
+  STATIC_REQUIRE(IsIterable<std::vector<int>> == true);
+  STATIC_REQUIRE(HasBeginEnd<std::vector<int>> == true);
+  STATIC_REQUIRE(HasBeginEnd<int[5]> == true);
+
+  using type = EXPR_MAKE_TYPELIST_LREF(int, long, float*);
+  STATIC_REQUIRE(HasBeginEnd<TZip<type>> == true);
+  STATIC_REQUIRE(HasBeginEnd<TestStruct> == false);
+}
+```
+
 ### Log
 
 19-03-19 Make Project, Add TypeList.
+19-03-25 Add TZip, Extended type_traits.
 
 ## Copyright
 
