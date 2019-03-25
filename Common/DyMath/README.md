@@ -4,7 +4,6 @@ Dy(DianYing) Common Math library (A.K.A. `DyMath`) is math library that is used 
 
 Other third-party projects can use this library following MIT License.
 
-
 ## Usage
 
 This library is header-only library. Just add the path of include files into your project.
@@ -52,6 +51,10 @@ Dy(DianYing) Common Math (a.k.a `DyMath`) has value category to support automati
 * Types in each category are automatically convertible to more-bit types of same category.
 * Except for `Character` category, all of category types are convertible to `Real` category type.
 * `Signed` and `Unsigned` category types are not convertible to each other because of value coverage.
+
+## Log
+
+
 
 ## Copyright
 

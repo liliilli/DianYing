@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_HELPER_TYPE_THREESTATEBOOL_H
-#define GUARD_DY_HELPER_TYPE_THREESTATEBOOL_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,7 +12,7 @@
 /// SOFTWARE.
 ///
 
-namespace dy
+namespace dy::math
 {
 
 /// @class DTristateBool
@@ -21,41 +20,28 @@ namespace dy
 class DTristateBool final
 {
 public:
-  DTristateBool();
-  DTristateBool(const bool parent, const bool input);
+  DTristateBool() = default;
+  DTristateBool(bool parent, bool input);
 
-  ///
   /// @brief Update input boolean value.
   /// @param newInput input value to insert.
-  ///
-  void UpdateInput(const bool newInput) noexcept;
+  void UpdateInput(bool newInput) noexcept;
 
-  ///
   /// @brief Update parent boolean value.
   /// @param newParent parent value to insert.
-  ///
-  void UpdateParent(const bool newParent) noexcept;
+  void UpdateParent(bool newParent) noexcept;
 
-  ///
   /// @brief Get output value.
   /// @return Output value.
-  ///
-  MDY_NODISCARD bool GetOutput() const noexcept;
+  bool GetOutput() const noexcept;
 
-  ///
   /// @brief Check output value is changed. but might be ABA problem when values are changed.
   /// @return Check old-output and output, if changed return true or false.
-  ///
-  MDY_NODISCARD bool IsOutputValueChanged() const noexcept;
+  bool IsOutputValueChanged() const noexcept;
 
-  ///
   /// @brief Check output value is true.
   /// @return Output value.
-  ///
-  operator bool() const noexcept
-  {
-    return this->mOutput;
-  }
+  operator bool() const noexcept;
 
 private:
   /// @brief Update output / oldOutput value comparing parent and input.
@@ -72,18 +58,17 @@ private:
   //!
 
   /// Parent boolean value.
-  bool mParent    : 1;
+  bool mParent = false;
 
   /// Input boolean value.
-  bool mInput     : 1;
+  bool mInput = false;
 
   /// Output boolean value.
-  MDY_TRANSIENT bool mOutput    : 1;
+  mutable bool mOutput = false;
 
   /// Old-output boolean value (previous output value)
-  MDY_TRANSIENT bool mOldOutput : 1;
+  mutable bool mOldOutput = false;
 };
 
-} /// ::dy namespace
-
-#endif /// GUARD_DY_HELPER_TYPE_THREESTATEBOOL_H
+} /// ::dy::math namespace
+#include <Math/Type/Inline/Micellanous/DTristateBool.inl>

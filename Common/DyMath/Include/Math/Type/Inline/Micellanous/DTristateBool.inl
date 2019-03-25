@@ -1,4 +1,4 @@
-#include <precompiled.h>
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,48 +12,46 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Helper/Type/DTristateBool.h>
-
-namespace dy
+namespace dy::math
 {
 
-DTristateBool::DTristateBool() : mParent(false), mInput(false), mOutput(false)
+inline DTristateBool::DTristateBool(bool parent, bool input) 
+  : mParent(parent), mInput(input), mOutput(parent && input)
 {
   this->mOldOutput = this->mOutput;
 }
 
-DTristateBool::DTristateBool(const bool parent, const bool input) : mParent(parent), mInput(input), mOutput(parent && input)
-{
-  this->mOldOutput = this->mOutput;
-}
-
-void DTristateBool::UpdateInput(const bool newInput) noexcept
+inline void DTristateBool::UpdateInput(bool newInput) noexcept
 {
   this->mInput = newInput;
   this->pUpdateOutputs();
 }
 
-void DTristateBool::UpdateParent(const bool newParent) noexcept
+inline void DTristateBool::UpdateParent(bool newParent) noexcept
 {
   this->mParent = newParent;
   this->pUpdateOutputs();
 }
 
-bool DTristateBool::GetOutput() const noexcept
+inline bool DTristateBool::GetOutput() const noexcept
 {
   return this->mOutput;
 }
 
-bool DTristateBool::IsOutputValueChanged() const noexcept
+inline bool DTristateBool::IsOutputValueChanged() const noexcept
 {
   return this->mOutput != this->mOldOutput;
 }
 
-void DTristateBool::pUpdateOutputs()
+inline DTristateBool::operator bool() const noexcept
 {
-  this->mOldOutput  = this->mOutput;
-  this->mOutput     = this->mParent && this->mInput;
+  return this->mOutput;
 }
 
-} /// ::dy namespace
+inline void DTristateBool::pUpdateOutputs()
+{
+  this->mOldOutput = this->mOutput;
+  this->mOutput    = this->mParent && this->mInput;
+}
+
+} /// ::dy::math namespace
