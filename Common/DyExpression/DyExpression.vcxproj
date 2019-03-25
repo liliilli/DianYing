@@ -36,9 +36,6 @@
     <ClInclude Include="Include\Expr\TZipConstIterator.h" />
     <ClInclude Include="Include\Expr\TZipIterator.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\TestTypeList.cc" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{276D1690-FB35-449E-B85F-8F9E98CA2729}</ProjectGuid>

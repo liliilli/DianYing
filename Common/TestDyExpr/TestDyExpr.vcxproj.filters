@@ -24,5 +24,8 @@
     <ClCompile Include="Source\TestTZip.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\TestExtendedTraits.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

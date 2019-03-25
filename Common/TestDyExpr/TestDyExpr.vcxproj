@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cc" />
+    <ClCompile Include="Source\TestExtendedTraits.cc" />
     <ClCompile Include="Source\TestTypeList.cc" />
     <ClCompile Include="Source\TestTZip.cc" />
   </ItemGroup>

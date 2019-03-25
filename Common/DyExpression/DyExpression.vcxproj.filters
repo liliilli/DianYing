@@ -11,9 +11,6 @@
     <None Include="Include\Expr\Inline\TZip.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\TestTypeList.cc" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Include\Expr\TTypeList.h" />
     <ClInclude Include="Include\Expr\TNull.h" />
     <ClInclude Include="Include\Expr\TZip.h" />
