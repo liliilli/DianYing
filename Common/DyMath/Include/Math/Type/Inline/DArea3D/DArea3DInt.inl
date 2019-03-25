@@ -12,8 +12,6 @@
 /// SOFTWARE.
 ///
 
-#include <Math/Type/Math/DArea3D.h>
-
 namespace dy::math
 {
 

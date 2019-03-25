@@ -12,7 +12,7 @@
 ///
 
 #include <Catch2/catch.hpp>
-#include <Math/Type/Math/DClamp.h>
+#include <Math/Type/Micellanous/DClamp.h>
 #include <Math/Utility/XMath.h>
 
 namespace dy::math

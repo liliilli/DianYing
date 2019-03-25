@@ -12,7 +12,7 @@
 ///
 
 #include <Catch2/catch.hpp>
-#include <Math/Type/Math/DArea3D.h>
+#include <Math/Type/Micellanous/DArea3D.h>
 #include <Math/Type/Math/DVector3.h>
 
 namespace dy::math

@@ -24,23 +24,22 @@
     <ClInclude Include="Include\Math\Common\XGlobalUtilites.h" />
     <ClInclude Include="Include\Math\Common\XRemoveMacroes.h" />
     <ClInclude Include="Include\Math\Type\Math\DQuat.h" />
-    <ClInclude Include="Include\Math\Type\Math\DArea2D.h" />
-    <ClInclude Include="Include\Math\Type\Math\DArea3D.h" />
-    <ClInclude Include="Include\Math\Type\Math\DClamp.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DArea2D.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DArea3D.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DClamp.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix2.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix3.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix4.h" />
-    <ClInclude Include="Include\Math\Type\Math\DPlane.h" />
+    <ClInclude Include="Include\Math\Type\Shape\DPlane.h" />
     <ClInclude Include="Include\Math\Type\Math\DVector2.h" />
     <ClInclude Include="Include\Math\Type\Math\DVector3.h" />
     <ClInclude Include="Include\Math\Type\Math\DVector4.h" />
     <ClInclude Include="Include\Math\Type\Math\EAxis.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DTristateBool.h" />
+    <ClInclude Include="Include\Math\Type\Shape\DSphere.h" />
     <ClInclude Include="Include\Math\Utility\XLinearMath.h" />
     <ClInclude Include="Include\Math\Utility\XMath.h" />
     <ClInclude Include="Include\Math\Utility\XMathTrigonometry.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\Common\TGlobalTypes.cc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Math\Common\Inline\TGlobalTypes.inl" />
@@ -63,6 +62,9 @@
     <None Include="Include\Math\Type\Inline\DMatrix4\DMatrix4.inl" />
     <None Include="Include\Math\Type\Inline\DMatrix4\DMatrix4Operator.inl" />
     <None Include="Include\Math\Type\Inline\DQuat\DQuat.inl" />
+    <None Include="Include\Math\Type\Inline\DSphere\DSphere.inl" />
+    <None Include="Include\Math\Type\Inline\Micellanous\DTristateBool.inl" />
+    <None Include="Include\Math\Utility\Inline\XMathTrigonometry.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\MapValue.inl" />
     <None Include="README.md" />
     <None Include="Include\Math\Type\Inline\DPlane\DPlane.inl" />

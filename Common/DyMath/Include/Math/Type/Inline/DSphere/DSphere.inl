@@ -1,4 +1,4 @@
-#include <precompiled.h>
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,18 +12,9 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Helper/Type/DMatrix2x2.h>
-
-namespace dy
+namespace dy::math
 {
 
 
 
-DMatrix2x2::DMatrix2x2(bool)
-{
-  mMatrixValue[0][0] = 1;
-  mMatrixValue[1][1] = 1;
-}
-
-} /// ::dy namespace
+} /// ::dy::math namespace

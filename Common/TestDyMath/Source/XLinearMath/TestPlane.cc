@@ -12,7 +12,7 @@
 ///
 
 #include <Catch2/catch.hpp>
-#include <Math/Type/Math/DPlane.h>
+#include <Math/Type/Shape/DPlane.h>
 #include <Math/Type/Math/DVector3.h>
 #include <Math/Utility/XMath.h>
 
