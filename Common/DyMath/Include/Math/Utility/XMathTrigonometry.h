@@ -19,22 +19,59 @@
 namespace dy::math
 {
   
+/// @brief Apply sin to given vector2. Be careful calculated value will be converted to TType.
+/// If second parameter is false, this does sin to vector values as radian.
+/// @tparam TType Vector's type.
 template <typename TType>
-DVector2<TType> Sin(const DVector2<TType>& vector);
+DVector2<TType> Sin(const DVector2<TType>& vector, bool isDegree = true);
+
+/// @brief Apply sin to given vector3. Be careful calculated value will be converted to TType.
+/// If second parameter is false, this does sin to vector values as radian.
+/// @tparam TType Vector's type. 
+template <typename TType>
+DVector3<TType> Sin(const DVector3<TType>& vector, bool isDegree = true);
   
+/// @brief Apply sin to given vector4. Be careful calculated value will be converted to TType.
+/// If second parameter is false, this does sin to vector values as radian.
+/// @tparam TType Vector's type. 
 template <typename TType>
-DVector3<TType> Sin(const DVector3<TType>& vector);
+DVector4<TType> Sin(const DVector4<TType>& vector, bool isDegree = true);
   
+/// @brief Apply cos to given vector2. Be careful calculated value will be converted to TType.
+/// If second parameter is false, this does cos to vector values as radian.
+/// @tparam TType Vector's type. 
 template <typename TType>
-DVector4<TType> Sin(const DVector4<TType>& vector);
+DVector2<TType> Cos(const DVector2<TType>& vector, bool isDegree = true);
   
+/// @brief Apply cos to given vector3. Be careful calculated value will be converted to TType.
+/// If second parameter is false, this does cos to vector values as radian.
+/// @tparam TType Vector's type. 
 template <typename TType>
-DVector3<TType> Cos(const DVector2<TType>& vector);
+DVector3<TType> Cos(const DVector3<TType>& vector, bool isDegree = true);
   
+/// @brief Apply cos to given vector4. Be careful calculated value will be converted to TType.
+/// If second parameter is false, this does cos to vector values as radian.
+/// @tparam TType Vector's type. 
 template <typename TType>
-DVector4<TType> Cos(const DVector3<TType>& vector);
+DVector4<TType> Cos(const DVector4<TType>& vector, bool isDegree = true);
   
+/// @brief Apply tan to given vector2. Be careful calculated value will be converted to TType.
+/// If second parameter is false, this does cos to vector values as radian.
+/// @tparam TType Vector's type. 
 template <typename TType>
-DVector4<TType> Cos(const DVector4<TType>& vector);
+DVector2<TType> Tan(const DVector2<TType>& vector, bool isDegree = true);
+  
+/// @brief Apply tan to given vector3. Be careful calculated value will be converted to TType.
+/// If second parameter is false, this does cos to vector values as radian.
+/// @tparam TType Vector's type. 
+template <typename TType>
+DVector3<TType> Tan(const DVector3<TType>& vector, bool isDegree = true);
+  
+/// @brief Apply tan to given vector4. Be careful calculated value will be converted to TType.
+/// If second parameter is false, this does cos to vector values as radian.
+/// @tparam TType Vector's type. 
+template <typename TType>
+DVector4<TType> Tan(const DVector4<TType>& vector, bool isDegree = true);
 
 } /// ::dy::math namespace
+#include <Math/Utility/Inline/XMathTrigonometry.inl>
