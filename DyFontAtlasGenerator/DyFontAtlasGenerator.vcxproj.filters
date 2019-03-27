@@ -60,45 +60,6 @@
     <ClCompile Include="Source\Library\JsonTypeWriterHelper.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Bitmap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Contour.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\edge-coloring.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\EdgeHolder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\edge-segments.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\equation-solver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\msdfgen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\render-sdf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\save-bmp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Shape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\shape-description.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\SignedDistance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Vector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Include\QtHelper\GLOffscreenSurface.h">

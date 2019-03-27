@@ -372,19 +372,6 @@
     <ClCompile Include="data\Script\Astronaut\PlanetScript.cc" />
     <ClCompile Include="Source\Builtin\Texture\FDyBtTexWhiteTexture.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\FDyBtShOITPlainColor.cc" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Vector2.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\SignedDistance.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\shape-description.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Shape.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\save-bmp.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\render-sdf.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\msdfgen.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\equation-solver.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\edge-segments.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\EdgeHolder.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\edge-coloring.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Contour.cpp" />
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Bitmap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
