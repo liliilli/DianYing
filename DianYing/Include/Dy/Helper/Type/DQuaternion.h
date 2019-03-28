@@ -33,7 +33,7 @@ public:
   DQuaternion() = default;
   DQuaternion(const DQuaternion& quaternion)            = default;
   DQuaternion& operator=(const DQuaternion& quaternion) = default;
-  DQuaternion(const DVector3& eulerAngleXYZ);
+  DQuaternion(const DVec3& eulerAngleXYZ);
 
   DQuaternion(const aiQuaternion& aiQuaternion);
   DQuaternion& operator=(const aiQuaternion& auQuaternion);
@@ -61,19 +61,19 @@ public:
   /// Caution! Quaternion to euler angle does not guarante precise degree euler angle.
   /// If you want to get degree angle values, you must to write code for saving angle.
   ///
-  DVector3 GetEulerRotationDegreeAngleVector() const noexcept;
+  DVec3 GetEulerRotationDegreeAngleVector() const noexcept;
 
   ///
   /// @brief Return euler rotation angle (radians) (x, y, z).
   /// Caution! Quaternion to euler angle does not guarante precise radian euler angle.
   /// If you want to get radian angle values, you must to write code for saving angle.
   ///
-  DVector3 GetEulerRotationRadiansAngleVector() const noexcept;
+  DVec3 GetEulerRotationRadiansAngleVector() const noexcept;
 
   ///
   /// @brief Impulse rotation with eulerAngle vector (degrees).
   ///
-  void AddRotationAngle(const DVector3& eulerAngle);
+  void AddRotationAngle(const DVec3& eulerAngle);
 
   ///
   /// @brief Impulse rotation with quaternion.
@@ -88,7 +88,7 @@ public:
   ///
   /// @brief Impulse rotation with (x, y, z) degree angle value.
   ///
-  void SetRotationAngle(const DVector3& degreeEulerAngle);
+  void SetRotationAngle(const DVec3& degreeEulerAngle);
 
   ///
   const glm::quat& pGetQuaternion() const noexcept;

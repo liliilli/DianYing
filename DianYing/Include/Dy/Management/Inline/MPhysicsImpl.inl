@@ -360,7 +360,7 @@ inline void MPhysics::Impl::onContact(
 
       // Make FHitResult
       FHitResult result;
-      result.mContactPosition = internalBuffer.position;
+      result.mContactPosition = CreateVec3(internalBuffer.position);
 
       // We do not process when `ignored` status because `ignored` status will be killed by physx internal system logic.
       using ECbType = ECollisionCallbackType;

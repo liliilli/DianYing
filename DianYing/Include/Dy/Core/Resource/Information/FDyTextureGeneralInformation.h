@@ -33,11 +33,11 @@ public:
   MDY_NODISCARD const std::vector<TU08>& GetBuffer() const noexcept;
 
   /// @brief Get texture's size.
-  MDY_NODISCARD const DVectorInt2& GetSize() const noexcept;
+  MDY_NODISCARD const DIVec2& GetSize() const noexcept;
 
 private:
   std::vector<TU08> mTextureImageBuffer = {};
-  DVectorInt2     mTextureSize        = {};
+  DIVec2     mTextureSize        = {};
 };
 
 } /// ::dy namespace

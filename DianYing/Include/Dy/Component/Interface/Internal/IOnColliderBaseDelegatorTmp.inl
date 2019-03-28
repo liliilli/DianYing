@@ -15,6 +15,7 @@
 
 #include <Dy/Helper/System/TypeTraits.h>
 #include <Dy/Component/Abstract/AActorCppScript.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

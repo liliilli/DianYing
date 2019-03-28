@@ -31,9 +31,9 @@ struct DDyTextureCoordBox
   ///
   TU32        mChannel            = MDY_INITIALIZE_DEFUINT;
   ///
-  DVector2  mLeftDown           = {};
+  DVec2  mLeftDown           = {};
   ///
-  DVector2  mRightUp            = {};
+  DVec2  mRightUp            = {};
 };
 
 void to_json  (_MOUT_ nlohmann::json& j,      _MIN_ const DDyTextureCoordBox& p);
@@ -50,13 +50,13 @@ struct DDyFontCharacterInfo final
   ///
   TF32        mHorizontalAdvance  = MDY_INITIALIZE_DEFUINT;
   ///
-  DVector2  mHoritontalBearing  = {};
+  DVec2  mHoritontalBearing  = {};
   ///
-  DVector2  mScale              = {};
+  DVec2  mScale              = {};
   ///
-  DVector2  mSize               = {};
+  DVec2  mSize               = {};
   ///
-  DVector2  mTranslate          = {};
+  DVec2  mTranslate          = {};
   ///
   DDyTextureCoordBox mTexCoordInfo = {};
 

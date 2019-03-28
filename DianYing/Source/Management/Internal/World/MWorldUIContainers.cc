@@ -20,6 +20,7 @@
 #include <Dy/Element/Type/DWidgetBinder.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Helper/Library/HelperContainer.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

@@ -20,6 +20,7 @@
 
 #include <Dy/Helper/Type/DMatrix3x3.h>
 #include <Dy/Helper/Type/DVector4.h>
+#include "DMatrix2x2.h"
 
 #ifdef near
 #undef near
@@ -30,8 +31,9 @@
 
 namespace dy
 {
+  class DQuaternion;
 
-///
+  ///
 /// @class DMatrix4x4
 /// @brief
 ///
@@ -51,27 +53,19 @@ public:
                const float _10, const float _11, const float _12, const float _13,
                const float _20, const float _21, const float _22, const float _23,
                const float _30, const float _31, const float _32, const float _33) :
-      mMatrixValue{dy::DVector4{_00, _10, _20, _30},
-                   dy::DVector4{_01, _11, _21, _31},
-                   dy::DVector4{_02, _12, _22, _32},
-                   dy::DVector4{_03, _13, _23, _33}} {}
+      mMatrixValue{dy::DVec4{_00, _10, _20, _30},
+                   dy::DVec4{_01, _11, _21, _31},
+                   dy::DVec4{_02, _12, _22, _32},
+                   dy::DVec4{_03, _13, _23, _33}} {}
 
-  DMatrix4x4(const DVector4& column1, const DVector4& column2,
-               const DVector4& column3, const DVector4& column4);
-
-  DMatrix4x4(const glm::mat2& glmMatrix) noexcept;
-
-  DMatrix4x4(const glm::mat3& glmMatrix) noexcept;
+  DMatrix4x4(const DVec4& column1, const DVec4& column2,
+               const DVec4& column3, const DVec4& column4);
 
   DMatrix4x4(const glm::mat4& glmMatrix) noexcept;
 
   DMatrix4x4(const aiMatrix4x4& aiMatrix) noexcept;
 
   DMatrix4x4(const physx::PxTransform& physxTransform) noexcept;
-
-  DMatrix4x4& operator=(const glm::mat2& value) noexcept;
-
-  DMatrix4x4& operator=(const glm::mat3& value) noexcept;
 
   DMatrix4x4& operator=(const glm::mat4& value) noexcept;
 
@@ -125,12 +119,12 @@ public:
   }
 #endif
 
-  DVector4& operator[](std::size_t index) noexcept
+  DVec4& operator[](std::size_t index) noexcept
   {
     return mMatrixValue[index];
   }
 
-  const DVector4& operator[](std::size_t index) const noexcept
+  const DVec4& operator[](std::size_t index) const noexcept
   {
     return mMatrixValue[index];
   }
@@ -161,7 +155,7 @@ public:
   DMatrix4x4 Multiply(const DMatrix4x4& rhs) const noexcept;
 
   /// @brief
-  DVector4 MultiplyVector(const DVector4& rhs) const noexcept;
+  DVec4 MultiplyVector(const DVec4& rhs) const noexcept;
 
   /// @brief
   DMatrix4x4 Inverse() const;
@@ -170,10 +164,10 @@ public:
   static DMatrix4x4 IdentityMatrix() noexcept;
 
   /// @brief
-  static DMatrix4x4 CreateWithScale(const DVector3& scaleVector);
+  static DMatrix4x4 CreateWithScale(const DVec3& scaleVector);
 
   /// @brief
-  static DMatrix4x4 CreateWithTranslation(const DVector3& translationPoint);
+  static DMatrix4x4 CreateWithTranslation(const DVec3& translationPoint);
 
   /// @brief Get orthographic projection of OpenGL. \n
   /// [ 2/(r-l)    0       0    -(r+l)/(r-l) ] \n
@@ -183,20 +177,20 @@ public:
   static DMatrix4x4 OrthoProjection(_MIN_ TF32 left, _MIN_ TF32 right, _MIN_ TF32 bottom, _MIN_ TF32 top, _MIN_ TF32 near, _MIN_ TF32 far);
 
   /// @brief Scale matrix.
-  DMatrix4x4& Scale(_MIN_ const DVector3& iScaleFactor);
+  DMatrix4x4& Scale(_MIN_ const DVec3& iScaleFactor);
   /// @brief Rotate matrix.
-  DMatrix4x4& Rotate(_MIN_ const DVector3& iRotationDegreeAngle);
+  DMatrix4x4& Rotate(_MIN_ const DVec3& iRotationDegreeAngle);
   /// @brief Rotate matrix.
   DMatrix4x4& Rotate(_MIN_ const DQuaternion& iRotationQuaternion);
   /// @brief Translate matrix.
-  DMatrix4x4& Translate(_MIN_ const DVector3& iPosition);
+  DMatrix4x4& Translate(_MIN_ const DVec3& iPosition);
 
 private:
   /// Identity matrix constructor
   explicit DMatrix4x4(bool);
 
   /// Column major
-  std::array<dy::DVector4, 4> mMatrixValue;
+  std::array<dy::DVec4, 4> mMatrixValue;
 };
 
 void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DMatrix4x4& p);

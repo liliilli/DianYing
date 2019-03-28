@@ -16,84 +16,83 @@
 #include <Dy/Helper/Type/DVector3.h>
 
 #include <nlohmann/json.hpp>
-#include <Dy/Helper/Math/Math.h>
-#include <Dy/Helper/Type/DMatrix3x3.h>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Helper/Library/HelperString.h>
 
-namespace dy 
+namespace dy
 {
 
-DVector3& DVector3::operator=(const aiVector2D& iVector) noexcept
+std::string ToString(const DVec3& vec) noexcept
 {
-  this->X = iVector.x; this->Y = iVector.y; this->Z = 0.0f;
-  return *this;
+  return MakeStringU8("({:1}, {:1}, {:1})", vec.X, vec.Y, vec.Z);
 }
 
-DVector3& DVector3::operator=(const aiVector3D& iVector) noexcept
+std::string ToString(const DIVec3& vec) noexcept
 {
-  this->X = iVector.x;
-  this->Y = iVector.y;
-  this->Z = iVector.z;
-  return *this;
+  return MakeStringU8("({}, {}, {})", vec.X, vec.Y, vec.Z);
 }
 
-TF32* DVector3::Data() noexcept
+physx::PxVec3 ToPxVec3(const DVec3& vec) noexcept
 {
-  return &this->X;
+  return physx::PxVec3{vec.X, vec.Y, vec.Z};
 }
 
-const TF32* DVector3::Data() const noexcept
+physx::PxVec3 ToPxVec3(const DIVec3& vec) noexcept
 {
-  return &this->X;
-}
-
-DVector3 DVector3::MultiplyMatrix(const DMatrix3x3& matrix) const noexcept
-{
-  return DVector3
-  {
-    this->X * matrix[0][0] + this->Y * matrix[0][1] + this->Z * matrix[0][2],
-    this->X * matrix[1][0] + this->Y * matrix[1][1] + this->Z * matrix[1][2],
-    this->X * matrix[2][0] + this->Y * matrix[2][1] + this->Z * matrix[2][2]
+  return physx::PxVec3{
+    static_cast<TF32>(vec.X), 
+    static_cast<TF32>(vec.Y), 
+    static_cast<TF32>(vec.Z)
   };
 }
 
-bool DVector3::IsAllZero(const DVector3& vector) noexcept 
+glm::vec3 ToGlmVec3(const DVec3& vec) noexcept
 {
-  return math::IsAllZero(vector);
+  return glm::vec3{vec.X, vec.Y, vec.Z};
 }
 
-bool DVector3::IsAllZero() const noexcept 
+glm::vec3 ToGlmVec3(const DIVec3& vec) noexcept
 {
-  return math::IsAllZero(*this);
+  return glm::vec3{TF32(vec.X), TF32(vec.Y), TF32(vec.Z)};
 }
 
-bool operator==(_MIN_ const DVector3& lhs, _MIN_ const DVector3& rhs) noexcept
+DVec3 CreateVec3(const physx::PxVec3& vec) noexcept
 {
-  return lhs.X == rhs.X
-      && lhs.Y == rhs.Y
-      && lhs.Z == rhs.Z;
+  return DVec3{vec.x, vec.y, vec.z};
 }
 
-bool operator!=(_MIN_ const DVector3& lhs, _MIN_ const DVector3& rhs) noexcept
+DVec3 CreateVec3(const glm::vec3& vec) noexcept
 {
-  return !(lhs == rhs);
+  return DVec3{vec.x, vec.y, vec.z};
 }
 
-std::string DVector3::ToString() const noexcept
-{
-  return MakeStringU8("({:1}, {:1}, {:1})", this->X, this->Y, this->Z);
-}
+} /// ::dy::namespace
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DVector3& p)
+namespace dy::math
+{
+
+void to_json(nlohmann::json& j, const DVec3& p)
 {
   j = nlohmann::json{ {"X", p.X}, {"Y", p.Y}, {"Z", p.Z} };
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DVector3& p)
+void from_json(const nlohmann::json& j, DVec3& p)
 {
   json::GetValueFromTo(j, "X", p.X);
   json::GetValueFromTo(j, "Y", p.Y);
   json::GetValueFromTo(j, "Z", p.Z);
 }
 
-} /// ::dy namespace
+void to_json(nlohmann::json& j, const DIVec3& p)
+{
+  j = nlohmann::json{ {"X", p.X}, {"Y", p.Y}, {"Z", p.Z} };
+}
+
+void from_json(const nlohmann::json& j, DIVec3& p)
+{
+  json::GetValueFromTo(j, "X", p.X);
+  json::GetValueFromTo(j, "Y", p.Y);
+  json::GetValueFromTo(j, "Z", p.Z);
+}
+
+} /// ::dy::math namespace

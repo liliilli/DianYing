@@ -146,7 +146,7 @@ const std::string& MSetting::GetInitialSceneInformationName() const noexcept
   return this->mGamePlay.mInitialSceneSpecifier;
 }
 
-const DVectorInt2& MSetting::GetGlobalDefaultShadowMapResolution() const noexcept
+const DIVec2& MSetting::GetGlobalDefaultShadowMapResolution() const noexcept
 {
   return this->mGamePlay.mShadow.mShadowGlobalDefaultMap;
 }
@@ -215,10 +215,10 @@ void MSetting::SetLogFilePath(const std::string& path) noexcept
   }
 }
 
-void MSetting::SetGlobalDefaultShadowMapResolution(const DVector2& size) noexcept
+void MSetting::SetGlobalDefaultShadowMapResolution(const DVec2& size) noexcept
 {
   if (size.X <= 0 || size.Y <= 0) { return; }
-  this->mGamePlay.mShadow.mShadowGlobalDefaultMap = DVectorInt2{size};
+  this->mGamePlay.mShadow.mShadowGlobalDefaultMap = DIVec2{size};
 }
 
 bool MSetting::IsEnabledVSync() const noexcept

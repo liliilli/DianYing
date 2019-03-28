@@ -26,29 +26,16 @@
 namespace dy
 {
 
-DMatrix4x4::DMatrix4x4(const DVector4& column1, const DVector4& column2,
-                           const DVector4& column3, const DVector4& column4) :
+DMatrix4x4::DMatrix4x4(const DVec4& column1, const DVec4& column2,
+                           const DVec4& column3, const DVec4& column4) :
     mMatrixValue{ column1, column2, column3, column4 } { }
-
-DMatrix4x4::DMatrix4x4(const glm::mat2& glmMatrix) noexcept
-{
-  mMatrixValue[0] = DVector4(glmMatrix[0]);
-  mMatrixValue[1] = DVector4(glmMatrix[1]);
-}
-
-DMatrix4x4::DMatrix4x4(const glm::mat3& glmMatrix) noexcept
-{
-  mMatrixValue[0] = glmMatrix[0];
-  mMatrixValue[1] = glmMatrix[1];
-  mMatrixValue[2] = glmMatrix[2];
-}
 
 DMatrix4x4::DMatrix4x4(const glm::mat4& glmMatrix) noexcept
 {
-  mMatrixValue[0] = glmMatrix[0];
-  mMatrixValue[1] = glmMatrix[1];
-  mMatrixValue[2] = glmMatrix[2];
-  mMatrixValue[3] = glmMatrix[3];
+  mMatrixValue[0] = FVec4::CreateVec4(glmMatrix[0]);
+  mMatrixValue[1] = FVec4::CreateVec4(glmMatrix[1]);
+  mMatrixValue[2] = FVec4::CreateVec4(glmMatrix[2]);
+  mMatrixValue[3] = FVec4::CreateVec4(glmMatrix[3]);
 }
 
 DMatrix4x4::DMatrix4x4(const aiMatrix4x4& aiMatrix) noexcept
@@ -86,30 +73,12 @@ DMatrix4x4::DMatrix4x4(_MIN_ const physx::PxTransform& physxTransform) noexcept
   this->mMatrixValue[3][2] += physxTransform.p.z;
 }
 
-DMatrix4x4& DMatrix4x4::operator=(const glm::mat2& value) noexcept
-{
-  this->mMatrixValue[0] = DVector4(value[0]);
-  this->mMatrixValue[1] = DVector4(value[1]);
-  this->mMatrixValue[2] = DVector4{};
-  this->mMatrixValue[3] = DVector4{};
-  return *this;
-}
-
-DMatrix4x4& DMatrix4x4::operator=(const glm::mat3& value) noexcept
-{
-  this->mMatrixValue[0] = value[0];
-  this->mMatrixValue[1] = value[1];
-  this->mMatrixValue[2] = value[2];
-  this->mMatrixValue[3] = DVector4{};
-  return *this;
-}
-
 DMatrix4x4& DMatrix4x4::operator=(const glm::mat4& value) noexcept
 {
-  this->mMatrixValue[0] = value[0];
-  this->mMatrixValue[1] = value[1];
-  this->mMatrixValue[2] = value[2];
-  this->mMatrixValue[3] = value[3];
+  this->mMatrixValue[0] = FVec4::CreateVec4(value[0]);
+  this->mMatrixValue[1] = FVec4::CreateVec4(value[1]);
+  this->mMatrixValue[2] = FVec4::CreateVec4(value[2]);
+  this->mMatrixValue[3] = FVec4::CreateVec4(value[3]);
   return *this;
 }
 
@@ -372,9 +341,9 @@ DMatrix4x4 DMatrix4x4::Multiply(const DMatrix4x4& rhs) const noexcept
   };
 }
 
-DVector4 DMatrix4x4::MultiplyVector(const DVector4& rhs) const noexcept
+DVec4 DMatrix4x4::MultiplyVector(const DVec4& rhs) const noexcept
 {
-  return DVector4{
+  return DVec4{
       (*this)[0][0] * rhs.X + (*this)[1][0] * rhs.Y + (*this)[2][0] * rhs.Z + (*this)[3][0] * rhs.W,
       (*this)[0][1] * rhs.X + (*this)[1][1] * rhs.Y + (*this)[2][1] * rhs.Z + (*this)[3][1] * rhs.W,
       (*this)[0][2] * rhs.X + (*this)[1][2] * rhs.Y + (*this)[2][2] * rhs.Z + (*this)[3][2] * rhs.W,
@@ -395,7 +364,7 @@ DMatrix4x4 DMatrix4x4::IdentityMatrix() noexcept
   return staticInstance;
 }
 
-DMatrix4x4 DMatrix4x4::CreateWithScale(const DVector3& scaleVector)
+DMatrix4x4 DMatrix4x4::CreateWithScale(const DVec3& scaleVector)
 {
   return DMatrix4x4{
     scaleVector.X, 0, 0, 0,
@@ -404,7 +373,7 @@ DMatrix4x4 DMatrix4x4::CreateWithScale(const DVector3& scaleVector)
     0, 0, 0,             1};
 }
 
-DMatrix4x4 DMatrix4x4::CreateWithTranslation(const DVector3& translationPoint)
+DMatrix4x4 DMatrix4x4::CreateWithTranslation(const DVec3& translationPoint)
 {
   return DMatrix4x4{
     1, 0, 0, translationPoint.X,
@@ -418,17 +387,17 @@ DMatrix4x4 DMatrix4x4::OrthoProjection(TF32 left, TF32 right, TF32 bottom, TF32 
   return glm::ortho(left, right, bottom, top, near, far);
 }
 
-DMatrix4x4& DMatrix4x4::Scale(_MIN_ const DVector3& iScaleFactor)
+DMatrix4x4& DMatrix4x4::Scale(_MIN_ const DVec3& iScaleFactor)
 {
-  const auto mat = glm::scale(static_cast<glm::mat4>(*this), static_cast<glm::vec3>(iScaleFactor));
-  (*this)[0] = mat[0];
-  (*this)[1] = mat[1];
-  (*this)[2] = mat[2];
-  (*this)[3] = mat[3];
+  const auto mat = glm::scale(static_cast<glm::mat4>(*this), ToGlmVec3(iScaleFactor));
+  (*this)[0] = FVec4::CreateVec4(mat[0]);
+  (*this)[1] = FVec4::CreateVec4(mat[1]);
+  (*this)[2] = FVec4::CreateVec4(mat[2]);
+  (*this)[3] = FVec4::CreateVec4(mat[3]);
   return *this;
 }
 
-DMatrix4x4& DMatrix4x4::Rotate(_MIN_ const DVector3& iRotationDegreeAngle)
+DMatrix4x4& DMatrix4x4::Rotate(_MIN_ const DVec3& iRotationDegreeAngle)
 {
   const auto mat = this->Multiply(DQuaternion(iRotationDegreeAngle).GetRotationMatrix4x4());
   (*this)[0] = mat[0];
@@ -448,7 +417,7 @@ DMatrix4x4& DMatrix4x4::Rotate(_MIN_ const DQuaternion& iRotationQuaternion)
   return *this;
 }
 
-DMatrix4x4& DMatrix4x4::Translate(_MIN_ const DVector3& iPosition)
+DMatrix4x4& DMatrix4x4::Translate(_MIN_ const DVec3& iPosition)
 {
   (*this)[3][0] += iPosition.X;
   (*this)[3][1] += iPosition.Y;

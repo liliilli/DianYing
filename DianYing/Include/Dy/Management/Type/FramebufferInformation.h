@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
 
 namespace dy
@@ -27,7 +27,7 @@ struct PDyGlFrameBufferInformation final
 {
   std::string                                   mFrameBufferName  = MDY_INITIALIZE_EMPTYSTR;
   std::vector<PDyGlAttachmentBinderInformation> mAttachmentList   = {};
-  DVectorInt2                                 mFrameBufferSize  = {};
+  DIVec2                                 mFrameBufferSize  = {};
   bool                                          mIsUsingDefaultDepthBuffer  = false;
   bool                                          mIsNotUsingPixelShader      = false;
 

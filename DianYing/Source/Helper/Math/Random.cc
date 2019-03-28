@@ -115,7 +115,7 @@ float RandomFloatRange(const float from, const float prior_to) noexcept
   return rngGenerator(sRngGenerator);
 }
 
-DVector2 RandomVector2Length(float length) noexcept
+DVec2 RandomVector2Length(float length) noexcept
 {
   if (length < 0)
   {
@@ -123,7 +123,7 @@ DVector2 RandomVector2Length(float length) noexcept
     return {};
   }
 
-  DVector2 result;
+  DVec2 result;
   float squared_length;
 
   do
@@ -137,7 +137,7 @@ DVector2 RandomVector2Length(float length) noexcept
   return result * (length / std::sqrtf(squared_length));
 }
 
-DVector3 RandomVector3Length(float length) noexcept
+DVec3 RandomVector3Length(float length) noexcept
 {
   if (length < 0)
   {
@@ -145,7 +145,7 @@ DVector3 RandomVector3Length(float length) noexcept
     return {};
   }
 
-  DVector3 result;
+  DVec3 result;
   float squared_length;
 
   do
@@ -160,7 +160,7 @@ DVector3 RandomVector3Length(float length) noexcept
   return result * (length / std::sqrtf(squared_length));
 }
 
-DVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float prior_to)
+DVec2 RandomVector2Range(EDyRandomPolicy policy, float from, float prior_to)
 {
   if (from >= prior_to)
   {
@@ -180,7 +180,7 @@ DVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float prior_to)
   }
 }
 
-DVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float prior_to)
+DVec3 RandomVector3Range(EDyRandomPolicy policy, float from, float prior_to)
 {
   if (from >= prior_to)
   {

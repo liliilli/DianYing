@@ -16,7 +16,7 @@
 #include <Dy/Core/Resource/Internal/ETextureEnums.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 #include <Dy/Meta/Type/EDyResourceTypes.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Helper/Type/DColorRGBA.h>
 #include <Dy/Helper/Type/DClamp.h>
 
@@ -53,7 +53,7 @@ public:
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
 
    /// @brief Get attachment size.
-  MDY_NODISCARD const DVectorInt2& GetBufferSize() const noexcept { return this->mAttachmentSize; }
+  MDY_NODISCARD const DIVec2& GetBufferSize() const noexcept { return this->mAttachmentSize; }
 
   /// @brief Get attachments' parameter list.
   MDY_NODISCARD const auto& GetParameterList() const noexcept { return this->mParameterList; }
@@ -79,7 +79,7 @@ public:
 private:
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TTextureParameterList         mParameterList  = {};
-  DVectorInt2                 mAttachmentSize = {};
+  DIVec2                 mAttachmentSize = {};
   DColorRGBA                  mBorderColor    = DColorRGBA::Black;
   EGlBufferDataInternalFormat mBufferType     = EGlBufferDataInternalFormat::NoneError;
   ETextureStyleType           mAttachmentType = ETextureStyleType::D2;

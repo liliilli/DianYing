@@ -88,7 +88,7 @@ void FBtRenderDebugCollisionAabb::RenderObject(
    * 7--------6
    */
   const auto& b = iRefCollider.GetBound();
-  std::vector<DVector3> aabbVbo;
+  std::vector<DVec3> aabbVbo;
   aabbVbo.emplace_back(b.mMax.X, b.mMax.Y, b.mMin.Z);
   aabbVbo.emplace_back(b.mMin.X, b.mMax.Y, b.mMin.Z);
   aabbVbo.emplace_back(b.mMin.X, b.mMax.Y, b.mMax.Z);
@@ -101,7 +101,7 @@ void FBtRenderDebugCollisionAabb::RenderObject(
 
   // Buffer binding.
   glBindBuffer(GL_ARRAY_BUFFER, this->mBinderAABB->GetVertexBufferId());
-  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(DVector3) * 8, &aabbVbo[0].X);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(DVec3) * 8, &aabbVbo[0].X);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   // Render.

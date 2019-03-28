@@ -55,9 +55,9 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
   json::GetValueFromTo(itemAtlas, "ZOrder", resultInstance->mZOrder);
 
   const auto& detailAtlas           = itemAtlas[(TPDyMWCBD::sHeader_Details)];
-  resultInstance->mInitialPosition  = json::GetValueFrom<DVectorInt2>(detailAtlas, "InitialPosition");
+  resultInstance->mInitialPosition  = json::GetValueFrom<DIVec2>(detailAtlas, "InitialPosition");
   resultInstance->mOrigin           = json::GetValueFrom<EDyOrigin>(detailAtlas, "Origin");
-  resultInstance->mWidgetSize       = json::GetValueFrom<DVectorInt2>(detailAtlas, "WidgetSize");
+  resultInstance->mWidgetSize       = json::GetValueFrom<DIVec2>(detailAtlas, "WidgetSize");
 
   resultInstance->mImageRegion        = json::GetValueFrom<DArea2D>(detailAtlas, "ImageRegion");
   resultInstance->mImageSpecifierName = json::GetValueFrom<std::string>(detailAtlas, "ImageSpecifierName");

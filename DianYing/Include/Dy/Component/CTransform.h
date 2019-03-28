@@ -53,22 +53,22 @@ public:
 
   /// @brief  Return local position.
   /// @return Actor's local position.
-  MDY_NODISCARD const DVector3& GetRelativeLocalPosition() const noexcept;
+  MDY_NODISCARD const DVec3& GetRelativeLocalPosition() const noexcept;
 
 	/// @brief  Return world position.
 	/// @return Actor's world position from parent object's world basis.
-  MDY_NODISCARD const DVector3& GetRelativeWorldPosition() const noexcept;
+  MDY_NODISCARD const DVec3& GetRelativeWorldPosition() const noexcept;
 
   /// @brief  Get Object's final position.
   /// @return Actor's final world position which to be rendered.
-  MDY_NODISCARD const DVector3& GetFinalWorldPosition() noexcept;
+  MDY_NODISCARD const DVec3& GetFinalWorldPosition() noexcept;
 
   /// @brief  Get Object's to child basis (but not propagated to children FActor!)
   /// @return Actor's to child basis (this::mLocalEulerAngle + this::mToChildEulerAngle)
-  MDY_NODISCARD const std::array<DVector3, 3>& GetToChildBasis() noexcept;
+  MDY_NODISCARD const std::array<DVec3, 3>& GetToChildBasis() noexcept;
 
   /// @brief  The method gets local rotation angle value. (euler degree value)
-  MDY_NODISCARD const DVector3& GetRelativeLocalEulerAngle() const noexcept;
+  MDY_NODISCARD const DVec3& GetRelativeLocalEulerAngle() const noexcept;
 
   /// @brief Overloaded version of `GetRelativeLocalEulerAngle`.
   /// @param  direction Direction axis to get degree angle value.
@@ -76,7 +76,7 @@ public:
   MDY_NODISCARD float GetRelativeLocalEulerAngle(_MIN_ EAxis3D direction) const noexcept;
 
   /// @brief  The method gets world rotation angle value. (euler degree value)
-  MDY_NODISCARD const DVector3& GetRelativeWorldEulerAngle() const noexcept;
+  MDY_NODISCARD const DVec3& GetRelativeWorldEulerAngle() const noexcept;
 
   /// @brief Overloaded version of `GetRelativeLocalEulerAngle`.
   /// @param  direction Direction axis to get degree angle value.
@@ -88,35 +88,35 @@ public:
   /// @return Object's rotation angle value.
   MDY_NODISCARD float GetFinalEulerAngle(_MIN_ EAxis3D direction) noexcept;
 
-  /// @brief  The method gets (x, y, z) DVector3 scaling axis factor.
+  /// @brief  The method gets (x, y, z) DVec3 scaling axis factor.
   /// @return Object's scaling vector which has (x, y, z) axis factors.
-  MDY_NODISCARD const DVector3& GetLocalScale() const noexcept;
+  MDY_NODISCARD const DVec3& GetLocalScale() const noexcept;
 
   /// @brief  Returns world scale which able to affect child object's transform.
   /// @return Object's scaling vector which has (x, y, z) axis factors.
-  MDY_NODISCARD const DVector3& GetWorldScale() const noexcept;
+  MDY_NODISCARD const DVec3& GetWorldScale() const noexcept;
 
   /// @brief  Return final producted scale value vector.
-  MDY_NODISCARD const DVector3& GetFinalScale() noexcept;
+  MDY_NODISCARD const DVec3& GetFinalScale() noexcept;
 
   /// @brief Set local position.
   /// @param[in] localPosition local position to set on.
-  void SetRelativeLocalPosition(_MIN_ const DVector3& localPosition) noexcept;
+  void SetRelativeLocalPosition(_MIN_ const DVec3& localPosition) noexcept;
   /// @brief Set local position with final world position. 
-  void SetRelativeLocalPositionWithFinalWorldPosition(_MIN_ const DVector3& finalPosition);
+  void SetRelativeLocalPositionWithFinalWorldPosition(_MIN_ const DVec3& finalPosition);
 
 	/// @brief Set world position.
 	/// @param[in] worldPosition Winal position in Screen space and from parent' object.
-	void SetRelativeWorldPosition(_MIN_ const DVector3& worldPosition) noexcept;
+	void SetRelativeWorldPosition(_MIN_ const DVec3& worldPosition) noexcept;
 
   /// @brief Add local position with input vector.
-  void AddRelativeLocalPosition(_MIN_ const DVector3& localPosiiton) noexcept;
+  void AddRelativeLocalPosition(_MIN_ const DVec3& localPosiiton) noexcept;
 
   /// @brief Add offset value with axis as local position.
   void AddRelativeLocalPosition(_MIN_ EAxis3D axis, _MIN_ TF32 value) noexcept;
 
   /// @brief Add world position with input vector.
-  void AddRelativeWorldPosition(_MIN_ const DVector3& localPosiiton) noexcept;
+  void AddRelativeWorldPosition(_MIN_ const DVec3& localPosiiton) noexcept;
 
   /// @brief Add offset value with axis as world position.
   void AddRelativeWorldPosition(_MIN_ EAxis3D axis, _MIN_ TF32 value) noexcept;
@@ -125,7 +125,7 @@ public:
   /// When input value is positive, axis rotates clockwise.
   /// input value is negative, axis rotates counter-clockwise.
   /// @param[in] eulerAngleValue Euler angle value to set on.
-  void SetLocalEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexcept;
+  void SetLocalEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept;
   /// @brief Set local euler angle with quaternion.
   void SetLocalEulerAngleWithQuaternion(_MIN_ const DQuaternion& iQuat);
 
@@ -133,25 +133,25 @@ public:
   /// When input value is positive, axis rotates clockwise.
   /// input value is negative, axis rotates counter-clockwise.
   /// @param[in] eulerAngleValue Euler angle value to set on.
-  void SetWorldEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexcept;
+  void SetWorldEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept;
 
   /// @brief Add offset eulerAngleValue with axis as local rotation angle.
   void AddLocalEulerAngle(_MIN_ EAxis3D axis, _MIN_ float eulerAngleValue) noexcept;
 
   /// @brief Add offset eulerAngleValue with axis as local rotation angle.
-  void AddLocalEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexcept;
+  void AddLocalEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept;
 
   /// @brief Add offset eulerAngleValue with axis as world rotation angle.
   void AddWorldEulerAngle(_MIN_ EAxis3D axis, _MIN_ float eulerAngleValue) noexcept;
 
   /// @brief Add offset eulerAngleValue with axis as world rotation angle.
-  void AddWorldEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexcept;
+  void AddWorldEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept;
 
   /// @brief The method sets scaling vector have (x, y, z) scaling factors.
-  void SetLocalScale(_MIN_ const DVector3& xyz_value) noexcept;
+  void SetLocalScale(_MIN_ const DVec3& xyz_value) noexcept;
 
   /// @brief Sets world scaling vector value which have (x, y, z).
-  void SetWorldScale(_MIN_ const DVector3& xyz_value) noexcept;
+  void SetWorldScale(_MIN_ const DVec3& xyz_value) noexcept;
 
   /// @brief Get rotation matrix (4x4)
   MDY_NODISCARD const DMatrix4x4 GetRotationMatrix() noexcept;
@@ -181,9 +181,9 @@ public:
   void TryPropagateTransformToChildren();
 
   void MDY_PRIVATE(PropagateTransform)(
-      _MIN_ const DVector3& iPosition,
-      _MIN_ const DVector3& iAngle,
-      _MIN_ const DVector3& iScale);
+      _MIN_ const DVec3& iPosition,
+      _MIN_ const DVec3& iAngle,
+      _MIN_ const DVec3& iScale);
   /// @brief Set transform with physx::PxTransform.
   /// When set, degree x, y, z rotation value will be not valid. 
   void MDY_PRIVATE(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform);
@@ -203,7 +203,7 @@ private:
   /// @brief
   void MDY_PRIVATE(TryUpdateFinalPosition)();
   /// @brief
-  void MDY_PRIVATE(SetRelativeWorldOrigin)(_MIN_ const DVector3& iParentPosition);
+  void MDY_PRIVATE(SetRelativeWorldOrigin)(_MIN_ const DVec3& iParentPosition);
 
   /// @brief Try update sum of world (without each local) rotation angle.
   void MDY_PRIVATE(TryUpdateWorldSumRotAngle)();
@@ -212,33 +212,33 @@ private:
   /// @brief
   void MDY_PRIVATE(TryUpdateToChildBasis)() noexcept;
   /// @brief 
-  void MDY_PRIVATE(SetRotationAngleOrigin)(_MIN_ const DVector3& iParentSumRotAngle);
+  void MDY_PRIVATE(SetRotationAngleOrigin)(_MIN_ const DVec3& iParentSumRotAngle);
 
   /// @brief
   void MDY_PRIVATE(TryUpdateWorldPrdScale)();
   /// @brief
   void MDY_PRIVATE(UpdateFinalRenderingScale)() noexcept;
   /// @brief
-  void MDY_PRIVATE(SetWorldScaleOrigin)(_MIN_ const DVector3& iParentPrdScale);
+  void MDY_PRIVATE(SetWorldScaleOrigin)(_MIN_ const DVec3& iParentPrdScale);
 
 private:
-  MDY_TRANSIENT DVector3    mWorldRelativeOriginPosition  = {};
-  MDY_TRANSIENT DVector3    mLocalRelAlignedPosition = {};
-  MDY_TRANSIENT DVector3    mWorldRelAlignedPosition = {};
-  MDY_TRANSIENT DVector3    mWorldSumAlignedPosition = {};
-  MDY_TRANSIENT DVector3    mFinalRenderingPosition  = {};
+  MDY_TRANSIENT DVec3    mWorldRelativeOriginPosition  = {};
+  MDY_TRANSIENT DVec3    mLocalRelAlignedPosition = {};
+  MDY_TRANSIENT DVec3    mWorldRelAlignedPosition = {};
+  MDY_TRANSIENT DVec3    mWorldSumAlignedPosition = {};
+  MDY_TRANSIENT DVec3    mFinalRenderingPosition  = {};
 
-  MDY_TRANSIENT DVector3    mFromParentWorldEulerAngle        = {};
+  MDY_TRANSIENT DVec3    mFromParentWorldEulerAngle        = {};
   MDY_TRANSIENT DMatrix3x3  mPresentPositionBasis;
-  MDY_TRANSIENT std::array<DVector3, 3> mDisplayMovementBasis = { DVector3::RightX(), DVector3::UpY(), DVector3::FrontZ() };
-  MDY_TRANSIENT DVector3    mWorldSumEulerAngle               = {};
-  MDY_TRANSIENT DVector3    mFinalRenderingEulerAngle         = {};
-  MDY_TRANSIENT DQuaternion mFinalRenderRotationQuaternion    = {DVector3{0, 0, 0}};
-  MDY_TRANSIENT std::array<DVector3, 3> mToChildBasis         = { DVector3::RightX(), DVector3::UpY(), DVector3::FrontZ() };
+  MDY_TRANSIENT std::array<DVec3, 3> mDisplayMovementBasis = { DVec3::UnitX(), DVec3::UnitY(), DVec3::UnitZ() };
+  MDY_TRANSIENT DVec3    mWorldSumEulerAngle               = {};
+  MDY_TRANSIENT DVec3    mFinalRenderingEulerAngle         = {};
+  MDY_TRANSIENT DQuaternion mFinalRenderRotationQuaternion    = {DVec3{0, 0, 0}};
+  MDY_TRANSIENT std::array<DVec3, 3> mToChildBasis         = { DVec3::UnitX(), DVec3::UnitY(), DVec3::UnitZ() };
 
-  MDY_TRANSIENT DVector3    mFromParentWorldScale = DVector3{ 1.f };
-  MDY_TRANSIENT DVector3    mWorldProductScale    = DVector3{ 1.f };
-  MDY_TRANSIENT DVector3    mFinalRenderingScale  = DVector3{ 1.f };
+  MDY_TRANSIENT DVec3    mFromParentWorldScale = DVec3{ 1.f };
+  MDY_TRANSIENT DVec3    mWorldProductScale    = DVec3{ 1.f };
+  MDY_TRANSIENT DVec3    mFinalRenderingScale  = DVec3{ 1.f };
 
   MDY_TRANSIENT DMatrix4x4  mFinalRenderingTransform;
 

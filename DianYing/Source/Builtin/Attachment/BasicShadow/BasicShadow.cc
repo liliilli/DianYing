@@ -21,7 +21,7 @@ namespace dy
 void FDyBtAttachmentBasicShadow::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
-  property.mAttachmentSize = DVectorInt2{512, 512};
+  property.mAttachmentSize = DIVec2{512, 512};
   property.mParameterList  =
   {
     PDyGlTexParameterInformation\

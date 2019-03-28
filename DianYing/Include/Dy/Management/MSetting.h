@@ -16,7 +16,7 @@
 ///
 
 #include <Dy/Core/EDyAppMode.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Meta/Type/EDyRenderingApi.h>
 #include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
@@ -73,9 +73,9 @@ public:
   /// @return PDyLevelConstructDescriptor name. Name is same to populated actual scene instance.
   MDY_NODISCARD const std::string& GetInitialSceneInformationName() const noexcept;
 
-  /// @brief  Get global default shadow map resolution as DVector2
-  /// @return DVector2 size of default shadow map resolution.
-  MDY_NODISCARD const DVectorInt2& GetGlobalDefaultShadowMapResolution() const noexcept;
+  /// @brief  Get global default shadow map resolution as DVec2
+  /// @return DVec2 size of default shadow map resolution.
+  MDY_NODISCARD const DIVec2& GetGlobalDefaultShadowMapResolution() const noexcept;
 
   /// @brief Get input setting information, not modifiable.
   MDY_NODISCARD const DDySettingInput& GetInputSettingInformation() const noexcept;
@@ -100,7 +100,7 @@ public:
   void SetLogFilePath(const std::string& path) noexcept;
 
   /// @brief Set global default shadow map resolution.
-  void SetGlobalDefaultShadowMapResolution(const DVector2& size) noexcept;
+  void SetGlobalDefaultShadowMapResolution(const DVec2& size) noexcept;
 
   /// @brief Set vsync mode.
   /// If vsync mode is off, application will be running by more 60 fps but unstable. \n

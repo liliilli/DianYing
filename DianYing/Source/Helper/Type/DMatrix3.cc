@@ -29,6 +29,7 @@ DMatrix3x3::operator glm::mat2() const noexcept
   };
 }
 
+#ifdef false
 DMatrix3x3::operator DMatrix2x2() const noexcept
 {
   return DMatrix2x2{
@@ -36,6 +37,7 @@ DMatrix3x3::operator DMatrix2x2() const noexcept
       mMatrixValue[0][1], mMatrixValue[1][1]
   };
 }
+#endif
 
 DMatrix3x3::operator glm::mat3() const noexcept
 {
@@ -196,9 +198,9 @@ DMatrix3x3 DMatrix3x3::Multiply(const DMatrix3x3& rhs) const noexcept
   };
 }
 
-DVector3 DMatrix3x3::MultiplyVector(const DVector3& rhs) const noexcept
+DVec3 DMatrix3x3::MultiplyVector(const DVec3& rhs) const noexcept
 {
-  return DVector3{
+  return DVec3{
       (*this)[0][0] * rhs.X + (*this)[1][0] * rhs.Y + (*this)[2][0] * rhs.Z,
       (*this)[0][1] * rhs.X + (*this)[1][1] * rhs.Y + (*this)[2][1] * rhs.Z,
       (*this)[0][2] * rhs.X + (*this)[1][2] * rhs.Y + (*this)[2][2] * rhs.Z

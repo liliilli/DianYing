@@ -25,7 +25,7 @@ void FDyBtMsDebugAABB::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property)
   property.mMeshUsage     = EDyMeshUsage::DynamicDraw;
 
   // (Position, Texture coord) stride.
-  // DVector3{} : POSITION, 
+  // DVec3{} : POSITION, 
   /*
    *   1----0    Indice must be 
    *  /|    |\    0 1 2 3 F 
@@ -53,7 +53,7 @@ void FDyBtMsDebugAABB::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property)
 
   property.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel = false;
   property.mVAOBindingInfo.mOffsetByteSize = 0;
-  property.mVAOBindingInfo.mStrideByteSize = sizeof(DVector3);
+  property.mVAOBindingInfo.mStrideByteSize = sizeof(DVec3);
   property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 3, 0);
 }
 

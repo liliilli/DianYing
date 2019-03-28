@@ -30,7 +30,7 @@ EDySuccess FWidgetBasicGaugeBar::Initialize(const PDyMetaWidgetBarDescriptor& ob
   this->mValues.mMin            = objectMetaDesc.mMin;
   this->mValues.mMax            = objectMetaDesc.mMax;
 
-  this->SetRelativePosition(objectMetaDesc.mInitialPosition);
+  this->SetRelativePosition(static_cast<DVec2>(objectMetaDesc.mInitialPosition));
   this->SetFrameSize(objectMetaDesc.mWidgetSize);
   this->SetOrigin(objectMetaDesc.mOrigin);
 
@@ -114,7 +114,7 @@ void FWidgetBasicGaugeBar::Render()
   this->mRenderer.Render();
 }
 
-const DVector2& FWidgetBasicGaugeBar::GetRenderPosition() const noexcept
+const DVec2& FWidgetBasicGaugeBar::GetRenderPosition() const noexcept
 {
   return this->mCentralFinalPosition;
 }

@@ -256,7 +256,6 @@
     <ClCompile Include="Source\Helper\Type\DVector2.cc" />
     <ClCompile Include="Source\Helper\Type\DVector3.cc" />
     <ClCompile Include="Source\Helper\Type\DVector4.cc" />
-    <ClCompile Include="Source\Helper\Type\DVectorInt2.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\DMatrix2.cc" />
     <ClCompile Include="Source\Helper\Type\DMatrix3.cc" />
@@ -706,8 +705,6 @@
     <ClInclude Include="Include\Dy\Helper\Type\DVector2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DVector3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DVector4.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DVectorInt2.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DVectorInt4.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix3x3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix4x4.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix2x2.h" />

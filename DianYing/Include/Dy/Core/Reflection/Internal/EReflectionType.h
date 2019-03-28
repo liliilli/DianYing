@@ -15,16 +15,14 @@
 
 #include <string>
 #include <Dy/Core/Resource/Internal/XShaderTypes.h>
+#include <Dy/Helper/Type/DVector2.h>
+#include <Dy/Helper/Type/DVector3.h>
+#include <Dy/Helper/Type/DVector4.h>
 
 namespace dy
 {
-struct DVector2;
-struct DVector3;
-struct DVector4;
 class DMatrix3x3;
 class DMatrix4x4;
-struct DVectorInt2;
-struct DVectorInt4;
 struct DColorRGB;
 } /// ::dy namespace
 
@@ -63,13 +61,13 @@ REFLECTION_REGISTER_TYPE(Int,     int)
 REFLECTION_REGISTER_TYPE(Float,   float)
 REFLECTION_REGISTER_TYPE(Double,  double)
 REFLECTION_REGISTER_TYPE(String,  std::string)
-REFLECTION_REGISTER_TYPE(Vector2, DVector2)
-REFLECTION_REGISTER_TYPE(Vector3, DVector3)
-REFLECTION_REGISTER_TYPE(Vector4, DVector4)
+REFLECTION_REGISTER_TYPE(Vector2, DVec2)
+REFLECTION_REGISTER_TYPE(Vector3, DVec3)
+REFLECTION_REGISTER_TYPE(Vector4, DVec4)
 REFLECTION_REGISTER_TYPE(Matrix3, DMatrix3x3)
 REFLECTION_REGISTER_TYPE(Matrix4, DMatrix4x4)
-REFLECTION_REGISTER_TYPE(VectorInt2, DVectorInt2)
-REFLECTION_REGISTER_TYPE(VectorInt4, DVectorInt4)
+REFLECTION_REGISTER_TYPE(VectorInt2, DIVec2)
+REFLECTION_REGISTER_TYPE(VectorInt4, DIVec4)
 REFLECTION_REGISTER_TYPE(ColorRGB, DColorRGB)
 
 } /// ::dy::reflect namespace

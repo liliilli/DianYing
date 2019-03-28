@@ -70,7 +70,7 @@ void CBasePhysicsCollider::UpdateBound(_MIN_ const DArea3D& iArea)
   this->mAABBBound = iArea;
 }
 
-const std::vector<DVector3>& CBasePhysicsCollider::GetColliderMesh() const noexcept
+const std::vector<DVec3>& CBasePhysicsCollider::GetColliderMesh() const noexcept
 {
   return this->mColliderMeshInformation;
 }

@@ -102,7 +102,7 @@ void FBtRenderDebugCollisionShape::RenderObject(
   case EDyColliderType::Sphere:
   { this->mBinderSphere->BindVertexArray();
     glBindBuffer    (GL_ARRAY_BUFFER, this->mBinderSphere->GetVertexBufferId());
-    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVector3) * 100, iRefCollider.GetColliderMesh()[0].Data());
+    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVec3) * 100, iRefCollider.GetColliderMesh()[0].Data());
     glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
     // Render.
@@ -111,7 +111,7 @@ void FBtRenderDebugCollisionShape::RenderObject(
   case EDyColliderType::Capsule: 
   { this->mBinderCapsule->BindVertexArray();
     glBindBuffer    (GL_ARRAY_BUFFER, this->mBinderCapsule->GetVertexBufferId());
-    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVector3) * 100, iRefCollider.GetColliderMesh()[0].Data());
+    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVec3) * 100, iRefCollider.GetColliderMesh()[0].Data());
     glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
     // Render.
@@ -120,7 +120,7 @@ void FBtRenderDebugCollisionShape::RenderObject(
   case EDyColliderType::Box: 
   { this->mBinderBox->BindVertexArray(); 
     glBindBuffer    (GL_ARRAY_BUFFER, this->mBinderBox->GetVertexBufferId());
-    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVector3) * 20, iRefCollider.GetColliderMesh()[0].Data());
+    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVec3) * 20, iRefCollider.GetColliderMesh()[0].Data());
     glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
     // Render.

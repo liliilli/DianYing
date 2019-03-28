@@ -823,8 +823,8 @@ EDySuccess XGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
 void XGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
   DArea2D area; 
-  area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  area.mLeftDown  = DVec2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DVec2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
   XGLWrapper::SetViewport(area);
 }
 
@@ -840,8 +840,8 @@ void XGLWrapper::SetViewport(_MIN_ const DArea2D& iViewportRegion)
 void XGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
   DArea2D area; 
-  area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  area.mLeftDown  = DVec2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DVec2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
   XGLWrapper::SetViewportIndexed(iIndex, area);
 }
 
@@ -1074,7 +1074,7 @@ void XGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMatrix4x
   glUniformMatrix4fv(iId, size, transposed, &iBuffer[0][0].X);
 }
 
-void XGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>& iBuffer)
+void XGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVec3>& iBuffer)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -1082,17 +1082,17 @@ void XGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>
   glUniform3fv(iId, size, iBuffer.front().Data());
 }
 
-void XGLWrapper::UpdateUniformVector4(TU32 iId, const DVector4& iBuffer)
+void XGLWrapper::UpdateUniformVector4(TU32 iId, const DVec4& iBuffer)
 {
   glUniform4fv(iId, 1, iBuffer.Data());
 }
 
-void XGLWrapper::UpdateUniformVector3(TU32 iId, const DVector3& iBuffer)
+void XGLWrapper::UpdateUniformVector3(TU32 iId, const DVec3& iBuffer)
 {
   glUniform3fv(iId, 1, iBuffer.Data());
 }
 
-void XGLWrapper::UpdateUniformVector2(TU32 iId, const DVector2& iBuffer)
+void XGLWrapper::UpdateUniformVector2(TU32 iId, const DVec2& iBuffer)
 {
   glUniform2fv(iId, 1, iBuffer.Data());
 }

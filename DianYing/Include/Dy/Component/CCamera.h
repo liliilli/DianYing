@@ -78,24 +78,24 @@ public:
   MDY_NODISCARD TF32 GetFieldOfView() const noexcept;
 
   /// @brief  Get camera's world position.
-  MDY_NODISCARD const DVector3& GetPosition() const noexcept;
+  MDY_NODISCARD const DVec3& GetPosition() const noexcept;
 
   /// @brief Check point is in camera frustum.
-  MDY_NODISCARD bool IsPointInFrustum(const DVector3& iPoint) const noexcept;
+  MDY_NODISCARD bool IsPointInFrustum(const DVec3& iPoint) const noexcept;
 
   /// @brief Check virtual sphere that is consisted of point and radius, is in camera frustum.
-  MDY_NODISCARD bool IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept;
+  MDY_NODISCARD bool IsSphereInFrustum(const DVec3& iPoint, TF32 iRadius) const noexcept;
 
   /// @brief Check this camera is using 3d listener.
   MDY_NODISCARD bool IsUsing3DListener() const noexcept;
 
   /// @brief  Get scale value of xy (start point) of viewport rectangle.
   /// @return Scaled start point of viewport rectangle.
-  MDY_NODISCARD const DVector2& GetViewportRectScaleXy() const noexcept;
+  MDY_NODISCARD const DVec2& GetViewportRectScaleXy() const noexcept;
 
   /// @brief  Get scale value of wh (start point) of viewport rectangle.
   /// @return Scaled width and height of viewport rectangle.
-  MDY_NODISCARD const DVector2& GetViewportRectScaleWh() const noexcept;
+  MDY_NODISCARD const DVec2& GetViewportRectScaleWh() const noexcept;
 
   /// @brief  Get (x, y, w, h) pixel value of viewport rectangle along with present resolution size.
   /// @return Pixelized (reflect present game resolution size) (x, y, w, h) integer container for representing viewport rectangle.
@@ -197,9 +197,9 @@ private:
   /// Projection matrix.
   DMatrix4x4      mProjectionMatrix;
   /// Normalized Lookat direction vector
-  DVector3        mLookingAtDirection = {};
+  DVec3        mLookingAtDirection = {};
   /// Camera final posittion
-  DVector3        mPosition = {};
+  DVec3        mPosition = {};
   /// Frustum varaible.
   FFrustumTester  mFrustum  = {};
 
@@ -227,9 +227,9 @@ private:
   //!
 
   /// Viewport rect X, Y
-  DVector2  mViewportRectXY         = {0, 0};
+  DVec2  mViewportRectXY         = {0, 0};
   /// Viewport rect W, H
-  DVector2  mViewportRectWH         = {1, 1};
+  DVec2  mViewportRectWH         = {1, 1};
 
   /// Check flag if mesh is unclipped even though vertex position is out of bound.
   bool        mIsEnableMeshUnClipped  = false;

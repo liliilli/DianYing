@@ -15,7 +15,7 @@
 
 #include <variant>
 #include <nlohmann/json_fwd.hpp>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 #include <Dy/Core/Resource/Internal/ETextureEnums.h>
@@ -61,7 +61,7 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// Use customized texture parameters (PDyTextureConstructionBaseDesc::mParameterList)
   bool                mIsEnabledCustomedTextureParameter  = false;
   /// Integer size builtin buffer container.
-  DVectorInt2       mBuiltinBufferSize = {};
+  DIVec2       mBuiltinBufferSize = {};
   /// Built-In buffer pointer of texture.
   std::vector<TU08>*  mPtrBuiltinBuffer = MDY_INITIALIZE_NULL;
 

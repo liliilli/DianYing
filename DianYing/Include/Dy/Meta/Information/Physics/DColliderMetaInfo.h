@@ -54,7 +54,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyCapsulesColliderMetaIn
 struct PDyBoxColliderMetaInfo final
 {
   // We have to retate quater-sphere to Z-axis because default capsule is forwarding to X-axis.
-  DVector3 mHalfExtent{};
+  DVec3 mHalfExtent{};
 };
 
 void to_json  (_MINOUT_ nlohmann::json& j, _MIN_ const PDyBoxColliderMetaInfo& p);

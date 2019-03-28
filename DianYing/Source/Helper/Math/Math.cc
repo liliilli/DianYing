@@ -26,14 +26,14 @@
 
 namespace dy::math {
 
-bool IsAllZero(const dy::DVector2& vector) noexcept
+bool IsAllZero(const dy::DVec2& vector) noexcept
 {
   if (!IsNearlyEqual(vector.X, 0.f)) return false;
   if (!IsNearlyEqual(vector.Y, 0.f)) return false;
   return true;
 }
 
-bool IsAllZero(const dy::DVector3& vector) noexcept
+bool IsAllZero(const dy::DVec3& vector) noexcept
 {
   if (!IsNearlyEqual(vector.X, 0.f)) return false;
   if (!IsNearlyEqual(vector.Y, 0.f)) return false;
@@ -41,7 +41,7 @@ bool IsAllZero(const dy::DVector3& vector) noexcept
   return true;
 }
 
-bool IsAllZero(const dy::DVector4& vector) noexcept
+bool IsAllZero(const dy::DVec4& vector) noexcept
 {
   if (!IsNearlyEqual(vector.X, 0.f)) return false;
   if (!IsNearlyEqual(vector.Y, 0.f)) return false;
@@ -70,17 +70,17 @@ double Lerp(double lhs, double rhs, float offset)
   return result;
 }
 
-DVector2 Lerp(const DVector2& lhs, const DVector2& rhs, float offset) noexcept
+DVec2 Lerp(const DVec2& lhs, const DVec2& rhs, float offset) noexcept
 {
   return lhs * (1 - offset) + rhs * offset;
 }
 
-DVector3 Lerp(const DVector3& lhs, const DVector3& rhs, float offset) noexcept
+DVec3 Lerp(const DVec3& lhs, const DVec3& rhs, float offset) noexcept
 {
   return lhs * (1 - offset) + rhs * offset;
 }
 
-DVector4 Lerp(const DVector4& lhs, const DVector4& rhs, float offset) noexcept
+DVec4 Lerp(const DVec4& lhs, const DVec4& rhs, float offset) noexcept
 {
   return lhs * (1 - offset) + rhs * offset;
 }
@@ -90,17 +90,7 @@ DQuaternion Slerp(const DQuaternion& lhs, const DQuaternion& rhs, TF32 offset) n
   return glm::slerp(lhs.pGetQuaternion(), rhs.pGetQuaternion(), offset);
 }
 
-DVector2 GetQuadBezierCurvePoint(const DVector2& lhs, const DVector2& rhs, const DVector2& control, float offset)
-{
-  return Lerp(Lerp(lhs, control, offset), Lerp(control, rhs, offset), offset);
-}
-
-DVector3 GetQuadBezierCurvePoint(const DVector3& lhs, const DVector3& rhs, const DVector3& control, float offset)
-{
-  return Lerp(Lerp(lhs, control, offset), Lerp(control, rhs, offset), offset);
-}
-
-TMinMaxResult<float> GetMinMax(const dy::DVector2& vector) noexcept
+TMinMaxResult<float> GetMinMax(const DVec2& vector) noexcept
 {
   if (vector.X < vector.Y)
   {
@@ -111,7 +101,7 @@ TMinMaxResult<float> GetMinMax(const dy::DVector2& vector) noexcept
   }
 }
 
-TMinMaxResult<float> GetMinMax(const dy::DVector3& vector) noexcept
+TMinMaxResult<float> GetMinMax(const DVec3& vector) noexcept
 {
   auto min = vector.X;
   auto max = min;
@@ -123,7 +113,7 @@ TMinMaxResult<float> GetMinMax(const dy::DVector3& vector) noexcept
   return {min, max};
 }
 
-TMinMaxResult<float> GetMinMax(const dy::DVector4& vector) noexcept
+TMinMaxResult<float> GetMinMax(const dy::DVec4& vector) noexcept
 {
   auto min = vector.X;
   auto max = min;
@@ -181,14 +171,14 @@ double ConvertDegreeToRadian(double degree) noexcept
   return GetClampedRotationRadianAngle(degree * DegToRadVal<double>);
 }
 
-DVector3 ConvertQuaternionToRadianEuler(_MIN_ const DQuaternion& iQuat)
+DVec3 ConvertQuaternionToRadianEuler(_MIN_ const DQuaternion& iQuat)
 {
   return ConvertQuaternionToRadianEuler(iQuat.W(), iQuat.X(), iQuat.Y(), iQuat.Z());
 }
 
-DVector3 ConvertQuaternionToRadianEuler(_MIN_ TF32 w, _MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z)
+DVec3 ConvertQuaternionToRadianEuler(_MIN_ TF32 w, _MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z)
 {
-  DVector3 radianAngle{};
+  DVec3 radianAngle{};
 
   // roll (x-axis rotation)
   const TF64 sinrCosp = +2.0 * (w * x + y * z);

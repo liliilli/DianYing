@@ -31,10 +31,10 @@ public:
   void UpdateFrustum(const DMatrix4x4& mProjection, const DMatrix4x4& mView);
 
   /// @brief Check point is in frustum.
-  MDY_NODISCARD bool IsPointInFrustum(const DVector3& mPoint) const noexcept;
+  MDY_NODISCARD bool IsPointInFrustum(const DVec3& mPoint) const noexcept;
 
   /// @brief Check virtual sphere that has point and radius is in frustum.
-  MDY_NODISCARD bool IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept;
+  MDY_NODISCARD bool IsSphereInFrustum(const DVec3& iPoint, TF32 iRadius) const noexcept;
 
 private:
   /// @enum EDirection

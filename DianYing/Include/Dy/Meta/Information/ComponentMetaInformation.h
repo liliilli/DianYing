@@ -58,17 +58,17 @@ struct PDyTransformComponentMetaInfo final : public IDyMetaInformation
   struct DDetails final
   {
     /// Local position
-    DVector3        mLocalPosition = {};
+    DVec3        mLocalPosition = {};
     /// Local rotation
-    DVector3        mLocalRotation = {};
+    DVec3        mLocalRotation = {};
     /// Local scale
-    DVector3        mLocalScale = DVector3{ 1, 1, 1 };
+    DVec3        mLocalScale = DVec3{ 1, 1, 1 };
     /// World position
-    DVector3        mWorldPosition = {};
+    DVec3        mWorldPosition = {};
     /// World rotation
-    DVector3        mWorldRotation = {};
+    DVec3        mWorldRotation = {};
     /// World scale
-    DVector3        mWorldScale = DVector3{ 1, 1, 1 };
+    DVec3        mWorldScale = DVec3{ 1, 1, 1 };
   };
 
   /// Details

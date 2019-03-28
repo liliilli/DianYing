@@ -36,31 +36,9 @@ public:
   DMatrix2x2& operator=(DMatrix2x2&& value)       = default;
   DMatrix2x2(std::initializer_list<float>&) = delete;
 
-  DMatrix2x2(const float _00, const float _01, const float _10, const float _11) :
-      mMatrixValue{dy::DVector2{_00, _10},
-                   dy::DVector2{_01, _11}} {};
-
-  DMatrix2x2(const glm::mat2& glmMatrix) noexcept
-  {
-    mMatrixValue[0] = glmMatrix[0];
-    mMatrixValue[1] = glmMatrix[1];
-  }
-
-  //!
-  //! Conversion operators
-  //!
-
-  operator glm::mat2() const noexcept
-  {
-    return glm::mat2{mMatrixValue[0], mMatrixValue[1]};
-  }
-
-  DMatrix2x2& operator=(const glm::mat2& value) noexcept
-  {
-    this->mMatrixValue[0] = value[0];
-    this->mMatrixValue[1] = value[1];
-    return *this;
-  }
+  DMatrix2x2(const float _00, const float _01, const float _10, const float _11) 
+    : mMatrixValue{dy::DVec2{_00, _10},
+                   dy::DVec2{_01, _11}} {};
 
   operator glm::mat3() const noexcept
   {
@@ -79,45 +57,12 @@ public:
         0, 0, 0, 0};
   }
 
-#ifdef false
-  operator aiMatrix3x3t<float>() const noexcept
-  {
-    return aiMatrix3x3t<float>{
-        mMatrixValue[0][0], mMatrixValue[0][1], 0,
-        mMatrixValue[1][0], mMatrixValue[1][1], 0,
-        0, 0, 0};
-  }
-
-  operator aiMatrix4x4t<float>() const noexcept
-  {
-    return aiMatrix4x4t<float>{
-        mMatrixValue[0][0], mMatrixValue[0][1], 0, 0,
-        mMatrixValue[1][0], mMatrixValue[1][1], 0, 0,
-        0, 0, 0, 0,
-        0, 0, 0, 0};
-  }
-#endif
-
-#if defined(_WIN32)
-  operator DirectX::XMMATRIX() const noexcept
-  {
-    DirectX::XMMATRIX returnMatrix = {};
-
-    DirectX::XMFLOAT2 rowFloat = {mMatrixValue[0][0], mMatrixValue[1][0]};
-    returnMatrix.r[0] = DirectX::XMLoadFloat2(&rowFloat);
-    rowFloat = {mMatrixValue[0][1], mMatrixValue[1][1]};
-    returnMatrix.r[1] = DirectX::XMLoadFloat2(&rowFloat);
-
-    return returnMatrix;
-  }
-#endif
-
-  DVector2& operator[](std::size_t index) noexcept
+  DVec2& operator[](std::size_t index) noexcept
   {
     return mMatrixValue[index];
   }
 
-  const DVector2& operator[](std::size_t index) const noexcept
+  const DVec2& operator[](std::size_t index) const noexcept
   {
     return mMatrixValue[index];
   }
@@ -236,9 +181,9 @@ public:
   ///
   /// @brief
   ///
-  DVector2 MultiplyVector(const DVector2& rhs) const noexcept
+  DVec2 MultiplyVector(const DVec2& rhs) const noexcept
   {
-    return DVector2{
+    return DVec2{
         (*this)[0][0] * rhs.X + (*this)[1][0] * rhs.Y,
         (*this)[0][1] * rhs.X + (*this)[1][1] * rhs.Y
     };
@@ -274,7 +219,7 @@ private:
   DMatrix2x2(bool);
 
   /// Column major
-  std::array<dy::DVector2, 2> mMatrixValue;
+  std::array<dy::DVec2, 2> mMatrixValue;
 };
 
 } /// ::dy namespace

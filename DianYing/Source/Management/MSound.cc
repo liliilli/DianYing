@@ -198,7 +198,7 @@ public:
   void PlaySound3D(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
-      const DVector3& iWorldPosition,
+      const DVec3& iWorldPosition,
       const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
       const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       TF32 iDelay = 0.0f,
@@ -210,7 +210,7 @@ public:
   MDY_NODISCARD std::optional<FSound3DBinder> PlaySound3DLooped(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
-      const DVector3& iWorldPosition,
+      const DVec3& iWorldPosition,
       const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
       const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       TF32 iMinDistance = s3DMinDistance,
@@ -309,7 +309,7 @@ std::optional<FSound2DBinder> MSound::PlaySound2DLooped(
 void MSound::PlaySound3D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
-  const DVector3& iWorldPosition,
+  const DVec3& iWorldPosition,
   const DClamp<TF32, 0, 5>& iVolumeMultiplier,
   const DClamp<TF32, 0, 5>& iPitchMultiplier,
   const TF32 iDelay,
@@ -330,7 +330,7 @@ void MSound::PlaySound3D(
 std::optional<FSound3DBinder> MSound::PlaySound3DLooped(
      const std::string& iSoundSpecifier, 
      const std::string& iSoundChannel,
-     const DVector3& iWorldPosition,
+     const DVec3& iWorldPosition,
      const DClamp<TF32, 0, 5>& iVolumeMultiplier,
      const DClamp<TF32, 0, 5>& iPitchMultiplier,
      const TF32 iMinDistance,

@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/Type/DString.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Helper/Type/DColorRGBA.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
@@ -27,9 +27,9 @@ namespace dy
 struct PDyMetaWidgetTextDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {
   /// Size (px) of text widget (leaf widget).
-  DVectorInt2 mWidgetSize         = {};
+  DIVec2 mWidgetSize         = {};
   /// Initial position of canvas.
-  DVectorInt2 mInitialPosition    = {};
+  DIVec2 mInitialPosition    = {};
   /// Originable to parent frame (except for list layout)
   EDyOrigin   mOrigin             = EDyOrigin::Center_Center;
 

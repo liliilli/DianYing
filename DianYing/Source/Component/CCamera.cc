@@ -106,9 +106,9 @@ void CCamera::pUpdateCameraVectors()
 void CCamera::pUpdateViewMatrix()
 {
   this->mViewMatrix = glm::lookAt(
-      static_cast<glm::vec3>(this->mPosition),
-      static_cast<glm::vec3>(this->mPosition + this->mLookingAtDirection),
-      static_cast<glm::vec3>(DVector3::UpY())
+      ToGlmVec3(this->mPosition),
+      ToGlmVec3(this->mPosition + this->mLookingAtDirection),
+      ToGlmVec3(DVec3::UnitY())
   );
 
   this->mIsViewMatrixDirty = false;
@@ -182,17 +182,17 @@ TF32 CCamera::GetFieldOfView() const noexcept
   return this->mFieldOfView;
 }
 
-const DVector3& CCamera::GetPosition() const noexcept
+const DVec3& CCamera::GetPosition() const noexcept
 {
   return this->mPosition;
 }
 
-bool CCamera::IsPointInFrustum(const DVector3& iPoint) const noexcept
+bool CCamera::IsPointInFrustum(const DVec3& iPoint) const noexcept
 {
   return this->mFrustum.IsPointInFrustum(iPoint);
 }
 
-bool CCamera::IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept
+bool CCamera::IsSphereInFrustum(const DVec3& iPoint, TF32 iRadius) const noexcept
 {
   return this->mFrustum.IsSphereInFrustum(iPoint, iRadius);
 }
@@ -202,12 +202,12 @@ bool CCamera::IsUsing3DListener() const noexcept
   return this->mIsUsing3DListener;
 }
 
-const DVector2& CCamera::GetViewportRectScaleXy() const noexcept
+const DVec2& CCamera::GetViewportRectScaleXy() const noexcept
 {
   return this->mViewportRectXY;
 }
 
-const DVector2& CCamera::GetViewportRectScaleWh() const noexcept
+const DVec2& CCamera::GetViewportRectScaleWh() const noexcept
 {
   return this->mViewportRectWH;
 }

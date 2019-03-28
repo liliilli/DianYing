@@ -26,7 +26,7 @@ const std::string& FDyFrameBufferResource::GetSpecifierName()
   return this->mSpecifierName;
 }
 
-const DVectorInt2& FDyFrameBufferResource::GetFrameBufferSize()
+const DIVec2& FDyFrameBufferResource::GetFrameBufferSize()
 {
   return this->mFrameBufferSize;
 }

@@ -64,13 +64,13 @@ void AWidgetUiObjectChildrenable::TryDeactivateInstance()
   this->PropagateActivationFlag(false);
 }
 
-void AWidgetUiObjectChildrenable::SetRelativePosition(const DVector2& position) noexcept
+void AWidgetUiObjectChildrenable::SetRelativePosition(const DVec2& position) noexcept
 {
   AWidgetObject::SetRelativePosition(position);
   if (this->CheckIsPropagable() == true) { this->TryPropagatePositionToChildren(); }
 }
 
-void AWidgetUiObjectChildrenable::SetFrameSize(const DVectorInt2& size) noexcept
+void AWidgetUiObjectChildrenable::SetFrameSize(const DIVec2& size) noexcept
 {
   AWidgetObject::SetFrameSize(size);
   if (this->CheckIsPropagable() == true) { this->TryPropagatePositionToChildren(); }

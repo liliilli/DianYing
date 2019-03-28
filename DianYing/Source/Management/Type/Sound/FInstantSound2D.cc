@@ -19,6 +19,7 @@
 #include <Dy/Management/MSound.h>
 #include <Dy/Management/Internal/Sound/XCallbackChannel.h>
 #include <Dy/Management/Type/Sound/FSoundChannel.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

@@ -19,6 +19,7 @@
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/Type/FontResourceContainer.h>
 #include <Dy/Helper/Library/HelperContainer.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

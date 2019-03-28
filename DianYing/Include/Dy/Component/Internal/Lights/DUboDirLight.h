@@ -29,7 +29,7 @@ namespace dy
 struct alignas(16) DUboDirectionalLight final
 {
   /// World space light direction
-  DVector3 mDirection = {};
+  DVec3 mDirection = {};
   MDY_BYTEPADDING(TI32)
   /// Light tint color
   DColorRGBA mDiffuse = DColorRGBA::White;

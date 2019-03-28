@@ -30,7 +30,7 @@ FDyTextureCubemapInformation::FDyTextureCubemapInformation(_MIN_ const PDyTextur
   for (TU32 cubemapId = 0; cubemapId < 6; ++cubemapId)
   {
     std::unique_ptr<DImageBinaryBuffer> ptrBufferData = nullptr;
-    DVectorInt2*     ptrSize            = nullptr;
+    DIVec2*     ptrSize            = nullptr;
     std::vector<TU08>* ptrInstanceBuffer  = nullptr;
 
     const auto type = static_cast<EDyCubemapFragment>(cubemapId);
@@ -103,7 +103,7 @@ const std::vector<TU08>& FDyTextureCubemapInformation::GetBufferOf(_MIN_ EDyCube
   }
 }
 
-const DVectorInt2& FDyTextureCubemapInformation::GetSizeOf(_MIN_ EDyCubemapFragment iValue) const noexcept
+const DIVec2& FDyTextureCubemapInformation::GetSizeOf(_MIN_ EDyCubemapFragment iValue) const noexcept
 {
   switch (iValue)
   {

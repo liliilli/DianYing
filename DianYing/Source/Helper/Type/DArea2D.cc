@@ -48,8 +48,8 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DArea2D& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DArea2D& p)
 {
-  p.mLeftDown = json::GetValueFrom<DVector2>(j, sHeader_LeftDown);
-  p.mRightUp  = json::GetValueFrom<DVector2>(j, sHeader_RightUp);
+  p.mLeftDown = json::GetValueFrom<DVec2>(j, sHeader_LeftDown);
+  p.mRightUp  = json::GetValueFrom<DVec2>(j, sHeader_RightUp);
 }
 
 } /// ::dy namespace

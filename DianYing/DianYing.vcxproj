@@ -91,7 +91,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -120,7 +120,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -148,7 +148,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -478,7 +478,6 @@
     <ClCompile Include="Source\Helper\Type\DVector2.cc" />
     <ClCompile Include="Source\Helper\Type\DVector3.cc" />
     <ClCompile Include="Source\Helper\Type\DVector4.cc" />
-    <ClCompile Include="Source\Helper\Type\DVectorInt2.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingGlobalType.cc" />
     <ClCompile Include="Source\Management\BindingLua\Entry.cc" />
@@ -809,7 +808,6 @@
     <ClInclude Include="Include\Dy\Helper\Type\DSphere.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DPlane.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DUuid.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DVectorInt4.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SProfilingHelper.h" />
@@ -971,7 +969,6 @@
     <ClInclude Include="Include\Dy\Helper\Type\DClamp.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DString.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DTristateBool.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DVectorInt2.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperZlib.h" />
     <ClInclude Include="Include\Dy\Management\Helper\XLuaBindingEntry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\FPhysxSimulationCallback.h" />

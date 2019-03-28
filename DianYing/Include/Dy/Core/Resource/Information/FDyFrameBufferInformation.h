@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
 #include <Dy/Core/Resource/Type/TInformationBinder.h>
 
@@ -49,7 +49,7 @@ public:
   MDY_NODISCARD const std::string& GetSpecifierName() const noexcept { return this->mSpecifierName; }
 
   /// @brief Get frame buffer size.
-  MDY_NODISCARD const DVectorInt2& GetFrameBufferSize() const noexcept { return this->mFrameBufferSize; }
+  MDY_NODISCARD const DIVec2& GetFrameBufferSize() const noexcept { return this->mFrameBufferSize; }
 
   /// @brief Get attachment info list.
   MDY_NODISCARD const auto& GetAttachmentInformationBinderList() const noexcept { return this->mAttachmentInfoList; }
@@ -78,7 +78,7 @@ private:
   std::string               mSpecifierName;
   TAttachmentInfoBinderList mAttachmentInfoList = {};
   TBlendingEquationList     mAttachmentBlendings = {};
-  DVectorInt2             mFrameBufferSize    = {};
+  DIVec2             mFrameBufferSize    = {};
 
   TAttachmentInformation    mDepthAttachment    = {};
   bool                      mIsUsingDepthBuffer = false;

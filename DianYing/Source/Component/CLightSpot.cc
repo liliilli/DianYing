@@ -93,12 +93,12 @@ TF32 CLightSpot::GetAngle() const noexcept
   return this->mData.mRangeAngle;
 }
 
-void CLightSpot::SetDirection(const DVector3& iDirection)
+void CLightSpot::SetDirection(const DVec3& iDirection)
 {
   this->mData.mDirection = iDirection.Normalize();
 }
 
-const DVector3& CLightSpot::GetDirection() const noexcept
+const DVec3& CLightSpot::GetDirection() const noexcept
 {
   return this->mData.mDirection;
 }

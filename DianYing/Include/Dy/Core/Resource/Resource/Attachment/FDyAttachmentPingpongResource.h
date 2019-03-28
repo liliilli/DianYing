@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Core/Resource/Type/TInformationBinder.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 

@@ -141,7 +141,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay& p)
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay& p)
 {
   p.mInitialSceneSpecifier  = json::GetValueFrom<std::string>         (j, sInitialScene);
-  p.mInitialResolution      = json::GetValueFrom<DVectorInt2>       (j, sInitialResolution);
+  p.mInitialResolution      = json::GetValueFrom<DIVec2>       (j, sInitialResolution);
   p.mShadow                 = json::GetValueFrom<decltype(p.mShadow)> (j, sGamePlay_Shadow);
   p.mGraphics               = json::GetValueFrom<decltype(p.mGraphics)>(j, sGamePlay_Graphics);
 }
@@ -156,7 +156,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DDySettingGameplay::DDyShad
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDySettingGameplay::DDyShadow& p)
 {
-  p.mShadowGlobalDefaultMap = json::GetValueFrom<DVectorInt2>(j, sGamePlay_Shadow_GlobalDefaultMapSize);
+  p.mShadowGlobalDefaultMap = json::GetValueFrom<DIVec2>(j, sGamePlay_Shadow_GlobalDefaultMapSize);
 }
 
 void to_json(nlohmann::json& j, const DDySettingGameplay::DDyGraphics& p)

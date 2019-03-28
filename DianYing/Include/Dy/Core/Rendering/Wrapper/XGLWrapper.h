@@ -190,13 +190,13 @@ public:
     const std::vector<DMatrix4x4>& iBuffer, 
     bool iIransposed = false);
   /// @brief Update uniform vector3 (float) array. Specified shader must be valid and activated.
-  static void UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>& iBfuffer);
+  static void UpdateUniformVector3Array(TU32 iId, const std::vector<DVec3>& iBfuffer);
   /// @brief Update uniform vector4 (float) item. Specified shader must be valid and activated.
-  static void UpdateUniformVector4(TU32 iId, const DVector4& iBuffer);
+  static void UpdateUniformVector4(TU32 iId, const DVec4& iBuffer);
   /// @brief Update uniform vector3 (float) item. Specified shader must be valid and activated.
-  static void UpdateUniformVector3(TU32 iId, const DVector3& iBuffer);
+  static void UpdateUniformVector3(TU32 iId, const DVec3& iBuffer);
   /// @brief Update uniform vector2 (float) item. Specified shader must be valid and activated.
-  static void UpdateUniformVector2(TU32 iId, const DVector2& iBuffer);
+  static void UpdateUniformVector2(TU32 iId, const DVec2& iBuffer);
   /// @brief Update uniform integer item. Specified shader must be valid and activated.
   static void UpdateUniformInteger(TU32 iId, const TI32& iBuffer);
   /// @brief Update uniform one unsigend (32-bit) value. 

@@ -18,6 +18,7 @@
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Management/Helper/SProfilingHelper.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

@@ -78,7 +78,7 @@ public:
   MDY_NODISCARD bool IsCastingShadow() const noexcept { return this->mIsCastingShadow; }
 
   /// @brief Get light's direction. Direction forwards to outside from origin.
-  MDY_NODISCARD const DVector3& GetLightDirection() const noexcept;
+  MDY_NODISCARD const DVec3& GetLightDirection() const noexcept;
 
   /// @brief Set intensity of light.
   void SetIntensity(TF32 iIntensity) noexcept;
@@ -91,7 +91,7 @@ public:
   MDY_NODISCARD const DColorRGBA& GetDiffuseColor() const noexcept;
 
   /// @brief Set light's direction. direction must be forward from origin to outside.
-  void SetLightDirection(const DVector3& direction) noexcept;
+  void SetLightDirection(const DVec3& direction) noexcept;
 
   /// @brief Update view matrix agian.
   void UpdateLightViewMatrix();
@@ -154,8 +154,8 @@ private:
       TF32 iNear,
       TF32 iFar,
       const CCamera& iRefCamera, 
-      DVector4& iMin, 
-      DVector4& iMax) const;
+      DVec4& iMin, 
+      DVec4& iMax) const;
 
   /// Data for uniform buffer object. <Direction, Diffuse, Specular, Ambient, Intensity>
   DUboDirectionalLight    mData       = {};
@@ -164,13 +164,13 @@ private:
   /// Shadow type.
   EDyShadowType             mShadowType = EDyShadowType::__Error;
   /// Shadow map resolution for shadow.
-  DVector2                mShadowResolution = {};
+  DVec2                mShadowResolution = {};
   /// Shadow culling layer.
   std::vector<std::string>  mShadowCullingLayerList = {};
  
   /// Find a bounding box of whole camera frustum in light view space.
-  DVector4 minFrustum {NumericalMax<TF32>};
-  DVector4 maxFrustum {NumericalMin<TF32>};
+  DVec4 minFrustum {NumericalMax<TF32>};
+  DVec4 maxFrustum {NumericalMin<TF32>};
   std::array<DArea2D, kCSMSegment>    mLightViewports;
 
   std::array<TF32, kCSMSegment> mFarPlanes;

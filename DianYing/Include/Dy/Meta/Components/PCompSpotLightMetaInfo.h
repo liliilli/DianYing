@@ -28,7 +28,7 @@ struct PCompSpotLightMetaInfo final : public IDyMetaInformation
     /// Tinting color
     DColorRGB mColor = DColorRGB::White;
     /// Direction
-    DVector3  mDirection;
+    DVec3  mDirection;
     /// Intensity of light must be set up to 0~. (Total energy of light)
     TF32 mIntensity = 1.0f;
     /// Range (radius) of light.

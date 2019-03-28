@@ -60,7 +60,7 @@ void FDyBuiltinDebugUiScript::Initiate()
   testDescriptor.mFontName    = "Arial";
   testDescriptor.mIsActivated = true;
   testDescriptor.mOrigin = EDyOrigin::Left_Bottom;
-  testDescriptor.mInitialPosition = DVectorInt2{16, 80};
+  testDescriptor.mInitialPosition = DIVec2{16, 80};
   widgetRef.CreateWidget<FWidgetText>(testDescriptor);
 }
 
@@ -114,7 +114,7 @@ Camera0 : 2
       this->mProfilingManger->GetScreenRenderedActorCount(),
       static_cast<TF32>(usageRam) / (1024 * 1024)
   ));
-  //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DVector2{0, -dt * 16.0f});
+  //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DVec2{0, -dt * 16.0f});
   bar->SetPresentValue(usageCpu);
 
   const auto& inputManager = MInput::GetInstance();
@@ -146,7 +146,7 @@ Camera0 : 2
     if (auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
         ptrCamera != nullptr)
     {
-      text->SetText(MakeStringU8("Camera 0 : {}", ptrCamera->GetPosition().ToString()));
+      text->SetText(MakeStringU8("Camera 0 : {}", ToString(ptrCamera->GetPosition())));
     }
     else
     {
@@ -175,7 +175,7 @@ void FDyBuiltinDebugUiScript::CbMoveBar()
 {
   auto& widgetRef = this->GetWidgetReference();
   FWidgetBasicGaugeBar* bar = widgetRef.GetWidget<FWidgetBasicGaugeBar>("BasicBarTest");
-  bar->SetRelativePosition(random::RandomVector2Range(random::EDyRandomPolicy::Uniform, 0, 320) - DVector2{0, 360});
+  bar->SetRelativePosition(random::RandomVector2Range(random::EDyRandomPolicy::Uniform, 0, 320) - DVec2{0, 360});
 }
 
 void FDyBuiltinDebugUiScript::CbChangeImageTexture()
