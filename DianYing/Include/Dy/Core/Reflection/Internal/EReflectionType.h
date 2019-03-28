@@ -32,6 +32,7 @@ namespace dy::reflect
 enum class EReflectScopeType 
 {
   Int, 
+  UInt,
   Float, 
   Double,
   String, 
@@ -40,6 +41,7 @@ enum class EReflectScopeType
   Vector3,
   Vector4,
   VectorInt2,
+  VectorInt3,
   VectorInt4,
   Matrix3,
   Matrix4,
@@ -58,6 +60,7 @@ template <typename TType> struct ToVariableType;
   template <> struct ToVariableType<__MAType__> { static constexpr auto Value = EReflectScopeType::__MAEnum__; };
 
 REFLECTION_REGISTER_TYPE(Int,     int)
+REFLECTION_REGISTER_TYPE(UInt,    unsigned int)
 REFLECTION_REGISTER_TYPE(Float,   float)
 REFLECTION_REGISTER_TYPE(Double,  double)
 REFLECTION_REGISTER_TYPE(String,  std::string)
@@ -67,6 +70,7 @@ REFLECTION_REGISTER_TYPE(Vector4, DVec4)
 REFLECTION_REGISTER_TYPE(Matrix3, DMatrix3x3)
 REFLECTION_REGISTER_TYPE(Matrix4, DMatrix4x4)
 REFLECTION_REGISTER_TYPE(VectorInt2, DIVec2)
+REFLECTION_REGISTER_TYPE(VectorInt3, DIVec3)
 REFLECTION_REGISTER_TYPE(VectorInt4, DIVec4)
 REFLECTION_REGISTER_TYPE(ColorRGB, DColorRGB)
 
