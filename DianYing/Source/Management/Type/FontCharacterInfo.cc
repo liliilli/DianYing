@@ -63,7 +63,7 @@ void from_json(const nlohmann::json& j, DDyTextureCoordBox& p)
   p.mRightUp          = j.at((sHeader_RightUp)).get<DVec2>();
 }
 
-DDyFontCharacterInfo DDyFontCharacterInfo::CreateInstance(_MIN_ const nlohmann::json& j, _MIN_ const TC16 charCode)
+DDyFontCharacterInfo DDyFontCharacterInfo::CreateInstance(_MIN_ const nlohmann::json& j, _MIN_ const TChr16 charCode)
 {
   DDyFontCharacterInfo result = j.get<DDyFontCharacterInfo>();
   result.mCharCode            = charCode;

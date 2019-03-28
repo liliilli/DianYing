@@ -70,7 +70,7 @@ GetCharacterVertices(
 MDY_NODISCARD std::vector<std::array<dy::DVec2, 12>> 
 GetCharacterVertices(
     dy::IFontContainer& container, 
-    const std::vector<std::pair<TC16, dy::DVec2>>& lineList, 
+    const std::vector<std::pair<TChr16, dy::DVec2>>& lineList, 
     TI32 fontSize)
 {
    std::vector<std::array<dy::DVec2, 12>> result;
@@ -136,14 +136,14 @@ void CRendererFont::Render()
   const DVec2 initPos    = this->mPtrWidget->GetRenderPosition();
   DVec2 renderPosition   = initPos;
 
-  using TLineCharCodeList = std::vector<std::pair<TC16, DVec2>>;
+  using TLineCharCodeList = std::vector<std::pair<TChr16, DVec2>>;
   std::vector<TLineCharCodeList>  charCodeList{};
   std::vector<TI32>               lineActualWidthList{};
 
   { // Make char-code list with calculating lineActualWidth of each line..
     TLineCharCodeList lineCharCodeList{};
     TI32              lineActualWidth = 0;
-    for (const TC16& ucs2Char : string)
+    for (const TChr16& ucs2Char : string)
     {
       if (ucs2Char != '\n')
       { 

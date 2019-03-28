@@ -214,8 +214,8 @@ void CLightDirectional::UpdateLightProjectionAndViewports(
   TF32 nearSegmentPlane = 0.0f;
   for (TU32 i = 0; i < kCSMSegment; ++i)
   {
-    DVec4 minSegment {NumericalMax<TF32>};
-    DVec4 maxSegment {NumericalMin<TF32>};
+    DVec4 minSegment {kMaxValueOf<TF32>};
+    DVec4 maxSegment {kMinValueOf<TF32>};
     this->FrustumBoundingBoxLightViewSpace(nearSegmentPlane, iFarPlanes[i], iRefCamera, minSegment, maxSegment);
 
     // Update viewports.
@@ -272,8 +272,8 @@ void CLightDirectional::FrustumBoundingBoxLightViewSpace(
     const CCamera& iRefCamera,
     DVec4& iMin, DVec4& iMax) const
 {
-   DVec4 minResult {NumericalMax<TF32>};
-  DVec4 maxResult {NumericalMin<TF32>};
+   DVec4 minResult {kMaxValueOf<TF32>};
+  DVec4 maxResult {kMinValueOf<TF32>};
 
   const TF32 fov  = math::kToRadian<TF32> * iRefCamera.GetFieldOfView();
   const auto xywh = iRefCamera.GetPixelizedViewportRectangle();

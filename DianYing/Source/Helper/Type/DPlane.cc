@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Helper/Type/DPlane.h>
 #include <Dy/Helper/Math/Math.h>
+#include <Math/Utility/XMath.h>
 
 namespace dy
 {

@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_HELPER_TYPE_CLAMP_H
-#define GUARD_DY_HELPER_TYPE_CLAMP_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -67,6 +66,5 @@ private:
 
 } /// ::dy::math namespace
 
-#endif /// GUARD_DY_HELPER_TYPE_CLAMP_H
 #include <Math/Type/Inline/DClamp/DClamp.inl>
 #include <Math/Type/Inline/DClamp/DClampOperator.inl>

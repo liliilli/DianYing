@@ -34,7 +34,7 @@ MDY_NODISCARD dy::DColorRGB24 DyGetRGBColorFromTU32(_MIN_ const TU32 bit24Value)
   std::bitset<24>   backgroundColorBit = bit24Value;
   dy::DColorRGB24 background8BitColor;
   {
-    TU08 r = 0;
+    TU8 r = 0;
     for (TI32 i = 7; i >= 0; --i)
     {
       const auto index = 16 + i;
@@ -42,7 +42,7 @@ MDY_NODISCARD dy::DColorRGB24 DyGetRGBColorFromTU32(_MIN_ const TU32 bit24Value)
     }
     background8BitColor.R = r;
 
-    TU08 g = 0;
+    TU8 g = 0;
     for (TI32 i = 7; i >= 0; --i)
     {
       const auto index = 8 + i;
@@ -50,7 +50,7 @@ MDY_NODISCARD dy::DColorRGB24 DyGetRGBColorFromTU32(_MIN_ const TU32 bit24Value)
     }
     background8BitColor.G = g;
 
-    TU08 b = 0;
+    TU8 b = 0;
     for (TI32 i = 7; i >= 0; --i)
     {
       const auto index = i;
@@ -71,7 +71,7 @@ MDY_NODISCARD dy::DColorRGB24 DyGetRGBColorFromTU32(_MIN_ const TU32 bit24Value)
 namespace dy
 {
 
-DColorRGB24::DColorRGB24(TU08 r, TU08 g, TU08 b) noexcept
+DColorRGB24::DColorRGB24(TU8 r, TU8 g, TU8 b) noexcept
   : R{r}, G{g}, B{b} {}
 
 TF32 DColorRGB24::GetGrayScale() const noexcept

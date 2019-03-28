@@ -29,15 +29,15 @@ namespace dy
 ///
 struct alignas(4) DColorRGBA32 final
 {
-  TU08 R = MDY_INITIALIZE_DEFUINT;
-  TU08 G = MDY_INITIALIZE_DEFUINT;
-  TU08 B = MDY_INITIALIZE_DEFUINT;
-  TU08 A = MDY_INITIALIZE_DEFUINT;
+  TU8 R = MDY_INITIALIZE_DEFUINT;
+  TU8 G = MDY_INITIALIZE_DEFUINT;
+  TU8 B = MDY_INITIALIZE_DEFUINT;
+  TU8 A = MDY_INITIALIZE_DEFUINT;
 
   constexpr DColorRGBA32() = default;
-  constexpr explicit DColorRGBA32(_MIN_ const TU08 r, _MIN_ const TU08 g, _MIN_ const TU08 b) noexcept :
+  constexpr explicit DColorRGBA32(_MIN_ const TU8 r, _MIN_ const TU8 g, _MIN_ const TU8 b) noexcept :
       DColorRGBA32{r, g, b, 0b11111111} {}
-  constexpr explicit DColorRGBA32(_MIN_ const TU08 r, _MIN_ const TU08 g, _MIN_ const TU08 b, _MIN_ const TU08 a) noexcept
+  constexpr explicit DColorRGBA32(_MIN_ const TU8 r, _MIN_ const TU8 g, _MIN_ const TU8 b, _MIN_ const TU8 a) noexcept
   {
     this->R = r;
     this->G = g;

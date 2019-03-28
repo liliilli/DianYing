@@ -61,5 +61,7 @@
     <None Include="Include\Math\Type\Inline\Micellanous\DTristateBool.inl" />
     <None Include="Include\Math\Type\Inline\DSphere\DSphere.inl" />
     <None Include="Include\Math\Utility\Inline\XMathTrigonometry.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\Lerp.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\ToNormalized.inl" />
   </ItemGroup>
 </Project>

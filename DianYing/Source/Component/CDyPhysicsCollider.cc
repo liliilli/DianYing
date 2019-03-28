@@ -170,7 +170,7 @@ physx::PxFilterData CBasePhysicsCollider::CreateFilterDataValue(
   const auto it = std::find(MDY_BIND_BEGIN_END(defaultSetting.mCollisionTag), iLayerName);
   MDY_ASSERT_MSG(it != defaultSetting.mCollisionTag.end(), "Unexpected error occurred.");
 
-  const TU08 TagId = static_cast<TU08>(std::distance(defaultSetting.mCollisionTag.begin(), it));
+  const TU8 TagId = static_cast<TU8>(std::distance(defaultSetting.mCollisionTag.begin(), it));
   resultFilterData.word0 |= TagId;
 
   // Set filter data from word1... to word3.

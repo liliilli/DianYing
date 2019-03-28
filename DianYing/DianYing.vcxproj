@@ -474,7 +474,6 @@
     <ClCompile Include="Source\Helper\Type\DMatrix3.cc" />
     <ClCompile Include="Source\Helper\Type\DMatrix4.cc" />
     <ClCompile Include="Source\Helper\Type\DQuaternion.cc" />
-    <ClCompile Include="Source\Helper\Type\DTristateBool.cc" />
     <ClCompile Include="Source\Helper\Type\DVector2.cc" />
     <ClCompile Include="Source\Helper\Type\DVector3.cc" />
     <ClCompile Include="Source\Helper\Type\DVector4.cc" />
@@ -1006,7 +1005,7 @@
     <ClInclude Include="Include\Dy\Helper\Math\Random.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DColorRGBA.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DColorRGBA32.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\EAxis3D.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\EAxis.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix2x2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix3x3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix4x4.h" />

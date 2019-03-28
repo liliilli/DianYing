@@ -16,7 +16,7 @@
 #include <Dy/Element/Abstract/AGeneralBaseComponent.h>
 #include <Dy/Element/Type/DTransform.h>
 #include <Dy/Helper/Type/DVector3.h>
-#include <Dy/Helper/Type/EAxis3D.h>
+#include <Dy/Helper/Type/EAxis.h>
 #include <Dy/Helper/Type/DMatrix4x4.h>
 #include <Dy/Helper/Type/DQuaternion.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
@@ -73,7 +73,7 @@ public:
   /// @brief Overloaded version of `GetRelativeLocalEulerAngle`.
   /// @param  direction Direction axis to get degree angle value.
   /// @return Object's rotation angle value.
-  MDY_NODISCARD float GetRelativeLocalEulerAngle(_MIN_ EAxis3D direction) const noexcept;
+  MDY_NODISCARD float GetRelativeLocalEulerAngle(_MIN_ EAxis direction) const noexcept;
 
   /// @brief  The method gets world rotation angle value. (euler degree value)
   MDY_NODISCARD const DVec3& GetRelativeWorldEulerAngle() const noexcept;
@@ -81,12 +81,12 @@ public:
   /// @brief Overloaded version of `GetRelativeLocalEulerAngle`.
   /// @param  direction Direction axis to get degree angle value.
   /// @return Object's rotation angle value.
-  MDY_NODISCARD float GetRelativeWorldEulerAngle(_MIN_ EAxis3D direction) const noexcept;
+  MDY_NODISCARD float GetRelativeWorldEulerAngle(_MIN_ EAxis direction) const noexcept;
 
   /// @brief  The method gets final rendering angle value. (euler degree value)
   /// @param  direction Direction axis to get degree angle value.
   /// @return Object's rotation angle value.
-  MDY_NODISCARD float GetFinalEulerAngle(_MIN_ EAxis3D direction) noexcept;
+  MDY_NODISCARD float GetFinalEulerAngle(_MIN_ EAxis direction) noexcept;
 
   /// @brief  The method gets (x, y, z) DVec3 scaling axis factor.
   /// @return Object's scaling vector which has (x, y, z) axis factors.
@@ -113,13 +113,13 @@ public:
   void AddRelativeLocalPosition(_MIN_ const DVec3& localPosiiton) noexcept;
 
   /// @brief Add offset value with axis as local position.
-  void AddRelativeLocalPosition(_MIN_ EAxis3D axis, _MIN_ TF32 value) noexcept;
+  void AddRelativeLocalPosition(_MIN_ EAxis axis, _MIN_ TF32 value) noexcept;
 
   /// @brief Add world position with input vector.
   void AddRelativeWorldPosition(_MIN_ const DVec3& localPosiiton) noexcept;
 
   /// @brief Add offset value with axis as world position.
-  void AddRelativeWorldPosition(_MIN_ EAxis3D axis, _MIN_ TF32 value) noexcept;
+  void AddRelativeWorldPosition(_MIN_ EAxis axis, _MIN_ TF32 value) noexcept;
 
   /// @brief The method adds local rotation angle values.
   /// When input value is positive, axis rotates clockwise.
@@ -136,13 +136,13 @@ public:
   void SetWorldEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept;
 
   /// @brief Add offset eulerAngleValue with axis as local rotation angle.
-  void AddLocalEulerAngle(_MIN_ EAxis3D axis, _MIN_ float eulerAngleValue) noexcept;
+  void AddLocalEulerAngle(_MIN_ EAxis axis, _MIN_ float eulerAngleValue) noexcept;
 
   /// @brief Add offset eulerAngleValue with axis as local rotation angle.
   void AddLocalEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept;
 
   /// @brief Add offset eulerAngleValue with axis as world rotation angle.
-  void AddWorldEulerAngle(_MIN_ EAxis3D axis, _MIN_ float eulerAngleValue) noexcept;
+  void AddWorldEulerAngle(_MIN_ EAxis axis, _MIN_ float eulerAngleValue) noexcept;
 
   /// @brief Add offset eulerAngleValue with axis as world rotation angle.
   void AddWorldEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept;

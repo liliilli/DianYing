@@ -83,14 +83,14 @@ const DVec3& CTransform::GetRelativeLocalEulerAngle() const noexcept
   return this->mLocalEulerAngle;
 }
 
-float CTransform::GetRelativeLocalEulerAngle(_MIN_ EAxis3D direction) const noexcept
+float CTransform::GetRelativeLocalEulerAngle(_MIN_ EAxis direction) const noexcept
 {
   const auto& rlea = this->GetRelativeLocalEulerAngle();
   switch (direction)
   {
-  case EAxis3D::X: return rlea.X;
-  case EAxis3D::Y: return rlea.Y;
-  case EAxis3D::Z: return rlea.Z;
+  case EAxis::X: return rlea.X;
+  case EAxis::Y: return rlea.Y;
+  case EAxis::Z: return rlea.Z;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(0.0f);
   }
 }
@@ -100,27 +100,27 @@ const DVec3& CTransform::GetRelativeWorldEulerAngle() const noexcept
   return this->mWorldEulerAngle;
 }
 
-float CTransform::GetRelativeWorldEulerAngle(_MIN_ EAxis3D direction) const noexcept
+float CTransform::GetRelativeWorldEulerAngle(_MIN_ EAxis direction) const noexcept
 {
   const auto& rwea = this->GetRelativeWorldEulerAngle();
   switch (direction)
   {
-  case EAxis3D::X: return rwea.X;
-  case EAxis3D::Y: return rwea.Y;
-  case EAxis3D::Z: return rwea.Z;
+  case EAxis::X: return rwea.X;
+  case EAxis::Y: return rwea.Y;
+  case EAxis::Z: return rwea.Z;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(0.0f);
   }
 }
 
-float CTransform::GetFinalEulerAngle(_MIN_ EAxis3D direction) noexcept
+float CTransform::GetFinalEulerAngle(_MIN_ EAxis direction) noexcept
 {
   this->MDY_PRIVATE(TryUpdateFinalWorldRotAngle)();
 
   switch (direction)
   {
-  case EAxis3D::X: return this->mFinalRenderingEulerAngle.X;
-  case EAxis3D::Y: return this->mFinalRenderingEulerAngle.Y;
-  case EAxis3D::Z: return this->mFinalRenderingEulerAngle.Z;
+  case EAxis::X: return this->mFinalRenderingEulerAngle.X;
+  case EAxis::Y: return this->mFinalRenderingEulerAngle.Y;
+  case EAxis::Z: return this->mFinalRenderingEulerAngle.Z;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(0.0f);
   }
 }
@@ -196,14 +196,14 @@ void CTransform::AddRelativeLocalPosition(_MIN_ const DVec3& localPosiiton) noex
   this->SetRelativeWorldPosition(this->GetRelativeLocalPosition() + localPosiiton);
 }
 
-void CTransform::AddRelativeLocalPosition(_MIN_ EAxis3D axis, _MIN_ TF32 value) noexcept
+void CTransform::AddRelativeLocalPosition(_MIN_ EAxis axis, _MIN_ TF32 value) noexcept
 {
   DVec3 offset = {};
   switch (axis)
   {
-  case EAxis3D::X: offset.X += value; break;
-  case EAxis3D::Y: offset.Y += value; break;
-  case EAxis3D::Z: offset.Z += value; break;
+  case EAxis::X: offset.X += value; break;
+  case EAxis::Y: offset.Y += value; break;
+  case EAxis::Z: offset.Z += value; break;
   }
 
   this->SetRelativeWorldPosition(this->GetRelativeLocalPosition() + offset);
@@ -214,14 +214,14 @@ void CTransform::AddRelativeWorldPosition(_MIN_ const DVec3& localPosiiton) noex
   this->SetRelativeWorldPosition(this->GetRelativeWorldPosition() + localPosiiton);
 }
 
-void CTransform::AddRelativeWorldPosition(_MIN_ EAxis3D axis, _MIN_ TF32 value) noexcept
+void CTransform::AddRelativeWorldPosition(_MIN_ EAxis axis, _MIN_ TF32 value) noexcept
 {
   DVec3 offset = {};
   switch (axis)
   {
-  case EAxis3D::X: offset.X += value; break;
-  case EAxis3D::Y: offset.Y += value; break;
-  case EAxis3D::Z: offset.Z += value; break;
+  case EAxis::X: offset.X += value; break;
+  case EAxis::Y: offset.Y += value; break;
+  case EAxis::Z: offset.Z += value; break;
   }
 
   this->SetRelativeWorldPosition(this->GetRelativeWorldPosition() + offset);
@@ -280,28 +280,28 @@ void CTransform::AddWorldEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept
   }
 }
 
-void CTransform::AddLocalEulerAngle(_MIN_ EAxis3D axis, _MIN_ float eulerAngleValue) noexcept
+void CTransform::AddLocalEulerAngle(_MIN_ EAxis axis, _MIN_ float eulerAngleValue) noexcept
 {
   DVec3 eulerAngle = {};
   switch (axis)
   {
-  case EAxis3D::X: eulerAngle.X = eulerAngleValue; break;
-  case EAxis3D::Y: eulerAngle.Y = eulerAngleValue; break;
-  case EAxis3D::Z: eulerAngle.Z = eulerAngleValue; break;
+  case EAxis::X: eulerAngle.X = eulerAngleValue; break;
+  case EAxis::Y: eulerAngle.Y = eulerAngleValue; break;
+  case EAxis::Z: eulerAngle.Z = eulerAngleValue; break;
   default: break;
   }
  
   this->AddLocalEulerAngle(eulerAngle);
 }
 
-void CTransform::AddWorldEulerAngle(_MIN_ EAxis3D axis, _MIN_ float eulerAngleValue) noexcept
+void CTransform::AddWorldEulerAngle(_MIN_ EAxis axis, _MIN_ float eulerAngleValue) noexcept
 {
   DVec3 eulerAngle = {};
   switch (axis)
   {
-  case EAxis3D::X: eulerAngle.X = eulerAngleValue; break;
-  case EAxis3D::Y: eulerAngle.Y = eulerAngleValue; break;
-  case EAxis3D::Z: eulerAngle.Z = eulerAngleValue; break;
+  case EAxis::X: eulerAngle.X = eulerAngleValue; break;
+  case EAxis::Y: eulerAngle.Y = eulerAngleValue; break;
+  case EAxis::Z: eulerAngle.Z = eulerAngleValue; break;
   default: break;
   }
 
@@ -471,7 +471,7 @@ void CTransform::MDY_PRIVATE(SetPxTransform)(_MIN_ const physx::PxTransform& iTr
   // Set local.
   const auto angle = 
       math::ConvertQuaternionToRadianEuler(iTransform.q.w, iTransform.q.x, iTransform.q.y, iTransform.q.z) 
-    * math::RadToDegVal<TF32>;
+    * math::kToDegree<TF32>;
 
   this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;
   this->mIsFinalRotationAngleDirty = true;

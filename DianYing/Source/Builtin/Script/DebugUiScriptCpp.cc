@@ -31,6 +31,7 @@
 #include "Dy/Core/Resource/Resource/FDyShaderResource.h"
 #include "Dy/Management/MWorld.h"
 #include "Dy/Component/CCamera.h"
+#include <Math/Utility/XMath.h>
 
 namespace dy
 {

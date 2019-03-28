@@ -29,7 +29,7 @@ namespace dy
 struct DDyIOTask final
 {
 private:
-  using TPriority = DClamp<TU08, 0, 255>;
+  using TPriority = DClamp<TU8, 0, 255>;
 public:
   /// Must be moved except for Requiring.
   std::string       mSpecifierName  = {};

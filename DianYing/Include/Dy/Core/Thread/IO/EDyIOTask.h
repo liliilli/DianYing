@@ -22,7 +22,7 @@ namespace dy
 /// @enum EDyResourceStyle
 /// @brief Specifies each resource style (not type)
 ///
-enum class EDyResourceStyle : TU08
+enum class EDyResourceStyle : TU8
 {
   Information,
   Resource,
@@ -33,7 +33,7 @@ enum class EDyResourceStyle : TU08
 /// @enum EDyObject
 /// @brief Object types for reflection, type checking and so on.
 ///
-enum class EDyObject : TU08
+enum class EDyObject : TU8
 {
   Object_Actor,
   UI_Font,

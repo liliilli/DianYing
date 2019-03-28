@@ -87,7 +87,7 @@ void CActorScriptLua::Update(float dt)
 #ifdef false
   auto* obj = this->GetBindedActor();
   auto transform = obj->GetTransform();
-  transform->AddWorldEulerAngle(EAxis3D::Z, 0.16f);
+  transform->AddWorldEulerAngle(EAxis::Z, 0.16f);
 #endif
 }
 

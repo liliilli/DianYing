@@ -30,13 +30,13 @@ public:
   virtual ~FDyTextureGeneralInformation() = default;
 
   /// @brief Get buffer of image.
-  MDY_NODISCARD const std::vector<TU08>& GetBuffer() const noexcept;
+  MDY_NODISCARD const std::vector<TU8>& GetBuffer() const noexcept;
 
   /// @brief Get texture's size.
   MDY_NODISCARD const DIVec2& GetSize() const noexcept;
 
 private:
-  std::vector<TU08> mTextureImageBuffer = {};
+  std::vector<TU8> mTextureImageBuffer = {};
   DIVec2     mTextureSize        = {};
 };
 

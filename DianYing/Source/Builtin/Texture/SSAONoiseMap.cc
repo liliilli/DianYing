@@ -29,10 +29,10 @@ MDY_NODISCARD dy::ATextureResource::TBufferType Convert(_MIN_ const std::array<d
   for (const auto& [x, y] : iInfo)
   {
     // Insert x
-    const TU08* ptr = reinterpret_cast<const TU08*>(&x);
+    const TU8* ptr = reinterpret_cast<const TU8*>(&x);
     for (auto i = 0; i < sizeof(TF32); ++i) { result.push_back(*ptr++); }
     // Insert y
-    ptr = reinterpret_cast<const TU08*>(&y);
+    ptr = reinterpret_cast<const TU8*>(&y);
     for (auto i = 0; i < sizeof(TF32); ++i) { result.push_back(*ptr++); }
   }
   return result;

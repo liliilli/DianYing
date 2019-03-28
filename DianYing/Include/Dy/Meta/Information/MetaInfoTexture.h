@@ -63,7 +63,7 @@ struct PDyTextureInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   /// Integer size builtin buffer container.
   DIVec2       mBuiltinBufferSize = {};
   /// Built-In buffer pointer of texture.
-  std::vector<TU08>*  mPtrBuiltinBuffer = MDY_INITIALIZE_NULL;
+  std::vector<TU8>*  mPtrBuiltinBuffer = MDY_INITIALIZE_NULL;
 
   /// @deprecated NOT USED NOW
   std::string mTextureFileAbsolutePath_Deprecated = MDY_INITIALIZE_EMPTYSTR;

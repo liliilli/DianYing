@@ -65,7 +65,9 @@
     <None Include="Include\Math\Type\Inline\DSphere\DSphere.inl" />
     <None Include="Include\Math\Type\Inline\Micellanous\DTristateBool.inl" />
     <None Include="Include\Math\Utility\Inline\XMathTrigonometry.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\Lerp.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\MapValue.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\ToNormalized.inl" />
     <None Include="README.md" />
     <None Include="Include\Math\Type\Inline\DPlane\DPlane.inl" />
     <None Include="Include\Math\Type\Inline\DVector2\DVector2Common.inl" />

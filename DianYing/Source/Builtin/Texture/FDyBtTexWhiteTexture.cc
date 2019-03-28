@@ -34,9 +34,9 @@ void FDyBtTexWhiteTexture::ConstructBuffer(TBufferType& oBuffer, PDyTextureInsta
   oProperty.mIsEnabledCustomedTextureParameter = false;
 
   // 1
-  constexpr const TU08 sOn = 0b11111111;
-  constexpr const std::array<TU08, 3> mOn = {sOn, sOn, sOn};
-  constexpr const std::array<std::array<TU08, 3>, 1 * 1> infoChunk = { sOn };
+  constexpr const TU8 sOn = 0b11111111;
+  constexpr const std::array<TU8, 3> mOn = {sOn, sOn, sOn};
+  constexpr const std::array<std::array<TU8, 3>, 1 * 1> infoChunk = { sOn };
 
   oBuffer = ConvertToTU08VectorList(infoChunk);
 }

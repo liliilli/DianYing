@@ -85,16 +85,16 @@ static constexpr TU32 __Crc32Tbl[] = {
   0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
 };
 
-template<TU32 TCrc, TI08 ...TBytes>
+template<TU32 TCrc, TI8 ...TBytes>
 struct __DDyCrc32Impl
 {
   // Do nothing
 };
 
-template<TU32 TCrc, char THead, TI08 ...TTail>
+template<TU32 TCrc, char THead, TI8 ...TTail>
 struct __DDyCrc32Impl<TCrc, THead, TTail...>
 {
-  static constexpr TU32 value = __DDyCrc32Impl<__Crc32Tbl[static_cast<TU08>(TCrc) ^ static_cast<TU08>(THead)] ^ (TCrc >> 8), TTail...>::value;
+  static constexpr TU32 value = __DDyCrc32Impl<__Crc32Tbl[static_cast<TU8>(TCrc) ^ static_cast<TU8>(THead)] ^ (TCrc >> 8), TTail...>::value;
 };
 
 template<TU32 TCrc>
@@ -103,7 +103,7 @@ struct __DDyCrc32Impl<TCrc>
   static constexpr TU32 value = TCrc ^ 0xFFFFFFFF;
 };
 
-template<TI08 ...TBytes>
+template<TI8 ...TBytes>
 using TCrc32 = __DDyCrc32Impl<0xFFFFFFFF, TBytes...>;
 
 /// @brief Crc 32-bit hash value type.
@@ -115,7 +115,7 @@ constexpr TU32 __DyCrc32Rec(TU32 crc, const char *s) noexcept
   return *s == 0 ?
       crc ^ 0xFFFFFFFF :
       __DyCrc32Rec(
-          __Crc32Tbl[static_cast<TU08>(crc) ^ static_cast<TU08>(*s)] ^ (crc >> 8),
+          __Crc32Tbl[static_cast<TU8>(crc) ^ static_cast<TU8>(*s)] ^ (crc >> 8),
           s + 1
       );
 }

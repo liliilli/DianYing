@@ -62,7 +62,7 @@ public:
   /// @brief
   /// @return
   ///
-  MDY_NODISCARD TC16 operator[](_MIN_ const TU32 id) const
+  MDY_NODISCARD TChr16 operator[](_MIN_ const TU32 id) const
   { // Integrity check
     if (id > this->mString.size())
     {
@@ -75,7 +75,7 @@ public:
   }
 
 private:
-  std::vector<TC16> mString = {};
+  std::vector<TChr16> mString = {};
 
 public:
   /// @brief Internal routine for updating UCS-2 string.

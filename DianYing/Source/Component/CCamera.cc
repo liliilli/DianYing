@@ -20,7 +20,7 @@
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MWorld.h>
 #include <Dy/Component/CTransform.h>
-#include <Dy/Helper/Math/Math.h>
+#include <Math/Utility/XMath.h>
 
 namespace dy
 {
@@ -131,7 +131,7 @@ void CCamera::pUpdateProjectionMatrix()
   }
   else 
   { 
-    this->mProjectionMatrix = glm::perspective(this->mFieldOfView * math::DegToRadVal<TF32>, this->mAspect, this->mNear, this->mFar); 
+    this->mProjectionMatrix = glm::perspective(this->mFieldOfView * math::kToRadian<TF32>, this->mAspect, this->mNear, this->mFar); 
   }
 
   this->mIsProjectionMatrixDirty = false;

@@ -25,6 +25,7 @@ namespace dy::math
 
 /// @struct DVector4
 /// @brief 4-element vector struct type.
+/// @todo Need to apply simd __m128 (SSE), __m128i, and two __m128d.
 template <typename TType, typename TExpression = void> 
 struct DVector4;
 

@@ -36,7 +36,7 @@ struct PDyGLTextureBase
   const TTextureParameterList* mPtrParameterList = MDY_INITIALIZE_NULL;
   TU32                mOutputTextureId = MDY_INITIALIZE_DEFUINT;
 
-  using TPtrBuffer = const std::vector<TU08>*;
+  using TPtrBuffer = const std::vector<TU8>*;
 };
 inline PDyGLTextureBase::~PDyGLTextureBase() = default;
 

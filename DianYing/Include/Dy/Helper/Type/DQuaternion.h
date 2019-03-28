@@ -16,7 +16,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <assimp/quaternion.h>
 #include <foundation/PxQuat.h>
-#include <Dy/Helper/Type/EAxis3D.h>
+#include <Dy/Helper/Type/EAxis.h>
 #include <Dy/Helper/Type/DMatrix4x4.h>
 
 //!
@@ -83,7 +83,7 @@ public:
   ///
   /// @brief Impulse rotation with axis and degree angle value.
   ///
-  void AddRotationAngle(EAxis3D axis, float degreeEulerAngle);
+  void AddRotationAngle(EAxis axis, float degreeEulerAngle);
 
   ///
   /// @brief Impulse rotation with (x, y, z) degree angle value.

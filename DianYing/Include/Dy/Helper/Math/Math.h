@@ -13,10 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <list>
-#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Helper/Type/DVector3.h>
-#include <Dy/Helper/Type/DVector4.h>
 
 //!
 //! Forward declaration
@@ -38,193 +35,13 @@ class DQuaternion;
 namespace dy::math 
 {
 
-template <typename TType>
-constexpr TType Pi = TType(3.1415926535897932385L);
-
-template <typename TType>
-constexpr TType Pi2 = TType(3.1415926535897932385L) * TType(2);
-
-template <typename TType>
-constexpr TType Exp = TType(2.71828182845904523536L);
-
-template <typename TType>
-constexpr TType DegToRadVal = Pi<TType> / TType(180.0);
-
-template <typename TType>
-constexpr TType RadToDegVal = TType(180.0) / Pi<TType>;
-
-//!
-//! Functions
-//!
-
-///
-/// @brief Clamp value from 'from' and 'inclusive_to'.
-///
-template <typename TType>
-[[nodiscard]] constexpr TType Clamp(const TType& value, const TType& from, const TType& inclusive_to) noexcept
-{
-  return (value > from ? (value < inclusive_to ? value : inclusive_to) : from);
-}
-
-///
-/// @brief Check float '0' is nearly equal to real actual 0.
-///
-[[nodiscard]] constexpr bool IsNearlyZero(const float lhs, const float errorTolerance = 0.0001f) noexcept
-{
-  return lhs < errorTolerance ? (lhs > -errorTolerance ? true : false) : false;
-}
-
-///
-/// @brief Check float '0' is nearly equal to real actual 0.
-///
-[[nodiscard]] constexpr bool IsNearlyZero(const double lhs, const double errorTolerance = 0.0001) noexcept
-{
-  return lhs < errorTolerance ? (lhs > -errorTolerance ? true : false) : false;
-}
-
-///
-/// @brief Do linear interpolation with float type.
-/// If something wrong has been happened, return lowest value of float.
-///
-[[nodiscard]] float Lerp(float lhs, float rhs, float offset);
-
-///
-/// @brief Do linear interpolation with double type.
-/// If something wrong has been happened, return lowest value of double.
-///
-[[nodiscard]] double Lerp(double lhs, double rhs, float offset);
-
-/// @brief Do linear interpolation with DVec4 type.
-[[nodiscard]] ::dy::DVec4 Lerp(const ::dy::DVec4& lhs, const ::dy::DVec4& rhs, float offset) noexcept;
-
 /// @brief Do sphere-linear interpolation with DQuaternion.
-MDY_NODISCARD DQuaternion Slerp(_MIN_ const DQuaternion& lhs, _MIN_ const DQuaternion& rhs, _MIN_ TF32 offset) noexcept;
-
-//!
-//! GetMinMax Functions
-//!
-
-template <typename TValueType>
-using TMinMaxResult = std::pair<TValueType, TValueType>;
-
-///
-/// @brief Get min and max arithmetic value from list.
-/// Result container's first value has min, second value has max.
-///
-template <typename TValueType, typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
-[[nodiscard]] TMinMaxResult<TValueType> GetMinMax(const std::vector<TValueType>& list)
-{
-  TValueType min = std::numeric_limits<TValueType>::max();
-  TValueType max = std::numeric_limits<TValueType>::lowest();
-
-  for (const auto& value : list)
-  {
-    if (value < min) min = value;
-    if (value > max) max = value;
-  }
-
-  return {min, max};
-}
-
-///
-/// @brief Get min and max arithmetic value from list.
-/// Result container's first value has min, second value has max.
-///
-template <typename TValueType, typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
-[[nodiscard]] TMinMaxResult<TValueType> GetMinMax(const std::list<TValueType>& list)
-{
-  TValueType min = std::numeric_limits<TValueType>::max();
-  TValueType max = std::numeric_limits<TValueType>::lowest();
-
-  for (const auto& value : list)
-  {
-    if (value < min) min = value;
-    if (value > max) max = value;
-  }
-
-  return {min, max};
-}
-
-///
-/// @brief Get min and max arithmetic value from list.
-/// Result container's first value has min, second value has max.
-///
-template <typename TValueType, int32_t TSize, typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
-[[nodiscard]] TMinMaxResult<TValueType> GetMinMax(const std::array<TValueType, TSize>& list)
-{
-  TValueType min = std::numeric_limits<TValueType>::max();
-  TValueType max = std::numeric_limits<TValueType>::lowest();
-
-  for (const auto& value : list)
-  {
-    if (value < min) min = value;
-    if (value > max) max = value;
-  }
-
-  return {min, max};
-}
-
-///
-/// @brief Get min and max arithmetic value from list.
-/// Result container's first value has min, second value has max.
-///
-template <typename TValueType, int32_t TSize, typename = std::enable_if_t<std::is_arithmetic_v<TValueType>>>
-[[nodiscard]] TMinMaxResult<TValueType> GetMinMax(const TValueType (&list)[TSize])
-{
-  TValueType min = std::numeric_limits<TValueType>::max();
-  TValueType max = std::numeric_limits<TValueType>::lowest();
-
-  for (const auto& value : list)
-  {
-    if (value < min) min = value;
-    if (value > max) max = value;
-  }
-
-  return {min, max};
-}
-
-/// @brief Get min and max arithmetic value from DVec2.
-/// Result container's first value has min, second value has max.
-[[nodiscard]] TMinMaxResult<float> GetMinMax(const DVec2& vector) noexcept;
-
-/// @brief Get min and max arithmetic value from DVec3.
-/// Result container's first value has min, second value has max.
-[[nodiscard]] TMinMaxResult<float> GetMinMax(const DVec3& vector) noexcept;
-
-/// @brief Get min and max arithmetic value from DVec4.
-/// Result container's first value has min, second value has max.
-[[nodiscard]] TMinMaxResult<float> GetMinMax(const ::dy::DVec4& vector) noexcept;
-
-/// @brief Get degree rotation angle from 0 to 360' automatically.
-[[nodiscard]] float GetClampedRotationDegreeAngle(float degreeAngle) noexcept;
-
-/// @brief Get degree rotation angle from 0 to 360' automatically.
-[[nodiscard]] double GetClampedRotationDegreeAngle(double degreeAngle) noexcept;
-
-/// @brief Get degree rotation angle from 0 to 2pi automatically.
-[[nodiscard]] float GetClampedRotationRadianAngle(float radianAngle) noexcept;
-
-/// @brief Get degree rotation angle from 0 to 2pi automatically.
-[[nodiscard]] double GetClampedRotationRadianAngle(double radianAngle) noexcept;
-
-/// @brief Convert radian to degree, return -180 to 180'.
-[[nodiscard]] float ConvertRadianToDegree(float radian) noexcept;
-
-/// @brief Convert radian to degree, return -180 to 180'.
-[[nodiscard]] double ConvertRadianToDegree(double radian) noexcept;
-
-/// @brief Convert degree to radian, return -pi to pi.
-[[nodiscard]] float ConvertDegreeToRadian(float degree) noexcept;
-
-///
-/// @brief Convert degree to radian, return -pi to pi.
-///
-[[nodiscard]] double ConvertDegreeToRadian(double degree) noexcept;
+DQuaternion Slerp(const DQuaternion& lhs, const DQuaternion& rhs, TF32 offset) noexcept;
 
 /// @brief Convert quaternion to radian degree.
-[[nodiscard]] DVec3 ConvertQuaternionToRadianEuler(_MIN_ const DQuaternion& iQuat);
+[[nodiscard]] DVec3 ConvertQuaternionToRadianEuler(const DQuaternion& iQuat);
 /// @brief Convert quaterion w,x,y,z to radian degree.
-[[nodiscard]] DVec3 ConvertQuaternionToRadianEuler(_MIN_ TF32 w, _MIN_ TF32 x, _MIN_ TF32 y, _MIN_ TF32 z);
+[[nodiscard]] DVec3 ConvertQuaternionToRadianEuler(TF32 w, TF32 x, TF32 y, TF32 z);
 
 } /// ::dy::math namespace
 
