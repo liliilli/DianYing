@@ -67,28 +67,6 @@ template <typename TType>
 }
 
 ///
-/// @brief Check float lhs is nearly equal to rhs.
-/// floating-point number type like a float and double has a natural problem like
-/// a floating-error such as 0.1 but 0.10000007, so you have to use this function
-/// if you want to compare two floating points.
-///
-[[nodiscard]] constexpr bool IsNearlyEqual(const float lhs, const float rhs, const float error_tolerance = 0.0001f) noexcept
-{
-  return (rhs < lhs ? lhs - rhs : rhs - lhs) < error_tolerance;
-}
-
-///
-/// @brief Check double lhs is nearly equal to rhs.
-/// floating-point number type like a float and double has a natural problem like
-/// a floating-error such as 0.1 but 0.10000007, so you have to use this function
-/// if you want to compare two double points.
-///
-[[nodiscard]] constexpr bool IsNearlyEqual(const double lhs, const double rhs, const double error_tolerance = 0.0001) noexcept
-{
-  return (rhs < lhs ? lhs - rhs : rhs - lhs) < error_tolerance;
-}
-
-///
 /// @brief Check float '0' is nearly equal to real actual 0.
 ///
 [[nodiscard]] constexpr bool IsNearlyZero(const float lhs, const float errorTolerance = 0.0001f) noexcept
@@ -103,11 +81,6 @@ template <typename TType>
 {
   return lhs < errorTolerance ? (lhs > -errorTolerance ? true : false) : false;
 }
-
-///
-/// @brief Check if vector is all zero or nearly equal to zero.
-///
-[[nodiscard]] bool IsAllZero(const ::dy::DVec4& vector) noexcept;
 
 ///
 /// @brief Do linear interpolation with float type.

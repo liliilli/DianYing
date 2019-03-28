@@ -15,6 +15,8 @@
 /// Header file
 #include <Dy/Component/CTransform.h>
 #include <Dy/Element/FActor.h>
+#include "Math/Utility/XMath.h"
+#include "Dy/Helper/Math/Math.h"
 
 namespace dy
 {
@@ -232,7 +234,7 @@ void CTransform::SetLocalEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept
 
 void CTransform::SetLocalEulerAngleWithQuaternion(_MIN_ const DQuaternion& iQuat)
 {
-  const auto angle = math::ConvertQuaternionToRadianEuler(iQuat) * math::RadToDegVal<TF32>;
+  const auto angle = math::ConvertQuaternionToRadianEuler(iQuat) * math::kToDegree<TF32>;
 
   // Set local.
   this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;

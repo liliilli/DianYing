@@ -20,6 +20,7 @@
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MWorld.h>
 #include <Dy/Component/CTransform.h>
+#include <Dy/Helper/Math/Math.h>
 
 namespace dy
 {

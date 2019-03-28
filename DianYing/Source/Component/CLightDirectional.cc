@@ -16,6 +16,7 @@
 #include <Dy/Component/CLightDirectional.h>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <Math/Utility/XMath.h>
 #include <Dy/Builtin/Constant/GeneralLevel.h>
 #include <Dy/Component/CCamera.h>
 #include <Dy/Element/FActor.h>
@@ -274,7 +275,7 @@ void CLightDirectional::FrustumBoundingBoxLightViewSpace(
    DVec4 minResult {NumericalMax<TF32>};
   DVec4 maxResult {NumericalMin<TF32>};
 
-  const TF32 fov  = math::DegToRadVal<TF32> * iRefCamera.GetFieldOfView();
+  const TF32 fov  = math::kToRadian<TF32> * iRefCamera.GetFieldOfView();
   const auto xywh = iRefCamera.GetPixelizedViewportRectangle();
   const auto pos  = iRefCamera.GetPosition();
   const TF32 nearHeight = 2.0f * tan(fov) * iNear;

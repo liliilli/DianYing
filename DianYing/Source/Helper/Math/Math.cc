@@ -26,30 +26,6 @@
 
 namespace dy::math {
 
-bool IsAllZero(const dy::DVec2& vector) noexcept
-{
-  if (!IsNearlyEqual(vector.X, 0.f)) return false;
-  if (!IsNearlyEqual(vector.Y, 0.f)) return false;
-  return true;
-}
-
-bool IsAllZero(const dy::DVec3& vector) noexcept
-{
-  if (!IsNearlyEqual(vector.X, 0.f)) return false;
-  if (!IsNearlyEqual(vector.Y, 0.f)) return false;
-  if (!IsNearlyEqual(vector.Z, 0.f)) return false;
-  return true;
-}
-
-bool IsAllZero(const dy::DVec4& vector) noexcept
-{
-  if (!IsNearlyEqual(vector.X, 0.f)) return false;
-  if (!IsNearlyEqual(vector.Y, 0.f)) return false;
-  if (!IsNearlyEqual(vector.Z, 0.f)) return false;
-  if (!IsNearlyEqual(vector.W, 0.f)) return false;
-  return true;
-}
-
 float Lerp(float lhs, float rhs, float offset)
 {
   std::feclearexcept(FE_ALL_EXCEPT);

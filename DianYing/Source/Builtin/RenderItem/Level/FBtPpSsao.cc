@@ -27,6 +27,7 @@
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Math/Utility/XLinearMath.h>
 
 namespace dy
 {
