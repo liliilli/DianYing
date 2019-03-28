@@ -19,13 +19,6 @@
 namespace dy
 {
 
-class DMatrix2x2;
-
-} /// ::dy namespace
-
-namespace dy
-{
-
 /// @brief Float type 2-element vector struct.
 using DVec2 = math::DVector2<math::TReal>;
 using DIVec2 = math::DVector2<math::TI32>;

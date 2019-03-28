@@ -43,33 +43,17 @@ public:
                    dy::DVec3{_01, _11, _21},
                    dy::DVec3{_02, _12, _22}} {}
 
-  DMatrix3x3(const DVec3& column1, const DVec3& column2, const DVec3& column3) :
-      mMatrixValue{ column1, column2, column3 } {}
-
-#ifdef false
-  DMatrix3x3(const glm::mat2& glmMatrix) noexcept
-  {
-    mMatrixValue[0] = glmMatrix[0];
-    mMatrixValue[1] = glmMatrix[1];
-  }
-#endif
+  DMatrix3x3(const DVec3& column1, const DVec3& column2, const DVec3& column3) 
+    : mMatrixValue{ column1, column2, column3 } {}
 
   DMatrix3x3(const glm::mat3& glmMatrix) noexcept
   {
-    mMatrixValue[0] = CreateVec3(glmMatrix[0]);
-    mMatrixValue[1] = CreateVec3(glmMatrix[1]);
-    mMatrixValue[2] = CreateVec3(glmMatrix[2]);
+    mMatrixValue[0] = FVec3::CreateVec3(glmMatrix[0]);
+    mMatrixValue[1] = FVec3::CreateVec3(glmMatrix[1]);
+    mMatrixValue[2] = FVec3::CreateVec3(glmMatrix[2]);
   }
 
 #ifdef false
-  DMatrix3x3& operator=(const glm::mat2& value) noexcept
-  {
-    this->mMatrixValue[0] = value[0];
-    this->mMatrixValue[1] = value[1];
-    this->mMatrixValue[2] = DVec3{};
-    return *this;
-  }
-
   DMatrix3x3& operator=(const glm::mat3& value) noexcept
   {
     this->mMatrixValue[0] = value[0];
@@ -103,23 +87,6 @@ public:
         mMatrixValue[1][0], mMatrixValue[1][1], 0, 0,
         0, 0, 0, 0,
         0, 0, 0, 0};
-  }
-#endif
-
-#if defined(_WIN32)
-  operator DirectX::XMMATRIX() const noexcept
-  {
-    DirectX::XMMATRIX returnMatrix = {};
-
-    DirectX::XMFLOAT3 rowFloat = {};
-    rowFloat = {mMatrixValue[0][0], mMatrixValue[1][0], mMatrixValue[2][0]};
-    returnMatrix.r[0] = DirectX::XMLoadFloat3(&rowFloat);
-    rowFloat = {mMatrixValue[0][1], mMatrixValue[1][1], mMatrixValue[2][1]};
-    returnMatrix.r[1] = DirectX::XMLoadFloat3(&rowFloat);
-    rowFloat = {mMatrixValue[0][2], mMatrixValue[1][2], mMatrixValue[2][2]};
-    returnMatrix.r[2] = DirectX::XMLoadFloat3(&rowFloat);
-
-    return returnMatrix;
   }
 #endif
 

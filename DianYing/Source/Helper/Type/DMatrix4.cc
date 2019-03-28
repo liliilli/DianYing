@@ -134,9 +134,9 @@ DMatrix4x4::operator glm::mat4() const noexcept
   };
 }
 
-DMatrix4x4::operator DMatrix2x2() const noexcept
+DMatrix4x4::operator DMat2() const noexcept
 {
-  return DMatrix2x2{
+  return DMat2{
       mMatrixValue[0][0], mMatrixValue[1][0],
       mMatrixValue[0][1], mMatrixValue[1][1]
   };
@@ -389,7 +389,7 @@ DMatrix4x4 DMatrix4x4::OrthoProjection(TF32 left, TF32 right, TF32 bottom, TF32 
 
 DMatrix4x4& DMatrix4x4::Scale(_MIN_ const DVec3& iScaleFactor)
 {
-  const auto mat = glm::scale(static_cast<glm::mat4>(*this), ToGlmVec3(iScaleFactor));
+  const auto mat = glm::scale(static_cast<glm::mat4>(*this), FVec3::ToGlmVec3(iScaleFactor));
   (*this)[0] = FVec4::CreateVec4(mat[0]);
   (*this)[1] = FVec4::CreateVec4(mat[1]);
   (*this)[2] = FVec4::CreateVec4(mat[2]);

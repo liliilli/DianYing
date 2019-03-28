@@ -22,22 +22,27 @@
 namespace dy
 {
 
-std::string ToString(const DVec3& vec) noexcept
+DVec3 FVec3::ToVec3(const physx::PxVec3& vec)
+{
+  return DVec3{vec.x, vec.y, vec.z};
+}
+
+std::string FVec3::ToString(const DVec3& vec) noexcept
 {
   return MakeStringU8("({:1}, {:1}, {:1})", vec.X, vec.Y, vec.Z);
 }
 
-std::string ToString(const DIVec3& vec) noexcept
+std::string FVec3::ToString(const DIVec3& vec) noexcept
 {
   return MakeStringU8("({}, {}, {})", vec.X, vec.Y, vec.Z);
 }
 
-physx::PxVec3 ToPxVec3(const DVec3& vec) noexcept
+physx::PxVec3 FVec3::ToPxVec3(const DVec3& vec) noexcept
 {
   return physx::PxVec3{vec.X, vec.Y, vec.Z};
 }
 
-physx::PxVec3 ToPxVec3(const DIVec3& vec) noexcept
+physx::PxVec3 FVec3::ToPxVec3(const DIVec3& vec) noexcept
 {
   return physx::PxVec3{
     static_cast<TF32>(vec.X), 
@@ -46,22 +51,22 @@ physx::PxVec3 ToPxVec3(const DIVec3& vec) noexcept
   };
 }
 
-glm::vec3 ToGlmVec3(const DVec3& vec) noexcept
+glm::vec3 FVec3::ToGlmVec3(const DVec3& vec) noexcept
 {
   return glm::vec3{vec.X, vec.Y, vec.Z};
 }
 
-glm::vec3 ToGlmVec3(const DIVec3& vec) noexcept
+glm::vec3 FVec3::ToGlmVec3(const DIVec3& vec) noexcept
 {
   return glm::vec3{TF32(vec.X), TF32(vec.Y), TF32(vec.Z)};
 }
 
-DVec3 CreateVec3(const physx::PxVec3& vec) noexcept
+DVec3 FVec3::CreateVec3(const physx::PxVec3& vec) noexcept
 {
   return DVec3{vec.x, vec.y, vec.z};
 }
 
-DVec3 CreateVec3(const glm::vec3& vec) noexcept
+DVec3 FVec3::CreateVec3(const glm::vec3& vec) noexcept
 {
   return DVec3{vec.x, vec.y, vec.z};
 }

@@ -107,9 +107,9 @@ void CCamera::pUpdateCameraVectors()
 void CCamera::pUpdateViewMatrix()
 {
   this->mViewMatrix = glm::lookAt(
-      ToGlmVec3(this->mPosition),
-      ToGlmVec3(this->mPosition + this->mLookingAtDirection),
-      ToGlmVec3(DVec3::UnitY())
+      FVec3::ToGlmVec3(this->mPosition),
+      FVec3::ToGlmVec3(this->mPosition + this->mLookingAtDirection),
+      FVec3::ToGlmVec3(DVec3::UnitY())
   );
 
   this->mIsViewMatrixDirty = false;

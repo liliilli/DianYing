@@ -31,12 +31,12 @@ struct DArea3D final
   DArea3D& operator=(const DArea3D&) = default;
 
   DArea3D(_MIN_ const physx::PxBounds3& iBound) 
-    : mMin{ToVec3(iBound.minimum)}, 
-      mMax{ToVec3(iBound.maximum)} {};
+    : mMin{FVec3::ToVec3(iBound.minimum)}, 
+      mMax{FVec3::ToVec3(iBound.maximum)} {};
   DArea3D& operator=(_MIN_ const physx::PxBounds3& iBound)
   {
-    this->mMin = ToVec3(iBound.minimum);
-    this->mMax = ToVec3(iBound.maximum);
+    this->mMin = FVec3::ToVec3(iBound.minimum);
+    this->mMax = FVec3::ToVec3(iBound.maximum);
     return *this;
   }
 };

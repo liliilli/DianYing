@@ -141,9 +141,9 @@ void CLightDirectional::UpdateLightViewMatrix()
   const auto& pos = this->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
   const auto eye = pos + fwd;
   this->mLightViewMatrix = glm::lookAt(
-    ToGlmVec3(pos), 
-    ToGlmVec3(eye), 
-    ToGlmVec3(kLevelUpDir)); 
+    FVec3::ToGlmVec3(pos), 
+    FVec3::ToGlmVec3(eye), 
+    FVec3::ToGlmVec3(kLevelUpDir)); 
 }
 
 const DMatrix4x4& CLightDirectional::GetLightViewMatrix() const noexcept

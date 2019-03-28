@@ -109,15 +109,15 @@ void DQuaternion::AddRotationAngle(EAxis axis, float degreeEulerAngle)
   const auto radians = glm::radians(degreeEulerAngle);
   switch (axis) {
   case EAxis::X: {
-      const auto temp = glm::angleAxis(radians, ToGlmVec3(DVec3::UnitX()));
+      const auto temp = glm::angleAxis(radians, FVec3::ToGlmVec3(DVec3::UnitX()));
       this->mQuaternion = temp * this->mQuaternion;
     } break;
   case EAxis::Y: {
-      const auto temp = glm::angleAxis(radians, ToGlmVec3(DVec3::UnitY()));
+      const auto temp = glm::angleAxis(radians, FVec3::ToGlmVec3(DVec3::UnitY()));
       this->mQuaternion = temp * this->mQuaternion;
     } break;
   case EAxis::Z: {
-      const auto temp = glm::angleAxis(radians, ToGlmVec3(DVec3::UnitZ()));
+      const auto temp = glm::angleAxis(radians, FVec3::ToGlmVec3(DVec3::UnitZ()));
       this->mQuaternion = temp * this->mQuaternion;
     } break;
   default:

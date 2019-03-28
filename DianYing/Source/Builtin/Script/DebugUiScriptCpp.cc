@@ -147,7 +147,7 @@ Camera0 : 2
     if (auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
         ptrCamera != nullptr)
     {
-      text->SetText(MakeStringU8("Camera 0 : {}", ToString(ptrCamera->GetPosition())));
+      text->SetText(MakeStringU8("Camera 0 : {}", FVec3::ToString(ptrCamera->GetPosition())));
     }
     else
     {

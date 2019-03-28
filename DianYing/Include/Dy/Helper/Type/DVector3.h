@@ -40,22 +40,22 @@ namespace dy
 using DVec3 = math::DVector3<math::TReal>;
 using DIVec3 = math::DVector3<math::TI32>;
 
-inline DVec3 ToVec3(const physx::PxVec3& vec)
+struct FVec3 final
 {
-  return DVec3{vec.x, vec.y, vec.z};
-}
+  static DVec3 ToVec3(const physx::PxVec3& vec);
 
-std::string ToString(const DVec3& vec) noexcept;
-std::string ToString(const DIVec3& vec) noexcept;
+  static std::string ToString(const DVec3& vec) noexcept;
+  static std::string ToString(const DIVec3& vec) noexcept;
 
-physx::PxVec3 ToPxVec3(const DVec3& vec) noexcept;
-physx::PxVec3 ToPxVec3(const DIVec3& vec) noexcept;
+  static physx::PxVec3 ToPxVec3(const DVec3& vec) noexcept;
+  static physx::PxVec3 ToPxVec3(const DIVec3& vec) noexcept;
 
-glm::vec3 ToGlmVec3(const DVec3& vec) noexcept;
-glm::vec3 ToGlmVec3(const DIVec3& vec) noexcept;
+  static glm::vec3 ToGlmVec3(const DVec3& vec) noexcept;
+  static glm::vec3 ToGlmVec3(const DIVec3& vec) noexcept;
 
-DVec3 CreateVec3(const physx::PxVec3& vec) noexcept;
-DVec3 CreateVec3(const glm::vec3& vec) noexcept;
+  static DVec3 CreateVec3(const physx::PxVec3& vec) noexcept;
+  static DVec3 CreateVec3(const glm::vec3& vec) noexcept;
+};
 
 } /// ::dy namespace
 

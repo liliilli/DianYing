@@ -30,9 +30,9 @@ DMatrix3x3::operator glm::mat2() const noexcept
 }
 
 #ifdef false
-DMatrix3x3::operator DMatrix2x2() const noexcept
+DMatrix3x3::operator DMat2() const noexcept
 {
-  return DMatrix2x2{
+  return DMat2{
       mMatrixValue[0][0], mMatrixValue[1][0],
       mMatrixValue[0][1], mMatrixValue[1][1]
   };

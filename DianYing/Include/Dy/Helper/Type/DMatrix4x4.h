@@ -77,7 +77,7 @@ public:
 
   explicit operator glm::mat2() const noexcept;
   explicit operator glm::mat3() const noexcept;
-  explicit operator DMatrix2x2() const noexcept;
+  explicit operator DMat2() const noexcept;
   explicit operator DMatrix3x3() const noexcept;
 
   operator glm::mat4() const noexcept;
