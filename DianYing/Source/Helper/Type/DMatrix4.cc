@@ -142,9 +142,9 @@ DMatrix4x4::operator DMat2() const noexcept
   };
 }
 
-DMatrix4x4::operator DMatrix3x3() const noexcept
+DMatrix4x4::operator DMat3() const noexcept
 {
-  return DMatrix3x3{
+  return DMat3{
       mMatrixValue[0][0], mMatrixValue[1][0], mMatrixValue[2][0],
       mMatrixValue[0][1], mMatrixValue[1][1], mMatrixValue[2][1],
       mMatrixValue[0][2], mMatrixValue[1][2], mMatrixValue[2][2],

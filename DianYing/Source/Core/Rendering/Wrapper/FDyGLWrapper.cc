@@ -1055,7 +1055,7 @@ void XGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool 
   glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void XGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, bool iTransposed)
+void XGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMat3& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }

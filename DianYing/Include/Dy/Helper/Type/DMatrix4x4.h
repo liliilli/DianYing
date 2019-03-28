@@ -17,10 +17,12 @@
 
 #include <assimp/matrix4x4.h>
 #include <nlohmann/json_fwd.hpp>
+#include <foundation/PxTransform.h>
 
 #include <Dy/Helper/Type/DMatrix3x3.h>
+#include <Dy/Helper/Type/DVector3.h>
 #include <Dy/Helper/Type/DVector4.h>
-#include "DMatrix2x2.h"
+#include <Dy/Helper/Type/DMatrix2x2.h>
 
 #ifdef near
 #undef near
@@ -31,9 +33,10 @@
 
 namespace dy
 {
-  class DQuaternion;
 
-  ///
+class DQuaternion;
+
+///
 /// @class DMatrix4x4
 /// @brief
 ///
@@ -78,7 +81,7 @@ public:
   explicit operator glm::mat2() const noexcept;
   explicit operator glm::mat3() const noexcept;
   explicit operator DMat2() const noexcept;
-  explicit operator DMatrix3x3() const noexcept;
+  explicit operator DMat3() const noexcept;
 
   operator glm::mat4() const noexcept;
 

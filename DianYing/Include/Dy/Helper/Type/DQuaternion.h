@@ -54,7 +54,7 @@ public:
   ///
   /// @brief Get rotation matrix (3x3) from quaternion.
   ///
-  DMatrix3x3 GetRotationMatrix3x3() const noexcept;
+  DMat3 GetRotationMatrix3x3() const noexcept;
 
   ///
   /// @brief Return euler rotation angle (degrees) (x, y, z).

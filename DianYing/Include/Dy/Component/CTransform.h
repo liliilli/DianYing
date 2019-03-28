@@ -229,7 +229,7 @@ private:
   MDY_TRANSIENT DVec3    mFinalRenderingPosition  = {};
 
   MDY_TRANSIENT DVec3    mFromParentWorldEulerAngle        = {};
-  MDY_TRANSIENT DMatrix3x3  mPresentPositionBasis;
+  MDY_TRANSIENT DMat3  mPresentPositionBasis;
   MDY_TRANSIENT std::array<DVec3, 3> mDisplayMovementBasis = { DVec3::UnitX(), DVec3::UnitY(), DVec3::UnitZ() };
   MDY_TRANSIENT DVec3    mWorldSumEulerAngle               = {};
   MDY_TRANSIENT DVec3    mFinalRenderingEulerAngle         = {};

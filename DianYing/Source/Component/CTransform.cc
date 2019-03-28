@@ -157,7 +157,7 @@ void CTransform::SetRelativeLocalPositionWithFinalWorldPosition(const DVec3& fin
 {
   // Position.
   this->mLocalRelAlignedPosition    = finalPosition - this->mWorldRelAlignedPosition;
-  this->mLocalRelPosition           = this->mPresentPositionBasis.Inverse().MultiplyVector(this->mLocalRelAlignedPosition);
+  this->mLocalRelPosition           = this->mPresentPositionBasis.Inverse() * this->mLocalRelAlignedPosition;
   this->mIsFinalPositionDirty       = true;
   this->mIsModelMatrixDirty         = true;
 }
@@ -504,7 +504,7 @@ void CTransform::MDY_PRIVATE(TryUpdateLocalRelAlignedPos)()
   if (this->mIsLocalRelAlignedPosDirty == false)  { return; }
   if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE(TryUpdateMovementBasis)(); }
 
-  this->mLocalRelAlignedPosition    = this->mPresentPositionBasis.MultiplyVector(this->mLocalRelPosition);
+  this->mLocalRelAlignedPosition    = this->mPresentPositionBasis * this->mLocalRelPosition;
   this->mIsLocalRelAlignedPosDirty  = false;
   this->mIsFinalPositionDirty       = true;
   this->mIsModelMatrixDirty         = true;
@@ -515,7 +515,7 @@ void CTransform::MDY_PRIVATE(TryUpdateWorldRelAlignedPos)()
   if (this->mIsWorldRelAlignedPosDirty == false)  { return; }
   if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE(TryUpdateMovementBasis)(); }
 
-  this->mWorldRelAlignedPosition = this->mPresentPositionBasis.MultiplyVector(this->mWorldRelPosition);
+  this->mWorldRelAlignedPosition = this->mPresentPositionBasis * this->mWorldRelPosition;
   this->mIsWorldRelAlignedPosDirty = false;
   this->mIsWorldSumAlignedPosDirty = true;
   this->mIsFinalPositionDirty      = true;

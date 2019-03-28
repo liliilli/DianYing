@@ -18,21 +18,6 @@
 #include <foundation/PxVec3.h>
 #include <glm/detail/type_vec3.hpp>
 
-//!
-//! Forward declaration
-//!
-
-namespace dy
-{
-
-class DMatrix3x3;
-
-} /// ::dy namespace
-
-//!
-//! Implementation
-//! 
-
 namespace dy 
 {
 

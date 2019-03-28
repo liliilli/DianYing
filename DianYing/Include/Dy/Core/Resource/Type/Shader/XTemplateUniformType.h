@@ -32,7 +32,7 @@ template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::FloatArray> 
 { using ValueType = std::vector<TF32>; };
 
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Matrix4> final  { using ValueType = DMatrix4x4; };
-template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Matrix3> final  { using ValueType = DMatrix3x3; };
+template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Matrix3> final  { using ValueType = DMat3; };
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Vector4> final  { using ValueType = DVec4; };
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Vector3> final  { using ValueType = DVec3; };
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Vector2> final  { using ValueType = DVec2; };

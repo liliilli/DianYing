@@ -183,7 +183,7 @@ public:
   /// @brief Update uniform matrix4x4 item. Specified shader must be valid and activated.
   static void UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool iTransposed = false);
   /// @brief Update uniform matrix3x3 item. Specified shader must be valid and activated.
-  static void UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, bool iTransposed = false);
+  static void UpdateUniformMatrix3(TU32 iId, const DMat3& iBuffer, bool iTransposed = false);
   /// @brief Update uniform matrix4x4 array. Specified shader must be valid and activated.
   static void UpdateUniformMatrix4Array(
     TU32 iId, 

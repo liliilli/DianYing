@@ -68,9 +68,9 @@ DMatrix4x4 DQuaternion::GetRotationMatrix4x4() const noexcept
   return glm::mat4_cast(this->mQuaternion);
 }
 
-DMatrix3x3 DQuaternion::GetRotationMatrix3x3() const noexcept 
+DMat3 DQuaternion::GetRotationMatrix3x3() const noexcept 
 {
-  return glm::mat3_cast(this->mQuaternion);
+  return FMat3::CreateMat3(glm::mat3_cast(this->mQuaternion));
 }
 
 DVec3 DQuaternion::GetEulerRotationDegreeAngleVector() const noexcept 
