@@ -13,6 +13,7 @@
 ///
 
 #include <Math/Type/Math/DVector2.h>
+#include "..\..\Math\DMatrix2.h"
 
 namespace dy::math
 {
@@ -123,6 +124,12 @@ template <typename TType>
 const typename DMatrix2<TType>::TValueType* DMatrix2<TType>::Data() const noexcept
 {
   return this->mValues.front().Data();
+}
+
+template<typename TType>
+std::vector<DVector2<TType>> DMatrix2<TType>::ToVector() const noexcept
+{
+  return std::vector<DVector2<TType>>{this->operator[](0), this->operator[](1)};
 }
 
 template <typename TType>
