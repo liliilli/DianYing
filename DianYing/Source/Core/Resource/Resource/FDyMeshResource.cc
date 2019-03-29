@@ -117,7 +117,7 @@ EDySuccess FDyMeshResource::BindVertexArray() const noexcept
   // because OpenGL implicit state manchine changing sucks (REALLY SUCKS)
   if (this->IsSupportingInstancing() == true)
   {
-    glBindVertexBuffer(1, *this->mInstancingBufferId, 0, sizeof(DMatrix4x4));
+    glBindVertexBuffer(1, *this->mInstancingBufferId, 0, sizeof(DMat4));
   }
   return DY_SUCCESS;
 }

@@ -20,18 +20,12 @@
 #include <Dy/Helper/Type/DVector4.h>
 #include <Dy/Helper/Type/DMatrix2x2.h>
 #include <Dy/Helper/Type/DMatrix3x3.h>
+#include <Dy/Helper/Type/DMatrix4x4.h>
 
 namespace dy
 {
-class DMatrix4x4;
 struct DColorRGB;
 } /// ::dy namespace
-
-namespace dy::math
-{
-//struct DMatrix3<TReal>;
-//struct DMatrix4<TReal>;
-}
 
 namespace dy::reflect
 {
@@ -77,7 +71,7 @@ REFLECTION_REGISTER_TYPE(Vector3, DVec3)
 REFLECTION_REGISTER_TYPE(Vector4, DVec4)
 REFLECTION_REGISTER_TYPE(Matrix2, DMat2)
 REFLECTION_REGISTER_TYPE(Matrix3, DMat3)
-REFLECTION_REGISTER_TYPE(Matrix4, DMatrix4x4)
+REFLECTION_REGISTER_TYPE(Matrix4, DMat4)
 REFLECTION_REGISTER_TYPE(VectorInt2, DIVec2)
 REFLECTION_REGISTER_TYPE(VectorInt3, DIVec3)
 REFLECTION_REGISTER_TYPE(VectorInt4, DIVec4)

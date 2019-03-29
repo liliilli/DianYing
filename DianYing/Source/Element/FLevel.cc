@@ -47,8 +47,9 @@ FLevel::FLevel(_MIN_ const PDyLevelConstructMetaInfo& desc)
     {
     case EWorldObjectType::Actor:
     { // General object type. Make FActor instance.
-      auto instancePtr = std::make_unique<FActor>(*objectInformation);
-      auto [it, result] = this->mActorMap.try_emplace(instancePtr->GetActorName(), std::move(instancePtr));
+      auto instancePtr  = std::make_unique<FActor>(*objectInformation);
+      const auto name   = instancePtr->GetActorName();
+      auto [it, result] = this->mActorMap.try_emplace(name, std::move(instancePtr));
       MDY_ASSERT_MSG(result == true, "Unexpected error occured in inserting FActor to object map.");
     } break;
     case EWorldObjectType::SceneScriptor:  MDY_NOT_IMPLEMENTED_ASSERT(); break;

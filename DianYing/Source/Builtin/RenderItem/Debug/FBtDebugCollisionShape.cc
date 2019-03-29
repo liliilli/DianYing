@@ -78,7 +78,7 @@ void FBtRenderDebugCollisionShape::OnRender()
 
 void FBtRenderDebugCollisionShape::RenderObject(
   CBasePhysicsCollider& iRefCollider,
-  const DMatrix4x4& iTransformMatrix)
+  const DMat4& iTransformMatrix)
 {
   //!
   //! Debug rendering.

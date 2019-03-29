@@ -15,11 +15,7 @@
 
 #include <array>
 #include <Dy/Helper/Type/DPlane.h>
-
-namespace dy
-{
-class DMatrix4x4;
-} /// ::dy namespace
+#include <Dy/Helper/Type/DMatrix4x4.h>
 
 namespace dy
 {
@@ -28,7 +24,7 @@ class FFrustumTester final
 {
 public:
   /// @brief Update frustum.
-  void UpdateFrustum(const DMatrix4x4& mProjection, const DMatrix4x4& mView);
+  void UpdateFrustum(const DMat4& mProjection, const DMat4& mView);
 
   /// @brief Check point is in frustum.
   MDY_NODISCARD bool IsPointInFrustum(const DVec3& mPoint) const noexcept;

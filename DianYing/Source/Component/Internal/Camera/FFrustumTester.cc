@@ -20,9 +20,9 @@
 namespace dy
 {
 
-void FFrustumTester::UpdateFrustum(const DMatrix4x4& mProjection, const DMatrix4x4& mView)
+void FFrustumTester::UpdateFrustum(const DMat4& mProjection, const DMat4& mView)
 {
-  const auto clipMatrix = mProjection.Multiply(mView);
+  const auto clipMatrix = mProjection * mView;
 
   // Setup right plane and normalize.
   mFrustum[DirRight].A = clipMatrix[0][3] - clipMatrix[0][0];

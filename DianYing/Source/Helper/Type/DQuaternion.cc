@@ -20,11 +20,11 @@
 namespace dy
 {
 
-DQuaternion::DQuaternion(const DVec3& eulerAngleXYZ) 
+DQuaternion::DQuaternion(const DVec3& eulerAngleXYZ, bool isDegree) 
   : mQuaternion{ glm::vec3{ 
-      math::ToNormalizedRadian(eulerAngleXYZ.X * math::kToRadian<TReal>), 
-      math::ToNormalizedRadian(eulerAngleXYZ.Y * math::kToRadian<TReal>), 
-      math::ToNormalizedRadian(eulerAngleXYZ.Z * math::kToRadian<TReal>)
+      math::ToNormalizedRadian(eulerAngleXYZ.X * (isDegree ? math::kToRadian<TReal> : 1)), 
+      math::ToNormalizedRadian(eulerAngleXYZ.Y * (isDegree ? math::kToRadian<TReal> : 1)), 
+      math::ToNormalizedRadian(eulerAngleXYZ.Z * (isDegree ? math::kToRadian<TReal> : 1))
     } 
   }
 {}
@@ -63,9 +63,9 @@ DQuaternion::DQuaternion(TF32 x, TF32 y, TF32 z, TF32 w) :
   mQuaternion{w, x, y, z}
 { }
 
-DMatrix4x4 DQuaternion::GetRotationMatrix4x4() const noexcept 
+DMat4 DQuaternion::GetRotationMatrix4x4() const noexcept 
 {
-  return glm::mat4_cast(this->mQuaternion);
+  return FMat4::CreateMat4(glm::mat4_cast(this->mQuaternion));
 }
 
 DMat3 DQuaternion::GetRotationMatrix3x3() const noexcept 

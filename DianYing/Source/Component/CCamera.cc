@@ -21,6 +21,8 @@
 #include <Dy/Management/MWorld.h>
 #include <Dy/Component/CTransform.h>
 #include <Math/Utility/XMath.h>
+#include <Math/Utility/XGraphicsMath.h>
+#include <Dy/Management/Rendering/MRendering.h>
 
 namespace dy
 {
@@ -106,10 +108,10 @@ void CCamera::pUpdateCameraVectors()
 
 void CCamera::pUpdateViewMatrix()
 {
-  this->mViewMatrix = glm::lookAt(
-      FVec3::ToGlmVec3(this->mPosition),
-      FVec3::ToGlmVec3(this->mPosition + this->mLookingAtDirection),
-      FVec3::ToGlmVec3(DVec3::UnitY())
+  this->mViewMatrix = LookAt(
+    (this->mPosition),
+    (this->mPosition + this->mLookingAtDirection),
+    (DVec3::UnitY())
   );
 
   this->mIsViewMatrixDirty = false;
@@ -117,21 +119,22 @@ void CCamera::pUpdateViewMatrix()
 
 void CCamera::pUpdateProjectionMatrix()
 {
-  if (this->mIsOrthographicCamera)
-  {
-    const auto& settingManager  = MSetting::GetInstance();
-    const auto  width           = settingManager.GetWindowSizeWidth();
-    const auto  height          = settingManager.GetWindowSizeHeight();
+  using namespace math;
+  const auto& settingManager  = MSetting::GetInstance();
+  const auto  width           = Cast<TReal>(settingManager.GetWindowSizeWidth());
+  const auto  height          = Cast<TReal>(settingManager.GetWindowSizeHeight());
 
-    this->mProjectionMatrix = glm::ortho(-static_cast<float>(width) / 2,
-                                          static_cast<float>(width) / 2,
-                                         -static_cast<float>(height) / 2,
-                                          static_cast<float>(height) / 2,
-                                          this->mNear, this->mFar);
+  if (this->mIsOrthographicCamera == true)
+  {
+    this->mProjectionMatrix = ProjectionMatrix<TReal>(
+      EGraphics::OpenGL, EProjection::Orthogonal, 
+      -width / 2, width / 2, -height / 2, height / 2, this->mNear, this->mFar);
   }
   else 
   { 
-    this->mProjectionMatrix = glm::perspective(this->mFieldOfView * math::kToRadian<TF32>, this->mAspect, this->mNear, this->mFar); 
+    this->mProjectionMatrix = ProjectionMatrix<TReal>(
+      EGraphics::OpenGL, EProjection::Perspective,
+      this->mFieldOfView * math::kToRadian<TReal>, width, height, this->mNear, this->mFar);
   }
 
   this->mIsProjectionMatrixDirty = false;
@@ -153,12 +156,12 @@ void CCamera::TryDeactivateInstance()
   if (this->mIsFocused == true) { this->Unfocus(); }
 }
 
-const DMatrix4x4& CCamera::GetViewMatrix() const noexcept
+const DMat4& CCamera::GetViewMatrix() const noexcept
 {
   return this->mViewMatrix;
 }
 
-const DMatrix4x4& CCamera::GetProjectionMatrix() const noexcept
+const DMat4& CCamera::GetProjectionMatrix() const noexcept
 {
   return this->mProjectionMatrix;
 }

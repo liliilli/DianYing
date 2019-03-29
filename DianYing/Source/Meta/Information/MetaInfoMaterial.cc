@@ -149,7 +149,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         {
         case EUniformVariableType::Matrix4: 
         { 
-          const auto value = json::GetValueFrom<DMatrix4x4>(itemValue, "Value");
+          const auto value = json::GetValueFrom<DMat4>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<TUniformValue<EUniformVariableType::Matrix4>>(-1, value)
@@ -227,7 +227,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EUniformVariableType::Matrix4Array: 
         {
-          const auto value = json::GetValueFrom<std::vector<DMatrix4x4>>(itemValue, "Value");
+          const auto value = json::GetValueFrom<std::vector<DMat4>>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<TUniformValue<EUniformVariableType::Matrix4Array>>(-1, value)

@@ -22,6 +22,9 @@
     <ClInclude Include="Include\Math\Type\Micellanous\DArea3D.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DClamp.h" />
     <ClInclude Include="Include\Math\Type\Shape\DSphere.h" />
+    <ClInclude Include="Include\Math\Utility\XGraphicsMath.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\EGraphics.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\EProjection.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Math\Common\Inline\TGlobalTypes.inl" />
@@ -63,5 +66,6 @@
     <None Include="Include\Math\Utility\Inline\XMathTrigonometry.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\Lerp.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\ToNormalized.inl" />
+    <None Include="Include\Math\Utility\Inline\XGraphicsMath.inl" />
   </ItemGroup>
 </Project>

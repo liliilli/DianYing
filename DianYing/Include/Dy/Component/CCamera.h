@@ -59,11 +59,11 @@ public:
 
   /// @brief  Get view matrix.
   /// @return Valid immutable view matrix reference.
-  MDY_NODISCARD const DMatrix4x4& GetViewMatrix() const noexcept;
+  MDY_NODISCARD const DMat4& GetViewMatrix() const noexcept;
 
   /// @brief  Get projection matrix
   /// @return Valid immutable projection matirx reference.
-  MDY_NODISCARD const DMatrix4x4& GetProjectionMatrix() const noexcept;
+  MDY_NODISCARD const DMat4& GetProjectionMatrix() const noexcept;
 
   /// @brief  Get feature flag about mesh unclipping of this camera component.
   MDY_NODISCARD bool IsEnabledMeshUnclipping() const noexcept;
@@ -193,9 +193,9 @@ private:
   /// |  ux uy uz  0  ||   0  0  0 -y  | == |  ux uy uz -u*t  |  v(x, y, z) is camera's z-axis normal vector.
   /// |  vx vy vz  0  ||   0  0  0 -z  | == |  vx vy vz -v*t  |  u(x, y, z) is camera's y-axis normal vector.
   /// '-  0  0  0  0 -``-  0  0  0  1 -`    `-  0  0  0    1 -`  We need to translate all object's in view frustum as camera's origin.
-  DMatrix4x4      mViewMatrix;
+  DMat4      mViewMatrix;
   /// Projection matrix.
-  DMatrix4x4      mProjectionMatrix;
+  DMat4      mProjectionMatrix;
   /// Normalized Lookat direction vector
   DVec3        mLookingAtDirection = {};
   /// Camera final posittion

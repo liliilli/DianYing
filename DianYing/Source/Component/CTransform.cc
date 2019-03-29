@@ -337,7 +337,7 @@ void CTransform::SetWorldScale(_MIN_ const DVec3& xyz_value) noexcept
   }
 }
 
-const DMatrix4x4 CTransform::GetRotationMatrix() noexcept
+const DMat4 CTransform::GetRotationMatrix() noexcept
 {
   MDY_NOUSE_RTVAL_EXPR(this->GetTransform());
   return this->mFinalRenderRotationQuaternion.GetRotationMatrix4x4();
@@ -354,7 +354,7 @@ std::string CTransform::ToString()
   return MDY_INITIALIZE_EMPTYSTR;
 }
 
-const DMatrix4x4& CTransform::GetTransform() noexcept
+const DMat4& CTransform::GetTransform() noexcept
 {
   if (this->mIsModelMatrixDirty == true)
   { // Update dependent transform information.

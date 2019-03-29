@@ -63,7 +63,7 @@ void CModelAnimator::Update(TF32 dt)
     this->mStatus.mFinalTransformList.resize(this->mBinderSkeleton->GetInputBoneCount());
     for (auto& transform : this->mStatus.mFinalTransformList)
     {
-      transform = DMatrix4x4::IdentityMatrix();
+      transform = DMat4::Identity();
     }
     this->mStatus.mStatus = EAnimatorStatus::Play; 
   } break;
@@ -76,7 +76,7 @@ void CModelAnimator::Update(TF32 dt)
     const auto rootBoneIdList = this->mBinderSkeleton->GetChildrenNodeIdList(-1);
     for (const auto& idBone : rootBoneIdList)
     {
-      this->TryUpdateFinalTransform(idBone, DMatrix4x4::IdentityMatrix(), isLooped);
+      this->TryUpdateFinalTransform(idBone, DMat4::Identity(), isLooped);
     }
   } break;
   case EAnimatorStatus::Pause: break;
@@ -84,7 +84,7 @@ void CModelAnimator::Update(TF32 dt)
   }
 }
 
-void CModelAnimator::TryUpdateFinalTransform(TI32 idSkelNode, const DMatrix4x4& parentTransform, bool iIsLooped)
+void CModelAnimator::TryUpdateFinalTransform(TI32 idSkelNode, const DMat4& parentTransform, bool iIsLooped)
 {
   const auto& animScrap = this->mStatus.mPtrPresentAnimatorInfo->GetAnimNodeList();
   const auto& refNode = this->mBinderSkeleton->GetRefSkeletonNode(idSkelNode);
@@ -107,11 +107,11 @@ void CModelAnimator::TryUpdateFinalTransform(TI32 idSkelNode, const DMatrix4x4& 
     const auto inpPos = this->mStatus.mPtrPresentAnimatorInfo->GetInterpolatedPosition(
         this->mStatus.mElapsedTime, animNodeId, iIsLooped);
 
-    localTransform = DMatrix4x4::CreateWithTranslation(inpPos).Rotate(inpRot).Scale(inpScl);
+    localTransform = FMat4::Scale(FMat4::Rotate(FMat4::CreateWithTranslation(inpPos), inpRot), inpScl);
   }
 
   // Calculate final transform without offset matrix.
-  const DMatrix4x4 finalTransform = parentTransform.Multiply(localTransform);
+  const DMat4 finalTransform = parentTransform * localTransform;
 
   const auto& offsetBoneList = this->mBinderSkeleton->GetOffsetBoneList();
   const auto itBone = std::find_if(
@@ -122,9 +122,9 @@ void CModelAnimator::TryUpdateFinalTransform(TI32 idSkelNode, const DMatrix4x4& 
     // Update transform. Set final transform (uniform)
     const auto id = std::distance(offsetBoneList.begin(), itBone);
     this->mStatus.mFinalTransformList[id] = 
-        this->mBinderSkeleton->GetRootInverseTransform()
-        .Multiply(finalTransform)
-        .Multiply(itBone->mBoneOffsetMatrix);
+      ((this->mBinderSkeleton->GetRootInverseTransform()
+    * finalTransform)
+    * itBone->mBoneOffsetMatrix);
   }
 
   const auto rootBoneIdList = this->mBinderSkeleton->GetChildrenNodeIdList(idSkelNode);
@@ -140,7 +140,7 @@ std::string CModelAnimator::ToString()
   return "";
 }
 
-const std::vector<DMatrix4x4>& CModelAnimator::GetFinalTransformList() const noexcept
+const std::vector<DMat4>& CModelAnimator::GetFinalTransformList() const noexcept
 {
   return this->mStatus.mFinalTransformList;
 }

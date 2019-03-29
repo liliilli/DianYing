@@ -18,6 +18,7 @@
 #include <foundation/PxQuat.h>
 #include <Dy/Helper/Type/EAxis.h>
 #include <Dy/Helper/Type/DMatrix4x4.h>
+#include <Dy/Helper/Type/DMatrix3x3.h>
 
 //!
 //! Implementation
@@ -33,7 +34,7 @@ public:
   DQuaternion() = default;
   DQuaternion(const DQuaternion& quaternion)            = default;
   DQuaternion& operator=(const DQuaternion& quaternion) = default;
-  DQuaternion(const DVec3& eulerAngleXYZ);
+  DQuaternion(const DVec3& eulerAngleXYZ, bool isDegree = true);
 
   DQuaternion(const aiQuaternion& aiQuaternion);
   DQuaternion& operator=(const aiQuaternion& auQuaternion);
@@ -49,7 +50,7 @@ public:
   ///
   /// @brief Get rotation matrix (4x4) from quaternion.
   ///
-  DMatrix4x4 GetRotationMatrix4x4() const noexcept;
+  DMat4 GetRotationMatrix4x4() const noexcept;
 
   ///
   /// @brief Get rotation matrix (3x3) from quaternion.

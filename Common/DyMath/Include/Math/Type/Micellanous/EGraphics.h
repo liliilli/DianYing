@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_COMPONENT_INTERNAL_CAMERA_DUBOCAMERABLOCK_H
-#define GUARD_DY_COMPONENT_INTERNAL_CAMERA_DUBOCAMERABLOCK_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,22 +12,14 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DMatrix4x4.h>
-
-namespace dy
+namespace dy::math
 {
-  
-/// @brief specifier name for ubo "CameraBlock"
-MDY_SET_IMMUTABLE_STRING(sUboCameraBlock, "dyBtUboCameraBlock");
 
-/// @struct DUboCameraBlock
-/// @brief  This structure must be aligned by 16 bytes.
-struct alignas(16) DUboCameraBlock final
+/// @enum EGraphics
+/// @brief Specifies graphics api.
+enum class EGraphics
 {
-  DMat4 mProjMatrix = {};
-  DMat4 mViewMatrix = {};
+  OpenGL,
 };
 
-} /// ::dy namespace
-
-#endif /// GUARD_DY_COMPONENT_INTERNAL_CAMERA_DUBOCAMERABLOCK_H
+} /// ::dy::math namespac

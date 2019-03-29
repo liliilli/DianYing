@@ -57,10 +57,11 @@ FDyModelResource::FDyModelResource(const FDyModelInformation& input) :
   }
 
   const auto& transform = input.GetInitialTransform();
-  this->mModelInitialTransform
-      .Scale(transform.mScale)
-      .Rotate(transform.mRotation)
-      .Translate(transform.mPosition);
+  this->mModelInitialTransform = FMat4::Translate(
+    FMat4::Rotate(
+      FMat4::Scale(this->mModelInitialTransform, transform.mScale)
+      , transform.mRotation)
+    , transform.mPosition);
 }
 
 TU32 FDyModelResource::GetNumberOfMaterial() const noexcept

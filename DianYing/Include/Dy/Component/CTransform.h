@@ -154,7 +154,7 @@ public:
   void SetWorldScale(_MIN_ const DVec3& xyz_value) noexcept;
 
   /// @brief Get rotation matrix (4x4)
-  MDY_NODISCARD const DMatrix4x4 GetRotationMatrix() noexcept;
+  MDY_NODISCARD const DMat4 GetRotationMatrix() noexcept;
 
   /// @brief Get rotation quaternion instance.
   MDY_NODISCARD const DQuaternion& GetRotationQuaternion() noexcept;
@@ -165,7 +165,7 @@ public:
   /// model matrix would be calculated newly and returned.
   ///
   /// @return Model matrix (M = TRS)
-  MDY_NODISCARD const DMatrix4x4& GetTransform() noexcept;
+  MDY_NODISCARD const DMat4& GetTransform() noexcept;
 
   ///
   /// @brief
@@ -240,7 +240,7 @@ private:
   MDY_TRANSIENT DVec3    mWorldProductScale    = DVec3{ 1.f };
   MDY_TRANSIENT DVec3    mFinalRenderingScale  = DVec3{ 1.f };
 
-  MDY_TRANSIENT DMatrix4x4  mFinalRenderingTransform;
+  MDY_TRANSIENT DMat4  mFinalRenderingTransform;
 
   MDY_TRANSIENT bool mIsMovementBasisDirty        = true;
   MDY_TRANSIENT bool mIsWorldSumRotationAngleDirty= true;

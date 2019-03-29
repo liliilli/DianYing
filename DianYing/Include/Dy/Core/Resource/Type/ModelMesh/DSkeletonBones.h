@@ -29,7 +29,7 @@ struct DSkeletonBone final
   /// @brief
   int         mBoneOffsetId = -1;
   /// @brief Local trasform of this bone which is relative to parent.
-  DMatrix4x4  mLocalTransform = DMatrix4x4::IdentityMatrix();
+  DMat4  mLocalTransform = DMat4::Identity();
 };
 
 struct DBoneOffset
@@ -39,13 +39,13 @@ struct DBoneOffset
   // @brief
   int           mIndexSkeletonNode = -1;
   /// @brief Offset matrix of bone.
-  DMatrix4x4  mBoneOffsetMatrix = DMatrix4x4::IdentityMatrix();
+  DMat4  mBoneOffsetMatrix = DMat4::Identity();
 };
 
 struct DSkeleton final
 {
   // @brief
-  DMatrix4x4                mSkeletonRootInverseTransform;
+  DMat4                mSkeletonRootInverseTransform;
   // @brief
   std::vector<DSkeletonBone>mExportedSkeleton;
   // @brief

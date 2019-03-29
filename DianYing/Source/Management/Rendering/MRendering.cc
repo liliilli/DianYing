@@ -110,7 +110,7 @@ public:
   EDySuccess MDY_PRIVATE(UnbindMainDirectionalShadow)(_MIN_ CLightDirectional& iRefLight);
 
   /// @brief Get General (Default) ui projection matrix.
-  const DMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
+  const DMat4& GetGeneralUiProjectionMatrix() const noexcept;
 
   /// @brief Swap buffer.
   void SwapBuffers();
@@ -124,7 +124,7 @@ public:
   /// @brief Enqueue debug collider draw call.
   void EnqueueDebugDrawCollider(
       _MIN_ CBasePhysicsCollider& iRefCollider, 
-      _MIN_ const DMatrix4x4& iTransformMatrix);
+      _MIN_ const DMat4& iTransformMatrix);
   
   /// @brief Check Entry RenderPipeline is exist on rendering system.
   MDY_NODISCARD bool HasEntryRenderPipeline(const std::string& iEntryPipelineName);
@@ -163,7 +163,7 @@ public:
   /// @brief Activated directional light list.
   std::queue<TI32>  mDirLightAvailableList     = {};
   /// @brief Default UI projection matrix. (Orthogonal)
-  DMatrix4x4      mUiGeneralProjectionMatrix = {};
+  DMat4      mUiGeneralProjectionMatrix = {};
 
 #if defined(MDY_FLAG_IN_EDITOR)
   std::unique_ptr<FDyGrid>                    mGridEffect           = nullptr;
@@ -241,7 +241,7 @@ void MRendering::EnqueueDrawMesh(
 
 void MRendering::EnqueueDebugDrawCollider(
   CBasePhysicsCollider& iRefCollider, 
-  const DMatrix4x4& iTransformMatrix)
+  const DMat4& iTransformMatrix)
 {
   this->mInternal->EnqueueDebugDrawCollider(iRefCollider, iTransformMatrix);
 }
@@ -341,7 +341,7 @@ MRendering::MDY_PRIVATE(GetActivatedSpotLights)() noexcept
   return this->mInternal->mActivatedSpotLights;
 }
 
-const DMatrix4x4& MRendering::GetGeneralUiProjectionMatrix() const noexcept
+const DMat4& MRendering::GetGeneralUiProjectionMatrix() const noexcept
 {
   return this->mInternal->GetGeneralUiProjectionMatrix();
 }

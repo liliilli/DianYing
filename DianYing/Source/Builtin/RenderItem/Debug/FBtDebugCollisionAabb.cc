@@ -69,7 +69,7 @@ void FBtRenderDebugCollisionAabb::OnRender()
 
 void FBtRenderDebugCollisionAabb::RenderObject(
   CBasePhysicsCollider& iRefCollider,
-  const DMatrix4x4& iTransformMatrix)
+  const DMat4& iTransformMatrix)
 {
   // Update uniform.
   this->mBinderShader->TryUpdateUniform<EUniformVariableType::Matrix4>("uTransform", iTransformMatrix);

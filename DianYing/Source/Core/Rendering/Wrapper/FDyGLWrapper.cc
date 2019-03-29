@@ -25,7 +25,7 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Core/Resource/Internal/XShaderTypes.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
-#include "Dy/Helper/Type/DArea2D.h"
+#include <Dy/Helper/Type/DArea2D.h>
 
 #define MDY_GL_NONE 0
 #define MDY_GL_NONE_VAO 0
@@ -1047,7 +1047,7 @@ XGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ 
   return result;
 }
 
-void XGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool iTransposed)
+void XGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMat4& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -1063,7 +1063,7 @@ void XGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMat3& iBuffer, bool iTran
   glUniformMatrix3fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void XGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMatrix4x4>& iBuffer, bool iIransposed)
+void XGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMat4>& iBuffer, bool iIransposed)
 {
   if (iBuffer.empty() == true) { return; }
 

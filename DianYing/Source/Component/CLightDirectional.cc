@@ -23,6 +23,7 @@
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/MSetting.h>
 #include <Dy/Component/CTransform.h>
+#include <Math/Utility/XGraphicsMath.h>
 
 namespace dy
 {
@@ -140,13 +141,10 @@ void CLightDirectional::UpdateLightViewMatrix()
 
   const auto& pos = this->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
   const auto eye = pos + fwd;
-  this->mLightViewMatrix = glm::lookAt(
-    FVec3::ToGlmVec3(pos), 
-    FVec3::ToGlmVec3(eye), 
-    FVec3::ToGlmVec3(kLevelUpDir)); 
+  this->mLightViewMatrix = math::LookAt(pos, eye, kLevelUpDir);
 }
 
-const DMatrix4x4& CLightDirectional::GetLightViewMatrix() const noexcept
+const DMat4& CLightDirectional::GetLightViewMatrix() const noexcept
 {
   return this->mLightViewMatrix;
 }
@@ -161,14 +159,16 @@ void CLightDirectional::UpdateCSMFrustum(const CCamera& iRefCamera)
 
 void CLightDirectional::UpdateProjectionMatrix()
 {
-  this->mLightProjMatrix = glm::ortho(
-      this->minFrustum.X, this->maxFrustum.X, 
-      this->minFrustum.Y, this->maxFrustum.Y, 
-      -this->maxFrustum.Z, -this->minFrustum.Z);
-      //0.0f, this->minFrustum.Z);
+  using namespace math;
+  this->mLightProjMatrix = ProjectionMatrix<TReal>(
+    EGraphics::OpenGL, EProjection::Orthogonal,
+    this->minFrustum.X, this->maxFrustum.X, 
+    this->minFrustum.Y, this->maxFrustum.Y, 
+    -this->maxFrustum.Z, -this->minFrustum.Z
+  );
 }
 
-const DMatrix4x4& CLightDirectional::GetProjectionMatrix() const noexcept
+const DMat4& CLightDirectional::GetProjectionMatrix() const noexcept
 {
   return this->mLightProjMatrix;
 }
@@ -194,7 +194,7 @@ void CLightDirectional::UpdateSegmentFarPlanes(_MIN_ const CCamera& iPtrCamera)
     const TF32 corrTerm   = nearPlane + distFactor * diffPlane;
     const TF32 viewDepth  = frustumSplitCorrection * stdTerm + (1.0f - frustumSplitCorrection) * corrTerm;
 
-    const auto projectedDepth = this->mOldProjectionMatrix.MultiplyVector({0, 0, -viewDepth, 1});
+    const auto projectedDepth = this->mOldProjectionMatrix * DVec4{0, 0, -viewDepth, 1};
     this->mFarPlanes[i - 1] = viewDepth;
     this->mDataShadow.mNormalizedFarPlanes[i - 1] = (projectedDepth.Z / projectedDepth.W) * 0.5f + 0.5f;
   }
@@ -243,14 +243,17 @@ void CLightDirectional::UpdateLightProjectionAndViewports(
     mLightViewports[i].mRightUp   = pixelFrustumSize + mLightViewports[i].mLeftDown;
 
     // Update light view-projection matrices per segments.
-    DMatrix4x4 lightProjMatrix = glm::ortho(minSegment.X, minSegment.X + segmentSize, minSegment.Y, minSegment.Y + segmentSize, -maxFrustum.Z, -minFrustum.Z);
-    DMatrix4x4 lightScale = DMatrix4x4::CreateWithScale(
-      DVec3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
-    DMatrix4x4 lightBias  = DMatrix4x4::CreateWithTranslation(
-      DVec3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
+    using namespace math;
+    DMat4 lightProjMatrix = ProjectionMatrix<TReal>(
+      EGraphics::OpenGL, EProjection::Orthogonal,
+      minSegment.X, minSegment.X + segmentSize, 
+      minSegment.Y, minSegment.Y + segmentSize, 
+      -this->maxFrustum.Z, -this->minFrustum.Z);
+    DMat4 lightScale = FMat4::CreateWithScale(0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f);
+    DMat4 lightBias  = FMat4::CreateWithTranslation(0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f);
 
     this->mDataShadow.mLightVPSBMatrix[i] = 
-      lightBias.Multiply(lightScale).Multiply(lightProjMatrix).Multiply(this->mLightViewMatrix);
+      ((lightBias * lightScale) * lightProjMatrix) * this->mLightViewMatrix;
     nearSegmentPlane = iNormalizedFarPlanes[i];
   }
 }
@@ -307,7 +310,7 @@ void CLightDirectional::FrustumBoundingBoxLightViewSpace(
 
   for (TU32 vertId = 0; vertId < 8; ++vertId)
   { // Light view space.
-    boundingBoxVertices[vertId] = this->mLightViewMatrix.MultiplyVector(boundingBoxVertices[vertId]);
+    boundingBoxVertices[vertId] = this->mLightViewMatrix * boundingBoxVertices[vertId];
     // Update bounding box. (at least small point and at most biggest point)
     for (TU32 i = 0; i < 4; ++i)
     {

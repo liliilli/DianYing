@@ -96,14 +96,14 @@ public:
   /// @brief Update view matrix agian.
   void UpdateLightViewMatrix();
   /// @brief Get view matrix of light.
-  MDY_NODISCARD const DMatrix4x4& GetLightViewMatrix() const noexcept;
+  MDY_NODISCARD const DMat4& GetLightViewMatrix() const noexcept;
 
   /// @brief
   void UpdateCSMFrustum(const CCamera& iRefCamera);
   /// @brief Update projection matrix again.
   void UpdateProjectionMatrix();
   /// @brief Get projection matrix of light.
-  MDY_NODISCARD const DMatrix4x4& GetProjectionMatrix() const noexcept;
+  MDY_NODISCARD const DMat4& GetProjectionMatrix() const noexcept;
 
   /// @brief Update segment far planes.
   void UpdateSegmentFarPlanes(_MIN_ const CCamera& iPtrCamera);
@@ -174,10 +174,10 @@ private:
   std::array<DArea2D, kCSMSegment>    mLightViewports;
 
   std::array<TF32, kCSMSegment> mFarPlanes;
-  DMatrix4x4                  mOldProjectionMatrix; 
+  DMat4                  mOldProjectionMatrix; 
     
-  DMatrix4x4 mLightViewMatrix;
-  DMatrix4x4 mLightProjMatrix;
+  DMat4 mLightViewMatrix;
+  DMat4 mLightProjMatrix;
 
   /// Flag for casting light (binding to lighting system)
   MDY_NOTUSED bool mIsCastingLight   = false;

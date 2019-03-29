@@ -16,6 +16,7 @@
 #include <vector>
 #include <Dy/Core/Resource/Internal/XShaderTypes.h>
 #include <Dy/Helper/Type/DMatrix4x4.h>
+#include <Dy/Helper/Type/DMatrix3x3.h>
 #include <Dy/Helper/Type/DVector2.h>
 
 namespace dy
@@ -25,13 +26,13 @@ template <EUniformVariableType TType>
 struct MDY_PRIVATE(UniformBinder);
 
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Matrix4Array> final
-{ using ValueType = std::vector<DMatrix4x4>; };
+{ using ValueType = std::vector<DMat4>; };
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Vector3Array> final  
 { using ValueType = std::vector<DVec3>; };
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::FloatArray> final
 { using ValueType = std::vector<TF32>; };
 
-template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Matrix4> final  { using ValueType = DMatrix4x4; };
+template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Matrix4> final  { using ValueType = DMat4; };
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Matrix3> final  { using ValueType = DMat3; };
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Vector4> final  { using ValueType = DVec4; };
 template <> struct MDY_PRIVATE(UniformBinder)<EUniformVariableType::Vector3> final  { using ValueType = DVec3; };

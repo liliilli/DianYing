@@ -62,7 +62,7 @@ public:
       NotNull<const FDyMaterialResource*>
   >;
 
-  using TDrawColliderItem = std::pair<NotNull<CBasePhysicsCollider*>, DMatrix4x4>; 
+  using TDrawColliderItem = std::pair<NotNull<CBasePhysicsCollider*>, DMat4>; 
   using TUiDrawCallItem = NotNull<AWidgetObject*>;
   using TPointLightHandleList = std::vector<CLightPoint*>; 
   using TSpotLightHandleList  = std::vector<CLightSpot*>; 
@@ -106,7 +106,7 @@ public:
   TSpotLightHandleList& MDY_PRIVATE(GetActivatedSpotLights)() noexcept;
 
   /// @brief Get General (Default) ui projection matrix.
-  const DMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
+  const DMat4& GetGeneralUiProjectionMatrix() const noexcept;
   /// @brief Swap buffer.
   void SwapBuffers();
 
@@ -146,7 +146,7 @@ private:
   /// @brief Enqueue debug collider draw call.
   void EnqueueDebugDrawCollider(
       CBasePhysicsCollider& iRefCollider, 
-      const DMatrix4x4& iTransformMatrix);
+      const DMat4& iTransformMatrix);
 
   class Impl; Impl* mInternal = nullptr;
 
