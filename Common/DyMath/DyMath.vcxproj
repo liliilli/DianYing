@@ -66,6 +66,8 @@
     <None Include="Include\Math\Type\Inline\DMatrix4\DMatrix4Operator.inl" />
     <None Include="Include\Math\Type\Inline\DQuat\DQuat.inl" />
     <None Include="Include\Math\Type\Inline\DSphere\DSphere.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32Common.inl" />
     <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TI32.inl" />
     <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TI32Common.inl" />
     <None Include="Include\Math\Type\Inline\Micellanous\DTristateBool.inl" />

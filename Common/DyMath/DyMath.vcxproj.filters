@@ -69,5 +69,7 @@
     <None Include="Include\Math\Utility\Inline\XGraphicsMath.inl" />
     <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TI32.inl" />
     <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TI32Common.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32Common.inl" />
   </ItemGroup>
 </Project>
