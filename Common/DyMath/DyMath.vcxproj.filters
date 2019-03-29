@@ -67,5 +67,7 @@
     <None Include="Include\Math\Utility\Inline\XMath\Lerp.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\ToNormalized.inl" />
     <None Include="Include\Math\Utility\Inline\XGraphicsMath.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TI32.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TI32Common.inl" />
   </ItemGroup>
 </Project>

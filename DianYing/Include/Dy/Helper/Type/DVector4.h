@@ -15,6 +15,9 @@
 
 #include <glm/glm.hpp>
 
+// To enable / disable SIMD optimization of DVector4, add // or remove // below macro.
+// This use SIMD ~SSE4.1.
+#define MATH_ENABLE_SIMD
 #include <Math/Type/Math/DVector4.h>
 #include <nlohmann/json_fwd.hpp>
 

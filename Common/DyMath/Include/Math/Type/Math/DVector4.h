@@ -148,6 +148,7 @@ struct MATH_NODISCARD DVector4<TType, std::enable_if_t<kIsRealType<TType>>> fina
 };
 
 } /// ::dy::math namespace
+#include <Math/Type/Inline/DVector4/Simd/DVector4TI32.inl>
 #include <Math/Type/Inline/DVector4/DVector4Common.inl>
 #include <Math/Type/Inline/DVector4/DVector4Int.inl>
 #include <Math/Type/Inline/DVector4/DVector4Real.inl>
