@@ -32,6 +32,7 @@
     <ClInclude Include="Include\Math\Type\Math\DMatrix4.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\EGraphics.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\EProjection.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\ERandomPolicy.h" />
     <ClInclude Include="Include\Math\Type\Shape\DPlane.h" />
     <ClInclude Include="Include\Math\Type\Math\DVector2.h" />
     <ClInclude Include="Include\Math\Type\Math\DVector3.h" />
@@ -43,6 +44,7 @@
     <ClInclude Include="Include\Math\Utility\XLinearMath.h" />
     <ClInclude Include="Include\Math\Utility\XMath.h" />
     <ClInclude Include="Include\Math\Utility\XMathTrigonometry.h" />
+    <ClInclude Include="Include\Math\Utility\XRandom.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Math\Common\Inline\TGlobalTypes.inl" />
@@ -76,6 +78,7 @@
     <None Include="Include\Math\Utility\Inline\XMath\Lerp.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\MapValue.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\ToNormalized.inl" />
+    <None Include="Include\Math\Utility\Inline\XRandom.inl" />
     <None Include="README.md" />
     <None Include="Include\Math\Type\Inline\DPlane\DPlane.inl" />
     <None Include="Include\Math\Type\Inline\DVector2\DVector2Common.inl" />

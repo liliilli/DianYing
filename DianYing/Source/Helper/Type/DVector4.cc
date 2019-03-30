@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Helper/Type/DVector4.h>
 
-#include <Dy/Helper/Math/Math.h>
+
 #include <Dy/Helper/Type/DMatrix4x4.h>
 #include <Dy/Management/MLog.h>
 

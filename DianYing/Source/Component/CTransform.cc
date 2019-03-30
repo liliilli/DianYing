@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Component/CTransform.h>
 #include <Dy/Element/FActor.h>
-#include "Math/Utility/XMath.h"
-#include "Dy/Helper/Math/Math.h"
+#include <Math/Utility/XMath.h>
+
 
 namespace dy
 {
@@ -232,9 +232,9 @@ void CTransform::SetLocalEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept
   this->AddLocalEulerAngle(eulerAngleValue - this->GetRelativeLocalEulerAngle());
 }
 
-void CTransform::SetLocalEulerAngleWithQuaternion(_MIN_ const DQuaternion& iQuat)
+void CTransform::SetLocalEulerAngleWithQuaternion(_MIN_ const DQuat& iQuat)
 {
-  const auto angle = math::ConvertQuaternionToRadianEuler(iQuat) * math::kToDegree<TF32>;
+  const auto angle = iQuat.ToRadians() * math::kToDegree<TF32>;
 
   // Set local.
   this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;
@@ -340,10 +340,10 @@ void CTransform::SetWorldScale(_MIN_ const DVec3& xyz_value) noexcept
 const DMat4 CTransform::GetRotationMatrix() noexcept
 {
   MDY_NOUSE_RTVAL_EXPR(this->GetTransform());
-  return this->mFinalRenderRotationQuaternion.GetRotationMatrix4x4();
+  return this->mFinalRenderRotationQuaternion.ToMatrix4();
 }
 
-const DQuaternion& CTransform::GetRotationQuaternion() noexcept
+const DQuat& CTransform::GetRotationQuaternion() noexcept
 {
   MDY_NOUSE_RTVAL_EXPR(this->GetTransform());
   return this->mFinalRenderRotationQuaternion;
@@ -366,7 +366,7 @@ const DMat4& CTransform::GetTransform() noexcept
     { this->MDY_PRIVATE(TryUpdateFinalPosition)();   }
 
     // Assemble not obsoleted updated value.
-    this->mFinalRenderingTransform      = this->mFinalRenderRotationQuaternion.GetRotationMatrix4x4();
+    this->mFinalRenderingTransform      = this->mFinalRenderRotationQuaternion.ToMatrix4();
 
     this->mFinalRenderingTransform[0]   *= this->mFinalRenderingScale.X;
     this->mFinalRenderingTransform[1]   *= this->mFinalRenderingScale.Y;
@@ -469,9 +469,7 @@ void CTransform::MDY_PRIVATE(SetPxTransform)(_MIN_ const physx::PxTransform& iTr
   this->SetRelativeLocalPositionWithFinalWorldPosition(DVec3{iTransform.p.x, iTransform.p.y, iTransform.p.z});
 
   // Set local.
-  const auto angle = 
-      math::ConvertQuaternionToRadianEuler(iTransform.q.w, iTransform.q.x, iTransform.q.y, iTransform.q.z) 
-    * math::kToDegree<TF32>;
+  const auto angle = FQuat::CreateQuat(iTransform.q).ToRadians() * math::kToDegree<TF32>;
 
   this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;
   this->mIsFinalRotationAngleDirty = true;
@@ -484,7 +482,7 @@ void CTransform::MDY_PRIVATE(TryUpdateMovementBasis)()
   if (this->mIsMovementBasisDirty == false) { return; }
 
   // Update position movement basis of this FActor.
-  this->mPresentPositionBasis = DQuaternion(this->mFromParentWorldEulerAngle).GetRotationMatrix3x3();
+  this->mPresentPositionBasis = DQuat(this->mFromParentWorldEulerAngle).ToMatrix3();
   const auto& m = this->mPresentPositionBasis;
 
   // Update display movement basis.
@@ -583,7 +581,7 @@ void CTransform::MDY_PRIVATE(TryUpdateFinalWorldRotAngle)() noexcept
 
   // Set final rendering angles, and... update quaternion to setup new model matrix.
   this->mFinalRenderingEulerAngle  = this->mWorldSumEulerAngle + this->mLocalEulerAngle;
-  this->mFinalRenderRotationQuaternion.SetRotationAngle(this->mFinalRenderingEulerAngle);
+  this->mFinalRenderRotationQuaternion.SetAngle(this->mFinalRenderingEulerAngle);
 
   this->mIsFinalRotationAngleDirty = false;
   this->mToChildBasisAxisDirty     = true;
@@ -595,7 +593,7 @@ void CTransform::MDY_PRIVATE(TryUpdateToChildBasis)() noexcept
   if (this->mToChildBasisAxisDirty == false)    { return; }
   if (this->mIsFinalRotationAngleDirty == true) { this->MDY_PRIVATE(TryUpdateFinalWorldRotAngle)(); }
 
-  const auto m = DQuaternion{this->mFinalRenderingEulerAngle}.GetRotationMatrix3x3();
+  const auto m = DQuat{this->mFinalRenderingEulerAngle}.ToMatrix3();
   this->mToChildBasis[0] = DVec3{m[0][0], m[0][1], m[0][2]};
   this->mToChildBasis[1] = DVec3{m[1][0], m[1][1], m[1][2]};
   this->mToChildBasis[2] = DVec3{m[2][0], m[2][1], m[2][2]};
@@ -693,8 +691,8 @@ void CTransform::pUpdateFinalRenderingAxis() const noexcept
 {
   if (this->mIsMovementBasisDirty == true)
   { //
-    const auto quat = DQuaternion(this->mFromParentWorldEulerAngle);
-    this->mPresentPositionBasis = quat.GetRotationMatrix3x3();
+    const auto quat = DQuat(this->mFromParentWorldEulerAngle);
+    this->mPresentPositionBasis = quat.ToMatrix3();
 
     // Update position movement basis of this FActor.
     const auto& m                   = this->mPresentPositionBasis;
@@ -712,7 +710,7 @@ void CTransform::pUpdateToChildBasisAxis() const noexcept
 {
   if (this->mToChildBasisAxisDirty == true)
   { //
-    const auto m = DQuaternion{this->mFinalRenderingEulerAngle}.GetRotationMatrix3x3();
+    const auto m = DQuat{this->mFinalRenderingEulerAngle}.ToMatrix3();
 
     //
     this->mToChildBasis[0] = DVec3{m[0][0], m[0][1], m[0][2]};

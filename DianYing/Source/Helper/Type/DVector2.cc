@@ -16,7 +16,7 @@
 /// Header file
 #include <Dy/Helper/Type/DVector2.h>
 
-#include <Dy/Helper/Math/Math.h>
+
 #include <Dy/Helper/Type/DMatrix2x2.h>
 #include <nlohmann/json.hpp>
 

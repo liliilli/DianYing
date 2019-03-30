@@ -25,6 +25,8 @@
     <ClInclude Include="Include\Math\Utility\XGraphicsMath.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\EGraphics.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\EProjection.h" />
+    <ClInclude Include="Include\Math\Utility\XRandom.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\ERandomPolicy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Math\Common\Inline\TGlobalTypes.inl" />
@@ -71,5 +73,6 @@
     <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TI32Common.inl" />
     <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32.inl" />
     <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32Common.inl" />
+    <None Include="Include\Math\Utility\Inline\XRandom.inl" />
   </ItemGroup>
 </Project>

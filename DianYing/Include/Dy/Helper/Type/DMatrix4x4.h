@@ -15,10 +15,11 @@
 
 #include <nlohmann/json_fwd.hpp>
 #include <foundation/PxTransform.h>
-#include <Math/Type/Math/DMatrix4.h>
 
 #include <Dy/Helper/Type/DVector3.h>
 #include <Dy/Helper/Type/DVector4.h>
+#include <Dy/Helper/Type/DQuaternion.h>
+#include <Math/Type/Math/DMatrix4.h>
 
 #ifdef near
 #undef near
@@ -29,8 +30,6 @@
 
 namespace dy
 {
-
-class DQuaternion;
 
 using DMat4 = math::DMatrix4<TReal>;
 
@@ -49,7 +48,7 @@ struct FMat4 final
   /// @brief Get new matrix with rotating vector (pitch, yaw, roll)
   static DMat4 Rotate(const DMat4& matrix, const DVec3& angle, bool isDegree = true);
   /// @brief Get new matrix with rotating quaternion (w, x, y, z)
-  static DMat4 Rotate(const DMat4& matrix, const DQuaternion& quat);
+  static DMat4 Rotate(const DMat4& matrix, const DQuat& quat);
   /// @brief Get new matrix with scale of vector (x, y, z)
   static DMat4 Scale(const DMat4& matrix, const DVec3& scale);
   /// @brief Get new matrix with position of vector (x, y, z)

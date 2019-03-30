@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_TYPE_QUATERNION_H
-#define GUARD_DY_TYPE_QUATERNION_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,25 +12,15 @@
 /// SOFTWARE.
 ///
 
-#include <foundation/PxQuat.h>
-#include <Math/Type/Math/DQuat.h>
-
-//!
-//! Implementation
-//!
-
-namespace dy 
+namespace dy::math
 {
-
-using DQuat = math::DQuaternion<TReal>;
-
-struct FQuat final
+ 
+/// @enum ERandomPolicy
+/// @brief decides random distribution policy.
+enum class ERandomPolicy 
 {
-  static physx::PxQuat ToPxQuat(const DQuat& quat);
-
-  static DQuat CreateQuat(const physx::PxQuat& quat);
+  Uniform,  /// Follows uniform distribution.
+  Discrete, /// Follows discrete normal distribution.
 };
 
-} /// ::dy namespace
-
-#endif /// GUARD_DY_TYPE_QUATERNION_H
+} /// ::dy::math namespace

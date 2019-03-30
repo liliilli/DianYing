@@ -68,5 +68,8 @@
     <ClCompile Include="Source\XMath\TestMapValue.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DQuat\TestDQuat.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

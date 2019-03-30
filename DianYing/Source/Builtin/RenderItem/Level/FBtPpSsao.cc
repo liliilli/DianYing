@@ -22,12 +22,13 @@
 #include <Dy/Core/Resource/Resource/FDyMeshResource.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Builtin/Constant/SSAO.h>
-#include <Dy/Helper/Math/Random.h>
+
 #include <Dy/Management/MSetting.h>
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
 #include <Math/Utility/XLinearMath.h>
+#include <Math/Utility/XRandom.h>
 
 namespace dy
 {
@@ -43,12 +44,12 @@ FBtRenderItemSsao::FBtRenderItemSsao()
   for (TU32 i = 0; i < kSSAORayCount; ++i)
   {
     DVec3 sample = DVec3{
-        random::RandomFloatRange(-1, 1), 
-        random::RandomFloatRange(-1, 1), 
-        random::RandomFloatRange(0, 1)
+        math::RandomUniformReal<TReal>(-1, 1), 
+        math::RandomUniformReal<TReal>(-1, 1), 
+        math::RandomUniformReal<TReal>(0, 1)
     };
     sample =  sample.Normalize();
-    sample *= random::RandomFloatRange(0, 1);
+    sample *= math::RandomUniformReal<TReal>(0, 1);
 
     TF32 scale = static_cast<TF32>(i) / kSSAORayCount;
     scale = math::Lerp(0.1f, 1.0f, scale * scale);

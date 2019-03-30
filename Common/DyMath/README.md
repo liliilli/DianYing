@@ -21,6 +21,8 @@ This math library suports below things.
 * Plane type that has normal and d value, as $$ ax + by + cz + d = 0 $$ and $$ |(a, b, c)| == 1 $$, `DPlane`.
   That only support real type `TF32 ` and `TF64`.
 * Clamping type that has compile time range `TStart` and `TEnd`, and supporting compile type. `DClamp`
+* Quaternion
+* Random value creation functions.
 * and, miscellaneous helper math functions...
 
 Implemented container type's arithmethic operators and functions are automatically proceeded by converting to more coverable type following value category description.
@@ -54,7 +56,7 @@ Dy(DianYing) Common Math (a.k.a `DyMath`) has value category to support automati
 
 ## Log
 
-
+2019-03-30 Add Quaternion. Move Random function into DyMath
 
 ## Copyright
 

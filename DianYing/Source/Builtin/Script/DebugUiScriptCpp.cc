@@ -23,8 +23,8 @@
 #include <Dy/Element/Widget/FWidgetBasicGaugeBar.h>
 #include <Dy/Management/MInput.h>
 #include <Dy/Management/Internal/MProfiling.h>
-#include <Dy/Helper/Math/Math.h>
-#include <Dy/Helper/Math/Random.h>
+
+
 #include <Dy/Management/MGameTimer.h>
 #include "Dy/Element/Widget/FWidgetImage.h"
 #include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
@@ -32,6 +32,7 @@
 #include "Dy/Management/MWorld.h"
 #include "Dy/Component/CCamera.h"
 #include <Math/Utility/XMath.h>
+#include <Math/Utility/XRandom.h>
 
 namespace dy
 {
@@ -176,7 +177,7 @@ void FDyBuiltinDebugUiScript::CbMoveBar()
 {
   auto& widgetRef = this->GetWidgetReference();
   FWidgetBasicGaugeBar* bar = widgetRef.GetWidget<FWidgetBasicGaugeBar>("BasicBarTest");
-  bar->SetRelativePosition(random::RandomVector2Range(random::EDyRandomPolicy::Uniform, 0, 320) - DVec2{0, 360});
+  bar->SetRelativePosition(math::RandomVector2Range<TReal>(math::ERandomPolicy::Uniform, 0, 320) - DVec2{0, 360});
 }
 
 void FDyBuiltinDebugUiScript::CbChangeImageTexture()

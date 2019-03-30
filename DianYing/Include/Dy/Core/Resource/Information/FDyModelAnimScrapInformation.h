@@ -56,7 +56,7 @@ public:
   ///                     |<-dt(N) When not looped, just return SN;
   MDY_NODISCARD DVec3 GetInterpolatedScaling(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
   /// @brief Get interpolated rotation value.
-  MDY_NODISCARD DQuaternion GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
+  MDY_NODISCARD DQuat GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
   /// @brief Get interpolated position value.
   MDY_NODISCARD DVec3 GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const;
 

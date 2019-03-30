@@ -14,7 +14,8 @@
 
 /// Header file
 #include <Dy/Builtin/Texture/SSAONoiseMap.h>
-#include <Dy/Helper/Math/Random.h>
+
+#include <Math/Utility/XRandom.h>
 
 //!
 //! Local functions.
@@ -71,7 +72,7 @@ void FDyBtTexSSAONoiseMap::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PD
   // 1010
   // 1010
   std::array<DVec2, 16> infoChunk;
-  for (auto& noiseItem : infoChunk) { noiseItem = random::RandomVector2Length(1); }
+  for (auto& noiseItem : infoChunk) { noiseItem = math::RandomVector2Length<TReal>(1); }
 
   buffer = Convert(infoChunk);
 }
