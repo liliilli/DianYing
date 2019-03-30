@@ -1,3 +1,4 @@
+#include "..\..\Micellanous\DArea3D.h"
 #pragma once
 ///
 /// MIT License
@@ -144,6 +145,30 @@ DVector3<TType> DArea3D<TType, std::enable_if_t<kIsRealType<TType>>>
 ::GetWhd() const noexcept
 {
   return this->mLength;
+}
+
+template<typename TType>
+bool DArea3D<TType, std::enable_if_t<kIsRealType<TType>>>::HasNaN() const noexcept
+{
+  return
+      this->mStartPoint.HasNaN() == true
+  ||  this->mLength.HasNaN() == true;
+}
+
+template<typename TType>
+bool DArea3D<TType, std::enable_if_t<kIsRealType<TType>>>::HasInfinity() const noexcept
+{
+  return
+      this->mStartPoint.HasInfinity() == true
+  ||  this->mLength.HasInfinity() == true;
+}
+
+template<typename TType>
+bool DArea3D<TType, std::enable_if_t<kIsRealType<TType>>>::HasOnlyNormal() const noexcept
+{
+  return
+      this->mStartPoint.HasOnlyNormal() == true
+  &&  this->mLength.HasOnlyNormal() == true;
 }
 
 template <typename TType>
