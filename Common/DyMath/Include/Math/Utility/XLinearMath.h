@@ -15,6 +15,7 @@
 #include <Math/Type/Math/DVector2.h>
 #include <Math/Type/Math/DVector3.h>
 #include <Math/Type/Math/DVector4.h>
+#include <Math/Type/Math/DQuat.h>
 
 namespace dy::math
 {
@@ -90,6 +91,10 @@ GetQuadBezierCurvePoint(
   const DVector3<TType>& rhs, 
   const DVector3<TType>& control, 
   TReal offset);
+
+template <typename TType>
+DQuaternion<TType>
+AngleWithAxis(TType angle, const DVector3<TType>& axis, bool isDegree = true);
 
 } /// ::dy::math namespace
 #include <Math/Utility/Inline/XLinearMath.inl>

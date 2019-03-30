@@ -100,4 +100,16 @@ GetQuadBezierCurvePoint(
   return Lerp(Lerp(lhs, control, offset), Lerp(control, rhs, offset), offset);
 }
 
+template <typename TType>
+inline DQuaternion<TType> 
+AngleWithAxis(TType angle, const DVector3<TType>& axis, bool isDegree)
+{
+  const auto s = std::sin(angle * (isDegree ? kToRadian<TType> : 1) * TType(0.5));
+  const auto w = std::cos(angle * (isDegree ? kToRadian<TType> : 1) * TType(0.5));
+  const auto x = axis.X * s;
+  const auto y = axis.Y * s;
+  const auto z = axis.Z * s;
+  return {x, y, z, w};
+}
+
 } /// ::dy::math namespace
