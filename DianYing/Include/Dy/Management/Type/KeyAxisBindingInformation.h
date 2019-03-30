@@ -35,7 +35,7 @@ struct DDyAxisBindingInformation final
 {
   /// @enum EDyAxisInputStatus
   /// @brief Indicates key status of keys.
-  enum class EDyAxisInputStatus : TU08
+  enum class EDyAxisInputStatus : TU8
   {
     PositivePressed = 1,	    // If positive key is pressed, mKeyStatus will sustain PRESSED.
     NegativePressed = 2,	    // If negative key is pressed, mKeyStatus will sustain PRESSED.

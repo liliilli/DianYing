@@ -25,7 +25,7 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Core/Resource/Internal/XShaderTypes.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
-#include "Dy/Helper/Type/DArea2D.h"
+#include <Dy/Helper/Type/DArea2D.h>
 
 #define MDY_GL_NONE 0
 #define MDY_GL_NONE_VAO 0
@@ -823,8 +823,8 @@ EDySuccess XGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
 void XGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
   DArea2D area; 
-  area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  area.mLeftDown  = DVec2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DVec2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
   XGLWrapper::SetViewport(area);
 }
 
@@ -840,8 +840,8 @@ void XGLWrapper::SetViewport(_MIN_ const DArea2D& iViewportRegion)
 void XGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
 {
   DArea2D area; 
-  area.mLeftDown  = DVector2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DVector2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
+  area.mLeftDown  = DVec2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
+  area.mRightUp   = DVec2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
   XGLWrapper::SetViewportIndexed(iIndex, area);
 }
 
@@ -1047,7 +1047,7 @@ XGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ 
   return result;
 }
 
-void XGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool iTransposed)
+void XGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMat4& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -1055,7 +1055,7 @@ void XGLWrapper::UpdateUniformMatrix4(TU32 iId, const DMatrix4x4& iBuffer, bool 
   glUniformMatrix4fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void XGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, bool iTransposed)
+void XGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMat3& iBuffer, bool iTransposed)
 {
   GLenum transposed = GL_FALSE;
   if (iTransposed == true) { transposed = GL_TRUE; }
@@ -1063,7 +1063,7 @@ void XGLWrapper::UpdateUniformMatrix3(TU32 iId, const DMatrix3x3& iBuffer, bool 
   glUniformMatrix3fv(iId, 1, transposed, &iBuffer[0].X);
 }
 
-void XGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMatrix4x4>& iBuffer, bool iIransposed)
+void XGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMat4>& iBuffer, bool iIransposed)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -1074,7 +1074,7 @@ void XGLWrapper::UpdateUniformMatrix4Array(TU32 iId, const std::vector<DMatrix4x
   glUniformMatrix4fv(iId, size, transposed, &iBuffer[0][0].X);
 }
 
-void XGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>& iBuffer)
+void XGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVec3>& iBuffer)
 {
   if (iBuffer.empty() == true) { return; }
 
@@ -1082,17 +1082,17 @@ void XGLWrapper::UpdateUniformVector3Array(TU32 iId, const std::vector<DVector3>
   glUniform3fv(iId, size, iBuffer.front().Data());
 }
 
-void XGLWrapper::UpdateUniformVector4(TU32 iId, const DVector4& iBuffer)
+void XGLWrapper::UpdateUniformVector4(TU32 iId, const DVec4& iBuffer)
 {
   glUniform4fv(iId, 1, iBuffer.Data());
 }
 
-void XGLWrapper::UpdateUniformVector3(TU32 iId, const DVector3& iBuffer)
+void XGLWrapper::UpdateUniformVector3(TU32 iId, const DVec3& iBuffer)
 {
   glUniform3fv(iId, 1, iBuffer.Data());
 }
 
-void XGLWrapper::UpdateUniformVector2(TU32 iId, const DVector2& iBuffer)
+void XGLWrapper::UpdateUniformVector2(TU32 iId, const DVec2& iBuffer)
 {
   glUniform2fv(iId, 1, iBuffer.Data());
 }

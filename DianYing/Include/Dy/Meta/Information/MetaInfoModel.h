@@ -49,9 +49,9 @@ struct PDyModelInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 
   struct DTransform final
   {
-    DVector3 mPosition  = DVector3{0, 0, 0};
-    DVector3 mRotation  = DVector3{0, 0, 0};
-    DVector3 mScale     = DVector3{1, 1, 1};
+    DVec3 mPosition  = DVec3{0, 0, 0};
+    DVec3 mRotation  = DVec3{0, 0, 0};
+    DVec3 mScale     = DVec3{1, 1, 1};
   };
 
   std::string               mSpecifierName            = MDY_INITIALIZE_EMPTYSTR;

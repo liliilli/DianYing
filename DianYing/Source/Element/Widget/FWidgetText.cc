@@ -48,7 +48,7 @@ EDySuccess FWidgetText::Initialize(const PDyMetaWidgetTextDescriptor& objectMeta
 
   // Set Properties.
   this->pSetObjectName(objectMetaDesc.mUiObjectSpecifierName);
-  this->SetRelativePosition(objectMetaDesc.mInitialPosition);
+  this->SetRelativePosition(static_cast<DVec2>(objectMetaDesc.mInitialPosition));
   this->SetFrameSize(objectMetaDesc.mWidgetSize);
   this->SetOrigin(objectMetaDesc.mOrigin);
 
@@ -102,7 +102,7 @@ const DColorRGBA& FWidgetText::GetForegroundColor() const noexcept
   return this->mForegroundColor;
 }
 
-const DVector2& FWidgetText::GetRenderPosition() const noexcept
+const DVec2& FWidgetText::GetRenderPosition() const noexcept
 {
   return this->mCentralFinalPosition;
 }

@@ -15,6 +15,8 @@
 /// Header file
 #include <Dy/Component/CTransform.h>
 #include <Dy/Element/FActor.h>
+#include "Math/Utility/XMath.h"
+#include "Dy/Helper/Math/Math.h"
 
 namespace dy
 {
@@ -54,86 +56,86 @@ void CTransform::Release()
 //! Getter
 //!
 
-const DVector3& CTransform::GetRelativeLocalPosition() const noexcept
+const DVec3& CTransform::GetRelativeLocalPosition() const noexcept
 {
   return this->mLocalRelPosition;
 }
 
-const DVector3& CTransform::GetRelativeWorldPosition() const noexcept
+const DVec3& CTransform::GetRelativeWorldPosition() const noexcept
 {
   return this->mWorldRelPosition;
 }
 
-const DVector3& CTransform::GetFinalWorldPosition() noexcept
+const DVec3& CTransform::GetFinalWorldPosition() noexcept
 {
   this->MDY_PRIVATE(TryUpdateFinalPosition)();
   return this->mFinalRenderingPosition;
 }
 
-const std::array<DVector3, 3>& CTransform::GetToChildBasis() noexcept
+const std::array<DVec3, 3>& CTransform::GetToChildBasis() noexcept
 {
   this->MDY_PRIVATE(TryUpdateToChildBasis)();
   return this->mToChildBasis;
 }
 
-const DVector3& CTransform::GetRelativeLocalEulerAngle() const noexcept
+const DVec3& CTransform::GetRelativeLocalEulerAngle() const noexcept
 {
   return this->mLocalEulerAngle;
 }
 
-float CTransform::GetRelativeLocalEulerAngle(_MIN_ EAxis3D direction) const noexcept
+float CTransform::GetRelativeLocalEulerAngle(_MIN_ EAxis direction) const noexcept
 {
   const auto& rlea = this->GetRelativeLocalEulerAngle();
   switch (direction)
   {
-  case EAxis3D::X: return rlea.X;
-  case EAxis3D::Y: return rlea.Y;
-  case EAxis3D::Z: return rlea.Z;
+  case EAxis::X: return rlea.X;
+  case EAxis::Y: return rlea.Y;
+  case EAxis::Z: return rlea.Z;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(0.0f);
   }
 }
 
-const DVector3& CTransform::GetRelativeWorldEulerAngle() const noexcept
+const DVec3& CTransform::GetRelativeWorldEulerAngle() const noexcept
 {
   return this->mWorldEulerAngle;
 }
 
-float CTransform::GetRelativeWorldEulerAngle(_MIN_ EAxis3D direction) const noexcept
+float CTransform::GetRelativeWorldEulerAngle(_MIN_ EAxis direction) const noexcept
 {
   const auto& rwea = this->GetRelativeWorldEulerAngle();
   switch (direction)
   {
-  case EAxis3D::X: return rwea.X;
-  case EAxis3D::Y: return rwea.Y;
-  case EAxis3D::Z: return rwea.Z;
+  case EAxis::X: return rwea.X;
+  case EAxis::Y: return rwea.Y;
+  case EAxis::Z: return rwea.Z;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(0.0f);
   }
 }
 
-float CTransform::GetFinalEulerAngle(_MIN_ EAxis3D direction) noexcept
+float CTransform::GetFinalEulerAngle(_MIN_ EAxis direction) noexcept
 {
   this->MDY_PRIVATE(TryUpdateFinalWorldRotAngle)();
 
   switch (direction)
   {
-  case EAxis3D::X: return this->mFinalRenderingEulerAngle.X;
-  case EAxis3D::Y: return this->mFinalRenderingEulerAngle.Y;
-  case EAxis3D::Z: return this->mFinalRenderingEulerAngle.Z;
+  case EAxis::X: return this->mFinalRenderingEulerAngle.X;
+  case EAxis::Y: return this->mFinalRenderingEulerAngle.Y;
+  case EAxis::Z: return this->mFinalRenderingEulerAngle.Z;
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(0.0f);
   }
 }
 
-const DVector3& CTransform::GetLocalScale() const noexcept
+const DVec3& CTransform::GetLocalScale() const noexcept
 {
   return this->mLocalScale;
 }
 
-const DVector3& CTransform::GetWorldScale() const noexcept
+const DVec3& CTransform::GetWorldScale() const noexcept
 {
   return this->mWorldScale;
 }
 
-const DVector3& CTransform::GetFinalScale() noexcept
+const DVec3& CTransform::GetFinalScale() noexcept
 {
   this->MDY_PRIVATE(UpdateFinalRenderingScale)();
   return this->mFinalRenderingScale;
@@ -143,7 +145,7 @@ const DVector3& CTransform::GetFinalScale() noexcept
 //! Setter
 //!
 
-void CTransform::SetRelativeLocalPosition(_MIN_ const DVector3& localPosition) noexcept
+void CTransform::SetRelativeLocalPosition(_MIN_ const DVec3& localPosition) noexcept
 {
   this->mLocalRelPosition         = localPosition;
   this->mIsLocalRelAlignedPosDirty= true;
@@ -151,16 +153,16 @@ void CTransform::SetRelativeLocalPosition(_MIN_ const DVector3& localPosition) n
   this->mIsModelMatrixDirty       = true;
 }
 
-void CTransform::SetRelativeLocalPositionWithFinalWorldPosition(const DVector3& finalPosition)
+void CTransform::SetRelativeLocalPositionWithFinalWorldPosition(const DVec3& finalPosition)
 {
   // Position.
   this->mLocalRelAlignedPosition    = finalPosition - this->mWorldRelAlignedPosition;
-  this->mLocalRelPosition           = this->mPresentPositionBasis.Inverse().MultiplyVector(this->mLocalRelAlignedPosition);
+  this->mLocalRelPosition           = this->mPresentPositionBasis.Inverse() * this->mLocalRelAlignedPosition;
   this->mIsFinalPositionDirty       = true;
   this->mIsModelMatrixDirty         = true;
 }
 
-void CTransform::SetRelativeWorldPosition(_MIN_ const DVector3& worldPosition) noexcept
+void CTransform::SetRelativeWorldPosition(_MIN_ const DVec3& worldPosition) noexcept
 {
   this->mWorldRelPosition         = worldPosition;
   this->mIsWorldPositionAlignDirty= true;
@@ -189,50 +191,50 @@ void CTransform::SetRelativeWorldPosition(_MIN_ const DVector3& worldPosition) n
   }
 }
 
-void CTransform::AddRelativeLocalPosition(_MIN_ const DVector3& localPosiiton) noexcept
+void CTransform::AddRelativeLocalPosition(_MIN_ const DVec3& localPosiiton) noexcept
 {
   this->SetRelativeWorldPosition(this->GetRelativeLocalPosition() + localPosiiton);
 }
 
-void CTransform::AddRelativeLocalPosition(_MIN_ EAxis3D axis, _MIN_ TF32 value) noexcept
+void CTransform::AddRelativeLocalPosition(_MIN_ EAxis axis, _MIN_ TF32 value) noexcept
 {
-  DVector3 offset = {};
+  DVec3 offset = {};
   switch (axis)
   {
-  case EAxis3D::X: offset.X += value; break;
-  case EAxis3D::Y: offset.Y += value; break;
-  case EAxis3D::Z: offset.Z += value; break;
+  case EAxis::X: offset.X += value; break;
+  case EAxis::Y: offset.Y += value; break;
+  case EAxis::Z: offset.Z += value; break;
   }
 
   this->SetRelativeWorldPosition(this->GetRelativeLocalPosition() + offset);
 }
 
-void CTransform::AddRelativeWorldPosition(_MIN_ const DVector3& localPosiiton) noexcept
+void CTransform::AddRelativeWorldPosition(_MIN_ const DVec3& localPosiiton) noexcept
 {
   this->SetRelativeWorldPosition(this->GetRelativeWorldPosition() + localPosiiton);
 }
 
-void CTransform::AddRelativeWorldPosition(_MIN_ EAxis3D axis, _MIN_ TF32 value) noexcept
+void CTransform::AddRelativeWorldPosition(_MIN_ EAxis axis, _MIN_ TF32 value) noexcept
 {
-  DVector3 offset = {};
+  DVec3 offset = {};
   switch (axis)
   {
-  case EAxis3D::X: offset.X += value; break;
-  case EAxis3D::Y: offset.Y += value; break;
-  case EAxis3D::Z: offset.Z += value; break;
+  case EAxis::X: offset.X += value; break;
+  case EAxis::Y: offset.Y += value; break;
+  case EAxis::Z: offset.Z += value; break;
   }
 
   this->SetRelativeWorldPosition(this->GetRelativeWorldPosition() + offset);
 }
 
-void CTransform::SetLocalEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexcept
+void CTransform::SetLocalEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept
 {
   this->AddLocalEulerAngle(eulerAngleValue - this->GetRelativeLocalEulerAngle());
 }
 
 void CTransform::SetLocalEulerAngleWithQuaternion(_MIN_ const DQuaternion& iQuat)
 {
-  const auto angle = math::ConvertQuaternionToRadianEuler(iQuat) * math::RadToDegVal<TF32>;
+  const auto angle = math::ConvertQuaternionToRadianEuler(iQuat) * math::kToDegree<TF32>;
 
   // Set local.
   this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;
@@ -241,12 +243,12 @@ void CTransform::SetLocalEulerAngleWithQuaternion(_MIN_ const DQuaternion& iQuat
   this->mIsModelMatrixDirty        = true;
 }
 
-void CTransform::SetWorldEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexcept
+void CTransform::SetWorldEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept
 {
   this->AddWorldEulerAngle(eulerAngleValue - this->GetRelativeWorldEulerAngle());
 }
 
-void CTransform::AddLocalEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexcept
+void CTransform::AddLocalEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept
 {
   this->mLocalEulerAngle += eulerAngleValue;
   this->mIsFinalRotationAngleDirty = true;
@@ -254,7 +256,7 @@ void CTransform::AddLocalEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexc
   this->mIsModelMatrixDirty        = true;
 }
 
-void CTransform::AddWorldEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexcept
+void CTransform::AddWorldEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept
 {
   this->mWorldEulerAngle += eulerAngleValue;
   this->mIsWorldSumRotationAngleDirty = true;
@@ -278,42 +280,42 @@ void CTransform::AddWorldEulerAngle(_MIN_ const DVector3& eulerAngleValue) noexc
   }
 }
 
-void CTransform::AddLocalEulerAngle(_MIN_ EAxis3D axis, _MIN_ float eulerAngleValue) noexcept
+void CTransform::AddLocalEulerAngle(_MIN_ EAxis axis, _MIN_ float eulerAngleValue) noexcept
 {
-  DVector3 eulerAngle = {};
+  DVec3 eulerAngle = {};
   switch (axis)
   {
-  case EAxis3D::X: eulerAngle.X = eulerAngleValue; break;
-  case EAxis3D::Y: eulerAngle.Y = eulerAngleValue; break;
-  case EAxis3D::Z: eulerAngle.Z = eulerAngleValue; break;
+  case EAxis::X: eulerAngle.X = eulerAngleValue; break;
+  case EAxis::Y: eulerAngle.Y = eulerAngleValue; break;
+  case EAxis::Z: eulerAngle.Z = eulerAngleValue; break;
   default: break;
   }
  
   this->AddLocalEulerAngle(eulerAngle);
 }
 
-void CTransform::AddWorldEulerAngle(_MIN_ EAxis3D axis, _MIN_ float eulerAngleValue) noexcept
+void CTransform::AddWorldEulerAngle(_MIN_ EAxis axis, _MIN_ float eulerAngleValue) noexcept
 {
-  DVector3 eulerAngle = {};
+  DVec3 eulerAngle = {};
   switch (axis)
   {
-  case EAxis3D::X: eulerAngle.X = eulerAngleValue; break;
-  case EAxis3D::Y: eulerAngle.Y = eulerAngleValue; break;
-  case EAxis3D::Z: eulerAngle.Z = eulerAngleValue; break;
+  case EAxis::X: eulerAngle.X = eulerAngleValue; break;
+  case EAxis::Y: eulerAngle.Y = eulerAngleValue; break;
+  case EAxis::Z: eulerAngle.Z = eulerAngleValue; break;
   default: break;
   }
 
   this->AddWorldEulerAngle(eulerAngle);
 }
 
-void CTransform::SetLocalScale(_MIN_ const DVector3& xyz_value) noexcept
+void CTransform::SetLocalScale(_MIN_ const DVec3& xyz_value) noexcept
 {
   this->mLocalScale         = xyz_value;
   this->mIsFinalScaleDirty  = true;
   this->mIsModelMatrixDirty = true;
 }
 
-void CTransform::SetWorldScale(_MIN_ const DVector3& xyz_value) noexcept
+void CTransform::SetWorldScale(_MIN_ const DVec3& xyz_value) noexcept
 {
   this->mWorldScale           = xyz_value;
   this->mIsWorldPrdScaleDirty = true;
@@ -335,7 +337,7 @@ void CTransform::SetWorldScale(_MIN_ const DVector3& xyz_value) noexcept
   }
 }
 
-const DMatrix4x4 CTransform::GetRotationMatrix() noexcept
+const DMat4 CTransform::GetRotationMatrix() noexcept
 {
   MDY_NOUSE_RTVAL_EXPR(this->GetTransform());
   return this->mFinalRenderRotationQuaternion.GetRotationMatrix4x4();
@@ -352,7 +354,7 @@ std::string CTransform::ToString()
   return MDY_INITIALIZE_EMPTYSTR;
 }
 
-const DMatrix4x4& CTransform::GetTransform() noexcept
+const DMat4& CTransform::GetTransform() noexcept
 {
   if (this->mIsModelMatrixDirty == true)
   { // Update dependent transform information.
@@ -410,9 +412,9 @@ void CTransform::TryPropagateTransformToChildren()
 }
 
 void CTransform::MDY_PRIVATE(PropagateTransform)(
-    _MIN_ const DVector3& iPosition,
-    _MIN_ const DVector3& iAngle,
-    _MIN_ const DVector3& iScale)
+    _MIN_ const DVec3& iPosition,
+    _MIN_ const DVec3& iAngle,
+    _MIN_ const DVec3& iScale)
 {
   this->mFromParentWorldEulerAngle = iAngle;
   this->mWorldRelativeOriginPosition = iPosition;
@@ -464,12 +466,12 @@ void CTransform::MDY_PRIVATE(PropagateTransform)(
 
 void CTransform::MDY_PRIVATE(SetPxTransform)(_MIN_ const physx::PxTransform& iTransform)
 {
-  this->SetRelativeLocalPositionWithFinalWorldPosition(iTransform.p);
+  this->SetRelativeLocalPositionWithFinalWorldPosition(DVec3{iTransform.p.x, iTransform.p.y, iTransform.p.z});
 
   // Set local.
   const auto angle = 
       math::ConvertQuaternionToRadianEuler(iTransform.q.w, iTransform.q.x, iTransform.q.y, iTransform.q.z) 
-    * math::RadToDegVal<TF32>;
+    * math::kToDegree<TF32>;
 
   this->mLocalEulerAngle = angle - this->mWorldSumEulerAngle;
   this->mIsFinalRotationAngleDirty = true;
@@ -486,9 +488,9 @@ void CTransform::MDY_PRIVATE(TryUpdateMovementBasis)()
   const auto& m = this->mPresentPositionBasis;
 
   // Update display movement basis.
-  this->mDisplayMovementBasis[0] = DVector3{m[0][0], m[0][1], m[0][2]};
-  this->mDisplayMovementBasis[1] = DVector3{m[1][0], m[1][1], m[1][2]};
-  this->mDisplayMovementBasis[2] = DVector3{m[2][0], m[2][1], m[2][2]};
+  this->mDisplayMovementBasis[0] = DVec3{m[0][0], m[0][1], m[0][2]};
+  this->mDisplayMovementBasis[1] = DVec3{m[1][0], m[1][1], m[1][2]};
+  this->mDisplayMovementBasis[2] = DVec3{m[2][0], m[2][1], m[2][2]};
   
   this->mIsMovementBasisDirty       = false;
   this->mIsWorldRelAlignedPosDirty  = true;
@@ -502,7 +504,7 @@ void CTransform::MDY_PRIVATE(TryUpdateLocalRelAlignedPos)()
   if (this->mIsLocalRelAlignedPosDirty == false)  { return; }
   if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE(TryUpdateMovementBasis)(); }
 
-  this->mLocalRelAlignedPosition    = this->mPresentPositionBasis.MultiplyVector(this->mLocalRelPosition);
+  this->mLocalRelAlignedPosition    = this->mPresentPositionBasis * this->mLocalRelPosition;
   this->mIsLocalRelAlignedPosDirty  = false;
   this->mIsFinalPositionDirty       = true;
   this->mIsModelMatrixDirty         = true;
@@ -513,7 +515,7 @@ void CTransform::MDY_PRIVATE(TryUpdateWorldRelAlignedPos)()
   if (this->mIsWorldRelAlignedPosDirty == false)  { return; }
   if (this->mIsMovementBasisDirty == true)        { this->MDY_PRIVATE(TryUpdateMovementBasis)(); }
 
-  this->mWorldRelAlignedPosition = this->mPresentPositionBasis.MultiplyVector(this->mWorldRelPosition);
+  this->mWorldRelAlignedPosition = this->mPresentPositionBasis * this->mWorldRelPosition;
   this->mIsWorldRelAlignedPosDirty = false;
   this->mIsWorldSumAlignedPosDirty = true;
   this->mIsFinalPositionDirty      = true;
@@ -543,7 +545,7 @@ void CTransform::MDY_PRIVATE(TryUpdateFinalPosition)()
   this->mIsModelMatrixDirty     = true;
 }
 
-void CTransform::MDY_PRIVATE(SetRelativeWorldOrigin)(_MIN_ const DVector3& iParentPosition)
+void CTransform::MDY_PRIVATE(SetRelativeWorldOrigin)(_MIN_ const DVec3& iParentPosition)
 {
   this->mWorldRelativeOriginPosition = iParentPosition;
 
@@ -594,13 +596,13 @@ void CTransform::MDY_PRIVATE(TryUpdateToChildBasis)() noexcept
   if (this->mIsFinalRotationAngleDirty == true) { this->MDY_PRIVATE(TryUpdateFinalWorldRotAngle)(); }
 
   const auto m = DQuaternion{this->mFinalRenderingEulerAngle}.GetRotationMatrix3x3();
-  this->mToChildBasis[0] = DVector3{m[0][0], m[0][1], m[0][2]};
-  this->mToChildBasis[1] = DVector3{m[1][0], m[1][1], m[1][2]};
-  this->mToChildBasis[2] = DVector3{m[2][0], m[2][1], m[2][2]};
+  this->mToChildBasis[0] = DVec3{m[0][0], m[0][1], m[0][2]};
+  this->mToChildBasis[1] = DVec3{m[1][0], m[1][1], m[1][2]};
+  this->mToChildBasis[2] = DVec3{m[2][0], m[2][1], m[2][2]};
   this->mToChildBasisAxisDirty = false;
 }
 
-void CTransform::MDY_PRIVATE(SetRotationAngleOrigin)(_MIN_ const DVector3& iParentSumRotAngle)
+void CTransform::MDY_PRIVATE(SetRotationAngleOrigin)(_MIN_ const DVec3& iParentSumRotAngle)
 {
   this->mFromParentWorldEulerAngle = iParentSumRotAngle;
 
@@ -647,7 +649,7 @@ void CTransform::MDY_PRIVATE(UpdateFinalRenderingScale)() noexcept
   this->mIsModelMatrixDirty   = true;
 }
 
-void CTransform::MDY_PRIVATE(SetWorldScaleOrigin)(_MIN_ const DVector3& iParentPrdScale)
+void CTransform::MDY_PRIVATE(SetWorldScaleOrigin)(_MIN_ const DVec3& iParentPrdScale)
 {
   this->mFromParentWorldScale = iParentPrdScale;
   this->mIsWorldPrdScaleDirty = true;
@@ -696,9 +698,9 @@ void CTransform::pUpdateFinalRenderingAxis() const noexcept
 
     // Update position movement basis of this FActor.
     const auto& m                   = this->mPresentPositionBasis;
-    this->mDisplayMovementBasis[0] = DVector3{m[0][0], m[0][1], m[0][2]};
-    this->mDisplayMovementBasis[1] = DVector3{m[1][0], m[1][1], m[1][2]};
-    this->mDisplayMovementBasis[2] = DVector3{m[2][0], m[2][1], m[2][2]};
+    this->mDisplayMovementBasis[0] = DVec3{m[0][0], m[0][1], m[0][2]};
+    this->mDisplayMovementBasis[1] = DVec3{m[1][0], m[1][1], m[1][2]};
+    this->mDisplayMovementBasis[2] = DVec3{m[2][0], m[2][1], m[2][2]};
 
     this->mIsMovementBasisDirty         = false;
     this->mIsFinalPositionDirty     = true;
@@ -713,9 +715,9 @@ void CTransform::pUpdateToChildBasisAxis() const noexcept
     const auto m = DQuaternion{this->mFinalRenderingEulerAngle}.GetRotationMatrix3x3();
 
     //
-    this->mToChildBasis[0] = DVector3{m[0][0], m[0][1], m[0][2]};
-    this->mToChildBasis[1] = DVector3{m[1][0], m[1][1], m[1][2]};
-    this->mToChildBasis[2] = DVector3{m[2][0], m[2][1], m[2][2]};
+    this->mToChildBasis[0] = DVec3{m[0][0], m[0][1], m[0][2]};
+    this->mToChildBasis[1] = DVec3{m[1][0], m[1][1], m[1][2]};
+    this->mToChildBasis[2] = DVec3{m[2][0], m[2][1], m[2][2]};
 
     //
     this->mToChildBasisAxisDirty = false;

@@ -55,12 +55,12 @@ struct DColorRGBA final
   //! Conversion operators
   //!
 
-  /// @brief Can be convert DVector3 explicitly, but alpha information passed.
-  explicit operator DVector3() const noexcept;
+  /// @brief Can be convert DVec3 explicitly, but alpha information passed.
+  explicit operator DVec3() const noexcept;
   explicit operator glm::vec3() const noexcept;
 
   operator glm::vec4() const noexcept;
-  operator DVector4() const noexcept;
+  operator DVec4() const noexcept;
 
   //!
   //! Statics

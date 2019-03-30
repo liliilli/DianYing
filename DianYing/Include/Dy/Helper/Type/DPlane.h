@@ -38,14 +38,14 @@ struct DPlane final
   void Normalize();
 
   /// @brief Get normal vector.
-  MDY_NODISCARD DVector3 GetNormalVector() const noexcept;
+  MDY_NODISCARD DVec3 GetNormalVector() const noexcept;
 
   /// @brief Check given point is on plane, on front (pos), on behind (neg).
-  MDY_NODISCARD EStatus CheckPointStatusOnPlane(const DVector3& iPoint) const noexcept;
+  MDY_NODISCARD EStatus CheckPointStatusOnPlane(const DVec3& iPoint) const noexcept;
   
   /// @brief Get given point's distance from plane.
   /// If second parameter is false, return value without absolute value.
-  MDY_NODISCARD TF32 GetDistanceFrom(const DVector3& iPoint, bool iIsAbs = true) const noexcept;
+  MDY_NODISCARD TF32 GetDistanceFrom(const DVec3& iPoint, bool iIsAbs = true) const noexcept;
 };
 
 } /// ::dy namespace

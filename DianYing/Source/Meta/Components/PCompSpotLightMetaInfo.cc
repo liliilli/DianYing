@@ -13,6 +13,7 @@
 ///
 
 #include <Dy/Meta/Components/PCompSpotLightMetaInfo.h>
+#include <Dy/Helper/Library/HelperJson.h>
 
 //!
 //! Forward declaration

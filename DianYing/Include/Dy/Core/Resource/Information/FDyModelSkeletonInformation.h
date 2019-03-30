@@ -60,9 +60,9 @@ public:
   MDY_NODISCARD std::vector<TU32> GetChildrenNodeIdList(_MIN_ TI32 iIndex) const noexcept;
 
   /// @brief Get inverse transform of root-node.
-  MDY_NODISCARD const DMatrix4x4& GetRootInverseTransform() const noexcept;
+  MDY_NODISCARD const DMat4& GetRootInverseTransform() const noexcept;
   /// @brief
-  MDY_NODISCARD const DMatrix4x4& GetOffsetMatrixOfBone(_MIN_ TU32 iIndex) const noexcept;
+  MDY_NODISCARD const DMat4& GetOffsetMatrixOfBone(_MIN_ TU32 iIndex) const noexcept;
   /// @brief
   MDY_NODISCARD const DSkeletonBone& GetRefSkeletonNodeFromBoneOffsetId(_MIN_ TU32 iIndex) const noexcept;
   /// @brief

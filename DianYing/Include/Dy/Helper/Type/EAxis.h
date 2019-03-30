@@ -13,17 +13,15 @@
 /// SOFTWARE.
 ///
 
-namespace dy {
+#include <Math/Type/Math/EAxis.h>
 
-///
-/// @enum EAxis3D
-/// @brief Axis enum type for being able to classify 3-dimensional coordinate axis.
-///
-enum class EAxis3D
+namespace dy 
 {
-  X, Y, Z
-};
 
-} /// ::opgs16 namespace.
+/// @enum EAxis
+/// @brief Axis enum type for being able to classify 3-dimensional coordinate axis.
+using math::EAxis;
+
+} /// ::dy namespace.
 
 #endif /// GUARD_DY_HELPER_AXIS_H

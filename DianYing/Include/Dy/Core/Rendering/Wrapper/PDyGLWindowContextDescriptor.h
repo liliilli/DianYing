@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 
 namespace dy
 {
@@ -34,7 +34,7 @@ struct PDyGLWindowContextDescriptor final
 
   GLFWwindow* mSharingContext = nullptr;
 
-  DVectorInt2 mWindowSize   = {};
+  DIVec2 mWindowSize   = {};
   std::string   mWindowName   = {};
 };
 

@@ -32,17 +32,17 @@ public:
   /// @brief  Check character glyph information is exist or not.
   /// @param  fontCode UCS-2 fontCode to verify.
   /// @return If found, return true or false.
-  MDY_NODISCARD virtual bool IsCharacterGlyphExist(_MIN_ const TC16 fontCode) = 0;
+  MDY_NODISCARD virtual bool IsCharacterGlyphExist(_MIN_ const TChr16 fontCode) = 0;
 
   /// @brief  Get character glyph information instance from container. This function defered with derived type.
   /// @param  fontCode UCS-2 fontCode to verify.
   /// @return Valid font character instance.
-  MDY_NODISCARD virtual const DDyFontCharacterInfo& GetGlyphCharacter(_MIN_ const TC16 fontCode) = 0;
+  MDY_NODISCARD virtual const DDyFontCharacterInfo& GetGlyphCharacter(_MIN_ const TChr16 fontCode) = 0;
 
   /// @brief  Helper operator function of glyph information.
   /// @param  fontCode UCS-2 font code to verify.
   /// @return Valid font character instance.
-  MDY_NODISCARD virtual const DDyFontCharacterInfo& operator[](_MIN_ const TC16 fontCode) = 0;
+  MDY_NODISCARD virtual const DDyFontCharacterInfo& operator[](_MIN_ const TChr16 fontCode) = 0;
 
   /// @brief  Get horizontal line feed height with font size.
   /// @param  fontSize

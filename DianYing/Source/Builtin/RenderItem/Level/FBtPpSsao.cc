@@ -27,6 +27,7 @@
 #include <Dy/Core/Resource/Resource/FDyModelResource.h>
 #include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
 #include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Math/Utility/XLinearMath.h>
 
 namespace dy
 {
@@ -41,7 +42,7 @@ FBtRenderItemSsao::FBtRenderItemSsao()
 {
   for (TU32 i = 0; i < kSSAORayCount; ++i)
   {
-    DVector3 sample = DVector3{
+    DVec3 sample = DVec3{
         random::RandomFloatRange(-1, 1), 
         random::RandomFloatRange(-1, 1), 
         random::RandomFloatRange(0, 1)

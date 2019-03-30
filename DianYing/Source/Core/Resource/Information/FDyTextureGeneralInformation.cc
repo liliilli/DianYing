@@ -54,12 +54,12 @@ FDyTextureGeneralInformation::FDyTextureGeneralInformation(_MIN_ const PDyTextur
   }
 }
 
-const std::vector<TU08>& FDyTextureGeneralInformation::GetBuffer() const noexcept
+const std::vector<TU8>& FDyTextureGeneralInformation::GetBuffer() const noexcept
 {
   return this->mTextureImageBuffer;
 }
 
-const DVectorInt2& FDyTextureGeneralInformation::GetSize() const noexcept
+const DIVec2& FDyTextureGeneralInformation::GetSize() const noexcept
 {
   return this->mTextureSize;
 }

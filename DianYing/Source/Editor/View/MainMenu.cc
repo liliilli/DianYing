@@ -24,6 +24,7 @@
 #include <Dy/Core/Reflection/RGlobalInstanceManager.h>
 #include <Dy/Builtin/GlobalInstance/FDyBtGiDebugStatus.h>
 #include <Dy/Helper/MCS/Functions.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy::editor
 {

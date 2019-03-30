@@ -1,4 +1,4 @@
-#include <precompiled.h>
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,26 +12,14 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Helper/Type/DVectorInt2.h>
-#include <nlohmann/json.hpp>
-
-namespace dy
+namespace dy::math
 {
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DVectorInt2& p)
+/// @enum EGraphics
+/// @brief Specifies graphics api.
+enum class EGraphics
 {
-  j = nlohmann::json
-  {
-      {"X", p.X},
-      {"Y", p.Y}
-  };
-}
+  OpenGL,
+};
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DVectorInt2& p)
-{
-  p.X = j.at("X").get<TI32>();
-  p.Y = j.at("Y").get<TI32>();
-}
-
-} /// ::dy namespce
+} /// ::dy::math namespac

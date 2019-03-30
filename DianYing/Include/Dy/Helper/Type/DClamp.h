@@ -14,109 +14,30 @@
 ///
 
 #include <nlohmann/json.hpp>
-#include <Dy/Helper/GlobalType.h>
-#include <Dy/Helper/Math/Math.h>
-
-#if defined(max)
-#undef max
-#endif // Undef max
-#if defined(min)
-#undef min
-#endif // Undef min
+#include <Math/Type/Micellanous/DClamp.h>
 
 namespace dy
 {
 
-template <typename TType, TI32 TStart, TI32 TEnd>
-class DClamp final
-{ // Integrity test (compile time)
-  static_assert(std::is_arithmetic_v<TType>,  "DClamp can only get arithmetic type as TType.");
-  static_assert(TStart <= TEnd,               "TStart must be less or equal to TEnd.");
-  static constexpr bool IsNotUsingNarrowConversion() noexcept
-  {
-    constexpr bool testA = std::numeric_limits<TType>::max()    >= TStart;
-    constexpr bool testB = std::numeric_limits<TType>::max()    >= TEnd;
-    constexpr bool testC = std::numeric_limits<TType>::lowest() <= TStart;
-    constexpr bool testD = std::numeric_limits<TType>::lowest() <= TEnd;
-    return testA && testB && testC && testD;
-  }
-  static_assert(IsNotUsingNarrowConversion() == true, "Specified value range is not matched specified range of given TType.");
+using math::DClamp;
 
-public:
-  constexpr DClamp() noexcept = default;
-  constexpr DClamp(_MIN_ const TType& value) noexcept
-  {
-    this->mValue = math::Clamp<TType>(static_cast<TType>(value), TStart, TEnd);
-  }
+} /// ::dy namespace
 
-  template <typename TConvType, typename = std::enable_if_t<std::is_convertible_v<TConvType, TType>>>
-  constexpr DClamp(_MIN_ const TConvType& value) noexcept
-  {
-    this->mValue = math::Clamp<TType>(static_cast<TType>(value), TStart, TEnd);
-  }
-  ~DClamp() = default;
-
-  constexpr DClamp(_MIN_ const DClamp& instance)            = default;
-  constexpr DClamp& operator=(_MIN_ const DClamp& instance) = default;
-
-  constexpr DClamp& operator=(_MIN_ const TType& value) noexcept
-  {
-    this->mValue = math::Clamp<TType>(static_cast<TType>(value), TStart, TEnd);
-    return *this;
-  }
-
-  template <typename TConvType, typename = std::enable_if_t<std::is_convertible_v<TConvType, TType>>>
-  constexpr DClamp& operator=(_MIN_ const TConvType& value) noexcept
-  {
-    this->mValue = math::Clamp<TType>(static_cast<TType>(value), TStart, TEnd);
-    return *this;
-  }
-
-  constexpr operator TType() const noexcept
-  {
-    return this->mValue;
-  }
-
-  constexpr TType operator()() const noexcept
-  {
-    return this->mValue;
-  }
-
-  constexpr friend bool operator==(_MIN_ const DClamp& lhs, _MIN_ const TType& value) noexcept
-  {
-    return lhs.mValue == value;
-  }
-
-  constexpr friend TType operator*(_MIN_ const TType& lhs, _MIN_ const DClamp& value) noexcept
-  {
-    return lhs * value.mValue;
-  }
-
-  ///
-  /// @brief  Data pointer
-  /// @return Data pointer sequence.
-  ///
-  MDY_NODISCARD const TType* Data() const noexcept
-  {
-    return &this->mValue;
-  }
-
-private:
-  TType mValue = (TType() < TStart ? TType() : TStart);
-};
-
-template <typename TType, TI32 TStart, TI32 TEnd>
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DClamp<TType, TStart, TEnd>& p)
+namespace dy::math
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+
+template <typename TType, TI64 TStart, TI64 TEnd>
+void to_json(nlohmann::json& j, const DClamp<TType, TStart, TEnd>& p)
+{
+  j = p();
 }
 
-template <typename TType, TI32 TStart, TI32 TEnd>
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DClamp<TType, TStart, TEnd>& p)
+template <typename TType, TI64 TStart, TI64 TEnd>
+void from_json(const nlohmann::json& j, DClamp<TType, TStart, TEnd>& p)
 {
   p = j.get<TType>();
 }
 
-} /// ::dy namespace
+} /// ::dy::math namespace
 
 #endif /// GUARD_DY_HELPER_TYPE_CLAMP_H

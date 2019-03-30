@@ -39,10 +39,10 @@ public:
 
   /// @brief Set central position of widget.
   /// @param position Position value.
-  void SetRelativePosition(const DVector2& position) noexcept override final;
+  void SetRelativePosition(const DVec2& position) noexcept override final;
   /// @brief Set frame size of widget.
   /// @param size Frame size. Must be full size, not half size.
-  void SetFrameSize(const DVectorInt2& size) noexcept override final;
+  void SetFrameSize(const DIVec2& size) noexcept override final;
   /// @brief Set origin axis value.
   void SetOrigin(EDyOrigin iOrigin) noexcept override final;
   /// @brief Set fibot axis value. 

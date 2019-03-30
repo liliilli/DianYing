@@ -163,7 +163,7 @@ inline std::optional<FSound2DBinder> MSound::Impl::PlaySound2DLooped(
 inline void MSound::Impl::PlaySound3D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
-  const DVector3& iWorldPosition, 
+  const DVec3& iWorldPosition, 
   const DClamp<TF32, 0, 5>& iVolumeMultiplier,
   const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iDelay, 
@@ -191,7 +191,7 @@ inline void MSound::Impl::PlaySound3D(
 inline std::optional<FSound3DBinder> MSound::Impl::PlaySound3DLooped(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel, 
-  const DVector3& iWorldPosition, 
+  const DVec3& iWorldPosition, 
   const DClamp<TF32, 0, 5>& iVolumeMultiplier, 
   const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   TF32 iMinDistance, 

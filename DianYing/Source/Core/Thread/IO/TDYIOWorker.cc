@@ -39,6 +39,7 @@
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
 #include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
 #include <Dy/Builtin/Constant/GeneralValue.h>
+#include <Dy/Helper/Library/HelperString.h>
 
 namespace dy
 {

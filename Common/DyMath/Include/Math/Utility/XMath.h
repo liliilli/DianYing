@@ -48,19 +48,13 @@ constexpr TType MapValue(TType value, TType start, TType end) noexcept;
 /// floating-point number type like a float and double has a natural problem like
 /// a floating-error such as 0.1 but 0.10000007, so you have to use this function
 /// if you want to compare two floating points.
-constexpr bool IsNearlyEqual(TF32 lhs, TF32 rhs, TF32 tolerance = 0.001f) noexcept
-{
-  return (rhs < lhs ? lhs - rhs : rhs - lhs) < tolerance;
-}
+constexpr bool IsNearlyEqual(TF32 lhs, TF32 rhs, TF32 tolerance = 0.001f) noexcept;
 
 /// @brief Check double lhs is nearly equal to rhs.
 /// floating-point number type like a float and double has a natural problem like
 /// a floating-error such as 0.1 but 0.10000007, so you have to use this function
 /// if you want to compare two double points.
-constexpr bool IsNearlyEqual(TF64 lhs, TF64 rhs, TF64 tolerance = 0.001) noexcept
-{
-  return (rhs < lhs ? lhs - rhs : rhs - lhs) < tolerance;
-}
+constexpr bool IsNearlyEqual(TF64 lhs, TF64 rhs, TF64 tolerance = 0.001) noexcept;
 
 /// @brief Check given two vector values are equal within given tolerance value. 
 /// 
@@ -86,6 +80,30 @@ bool IsNearlyEqual(const DVector3<TLeft>& lhs, const DVector3<TRight>& rhs, TRea
 template <typename TLeft, typename TRight>
 bool IsNearlyEqual(const DVector4<TLeft>& lhs, const DVector4<TRight>& rhs, TReal tolerance);
 
+/// @brief Check float '0' is nearly equal to real actual 0.
+constexpr bool IsNearlyZero(TF32 lhs, TF32 errorTolerance = 0.001f) noexcept;
+
+/// @brief Check float '0' is nearly equal to real actual 0.
+constexpr bool IsNearlyZero(TF64 lhs, TF64 errorTolerance = 0.001) noexcept;
+
+/// @brief Normalize radian value to [-pi, pi).
+template <typename TType, typename = std::enable_if_t<kIsRealType<TType>>>
+constexpr TType ToNormalizedRadian(TType radian);
+
+/// @brief Normalize degree value to [-180, 180).
+template <typename TType, typename = std::enable_if_t<kIsRealType<TType>>>
+constexpr TType ToNormalizedDegree(TType degree);
+
+/// @brief Do linear interpolation with float type.
+/// If something wrong has been happened, return lowest value of float.
+TF32 Lerp(TF32 lhs, TF32 rhs, TReal offset);
+
+/// @brief Do linear interpolation with double type.
+/// If something wrong has been happened, return lowest value of double.
+TF64 Lerp(TF64 lhs, TF64 rhs, TReal offset);
+
 } /// ::dy::math namespace
 #include <Math/Utility/Inline/XMath/MapValue.inl>
 #include <Math/Utility/Inline/XMath/IsNearlyEqual.inl>
+#include <Math/Utility/Inline/XMath/Lerp.inl>
+#include <Math/Utility/Inline/XMath/ToNormalized.inl>

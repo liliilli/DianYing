@@ -21,7 +21,7 @@ namespace dy::builtin
 void FDyBtFbEmissiveToneMap::ConstructBuffer(PDyGlFrameBufferInstanceMetaInfo& oProperty) noexcept
 {
   oProperty.mSpecifierName   = sName;
-  oProperty.mFrameBufferSize = DVectorInt2{1280, 720};
+  oProperty.mFrameBufferSize = DIVec2{1280, 720};
   oProperty.mIsUsingDepthBuffer = false;
 
   // dyBtEmissiveTempBlur => dyBtEmissiveResult

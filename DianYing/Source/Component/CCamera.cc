@@ -20,6 +20,9 @@
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MWorld.h>
 #include <Dy/Component/CTransform.h>
+#include <Math/Utility/XMath.h>
+#include <Math/Utility/XGraphicsMath.h>
+#include <Dy/Management/Rendering/MRendering.h>
 
 namespace dy
 {
@@ -105,10 +108,10 @@ void CCamera::pUpdateCameraVectors()
 
 void CCamera::pUpdateViewMatrix()
 {
-  this->mViewMatrix = glm::lookAt(
-      static_cast<glm::vec3>(this->mPosition),
-      static_cast<glm::vec3>(this->mPosition + this->mLookingAtDirection),
-      static_cast<glm::vec3>(DVector3::UpY())
+  this->mViewMatrix = LookAt(
+    (this->mPosition),
+    (this->mPosition + this->mLookingAtDirection),
+    (DVec3::UnitY())
   );
 
   this->mIsViewMatrixDirty = false;
@@ -116,21 +119,22 @@ void CCamera::pUpdateViewMatrix()
 
 void CCamera::pUpdateProjectionMatrix()
 {
-  if (this->mIsOrthographicCamera)
-  {
-    const auto& settingManager  = MSetting::GetInstance();
-    const auto  width           = settingManager.GetWindowSizeWidth();
-    const auto  height          = settingManager.GetWindowSizeHeight();
+  using namespace math;
+  const auto& settingManager  = MSetting::GetInstance();
+  const auto  width           = Cast<TReal>(settingManager.GetWindowSizeWidth());
+  const auto  height          = Cast<TReal>(settingManager.GetWindowSizeHeight());
 
-    this->mProjectionMatrix = glm::ortho(-static_cast<float>(width) / 2,
-                                          static_cast<float>(width) / 2,
-                                         -static_cast<float>(height) / 2,
-                                          static_cast<float>(height) / 2,
-                                          this->mNear, this->mFar);
+  if (this->mIsOrthographicCamera == true)
+  {
+    this->mProjectionMatrix = ProjectionMatrix<TReal>(
+      EGraphics::OpenGL, EProjection::Orthogonal, 
+      -width / 2, width / 2, -height / 2, height / 2, this->mNear, this->mFar);
   }
   else 
   { 
-    this->mProjectionMatrix = glm::perspective(this->mFieldOfView * math::DegToRadVal<TF32>, this->mAspect, this->mNear, this->mFar); 
+    this->mProjectionMatrix = ProjectionMatrix<TReal>(
+      EGraphics::OpenGL, EProjection::Perspective,
+      this->mFieldOfView * math::kToRadian<TReal>, width, height, this->mNear, this->mFar);
   }
 
   this->mIsProjectionMatrixDirty = false;
@@ -152,12 +156,12 @@ void CCamera::TryDeactivateInstance()
   if (this->mIsFocused == true) { this->Unfocus(); }
 }
 
-const DMatrix4x4& CCamera::GetViewMatrix() const noexcept
+const DMat4& CCamera::GetViewMatrix() const noexcept
 {
   return this->mViewMatrix;
 }
 
-const DMatrix4x4& CCamera::GetProjectionMatrix() const noexcept
+const DMat4& CCamera::GetProjectionMatrix() const noexcept
 {
   return this->mProjectionMatrix;
 }
@@ -182,17 +186,17 @@ TF32 CCamera::GetFieldOfView() const noexcept
   return this->mFieldOfView;
 }
 
-const DVector3& CCamera::GetPosition() const noexcept
+const DVec3& CCamera::GetPosition() const noexcept
 {
   return this->mPosition;
 }
 
-bool CCamera::IsPointInFrustum(const DVector3& iPoint) const noexcept
+bool CCamera::IsPointInFrustum(const DVec3& iPoint) const noexcept
 {
   return this->mFrustum.IsPointInFrustum(iPoint);
 }
 
-bool CCamera::IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept
+bool CCamera::IsSphereInFrustum(const DVec3& iPoint, TF32 iRadius) const noexcept
 {
   return this->mFrustum.IsSphereInFrustum(iPoint, iRadius);
 }
@@ -202,12 +206,12 @@ bool CCamera::IsUsing3DListener() const noexcept
   return this->mIsUsing3DListener;
 }
 
-const DVector2& CCamera::GetViewportRectScaleXy() const noexcept
+const DVec2& CCamera::GetViewportRectScaleXy() const noexcept
 {
   return this->mViewportRectXY;
 }
 
-const DVector2& CCamera::GetViewportRectScaleWh() const noexcept
+const DVec2& CCamera::GetViewportRectScaleWh() const noexcept
 {
   return this->mViewportRectWH;
 }

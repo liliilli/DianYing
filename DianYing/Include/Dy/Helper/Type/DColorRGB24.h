@@ -38,10 +38,10 @@ namespace dy
 /// (h, s, v) does not support but can be converted calling HsvToRgb().
 struct alignas(4) DColorRGB24 final
 {
-  TU08 R = 0, G = 0, B = 0;
+  TU8 R = 0, G = 0, B = 0;
 
   DColorRGB24() = default;
-  DColorRGB24(TU08 r, TU08 g, TU08 b) noexcept;
+  DColorRGB24(TU8 r, TU8 g, TU8 b) noexcept;
 
   /// @brief Get color's grayscale value following sRGB.
   MDY_NODISCARD TF32 GetGrayScale() const noexcept;

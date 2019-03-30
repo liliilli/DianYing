@@ -256,7 +256,6 @@
     <ClCompile Include="Source\Helper\Type\DVector2.cc" />
     <ClCompile Include="Source\Helper\Type\DVector3.cc" />
     <ClCompile Include="Source\Helper\Type\DVector4.cc" />
-    <ClCompile Include="Source\Helper\Type\DVectorInt2.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\DMatrix2.cc" />
     <ClCompile Include="Source\Helper\Type\DMatrix3.cc" />
@@ -267,7 +266,6 @@
     <ClCompile Include="Source\Helper\Type\DString.cc" />
     <ClCompile Include="Source\Helper\Type\DQuaternion.cc" />
     <ClCompile Include="Source\Helper\Type\DPlane.cc" />
-    <ClCompile Include="Source\Helper\Type\DTristateBool.cc" />
     <ClCompile Include="Source\Helper\Type\DArea3D.cc" />
     <ClCompile Include="Source\Helper\Type\DArea2D.cc" />
     <ClCompile Include="Source\Management\MFont.cc" />
@@ -706,8 +704,6 @@
     <ClInclude Include="Include\Dy\Helper\Type\DVector2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DVector3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DVector4.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DVectorInt2.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DVectorInt4.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix3x3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix4x4.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix2x2.h" />
@@ -718,7 +714,6 @@
     <ClInclude Include="Include\Dy\Helper\Type\DColorRGBA.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DColorRGBA32.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DCompUpdator.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\EAxis3D.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DQuaternion.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DTristateBool.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DPlane.h" />
@@ -905,6 +900,7 @@
     <ClInclude Include="data\Script\Astronaut\PlanetScript.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\FDyBtTexWhiteTexture.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\FDyBtShOITPlainColor.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\EAxis.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

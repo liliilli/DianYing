@@ -21,9 +21,9 @@ namespace dy
 
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ DDefaultVertexInfo& p)
 {
-  p.mPosition   = j["ve"].get<DVector3>();
-  p.mNormal     = j["nm"].get<DVector3>();
-  p.mTexCoord0  = j["t0"].get<DVector2>();
+  p.mPosition   = j["ve"].get<DVec3>();
+  p.mNormal     = j["nm"].get<DVec3>();
+  p.mTexCoord0  = j["t0"].get<DVec2>();
 }
 
 } /// ::dy namespace

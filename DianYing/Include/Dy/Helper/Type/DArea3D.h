@@ -24,17 +24,19 @@ namespace dy
 /// @brief  Area 3D (x, y, z) (LEFT_DOWN) to (x`, y`, z`) (RIGHT_UP) type.
 struct DArea3D final
 {
-  DVector3 mMin = {};
-  DVector3 mMax = {};
+  DVec3 mMin = {};
+  DVec3 mMax = {};
 
   DArea3D() = default;
   DArea3D& operator=(const DArea3D&) = default;
 
-  DArea3D(_MIN_ const physx::PxBounds3& iBound) : mMin{iBound.minimum}, mMax{iBound.maximum} {};
+  DArea3D(_MIN_ const physx::PxBounds3& iBound) 
+    : mMin{FVec3::ToVec3(iBound.minimum)}, 
+      mMax{FVec3::ToVec3(iBound.maximum)} {};
   DArea3D& operator=(_MIN_ const physx::PxBounds3& iBound)
   {
-    this->mMin = iBound.minimum;
-    this->mMax = iBound.maximum;
+    this->mMin = FVec3::ToVec3(iBound.minimum);
+    this->mMax = FVec3::ToVec3(iBound.maximum);
     return *this;
   }
 };

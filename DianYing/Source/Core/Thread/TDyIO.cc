@@ -33,7 +33,7 @@
 #include <Dy/Management/MWindow.h>
 #include <Dy/Builtin/Constant/GeneralValue.h>
 
-constexpr TU08 kDefaultPriority = 128;
+constexpr TU8 kDefaultPriority = 128;
 
 namespace dy
 {

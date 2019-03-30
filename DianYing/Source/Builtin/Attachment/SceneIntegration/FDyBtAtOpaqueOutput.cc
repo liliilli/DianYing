@@ -21,7 +21,7 @@ namespace dy
 void FDyBtAtOpaqueOutput::ConstructBuffer(_MOUT_ PDyGlAttachmentInstanceMetaInfo& property) noexcept
 {
   property.mSpecifierName  = sName;
-  property.mAttachmentSize = DVectorInt2{1280, 720};
+  property.mAttachmentSize = DIVec2{1280, 720};
   property.mParameterList  =
   {
     PDyGlTexParameterInformation\

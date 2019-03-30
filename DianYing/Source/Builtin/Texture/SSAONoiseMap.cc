@@ -23,16 +23,16 @@
 namespace
 {
 
-MDY_NODISCARD dy::ATextureResource::TBufferType Convert(_MIN_ const std::array<dy::DVector2, 16> &iInfo)
+MDY_NODISCARD dy::ATextureResource::TBufferType Convert(_MIN_ const std::array<dy::DVec2, 16> &iInfo)
 {
   dy::ATextureResource::TBufferType result;
   for (const auto& [x, y] : iInfo)
   {
     // Insert x
-    const TU08* ptr = reinterpret_cast<const TU08*>(&x);
+    const TU8* ptr = reinterpret_cast<const TU8*>(&x);
     for (auto i = 0; i < sizeof(TF32); ++i) { result.push_back(*ptr++); }
     // Insert y
-    ptr = reinterpret_cast<const TU08*>(&y);
+    ptr = reinterpret_cast<const TU8*>(&y);
     for (auto i = 0; i < sizeof(TF32); ++i) { result.push_back(*ptr++); }
   }
   return result;
@@ -70,7 +70,7 @@ void FDyBtTexSSAONoiseMap::ConstructBuffer(_MOUT_ TBufferType& buffer, _MOUT_ PD
   // 0101
   // 1010
   // 1010
-  std::array<DVector2, 16> infoChunk;
+  std::array<DVec2, 16> infoChunk;
   for (auto& noiseItem : infoChunk) { noiseItem = random::RandomVector2Length(1); }
 
   buffer = Convert(infoChunk);

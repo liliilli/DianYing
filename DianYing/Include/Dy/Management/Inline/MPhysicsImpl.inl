@@ -257,7 +257,7 @@ inline void MPhysics::Impl::TryEnqueueDebugDrawCall()
     {
       auto* ptrPxShape = ptrCollider->MDY_PRIVATE(GetPtrInternalShape)();
       const auto localPose = ptrPxShape->getLocalPose();
-      const auto transformMatrix = DMatrix4x4(globalTransform * localPose);
+      const auto transformMatrix = FMat4::CreateMat4(globalTransform * localPose);
       // Enqueue draw list.
       // Iterate `Collider` and insert queue with transform + mesh.
       renderingManager.EnqueueDebugDrawCollider(*ptrCollider, transformMatrix);
@@ -360,7 +360,7 @@ inline void MPhysics::Impl::onContact(
 
       // Make FHitResult
       FHitResult result;
-      result.mContactPosition = internalBuffer.position;
+      result.mContactPosition = FVec3::CreateVec3(internalBuffer.position);
 
       // We do not process when `ignored` status because `ignored` status will be killed by physx internal system logic.
       using ECbType = ECollisionCallbackType;

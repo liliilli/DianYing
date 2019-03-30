@@ -32,11 +32,11 @@ struct PDirLightComponentMetaInfo final : public IDyMetaInformation
     /// Shadow strength. 
     DClamp<float, 0, 1> mShadowStrength = MDY_INITIALIZE_DEFINT;
     /// Shadow bias.
-    DClamp<float, 0, 2> mShadowBias = 0.02;
+    DClamp<float, 0, 2> mShadowBias = 0.02f;
     /// NOT USED
-    MDY_NOTUSED DVector2    mShadowResolution = {};
+    MDY_NOTUSED DVec2    mShadowResolution = {};
     /// Normalized light direction vector.
-    DVector3    mDirection  = {};
+    DVec3    mDirection  = {};
     /// Tinting color
     DColorRGBA  mDiffuse    = DColorRGBA::White;
     /// Intensity of light must be set up to 0~.

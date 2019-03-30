@@ -28,21 +28,21 @@ void FDyBtMsPlain::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) noe
   {
     DDefaultVertexInfo vertex;
 
-    vertex.mPosition = DVector3{ 1, 0, 1 };
-    vertex.mNormal = DVector3::FrontZ();
-    vertex.mTexCoord0 = DVector2{ 1, 0 };
+    vertex.mPosition = DVec3{ 1, 0, 1 };
+    vertex.mNormal = DVec3::UnitZ();
+    vertex.mTexCoord0 = DVec2{ 1, 0 };
     submeshDesc.mVertexList.emplace_back(vertex);
-    vertex.mPosition = DVector3{ 1, 0, -1 };
-    vertex.mNormal = DVector3::FrontZ();
-    vertex.mTexCoord0 = DVector2{ 1, 1 };
+    vertex.mPosition = DVec3{ 1, 0, -1 };
+    vertex.mNormal = DVec3::UnitZ();
+    vertex.mTexCoord0 = DVec2{ 1, 1 };
     submeshDesc.mVertexList.emplace_back(vertex);
-    vertex.mPosition = DVector3{ -1, 0, -1 };
-    vertex.mNormal = DVector3::FrontZ();
-    vertex.mTexCoord0 = DVector2{ 0, 1 };
+    vertex.mPosition = DVec3{ -1, 0, -1 };
+    vertex.mNormal = DVec3::UnitZ();
+    vertex.mTexCoord0 = DVec2{ 0, 1 };
     submeshDesc.mVertexList.emplace_back(vertex);
-    vertex.mPosition = DVector3{ -1, 0, 1 };
-    vertex.mNormal = DVector3::FrontZ();
-    vertex.mTexCoord0 = DVector2{ 0, 0 };
+    vertex.mPosition = DVec3{ -1, 0, 1 };
+    vertex.mNormal = DVec3::UnitZ();
+    vertex.mTexCoord0 = DVec2{ 0, 0 };
     submeshDesc.mVertexList.emplace_back(vertex);
   }
 

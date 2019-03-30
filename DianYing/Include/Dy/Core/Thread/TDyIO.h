@@ -64,7 +64,7 @@ public:
       : mSpecifier{specifier}, mType{type}, mStyle{style}, mScope{scope} {};
   };
 
-  enum class EDyRIStatus : TU08
+  enum class EDyRIStatus : TU8
   {
     NotValid,
     NotBoundYet,

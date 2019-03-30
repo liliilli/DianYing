@@ -78,7 +78,7 @@ public:
   MDY_NODISCARD bool IsCastingShadow() const noexcept { return this->mIsCastingShadow; }
 
   /// @brief Get light's direction. Direction forwards to outside from origin.
-  MDY_NODISCARD const DVector3& GetLightDirection() const noexcept;
+  MDY_NODISCARD const DVec3& GetLightDirection() const noexcept;
 
   /// @brief Set intensity of light.
   void SetIntensity(TF32 iIntensity) noexcept;
@@ -91,19 +91,19 @@ public:
   MDY_NODISCARD const DColorRGBA& GetDiffuseColor() const noexcept;
 
   /// @brief Set light's direction. direction must be forward from origin to outside.
-  void SetLightDirection(const DVector3& direction) noexcept;
+  void SetLightDirection(const DVec3& direction) noexcept;
 
   /// @brief Update view matrix agian.
   void UpdateLightViewMatrix();
   /// @brief Get view matrix of light.
-  MDY_NODISCARD const DMatrix4x4& GetLightViewMatrix() const noexcept;
+  MDY_NODISCARD const DMat4& GetLightViewMatrix() const noexcept;
 
   /// @brief
   void UpdateCSMFrustum(const CCamera& iRefCamera);
   /// @brief Update projection matrix again.
   void UpdateProjectionMatrix();
   /// @brief Get projection matrix of light.
-  MDY_NODISCARD const DMatrix4x4& GetProjectionMatrix() const noexcept;
+  MDY_NODISCARD const DMat4& GetProjectionMatrix() const noexcept;
 
   /// @brief Update segment far planes.
   void UpdateSegmentFarPlanes(_MIN_ const CCamera& iPtrCamera);
@@ -154,8 +154,8 @@ private:
       TF32 iNear,
       TF32 iFar,
       const CCamera& iRefCamera, 
-      DVector4& iMin, 
-      DVector4& iMax) const;
+      DVec4& iMin, 
+      DVec4& iMax) const;
 
   /// Data for uniform buffer object. <Direction, Diffuse, Specular, Ambient, Intensity>
   DUboDirectionalLight    mData       = {};
@@ -164,20 +164,20 @@ private:
   /// Shadow type.
   EDyShadowType             mShadowType = EDyShadowType::__Error;
   /// Shadow map resolution for shadow.
-  DVector2                mShadowResolution = {};
+  DVec2                mShadowResolution = {};
   /// Shadow culling layer.
   std::vector<std::string>  mShadowCullingLayerList = {};
  
   /// Find a bounding box of whole camera frustum in light view space.
-  DVector4 minFrustum {NumericalMax<TF32>};
-  DVector4 maxFrustum {NumericalMin<TF32>};
+  DVec4 minFrustum {kMaxValueOf<TF32>};
+  DVec4 maxFrustum {kMinValueOf<TF32>};
   std::array<DArea2D, kCSMSegment>    mLightViewports;
 
   std::array<TF32, kCSMSegment> mFarPlanes;
-  DMatrix4x4                  mOldProjectionMatrix; 
+  DMat4                  mOldProjectionMatrix; 
     
-  DMatrix4x4 mLightViewMatrix;
-  DMatrix4x4 mLightProjMatrix;
+  DMat4 mLightViewMatrix;
+  DMat4 mLightProjMatrix;
 
   /// Flag for casting light (binding to lighting system)
   MDY_NOTUSED bool mIsCastingLight   = false;

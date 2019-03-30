@@ -13,6 +13,7 @@
 ///
 
 #include <Math/Type/Math/DVector3.h>
+#include "..\..\Math\DMatrix3.h"
 
 namespace dy::math
 {
@@ -139,6 +140,17 @@ template <typename TType>
 const typename DMatrix3<TType>::TValueType* DMatrix3<TType>::Data() const noexcept
 {
   return this->mValues.front().Data();
+}
+
+template<typename TType>
+std::vector<DVector3<TType>> DMatrix3<TType>::ToVector() const noexcept
+{
+  return std::vector<DVector3<TType>>
+  {
+    this->operator[](0),
+    this->operator[](1),
+    this->operator[](2)
+  };
 }
 
 template <typename TType>

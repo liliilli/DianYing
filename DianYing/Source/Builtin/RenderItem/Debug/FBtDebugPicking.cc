@@ -69,10 +69,10 @@ void FBtRenderDebugPicking::OnRender()
 
 void FBtRenderDebugPicking::RenderObject(
   CBasePhysicsCollider& iRefCollider,
-  const DMatrix4x4& iTransformMatrix)
+  const DMat4& iTransformMatrix)
 {
   // Update uniform.
-  this->mBinderShader->TryUpdateUniform<EUniformVariableType::Matrix4>("uModelTransform", DMatrix4x4{});
+  this->mBinderShader->TryUpdateUniform<EUniformVariableType::Matrix4>("uModelTransform", DMat4{});
   this->mBinderShader->TryUpdateUniform<EUniformVariableType::Integer>("uColorIndex", 2); // Magenta
   this->mBinderShader->UseShader();
   this->mBinderShader->TryUpdateUniformList();

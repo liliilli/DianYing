@@ -19,6 +19,7 @@
 #include <Dy/Helper/Library/HelperFilesystem.h>
 #include <Dy/Helper/Type/DMatrix4x4.h>
 #include <Dy/Core/Resource/Type/Uniform/TUniformValue.h>
+#include <Dy/Helper/Library/HelperString.h>
 
 namespace dy
 {
@@ -148,7 +149,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         {
         case EUniformVariableType::Matrix4: 
         { 
-          const auto value = json::GetValueFrom<DMatrix4x4>(itemValue, "Value");
+          const auto value = json::GetValueFrom<DMat4>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<TUniformValue<EUniformVariableType::Matrix4>>(-1, value)
@@ -164,7 +165,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EUniformVariableType::Vector4:
         {
-          const auto value = json::GetValueFrom<DVector4>(itemValue, "Value");
+          const auto value = json::GetValueFrom<DVec4>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<TUniformValue<EUniformVariableType::Vector4>>(-1, value)
@@ -172,7 +173,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EUniformVariableType::Vector3:
         {
-          const auto value = json::GetValueFrom<DVector3>(itemValue, "Value");
+          const auto value = json::GetValueFrom<DVec3>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<TUniformValue<EUniformVariableType::Vector3>>(-1, value)
@@ -180,7 +181,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EUniformVariableType::Vector2:
         {
-          const auto value = json::GetValueFrom<DVector2>(itemValue, "Value");
+          const auto value = json::GetValueFrom<DVec2>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<TUniformValue<EUniformVariableType::Vector2>>(-1, value)
@@ -226,7 +227,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EUniformVariableType::Matrix4Array: 
         {
-          const auto value = json::GetValueFrom<std::vector<DMatrix4x4>>(itemValue, "Value");
+          const auto value = json::GetValueFrom<std::vector<DMat4>>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<TUniformValue<EUniformVariableType::Matrix4Array>>(-1, value)
@@ -234,7 +235,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
         } break;
         case EUniformVariableType::Vector3Array: 
         {
-          const auto value = json::GetValueFrom<std::vector<DVector3>>(itemValue, "Value");
+          const auto value = json::GetValueFrom<std::vector<DVec3>>(itemValue, "Value");
           p.mUniformValues.try_emplace(
             uniformName,
             std::make_unique<TUniformValue<EUniformVariableType::Vector3Array>>(-1, value)

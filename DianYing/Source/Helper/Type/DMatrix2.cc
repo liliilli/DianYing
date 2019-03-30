@@ -14,16 +14,24 @@
 
 /// Header file
 #include <Dy/Helper/Type/DMatrix2x2.h>
+#include <Dy/Helper/Type/DVector2.h>
+#include <nlohmann/json.hpp>
 
-namespace dy
+namespace dy::math
 {
 
-
-
-DMatrix2x2::DMatrix2x2(bool)
+void to_json(nlohmann::json& j, const DMat2& p)
 {
-  mMatrixValue[0][0] = 1;
-  mMatrixValue[1][1] = 1;
+  j = p.ToVector();
 }
 
-} /// ::dy namespace
+void from_json(const nlohmann::json& j, DMat2& p)
+{
+  const auto vecs = j.get<decltype(p.ToVector())>();
+  for (TIndex i = 0; i < 2; ++i)
+  {
+    p[i] = vecs[i];
+  }
+}
+
+} /// ::dy::math namespace

@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Element/Widget/FWidgetImage.h>
 #include <Dy/Management/IO/MIOMeta.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {
@@ -23,7 +24,7 @@ EDySuccess FWidgetImage::Initialize(const PDyMetaWidgetImageDescriptor& objectMe
 {
   // Set properties.
   this->pSetObjectName(objectMetaDesc.mUiObjectSpecifierName);
-  this->SetRelativePosition(objectMetaDesc.mInitialPosition);
+  this->SetRelativePosition(static_cast<DVec2>(objectMetaDesc.mInitialPosition));
   this->SetFrameSize(objectMetaDesc.mWidgetSize);
   this->mOrigin = objectMetaDesc.mOrigin;
 

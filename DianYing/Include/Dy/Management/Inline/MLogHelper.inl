@@ -13,8 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Management/MLog.h>
-
 template <typename... TArgs>
 void DyPushLogInfo(const std::string& iFormatString, TArgs&&... iArgs)
 {

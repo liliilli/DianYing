@@ -54,9 +54,9 @@ PDyMetaWidgetBarDescriptor::CreateMetaInformation(const nlohmann::json& itemAtla
   json::GetValueFromTo(itemAtlas, "ZOrder", instance->mZOrder);
 
   const auto& detailAtlas = itemAtlas[(TPDyMWCBD::sHeader_Details)];
-  instance->mInitialPosition    = json::GetValueFrom<DVectorInt2>(detailAtlas, "InitialPosition");
+  instance->mInitialPosition    = json::GetValueFrom<DIVec2>(detailAtlas, "InitialPosition");
   instance->mOrigin             = json::GetValueFrom<EDyOrigin>(detailAtlas, "Origin");
-  instance->mWidgetSize         = json::GetValueFrom<DVectorInt2>(detailAtlas, "WidgetSize");
+  instance->mWidgetSize         = json::GetValueFrom<DIVec2>(detailAtlas, "WidgetSize");
 
   instance->mForegroundColor    = json::GetValueFrom<DColorRGBA>(detailAtlas, "ForegroundColor");
   instance->mBackgroundColor    = json::GetValueFrom<DColorRGBA>(detailAtlas, "BackgroundColor");

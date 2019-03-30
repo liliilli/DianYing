@@ -58,6 +58,20 @@ DVector4<TType, std::enable_if_t<kIsRealType<TType>>>
 }
 
 template <typename TType>
+DVector4<TType, std::enable_if_t<kIsRealType<TType>>>
+::operator DVector2<TType>() const noexcept
+{
+  return DVector2<TType>{this->X, this->Y};
+}
+
+template <typename TType>
+DVector4<TType, std::enable_if_t<kIsRealType<TType>>>
+::operator DVector3<TType>() const noexcept
+{
+  return DVector3<TType>{this->X, this->Y, this->Z};
+}
+
+template <typename TType>
 typename DVector4<TType, std::enable_if_t<kIsRealType<TType>>>::TValueType& 
 DVector4<TType, std::enable_if_t<kIsRealType<TType>>>
 ::operator[](TIndex index)

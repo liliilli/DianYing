@@ -37,24 +37,24 @@ public:
   virtual ~FDyTextureCubemapInformation() = default;
   
   /// @brief Get buffer of image.
-  MDY_NODISCARD const std::vector<TU08>& GetBufferOf(_MIN_ EDyCubemapFragment iValue) const noexcept;
+  MDY_NODISCARD const std::vector<TU8>& GetBufferOf(_MIN_ EDyCubemapFragment iValue) const noexcept;
   /// @brief Get texture's size.
-  MDY_NODISCARD const DVectorInt2& GetSizeOf(_MIN_ EDyCubemapFragment iValue) const noexcept;
+  MDY_NODISCARD const DIVec2& GetSizeOf(_MIN_ EDyCubemapFragment iValue) const noexcept;
 
 private:
-  std::vector<TU08> mTopTextureImageBuffer = {};
-  std::vector<TU08> mBottomTextureImageBuffer = {};
-  std::vector<TU08> mFrontTextureImageBuffer = {};
-  std::vector<TU08> mBackTextureImageBuffer = {};
-  std::vector<TU08> mLeftTextureImageBuffer = {};
-  std::vector<TU08> mRightTextureImageBuffer = {};
+  std::vector<TU8> mTopTextureImageBuffer = {};
+  std::vector<TU8> mBottomTextureImageBuffer = {};
+  std::vector<TU8> mFrontTextureImageBuffer = {};
+  std::vector<TU8> mBackTextureImageBuffer = {};
+  std::vector<TU8> mLeftTextureImageBuffer = {};
+  std::vector<TU8> mRightTextureImageBuffer = {};
 
-  DVectorInt2     mTopTextureSize = {};
-  DVectorInt2     mBottomTextureSize = {};
-  DVectorInt2     mFrontTextureSize = {};
-  DVectorInt2     mBackTextureSize = {};
-  DVectorInt2     mLeftTextureSize = {};
-  DVectorInt2     mRightTextureSize = {};
+  DIVec2     mTopTextureSize = {};
+  DIVec2     mBottomTextureSize = {};
+  DIVec2     mFrontTextureSize = {};
+  DIVec2     mBackTextureSize = {};
+  DIVec2     mLeftTextureSize = {};
+  DIVec2     mRightTextureSize = {};
 };
 
 } /// ::dy namespace

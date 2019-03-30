@@ -57,6 +57,9 @@ struct MATH_NODISCARD DVector3<TType, std::enable_if_t<kIsIntegerType<TType>>> f
   template <typename TAnotherType>
   explicit operator DVector3<TAnotherType>() const noexcept;
 
+  /// @brief Narrow conversion.
+  explicit operator DVector2<TValueType>() const noexcept;
+
   /// @brief Get values with index. index must be 0, 1 or 2.
   TValueType& operator[](TIndex index);
   /// @brief Get values with index. index must be 0, 1 or 2.
@@ -103,6 +106,9 @@ struct MATH_NODISCARD DVector3<TType, std::enable_if_t<kIsRealType<TType>>> fina
 
   template <typename TAnotherType>
   explicit operator DVector3<TAnotherType>() const noexcept;
+
+  /// @brief Narrow conversion.
+  explicit operator DVector2<TValueType>() const noexcept;
 
   /// @brief Get values with index. index must be 0, 1 or 2.
   TValueType& operator[](TIndex index);

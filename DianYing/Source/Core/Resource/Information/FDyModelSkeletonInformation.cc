@@ -69,12 +69,12 @@ std::vector<TU32> FDyModelSkeletonInformation::GetChildrenNodeIdList(_MIN_ TI32 
   return childrenIdResult;
 }
 
-const DMatrix4x4& FDyModelSkeletonInformation::GetRootInverseTransform() const noexcept
+const DMat4& FDyModelSkeletonInformation::GetRootInverseTransform() const noexcept
 {
   return this->mSkeletonInfo.mSkeletonRootInverseTransform;
 }
 
-const DMatrix4x4& FDyModelSkeletonInformation::GetOffsetMatrixOfBone(_MIN_ TU32 iIndex) const noexcept
+const DMat4& FDyModelSkeletonInformation::GetOffsetMatrixOfBone(_MIN_ TU32 iIndex) const noexcept
 {
   return this->mSkeletonInfo.mBoneOffsetList[iIndex].mBoneOffsetMatrix;
 }

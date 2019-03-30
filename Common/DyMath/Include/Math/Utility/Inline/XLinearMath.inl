@@ -79,4 +79,25 @@ Lerp(const DVector4<TLeft>& lhs, const DVector4<TRight>& rhs, TReal factor) noex
   };
 }
 
+template <typename TType>
+DVector2<TType> 
+GetQuadBezierCurvePoint(
+  const DVector2<TType>& lhs, 
+  const DVector2<TType>& rhs,
+  const DVector2<TType>& control, TReal offset)
+{
+  return Lerp(Lerp(lhs, control, offset), Lerp(control, rhs, offset), offset);
+}
+
+template <typename TType>
+DVector3<TType> 
+GetQuadBezierCurvePoint(
+  const DVector3<TType>& lhs,
+  const DVector3<TType>& rhs,
+  const DVector3<TType>& control, 
+  TReal offset)
+{
+  return Lerp(Lerp(lhs, control, offset), Lerp(control, rhs, offset), offset);
+}
+
 } /// ::dy::math namespace

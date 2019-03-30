@@ -14,14 +14,15 @@
 
 /// Header file
 #include <Dy/Component/Internal/Camera/FFrustumTester.h>
-#include "Dy/Helper/Type/DMatrix4x4.h"
+#include <Dy/Helper/Type/DMatrix4x4.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {
 
-void FFrustumTester::UpdateFrustum(const DMatrix4x4& mProjection, const DMatrix4x4& mView)
+void FFrustumTester::UpdateFrustum(const DMat4& mProjection, const DMat4& mView)
 {
-  const auto clipMatrix = mProjection.Multiply(mView);
+  const auto clipMatrix = mProjection * mView;
 
   // Setup right plane and normalize.
   mFrustum[DirRight].A = clipMatrix[0][3] - clipMatrix[0][0];
@@ -66,7 +67,7 @@ void FFrustumTester::UpdateFrustum(const DMatrix4x4& mProjection, const DMatrix4
   mFrustum[DirFront].Normalize();
 }
 
-bool FFrustumTester::IsPointInFrustum(const DVector3& mPoint) const noexcept
+bool FFrustumTester::IsPointInFrustum(const DVec3& mPoint) const noexcept
 {
   for (auto i = 0; i < 6; ++i)
   { 
@@ -79,7 +80,7 @@ bool FFrustumTester::IsPointInFrustum(const DVector3& mPoint) const noexcept
   return true;
 }
 
-bool FFrustumTester::IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept
+bool FFrustumTester::IsSphereInFrustum(const DVec3& iPoint, TF32 iRadius) const noexcept
 {
   if (iRadius < 0)
   {

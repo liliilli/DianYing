@@ -73,5 +73,23 @@ template <typename TLeft, typename TRight>
 DVector4<GetRealTypeOf<GetBiggerType<TLeft, TRight>>>
 Lerp(const DVector4<TLeft>& lhs, const DVector4<TRight>& rhs, TReal factor) noexcept;
 
+/// @brief Get result point through quadratic bezier curve calculation.
+template <typename TType>
+DVector2<TType>
+GetQuadBezierCurvePoint(
+  const DVector2<TType>& lhs, 
+  const DVector2<TType>& rhs, 
+  const DVector2<TType>& control, 
+  TReal offset);
+
+/// @brief Get result point through quadratic bezier curve calculation.
+template <typename TType>
+DVector3<TType>
+GetQuadBezierCurvePoint(
+  const DVector3<TType>& lhs, 
+  const DVector3<TType>& rhs, 
+  const DVector3<TType>& control, 
+  TReal offset);
+
 } /// ::dy::math namespace
 #include <Math/Utility/Inline/XLinearMath.inl>

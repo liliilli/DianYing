@@ -13,9 +13,12 @@
 /// SOFTWARE.
 ///
 
-#include <cstdint>
 #include <string>
 #include <unordered_map>
+
+//! If you want to use real type as double, remove comment "//" to activate macro option.
+//#define MATH_USE_REAL_AS_DOUBLE
+#include <Math/Common/TGlobalTypes.h>
 
 #if defined(max) == true
 #undef max
@@ -32,40 +35,32 @@ enum EDySuccess : bool
 };
 
 //!
-//! If you want to use real type as double, remove comment "//" to activate macro option.
-//!
-
-//#define MDY_FLAG_USING_REAL_AS_DOUBLE
-
-//!
 //! Types in function.
 //!
 
-using TC8     = char;
-using TC16    = unsigned short;
+using ::dy::math::TWChr;
+using ::dy::math::TChr8;
+using ::dy::math::TChr16;
+using ::dy::math::TChr32;
 
-using TUTF8   = std::string;
-using TUTF16  = std::u16string;
+using ::dy::math::TU8;
+using ::dy::math::TU16;
+using ::dy::math::TU32;
+using ::dy::math::TU64;
 
-using TU08    = uint8_t;
-using TU16    = uint16_t;
-using TU32    = uint32_t;
-using TU64    = uint64_t;
+using ::dy::math::TI8;
+using ::dy::math::TI16;
+using ::dy::math::TI32;
+using ::dy::math::TI64;
 
-using TI08    = int8_t;
-using TI16    = int16_t;
-using TI32    = int32_t;
-using TI64    = int64_t;
+using ::dy::math::TF32;
+using ::dy::math::TF64;
+using ::dy::math::TPointer;
+using ::dy::math::TIndex;
 
-using TF32    = float;
-using TF64    = double;
-
-using Real    =
-#if defined(MDY_FLAG_USING_REAL_AS_DOUBLE)
-TF64;
-#else
-TF32;
-#endif
+using ::dy::math::TReal;
+using ::dy::math::kMaxValueOf;
+using ::dy::math::kMinValueOf;
 
 template <
     typename TValue,
@@ -74,21 +69,5 @@ template <
     typename TAllocator = std::allocator<std::pair<const std::string, TValue>>
 >
 using TStringHashMap = std::unordered_map<std::string, TValue, THash, TEqualTo, TAllocator>;
-
-template <
-    typename TType,
-    typename = std::enable_if_t<
-        std::is_arithmetic_v<TType>
-    >
->
-constexpr auto NumericalMax = std::numeric_limits<TType>::max();
-
-template <
-    typename TType,
-    typename = std::enable_if_t<
-        std::is_arithmetic_v<TType>
-    >
->
-constexpr auto NumericalMin = std::numeric_limits<TType>::lowest();
 
 #endif /// GUARD_DY_GLOBAL_TYPE_H

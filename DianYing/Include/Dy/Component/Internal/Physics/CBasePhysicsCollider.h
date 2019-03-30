@@ -62,7 +62,7 @@ public:
   /// @brief Update AABB bound.
   void UpdateBound(_MIN_ const DArea3D& iArea);
   /// @brief Get const reference instance of collider mesh.
-  MDY_NODISCARD const std::vector<DVector3>& GetColliderMesh() const noexcept;
+  MDY_NODISCARD const std::vector<DVec3>& GetColliderMesh() const noexcept;
 
   /// @brief Check notify hit event.
   MDY_NODISCARD bool IsNotifyHitEvent() const noexcept; 
@@ -125,7 +125,7 @@ protected:
   /// @brief Collision mesh information need to be updated.
   bool mIsCollisionMeshDirty = true;
   /// @brief Collision mesh information.
-  std::vector<DVector3> mColliderMeshInformation; 
+  std::vector<DVec3> mColliderMeshInformation; 
   /// @brief AABB bound information.
   DArea3D mAABBBound;
 };

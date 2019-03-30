@@ -13,76 +13,12 @@
 /// SOFTWARE.
 ///
 
+#include <Math/Type/Micellanous/DTristateBool.h>
+
 namespace dy
 {
 
-/// @class DTristateBool
-/// @brief 3-state boolean helper type.
-class DTristateBool final
-{
-public:
-  DTristateBool();
-  DTristateBool(const bool parent, const bool input);
-
-  ///
-  /// @brief Update input boolean value.
-  /// @param newInput input value to insert.
-  ///
-  void UpdateInput(const bool newInput) noexcept;
-
-  ///
-  /// @brief Update parent boolean value.
-  /// @param newParent parent value to insert.
-  ///
-  void UpdateParent(const bool newParent) noexcept;
-
-  ///
-  /// @brief Get output value.
-  /// @return Output value.
-  ///
-  MDY_NODISCARD bool GetOutput() const noexcept;
-
-  ///
-  /// @brief Check output value is changed. but might be ABA problem when values are changed.
-  /// @return Check old-output and output, if changed return true or false.
-  ///
-  MDY_NODISCARD bool IsOutputValueChanged() const noexcept;
-
-  ///
-  /// @brief Check output value is true.
-  /// @return Output value.
-  ///
-  operator bool() const noexcept
-  {
-    return this->mOutput;
-  }
-
-private:
-  /// @brief Update output / oldOutput value comparing parent and input.
-  void pUpdateOutputs();
-
-  //! Tri-state boolean
-  //!
-  //!       mParent----.                Parent | Input | Output
-  //!               __ |                     X |     X |      X
-  //!              |  \o                     X |     O |      X
-  //! mInput _____o|   \_____o mOutput       O |     X |      X
-  //!              |   /                     O |     O |      O
-  //!              |__/
-  //!
-
-  /// Parent boolean value.
-  bool mParent    : 1;
-
-  /// Input boolean value.
-  bool mInput     : 1;
-
-  /// Output boolean value.
-  MDY_TRANSIENT bool mOutput    : 1;
-
-  /// Old-output boolean value (previous output value)
-  MDY_TRANSIENT bool mOldOutput : 1;
-};
+using math::DTristateBool;
 
 } /// ::dy namespace
 

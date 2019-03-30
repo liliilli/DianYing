@@ -16,12 +16,14 @@
 #include <Dy/Component/CLightDirectional.h>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <Math/Utility/XMath.h>
 #include <Dy/Builtin/Constant/GeneralLevel.h>
 #include <Dy/Component/CCamera.h>
 #include <Dy/Element/FActor.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/MSetting.h>
 #include <Dy/Component/CTransform.h>
+#include <Math/Utility/XGraphicsMath.h>
 
 namespace dy
 {
@@ -53,7 +55,7 @@ EDySuccess CLightDirectional::Initialize(const PDirLightComponentMetaInfo& metaI
   {
     auto& settingManager = MSetting::GetInstance();
     const auto& i = settingManager.GetGlobalDefaultShadowMapResolution();
-    this->mShadowResolution = DVector2{static_cast<TF32>(i.X), static_cast<TF32>(i.Y)};
+    this->mShadowResolution = DVec2{static_cast<TF32>(i.X), static_cast<TF32>(i.Y)};
   }
 
   // Set first time flag to false to use second time flag logics.
@@ -104,7 +106,7 @@ void CLightDirectional::SetCastingShadowFlag(bool flag) noexcept
   else              { MDY_NOTUSED auto _ = pTryDeactivateCastingShadow(); }
 }
 
-const DVector3& CLightDirectional::GetLightDirection() const noexcept
+const DVec3& CLightDirectional::GetLightDirection() const noexcept
 {
   return this->mData.mDirection;
 }
@@ -125,7 +127,7 @@ const DColorRGBA& CLightDirectional::GetDiffuseColor() const noexcept
   return this->mData.mDiffuse;
 }
 
-void CLightDirectional::SetLightDirection(const DVector3& direction) noexcept
+void CLightDirectional::SetLightDirection(const DVec3& direction) noexcept
 {
   this->mData.mDirection = direction.Normalize();
   this->mIsNeededUpdateValueToGpu = true;
@@ -134,18 +136,15 @@ void CLightDirectional::SetLightDirection(const DVector3& direction) noexcept
 void CLightDirectional::UpdateLightViewMatrix()
 {
   auto fwd = this->GetLightDirection();
-  if (fwd == kLevelUpDir) { fwd += DVector3{0.01f, 0.01f, 0.01f}; }
+  if (fwd == kLevelUpDir) { fwd += DVec3{0.01f, 0.01f, 0.01f}; }
   fwd *= -1.0f;
 
   const auto& pos = this->GetBindedActor()->GetTransform()->GetFinalWorldPosition();
   const auto eye = pos + fwd;
-  this->mLightViewMatrix = glm::lookAt(
-    static_cast<glm::vec3>(pos), 
-    static_cast<glm::vec3>(eye), 
-    static_cast<glm::vec3>(kLevelUpDir)); 
+  this->mLightViewMatrix = math::LookAt(pos, eye, kLevelUpDir);
 }
 
-const DMatrix4x4& CLightDirectional::GetLightViewMatrix() const noexcept
+const DMat4& CLightDirectional::GetLightViewMatrix() const noexcept
 {
   return this->mLightViewMatrix;
 }
@@ -160,14 +159,16 @@ void CLightDirectional::UpdateCSMFrustum(const CCamera& iRefCamera)
 
 void CLightDirectional::UpdateProjectionMatrix()
 {
-  this->mLightProjMatrix = glm::ortho(
-      this->minFrustum.X, this->maxFrustum.X, 
-      this->minFrustum.Y, this->maxFrustum.Y, 
-      -this->maxFrustum.Z, -this->minFrustum.Z);
-      //0.0f, this->minFrustum.Z);
+  using namespace math;
+  this->mLightProjMatrix = ProjectionMatrix<TReal>(
+    EGraphics::OpenGL, EProjection::Orthogonal,
+    this->minFrustum.X, this->maxFrustum.X, 
+    this->minFrustum.Y, this->maxFrustum.Y, 
+    -this->maxFrustum.Z, -this->minFrustum.Z
+  );
 }
 
-const DMatrix4x4& CLightDirectional::GetProjectionMatrix() const noexcept
+const DMat4& CLightDirectional::GetProjectionMatrix() const noexcept
 {
   return this->mLightProjMatrix;
 }
@@ -193,7 +194,7 @@ void CLightDirectional::UpdateSegmentFarPlanes(_MIN_ const CCamera& iPtrCamera)
     const TF32 corrTerm   = nearPlane + distFactor * diffPlane;
     const TF32 viewDepth  = frustumSplitCorrection * stdTerm + (1.0f - frustumSplitCorrection) * corrTerm;
 
-    const auto projectedDepth = this->mOldProjectionMatrix.MultiplyVector({0, 0, -viewDepth, 1});
+    const auto projectedDepth = this->mOldProjectionMatrix * DVec4{0, 0, -viewDepth, 1};
     this->mFarPlanes[i - 1] = viewDepth;
     this->mDataShadow.mNormalizedFarPlanes[i - 1] = (projectedDepth.Z / projectedDepth.W) * 0.5f + 0.5f;
   }
@@ -213,25 +214,25 @@ void CLightDirectional::UpdateLightProjectionAndViewports(
   TF32 nearSegmentPlane = 0.0f;
   for (TU32 i = 0; i < kCSMSegment; ++i)
   {
-    DVector4 minSegment {NumericalMax<TF32>};
-    DVector4 maxSegment {NumericalMin<TF32>};
+    DVec4 minSegment {kMaxValueOf<TF32>};
+    DVec4 maxSegment {kMinValueOf<TF32>};
     this->FrustumBoundingBoxLightViewSpace(nearSegmentPlane, iFarPlanes[i], iRefCamera, minSegment, maxSegment);
 
     // Update viewports.
-    const DVector2 frustumSize {maxFrustum.X - minFrustum.X, maxFrustum.Y - minFrustum.Y};
+    const DVec2 frustumSize {maxFrustum.X - minFrustum.X, maxFrustum.Y - minFrustum.Y};
     const TF32 segmentSizeX = maxSegment.X - minSegment.X;
     const TF32 segmentSizeY = maxSegment.Y - minSegment.Y;
     const TF32 segmentSize  = std::max(segmentSizeX, segmentSizeY);
 
-    const DVector2 offsetBottomLeft         {minSegment.X - minFrustum.X, minSegment.Y - minFrustum.Y};
-    const DVector2 offsetSegmentSizeRatio   {offsetBottomLeft.X / segmentSize, offsetBottomLeft.Y / segmentSize};
-    const DVector2 frustumSegmentSizeRatio  {frustumSize.X / segmentSize, frustumSize.Y / segmentSize};
+    const DVec2 offsetBottomLeft         {minSegment.X - minFrustum.X, minSegment.Y - minFrustum.Y};
+    const DVec2 offsetSegmentSizeRatio   {offsetBottomLeft.X / segmentSize, offsetBottomLeft.Y / segmentSize};
+    const DVec2 frustumSegmentSizeRatio  {frustumSize.X / segmentSize, frustumSize.Y / segmentSize};
 
-    DVector2 pixelOffsetTopLeft = offsetSegmentSizeRatio * kCSMAttachmentTextureSize;
-    DVector2 pixelFrustumSize   = frustumSegmentSizeRatio * kCSMAttachmentTextureSize;
+    DVec2 pixelOffsetTopLeft = offsetSegmentSizeRatio * kCSMAttachmentTextureSize;
+    DVec2 pixelFrustumSize   = frustumSegmentSizeRatio * kCSMAttachmentTextureSize;
 
     // Scale factor that helps if frustum size is supposed to be bigger than maximum viewport size.
-    const DVector2 scaleFactor{
+    const DVec2 scaleFactor{
         32768 < pixelFrustumSize.X ? 32768 / pixelFrustumSize.X : 1.0f,
         32768 < pixelFrustumSize.Y ? 32768 / pixelFrustumSize.Y : 1.0f
     };
@@ -242,14 +243,17 @@ void CLightDirectional::UpdateLightProjectionAndViewports(
     mLightViewports[i].mRightUp   = pixelFrustumSize + mLightViewports[i].mLeftDown;
 
     // Update light view-projection matrices per segments.
-    DMatrix4x4 lightProjMatrix = glm::ortho(minSegment.X, minSegment.X + segmentSize, minSegment.Y, minSegment.Y + segmentSize, -maxFrustum.Z, -minFrustum.Z);
-    DMatrix4x4 lightScale = DMatrix4x4::CreateWithScale(
-      DVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
-    DMatrix4x4 lightBias  = DMatrix4x4::CreateWithTranslation(
-      DVector3{0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f});
+    using namespace math;
+    DMat4 lightProjMatrix = ProjectionMatrix<TReal>(
+      EGraphics::OpenGL, EProjection::Orthogonal,
+      minSegment.X, minSegment.X + segmentSize, 
+      minSegment.Y, minSegment.Y + segmentSize, 
+      -this->maxFrustum.Z, -this->minFrustum.Z);
+    DMat4 lightScale = FMat4::CreateWithScale(0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f);
+    DMat4 lightBias  = FMat4::CreateWithTranslation(0.5f * scaleFactor.X, 0.5f * scaleFactor.Y, 0.5f);
 
     this->mDataShadow.mLightVPSBMatrix[i] = 
-      lightBias.Multiply(lightScale).Multiply(lightProjMatrix).Multiply(this->mLightViewMatrix);
+      ((lightBias * lightScale) * lightProjMatrix) * this->mLightViewMatrix;
     nearSegmentPlane = iNormalizedFarPlanes[i];
   }
 }
@@ -269,12 +273,12 @@ void CLightDirectional::SetIntensity(TF32 iIntensity) noexcept
 void CLightDirectional::FrustumBoundingBoxLightViewSpace(
     TF32 iNear, TF32 iFar, 
     const CCamera& iRefCamera,
-    DVector4& iMin, DVector4& iMax) const
+    DVec4& iMin, DVec4& iMax) const
 {
-   DVector4 minResult {NumericalMax<TF32>};
-  DVector4 maxResult {NumericalMin<TF32>};
+   DVec4 minResult {kMaxValueOf<TF32>};
+  DVec4 maxResult {kMinValueOf<TF32>};
 
-  const TF32 fov  = math::DegToRadVal<TF32> * iRefCamera.GetFieldOfView();
+  const TF32 fov  = math::kToRadian<TF32> * iRefCamera.GetFieldOfView();
   const auto xywh = iRefCamera.GetPixelizedViewportRectangle();
   const auto pos  = iRefCamera.GetPosition();
   const TF32 nearHeight = 2.0f * tan(fov) * iNear;
@@ -283,30 +287,30 @@ void CLightDirectional::FrustumBoundingBoxLightViewSpace(
   const TF32 farWidth   = farHeight * xywh[2] / xywh[3];
   
   const auto& camViewMatrix = iRefCamera.GetViewMatrix();
-  const auto rightDir = DVector3{camViewMatrix[0]};
-  const auto upDir    = DVector3{camViewMatrix[1]};
-  const auto forDir   = DVector3{camViewMatrix[2]};
+  const auto rightDir = DVec3{camViewMatrix[0].X, camViewMatrix[0].Y, camViewMatrix[0].Z};
+  const auto upDir    = DVec3{camViewMatrix[1].X, camViewMatrix[1].Y, camViewMatrix[1].Z};
+  const auto forDir   = DVec3{camViewMatrix[2].X, camViewMatrix[2].Y, camViewMatrix[2].Z};
 
   const auto nc = pos + forDir * iNear;
   const auto fc = pos + forDir * iFar;
 
   // Vertices in a world space.
-  std::array<DVector4, 8> boundingBoxVertices =
+  std::array<DVec4, 8> boundingBoxVertices =
   { //         z    y                             x
-    DVector4{nc - (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NBL
-    DVector4{nc - (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NBR
-    DVector4{nc + (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NTR
-    DVector4{nc + (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NTL
+    DVec4{nc - (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NBL
+    DVec4{nc - (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NBR
+    DVec4{nc + (upDir * nearHeight * 0.5f) + (rightDir * nearWidth * 0.5f), 1.0f}, // NTR
+    DVec4{nc + (upDir * nearHeight * 0.5f) - (rightDir * nearWidth * 0.5f), 1.0f}, // NTL
 
-    DVector4{fc - (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FBL
-    DVector4{fc - (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FBR
-    DVector4{fc + (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FTR
-    DVector4{fc + (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FTL
+    DVec4{fc - (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FBL
+    DVec4{fc - (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FBR
+    DVec4{fc + (upDir * farHeight * 0.5f) + (rightDir * farWidth * 0.5f), 1.0f}, // FTR
+    DVec4{fc + (upDir * farHeight * 0.5f) - (rightDir * farWidth * 0.5f), 1.0f}, // FTL
   };
 
   for (TU32 vertId = 0; vertId < 8; ++vertId)
   { // Light view space.
-    boundingBoxVertices[vertId] = this->mLightViewMatrix.MultiplyVector(boundingBoxVertices[vertId]);
+    boundingBoxVertices[vertId] = this->mLightViewMatrix * boundingBoxVertices[vertId];
     // Update bounding box. (at least small point and at most biggest point)
     for (TU32 i = 0; i < 4; ++i)
     {

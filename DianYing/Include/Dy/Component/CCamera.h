@@ -59,11 +59,11 @@ public:
 
   /// @brief  Get view matrix.
   /// @return Valid immutable view matrix reference.
-  MDY_NODISCARD const DMatrix4x4& GetViewMatrix() const noexcept;
+  MDY_NODISCARD const DMat4& GetViewMatrix() const noexcept;
 
   /// @brief  Get projection matrix
   /// @return Valid immutable projection matirx reference.
-  MDY_NODISCARD const DMatrix4x4& GetProjectionMatrix() const noexcept;
+  MDY_NODISCARD const DMat4& GetProjectionMatrix() const noexcept;
 
   /// @brief  Get feature flag about mesh unclipping of this camera component.
   MDY_NODISCARD bool IsEnabledMeshUnclipping() const noexcept;
@@ -78,24 +78,24 @@ public:
   MDY_NODISCARD TF32 GetFieldOfView() const noexcept;
 
   /// @brief  Get camera's world position.
-  MDY_NODISCARD const DVector3& GetPosition() const noexcept;
+  MDY_NODISCARD const DVec3& GetPosition() const noexcept;
 
   /// @brief Check point is in camera frustum.
-  MDY_NODISCARD bool IsPointInFrustum(const DVector3& iPoint) const noexcept;
+  MDY_NODISCARD bool IsPointInFrustum(const DVec3& iPoint) const noexcept;
 
   /// @brief Check virtual sphere that is consisted of point and radius, is in camera frustum.
-  MDY_NODISCARD bool IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept;
+  MDY_NODISCARD bool IsSphereInFrustum(const DVec3& iPoint, TF32 iRadius) const noexcept;
 
   /// @brief Check this camera is using 3d listener.
   MDY_NODISCARD bool IsUsing3DListener() const noexcept;
 
   /// @brief  Get scale value of xy (start point) of viewport rectangle.
   /// @return Scaled start point of viewport rectangle.
-  MDY_NODISCARD const DVector2& GetViewportRectScaleXy() const noexcept;
+  MDY_NODISCARD const DVec2& GetViewportRectScaleXy() const noexcept;
 
   /// @brief  Get scale value of wh (start point) of viewport rectangle.
   /// @return Scaled width and height of viewport rectangle.
-  MDY_NODISCARD const DVector2& GetViewportRectScaleWh() const noexcept;
+  MDY_NODISCARD const DVec2& GetViewportRectScaleWh() const noexcept;
 
   /// @brief  Get (x, y, w, h) pixel value of viewport rectangle along with present resolution size.
   /// @return Pixelized (reflect present game resolution size) (x, y, w, h) integer container for representing viewport rectangle.
@@ -193,13 +193,13 @@ private:
   /// |  ux uy uz  0  ||   0  0  0 -y  | == |  ux uy uz -u*t  |  v(x, y, z) is camera's z-axis normal vector.
   /// |  vx vy vz  0  ||   0  0  0 -z  | == |  vx vy vz -v*t  |  u(x, y, z) is camera's y-axis normal vector.
   /// '-  0  0  0  0 -``-  0  0  0  1 -`    `-  0  0  0    1 -`  We need to translate all object's in view frustum as camera's origin.
-  DMatrix4x4      mViewMatrix;
+  DMat4      mViewMatrix;
   /// Projection matrix.
-  DMatrix4x4      mProjectionMatrix;
+  DMat4      mProjectionMatrix;
   /// Normalized Lookat direction vector
-  DVector3        mLookingAtDirection = {};
+  DVec3        mLookingAtDirection = {};
   /// Camera final posittion
-  DVector3        mPosition = {};
+  DVec3        mPosition = {};
   /// Frustum varaible.
   FFrustumTester  mFrustum  = {};
 
@@ -227,9 +227,9 @@ private:
   //!
 
   /// Viewport rect X, Y
-  DVector2  mViewportRectXY         = {0, 0};
+  DVec2  mViewportRectXY         = {0, 0};
   /// Viewport rect W, H
-  DVector2  mViewportRectWH         = {1, 1};
+  DVec2  mViewportRectWH         = {1, 1};
 
   /// Check flag if mesh is unclipped even though vertex position is out of bound.
   bool        mIsEnableMeshUnClipped  = false;

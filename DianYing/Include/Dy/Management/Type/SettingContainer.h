@@ -17,10 +17,10 @@
 #include <nlohmann/json_fwd.hpp>
 
 #include <Dy/Helper/GlobalType.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
 #include <Dy/Meta/Type/Input/EDyInputButton.h>
 #include <Dy/Meta/Type/Physics/EDyCollisionFilter.h>
 #include <Dy/Helper/Type/DClamp.h>
+#include <Dy/Helper/Type/DVector2.h>
 
 namespace dy
 {
@@ -56,7 +56,7 @@ struct DDySettingGameplay final
 {
   struct DDyShadow final
   { /// Global default shadow map size.
-    DVectorInt2 mShadowGlobalDefaultMap = {};
+    DIVec2 mShadowGlobalDefaultMap = {};
   };
 
   struct DDyGraphics final
@@ -70,7 +70,7 @@ struct DDySettingGameplay final
   /// Initial scene name. (or uuid?)
   std::string   mInitialSceneSpecifier           = MDY_INITIALIZE_EMPTYSTR;
   /// Initial game resolution scene.
-  DVectorInt2 mInitialResolution      = {};
+  DIVec2 mInitialResolution      = {};
   /// Shadow default map resolution or properties.
   DDyShadow     mShadow                 = {};
   /// Graphics properties.

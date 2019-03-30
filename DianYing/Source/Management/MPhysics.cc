@@ -39,7 +39,7 @@ namespace
 static const auto dyFlagTrigger = physx::PxPairFlag::eTRIGGER_DEFAULT;
 static const auto dyFlagHit     = physx::PxPairFlag::eNOTIFY_TOUCH_FOUND | physx::PxPairFlag::eCONTACT_DEFAULT;
 
-[[nodiscard]] std::pair<TU08, TU08> 
+[[nodiscard]] std::pair<TU8, TU8> 
 GetFilterResult(_MIN_ const physx::PxFilterData& data0, _MIN_ const physx::PxFilterData& data1)
 {
   const auto lhsId = data0.word0 & 0x000000FF;
@@ -47,12 +47,12 @@ GetFilterResult(_MIN_ const physx::PxFilterData& data0, _MIN_ const physx::PxFil
   const auto lhsShift = lhsId % 16;
   const auto rhsShift = rhsId % 16;
 
-  TU08 lhsFlag = 0;
+  TU8 lhsFlag = 0;
   if (lhsId < 16)       { lhsFlag = (data0.word1 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
   else if (lhsId < 32)  { lhsFlag = (data0.word2 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
   else if (lhsId < 48)  { lhsFlag = (data0.word3 & (0b11 << (rhsShift * 2))) >> rhsShift * 2; }
 
-  TU08 rhsFlag = 0;
+  TU8 rhsFlag = 0;
   if (rhsId < 16)       { rhsFlag = (data1.word1 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
   else if (rhsId < 32)  { rhsFlag = (data1.word2 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }
   else if (rhsId < 48)  { rhsFlag = (data1.word3 & (0b11 << (lhsShift * 2))) >> lhsShift * 2; }

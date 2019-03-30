@@ -17,6 +17,7 @@
 #include <Dy/Core/Thread/SDyIOConnectionHelper.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Helper/Library/HelperContainer.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {

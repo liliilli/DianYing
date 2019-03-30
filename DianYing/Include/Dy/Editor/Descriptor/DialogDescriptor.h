@@ -40,7 +40,7 @@ namespace dy::editor
 struct PDyGuiDialogDescriptor final
 {
   // Wrapping size of text when mIsWrappedTextLog is true.
-  DVector2  mTextLogWrappingSize        = {};
+  DVec2  mTextLogWrappingSize        = {};
   // Text of dialog subject header.
   std::string mDialogTitle                = "Dialog";
   // Text of dialog body.

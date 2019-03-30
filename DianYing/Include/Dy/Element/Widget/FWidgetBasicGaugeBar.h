@@ -84,7 +84,7 @@ public:
   /// @brief  Get position to be rendered in UI.
   /// @return Final rendered posiiton.
   ///
-  MDY_NODISCARD const DVector2& GetRenderPosition() const noexcept;
+  MDY_NODISCARD const DVec2& GetRenderPosition() const noexcept;
 
   ///
   /// @brief  Get padding value of this bar.

@@ -217,7 +217,7 @@ void CPhysicsRigidbody::pActivateDynamicNKinematicActor()
     MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
 
     // Create RigidDynamic instance.
-    this->mOwnerInternalActor = refSdk.createRigidDynamic(physx::PxTransform(worldPos, worldRot));
+    this->mOwnerInternalActor = refSdk.createRigidDynamic(physx::PxTransform(FVec3::ToPxVec3(worldPos), worldRot));
     this->mOwnerInternalActor->setActorFlag(physx::PxActorFlag::eVISUALIZATION, true);
 
     auto& dynamicActor = static_cast<physx::PxRigidDynamic&>(*this->mOwnerInternalActor);
@@ -251,7 +251,7 @@ void CPhysicsRigidbody::pActivateStaticActor()
     MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->mOwnerInternalActor), "Internal rigidbody actor must be null.");
 
     // Create RigidDynamic instance.
-    this->mOwnerInternalActor = refSdk.createRigidStatic(physx::PxTransform(worldPos, worldRot));
+    this->mOwnerInternalActor = refSdk.createRigidStatic(physx::PxTransform(FVec3::ToPxVec3(worldPos), worldRot));
     this->mOwnerInternalActor->setActorFlag(physx::PxActorFlag::eVISUALIZATION, true);
   }
 }

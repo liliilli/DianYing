@@ -16,6 +16,8 @@
 #include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
 #include <Dy/Meta/Information/MetaInfoModelAnim.h>
 #include <Dy/Helper/Library/HelperFilesystem.h>
+#include <Math/Utility/XLinearMath.h>
+#include <Dy/Helper/Math/Math.h>
 
 namespace dy
 {
@@ -81,7 +83,7 @@ const std::string& FDyModelAnimScrapInformation::GetSpecifierName() const noexce
   return this->mSpecifierName;
 }
 
-DVector3 FDyModelAnimScrapInformation::GetInterpolatedScaling(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
+DVec3 FDyModelAnimScrapInformation::GetInterpolatedScaling(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
 {
   const auto& refBone = this->mAnimation.mAnimationNodeList[iBoneIndex];
   
@@ -198,7 +200,7 @@ DQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 iEl
   }
 }
 
-DVector3 FDyModelAnimScrapInformation::GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iIdAnimNode, _MIN_ bool iIsLooped) const
+DVec3 FDyModelAnimScrapInformation::GetInterpolatedPosition(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iIdAnimNode, _MIN_ bool iIsLooped) const
 {
   const auto& refBone = this->mAnimation.mAnimationNodeList[iIdAnimNode];
   

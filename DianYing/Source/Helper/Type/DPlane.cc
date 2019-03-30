@@ -14,6 +14,8 @@
 
 /// Header file
 #include <Dy/Helper/Type/DPlane.h>
+#include <Dy/Helper/Math/Math.h>
+#include <Math/Utility/XMath.h>
 
 namespace dy
 {
@@ -27,12 +29,12 @@ void DPlane::Normalize()
   this->D /= magnitude;
 }
 
-DVector3 DPlane::GetNormalVector() const noexcept
+DVec3 DPlane::GetNormalVector() const noexcept
 {
-  return DVector3{this->A, this->B, this->C};
+  return DVec3{this->A, this->B, this->C};
 }
 
-DPlane::EStatus DPlane::CheckPointStatusOnPlane(const DVector3& iPoint) const noexcept
+DPlane::EStatus DPlane::CheckPointStatusOnPlane(const DVec3& iPoint) const noexcept
 {
   const auto result = GetDistanceFrom(iPoint, false);
   if (math::IsNearlyZero(result, 0.0001f) == true) 
@@ -43,7 +45,7 @@ DPlane::EStatus DPlane::CheckPointStatusOnPlane(const DVector3& iPoint) const no
   { return DPlane::EStatus::Behind; }
 }
 
-TF32 DPlane::GetDistanceFrom(const DVector3& iPoint, bool iIsAbs) const noexcept
+TF32 DPlane::GetDistanceFrom(const DVec3& iPoint, bool iIsAbs) const noexcept
 {
   const auto result = iPoint.X * this->A + iPoint.Y * this->B * iPoint.Z * this->C + this->D;
   const auto parent = this->GetNormalVector().GetLength();

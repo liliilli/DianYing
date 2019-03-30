@@ -14,15 +14,8 @@
 ///
 
 #include <cstdint>
-
-//!
-//! Forward declaration
-//!
-
-namespace dy {
-struct DVector2;
-struct DVector3;
-} /// ::opgs16 namespace
+#include <Dy/Helper/Type/DVector2.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 //!
 //! Declaration
@@ -34,7 +27,8 @@ namespace dy::random {
 /// @enum EDyRandomPolicy
 /// @brief Could be used in decinding random distribution policy.
 ///
-enum class EDyRandomPolicy {
+enum class EDyRandomPolicy 
+{
   Uniform,
   Discrete,
 };
@@ -80,24 +74,24 @@ enum class EDyRandomPolicy {
 [[nodiscard]] float RandomFloatRange(const float from, const float prior_to) noexcept;
 
 ///
-/// @brief Get DVector2 (x, y) instance have length 'length'.
+/// @brief Get DVec2 (x, y) instance have length 'length'.
 ///
-[[nodiscard]] DVector2 RandomVector2Length(float length) noexcept;
+[[nodiscard]] DVec2 RandomVector2Length(float length) noexcept;
 
 ///
-/// @brief Get DVector3 (x, y, z) instance have length 'length'.
+/// @brief Get DVec3 (x, y, z) instance have length 'length'.
 ///
-[[nodiscard]] DVector3 RandomVector3Length(float length) noexcept;
+[[nodiscard]] DVec3 RandomVector3Length(float length) noexcept;
 
 ///
-/// @brief Get DVector2 (x, y) which have length that in range from 'from' to 'priorTo'
+/// @brief Get DVec2 (x, y) which have length that in range from 'from' to 'priorTo'
 ///
-[[nodiscard]] DVector2 RandomVector2Range(EDyRandomPolicy policy, float from, float priorTo);
+[[nodiscard]] DVec2 RandomVector2Range(EDyRandomPolicy policy, float from, float priorTo);
 
 ///
-/// @brief Get DVector3 (x, y, z) which have length that in range from 'from' to 'priorTo'
+/// @brief Get DVec3 (x, y, z) which have length that in range from 'from' to 'priorTo'
 ///
-[[nodiscard]] DVector3 RandomVector3Range(EDyRandomPolicy policy, float from, float priorTo);
+[[nodiscard]] DVec3 RandomVector3Range(EDyRandomPolicy policy, float from, float priorTo);
 
 } /// ::opgs16::math namespace
 

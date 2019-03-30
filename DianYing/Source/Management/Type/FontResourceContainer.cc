@@ -48,8 +48,8 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
     auto fileSize = std::ftell(fpRes);
     std::fseek(fpRes, 0, SEEK_SET);
 
-    std::vector<TU08> buffer(fileSize);
-    std::fread(buffer.data(), sizeof(TU08), buffer.size(), fpRes);
+    std::vector<TU8> buffer(fileSize);
+    std::fread(buffer.data(), sizeof(TU8), buffer.size(), fpRes);
     std::fclose(fpRes);
 
     return zlib::DecompressString({buffer.begin(), buffer.end()});
@@ -65,7 +65,7 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
   const nlohmann::json& characterAtlas = jsonAtlas["Characters"];
   for (auto objIterator = characterAtlas.begin(); objIterator != characterAtlas.end(); ++objIterator)
   {
-    const TC16 charCode = std::stoi(objIterator.key());
+    const TChr16 charCode = std::stoi(objIterator.key());
     MDY_ASSERT_MSG(this->mCharContainer.find(charCode) == this->mCharContainer.end(), "Unexpected error occurred.");
 
     auto [_, isSucceeded] = mCharContainer.try_emplace(
@@ -104,12 +104,12 @@ FDyFontResourceContainer::~FDyFontResourceContainer()
   glDeleteTextures(1, &this->mTexImageResId);
 }
 
-bool FDyFontResourceContainer::IsCharacterGlyphExist(const TC16 fontCode)
+bool FDyFontResourceContainer::IsCharacterGlyphExist(const TChr16 fontCode)
 {
   return this->mCharContainer.find(fontCode) != this->mCharContainer.end();
 }
 
-const DDyFontCharacterInfo& FDyFontResourceContainer::GetGlyphCharacter(const TC16 fontCode)
+const DDyFontCharacterInfo& FDyFontResourceContainer::GetGlyphCharacter(const TChr16 fontCode)
 {
   if (this->IsCharacterGlyphExist(fontCode) == true)  { return this->mCharContainer[fontCode]; }
   else                                                { return sDefaultFontCharacterInfo; }
@@ -121,7 +121,7 @@ TI32 FDyFontResourceContainer::GetLinefeedHeight(const TI32 fontSize) const noex
   return 0;
 }
 
-const DDyFontCharacterInfo& FDyFontResourceContainer::operator[](const TC16 fontCode)
+const DDyFontCharacterInfo& FDyFontResourceContainer::operator[](const TChr16 fontCode)
 {
   return this->mCharContainer[fontCode];
 }

@@ -62,7 +62,7 @@ private:
   std::vector<std::unique_ptr<TDyResourceBinderMaterial>>  mMaterialResource = {};
   std::vector<bool> mSupportInstancingFlags;
 
-  DMatrix4x4 mModelInitialTransform = DMatrix4x4::IdentityMatrix();
+  DMat4 mModelInitialTransform = DMat4::Identity();
 };
 
 } /// ::dy namespace

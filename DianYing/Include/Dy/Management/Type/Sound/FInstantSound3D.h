@@ -29,7 +29,7 @@ public:
   FInstantSound3D(
     const std::string& iSoundSpecifier, 
     const std::string& iSoundChannel,
-    const DVector3& iPosition,
+    const DVec3& iPosition,
     TF32 iVolumeMultiplier, TF32 iPitchMultiplier, TF32 iDelay,
     TF32 iMinDistance, TF32 iMaxDistance,
     bool iIsLooped);
@@ -46,7 +46,7 @@ private:
   TDyInformationBinderSound mBinderClipResource;
   /// @brief For lazy initialization of sound resource.
   std::string mSoundChannelSpecifier = "";
-  DVector3 mWorldPosition;
+  DVec3 mWorldPosition;
   TF32     mMaxVolumeDistance;
   TF32     mMinVolumeDistance;
   TF32     mInitVolume;

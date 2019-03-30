@@ -93,7 +93,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
     this->mAddrMainDirectionalShadow = reinterpret_cast<ptrdiff_t>(ptrLight);
     if (this->mAddrMainDirectionalShadow == 0) 
     {
-      this->mViewMatrix = DMatrix4x4{};
+      this->mViewMatrix = DMat4{};
     }
     else
     { 
@@ -191,7 +191,7 @@ void FBtRenderItemCsmShadow::OnRender()
     auto& [__, iMainValidMesh, iMainValidMaterial] = *itemList.front();
     const auto instancingId = *iMainValidMesh->GetInstancingBufferId();
 
-    std::vector<DMatrix4x4> instancingMatrixes;
+    std::vector<DMat4> instancingMatrixes;
     instancingMatrixes.reserve(itemList.size());
 
     for (auto& item : itemList)
@@ -209,10 +209,10 @@ void FBtRenderItemCsmShadow::OnRender()
     glBindVertexArray(iMainValidMesh->GetVertexArrayId());
     glBindBuffer(GL_ARRAY_BUFFER, instancingId);
     glBufferData(GL_ARRAY_BUFFER, 
-      itemList.size() * sizeof(DMatrix4x4), 
+      itemList.size() * sizeof(DMat4), 
       instancingMatrixes.data(), 
       GL_DYNAMIC_DRAW);
-    glBindVertexBuffer(1, instancingId, 0, sizeof(DMatrix4x4));
+    glBindVertexBuffer(1, instancingId, 0, sizeof(DMat4));
 
     glEnableVertexAttribArray(10);
     glEnableVertexAttribArray(11);

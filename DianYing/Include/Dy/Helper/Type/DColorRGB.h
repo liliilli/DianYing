@@ -52,11 +52,11 @@ struct DColorRGB final
   //!
 
   ///
-  /// @brief Can be convert DVector3 explicitly, but alpha information passed.
+  /// @brief Can be convert DVec3 explicitly, but alpha information passed.
   ///
-  explicit operator DVector3() const noexcept
+  explicit operator DVec3() const noexcept
   {
-    return DVector3{this->R, this->G, this->B};
+    return DVec3{this->R, this->G, this->B};
   }
 
   explicit operator glm::vec3() const noexcept
