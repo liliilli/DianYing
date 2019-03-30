@@ -426,6 +426,7 @@
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
     <ClCompile Include="Source\Helper\Type\DArea3D.cc" />
+    <ClCompile Include="Source\Helper\Type\DBounds.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\DUuid.cc" />
     <ClCompile Include="Source\Management\MGameTimer.cc" />
@@ -801,6 +802,7 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DArea3D.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DBounds.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DSphere.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DPlane.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DUuid.h" />

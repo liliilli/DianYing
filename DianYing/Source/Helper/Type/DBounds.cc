@@ -12,27 +12,17 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Helper/Type/DArea3D.h>
-#include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Helper/Type/DBounds.h>
+#include <foundation/PxBounds3.h>
 #include <Dy/Helper/Type/DVector3.h>
 
-namespace dy::math
+namespace dy
 {
 
-void to_json(nlohmann::json& oJson, const DArea3D<TReal>& iArea)
+DBounds3D FBounds3D::CreateWith(const physx::PxBounds3& iBound)
 {
-  oJson = nlohmann::json
-  {
-    {"Start", iArea.GetStartPoint()},
-    {"Length", iArea.GetWhd()}
-  };
-}
-
-void from_json(const nlohmann::json& iJson, DArea3D<TReal>& oArea)
-{
-  oArea.SetStartPoint(json::GetValueFrom<DVec3>(iJson, "Start"));
-  oArea.SetWhd(json::GetValueFrom<DVec3>(iJson, "Length"));
+  return {FVec3::CreateVec3(iBound.minimum), FVec3::CreateVec3(iBound.maximum)};
 }
 
 } /// ::dy namespace
+

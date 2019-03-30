@@ -1,4 +1,4 @@
-#include <precompiled.h>
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,27 +12,31 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Helper/Type/DArea3D.h>
-#include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/Type/DVector3.h>
+#include <Dy/Helper/GlobalType.h>
+#include <Math/Type/Micellanous/DBounds2D.h>
+#include <Math/Type/Micellanous/DBounds3D.h>
+
+namespace physx 
+{
+class PxBounds3;
+}
+
+namespace dy
+{
+
+using DBounds2D = math::DBounds2D<TReal>;
+using DBounds3D = math::DBounds3D<TReal>;
+
+struct FBounds3D final
+{
+  static DBounds3D CreateWith(const physx::PxBounds3& iBound);
+};
+
+} /// ::dy namespace
 
 namespace dy::math
 {
 
-void to_json(nlohmann::json& oJson, const DArea3D<TReal>& iArea)
-{
-  oJson = nlohmann::json
-  {
-    {"Start", iArea.GetStartPoint()},
-    {"Length", iArea.GetWhd()}
-  };
-}
 
-void from_json(const nlohmann::json& iJson, DArea3D<TReal>& oArea)
-{
-  oArea.SetStartPoint(json::GetValueFrom<DVec3>(iJson, "Start"));
-  oArea.SetWhd(json::GetValueFrom<DVec3>(iJson, "Length"));
-}
 
-} /// ::dy namespace
+} /// ::dy::math namespace

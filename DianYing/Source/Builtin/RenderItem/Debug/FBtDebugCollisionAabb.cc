@@ -89,15 +89,17 @@ void FBtRenderDebugCollisionAabb::RenderObject(
    */
   const auto& b = iRefCollider.GetBound();
   std::vector<DVec3> aabbVbo;
-  aabbVbo.emplace_back(b.mMax.X, b.mMax.Y, b.mMin.Z);
-  aabbVbo.emplace_back(b.mMin.X, b.mMax.Y, b.mMin.Z);
-  aabbVbo.emplace_back(b.mMin.X, b.mMax.Y, b.mMax.Z);
-  aabbVbo.emplace_back(b.mMax.X, b.mMax.Y, b.mMax.Z);
+  const auto& min = b.GetMinimumPoint();
+  const auto& max = b.GetMaximumPoint();
+  aabbVbo.emplace_back(max.X, max.Y, min.Z);
+  aabbVbo.emplace_back(min.X, max.Y, min.Z);
+  aabbVbo.emplace_back(min.X, max.Y, max.Z);
+  aabbVbo.emplace_back(max.X, max.Y, max.Z);
 
-  aabbVbo.emplace_back(b.mMin.X, b.mMin.Y, b.mMin.Z);
-  aabbVbo.emplace_back(b.mMax.X, b.mMin.Y, b.mMin.Z);
-  aabbVbo.emplace_back(b.mMax.X, b.mMin.Y, b.mMax.Z);
-  aabbVbo.emplace_back(b.mMin.X, b.mMin.Y, b.mMax.Z);
+  aabbVbo.emplace_back(min.X, min.Y, min.Z);
+  aabbVbo.emplace_back(max.X, min.Y, min.Z);
+  aabbVbo.emplace_back(max.X, min.Y, max.Z);
+  aabbVbo.emplace_back(min.X, min.Y, max.Z);
 
   // Buffer binding.
   glBindBuffer(GL_ARRAY_BUFFER, this->mBinderAABB->GetVertexBufferId());

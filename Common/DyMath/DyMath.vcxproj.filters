@@ -27,6 +27,8 @@
     <ClInclude Include="Include\Math\Type\Micellanous\EProjection.h" />
     <ClInclude Include="Include\Math\Utility\XRandom.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\ERandomPolicy.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DBounds2D.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DBounds3D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Math\Common\Inline\TGlobalTypes.inl" />
@@ -74,5 +76,12 @@
     <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32.inl" />
     <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32Common.inl" />
     <None Include="Include\Math\Utility\Inline\XRandom.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds2D\DBounds2DReal.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds2D\DBounds2DInt.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds2D\DBounds2DCommon.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\MinMax.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DInt.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DReal.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DCommon.inl" />
   </ItemGroup>
 </Project>

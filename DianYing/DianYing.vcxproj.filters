@@ -367,6 +367,7 @@
     <ClCompile Include="data\Script\Astronaut\PlanetScript.cc" />
     <ClCompile Include="Source\Builtin\Texture\FDyBtTexWhiteTexture.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\FDyBtShOITPlainColor.cc" />
+    <ClCompile Include="Source\Helper\Type\DBounds.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -896,6 +897,7 @@
     <ClInclude Include="Include\Dy\Builtin\Texture\FDyBtTexWhiteTexture.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\FDyBtShOITPlainColor.h" />
     <ClInclude Include="Include\Dy\Helper\Type\EAxis.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DBounds.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

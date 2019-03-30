@@ -130,6 +130,8 @@
     <ClCompile Include="Source\DArea2D\TestDArea2DInt.cc" />
     <ClCompile Include="Source\DArea2D\TestDArea2DReal.cc" />
     <ClCompile Include="Source\DArea3D\TestDArea3DInt.cc" />
+    <ClCompile Include="Source\DBounds\TestDBounds2D.cc" />
+    <ClCompile Include="Source\DBounds\TestDBounds3D.cc" />
     <ClCompile Include="Source\DClamp\TestDClamp.cc" />
     <ClCompile Include="Source\DMatrix\TestDMatrix2.cc" />
     <ClCompile Include="Source\DMatrix\TestDMatrix3.cc" />
