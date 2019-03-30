@@ -462,7 +462,6 @@
     <ClCompile Include="Source\Helper\Library\HelperZlib.cc" />
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
     <ClCompile Include="Source\Helper\Library\HelperJson.cc" />
-    <ClCompile Include="Source\Helper\Math\Math.cc" />
     <ClCompile Include="Source\Helper\Math\Random.cc" />
     <ClCompile Include="Source\Helper\Internal\FThreadPool.cc" />
     <ClCompile Include="Source\Helper\Type\DArea2D.cc" />
@@ -1001,7 +1000,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\XGeometryTypes.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\DImageBinaryBuffer.h" />
     <ClInclude Include="Include\Dy\Helper\System\Macroes.h" />
-    <ClInclude Include="Include\Dy\Helper\Math\Math.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Random.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DColorRGBA.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DColorRGBA32.h" />

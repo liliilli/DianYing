@@ -17,6 +17,7 @@
 #include <Dy/Element/Type/DTransform.h>
 #include <Dy/Helper/Type/DVector3.h>
 #include <Dy/Helper/Type/EAxis.h>
+#include <Dy/Helper/Type/DMatrix3x3.h>
 #include <Dy/Helper/Type/DMatrix4x4.h>
 #include <Dy/Helper/Type/DQuaternion.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
@@ -127,7 +128,7 @@ public:
   /// @param[in] eulerAngleValue Euler angle value to set on.
   void SetLocalEulerAngle(_MIN_ const DVec3& eulerAngleValue) noexcept;
   /// @brief Set local euler angle with quaternion.
-  void SetLocalEulerAngleWithQuaternion(_MIN_ const DQuaternion& iQuat);
+  void SetLocalEulerAngleWithQuaternion(_MIN_ const DQuat& iQuat);
 
   /// @brief The method adds world rotation angle values.
   /// When input value is positive, axis rotates clockwise.
@@ -157,7 +158,7 @@ public:
   MDY_NODISCARD const DMat4 GetRotationMatrix() noexcept;
 
   /// @brief Get rotation quaternion instance.
-  MDY_NODISCARD const DQuaternion& GetRotationQuaternion() noexcept;
+  MDY_NODISCARD const DQuat& GetRotationQuaternion() noexcept;
 
   /// @brief The method returns Model matrix, M = TRS
   ///
@@ -222,25 +223,25 @@ private:
   void MDY_PRIVATE(SetWorldScaleOrigin)(_MIN_ const DVec3& iParentPrdScale);
 
 private:
-  MDY_TRANSIENT DVec3    mWorldRelativeOriginPosition  = {};
-  MDY_TRANSIENT DVec3    mLocalRelAlignedPosition = {};
-  MDY_TRANSIENT DVec3    mWorldRelAlignedPosition = {};
-  MDY_TRANSIENT DVec3    mWorldSumAlignedPosition = {};
-  MDY_TRANSIENT DVec3    mFinalRenderingPosition  = {};
+  MDY_TRANSIENT DVec3 mWorldRelativeOriginPosition  = {};
+  MDY_TRANSIENT DVec3 mLocalRelAlignedPosition = {};
+  MDY_TRANSIENT DVec3 mWorldRelAlignedPosition = {};
+  MDY_TRANSIENT DVec3 mWorldSumAlignedPosition = {};
+  MDY_TRANSIENT DVec3 mFinalRenderingPosition  = {};
 
-  MDY_TRANSIENT DVec3    mFromParentWorldEulerAngle        = {};
-  MDY_TRANSIENT DMat3  mPresentPositionBasis;
+  MDY_TRANSIENT DVec3 mFromParentWorldEulerAngle = {};
+  MDY_TRANSIENT DMat3 mPresentPositionBasis = {};
   MDY_TRANSIENT std::array<DVec3, 3> mDisplayMovementBasis = { DVec3::UnitX(), DVec3::UnitY(), DVec3::UnitZ() };
-  MDY_TRANSIENT DVec3    mWorldSumEulerAngle               = {};
-  MDY_TRANSIENT DVec3    mFinalRenderingEulerAngle         = {};
-  MDY_TRANSIENT DQuaternion mFinalRenderRotationQuaternion    = {DVec3{0, 0, 0}};
-  MDY_TRANSIENT std::array<DVec3, 3> mToChildBasis         = { DVec3::UnitX(), DVec3::UnitY(), DVec3::UnitZ() };
+  MDY_TRANSIENT DVec3 mWorldSumEulerAngle = {};
+  MDY_TRANSIENT DVec3 mFinalRenderingEulerAngle = {};
+  MDY_TRANSIENT DQuat mFinalRenderRotationQuaternion = {};
+  MDY_TRANSIENT std::array<DVec3, 3> mToChildBasis = { DVec3::UnitX(), DVec3::UnitY(), DVec3::UnitZ() };
 
-  MDY_TRANSIENT DVec3    mFromParentWorldScale = DVec3{ 1.f };
-  MDY_TRANSIENT DVec3    mWorldProductScale    = DVec3{ 1.f };
-  MDY_TRANSIENT DVec3    mFinalRenderingScale  = DVec3{ 1.f };
+  MDY_TRANSIENT DVec3 mFromParentWorldScale = DVec3{ 1.f };
+  MDY_TRANSIENT DVec3 mWorldProductScale    = DVec3{ 1.f };
+  MDY_TRANSIENT DVec3 mFinalRenderingScale  = DVec3{ 1.f };
 
-  MDY_TRANSIENT DMat4  mFinalRenderingTransform;
+  MDY_TRANSIENT DMat4 mFinalRenderingTransform = DMat4::Identity();
 
   MDY_TRANSIENT bool mIsMovementBasisDirty        = true;
   MDY_TRANSIENT bool mIsWorldSumRotationAngleDirty= true;

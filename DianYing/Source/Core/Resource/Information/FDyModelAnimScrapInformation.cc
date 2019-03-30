@@ -17,7 +17,7 @@
 #include <Dy/Meta/Information/MetaInfoModelAnim.h>
 #include <Dy/Helper/Library/HelperFilesystem.h>
 #include <Math/Utility/XLinearMath.h>
-#include <Dy/Helper/Math/Math.h>
+
 
 namespace dy
 {
@@ -140,7 +140,7 @@ DVec3 FDyModelAnimScrapInformation::GetInterpolatedScaling(_MIN_ TF32 iElapsedTi
   }
 }
 
-DQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
+DQuat FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 iElapsedTime, _MIN_ TU32 iBoneIndex, _MIN_ bool iIsLooped) const
 {
   const auto& refBone = this->mAnimation.mAnimationNodeList[iBoneIndex];
   
@@ -157,7 +157,7 @@ DQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 iEl
   if (num == 1)
   {
     const auto& refRot = refBone.mRotationList.front();
-    return DQuaternion{refRot.mX, refRot.mY, refRot.mZ, refRot.mW};
+    return DQuat{refRot.mX, refRot.mY, refRot.mZ, refRot.mW};
   }
 
   for (TU32 i = 0; i < num; ++i)
@@ -180,8 +180,8 @@ DQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 iEl
         / (this->mAnimation.mAnimationHeader.mDurationSecond - refLastBone.mStartSecond);
 
       // Get s-interpolated quaternion.
-      const DQuaternion left  = {refLastBone.mX, refLastBone.mY, refLastBone.mZ, refLastBone.mW};
-      const DQuaternion right = {refFirstBone.mX, refFirstBone.mY, refFirstBone.mZ, refFirstBone.mW};
+      const DQuat left  = {refLastBone.mX, refLastBone.mY, refLastBone.mZ, refLastBone.mW};
+      const DQuat right = {refFirstBone.mX, refFirstBone.mY, refFirstBone.mZ, refFirstBone.mW};
       return math::Slerp(left, right, v);
     }
   }
@@ -194,8 +194,8 @@ DQuaternion FDyModelAnimScrapInformation::GetInterpolatedRotation(_MIN_ TF32 iEl
       / (refRhs.mStartSecond - refLhs.mStartSecond);
 
     // Get s-interpolated quaternion.
-    const DQuaternion left  = {refLhs.mX, refLhs.mY, refLhs.mZ, refLhs.mW};
-    const DQuaternion right = {refRhs.mX, refRhs.mY, refRhs.mZ, refRhs.mW};
+    const DQuat left  = {refLhs.mX, refLhs.mY, refLhs.mZ, refLhs.mW};
+    const DQuat right = {refRhs.mX, refRhs.mY, refRhs.mZ, refRhs.mW};
     return math::Slerp(left, right, v);
   }
 }

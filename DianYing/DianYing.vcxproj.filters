@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Source\precompiled.cc" />
-    <ClCompile Include="Source\Helper\Math\Math.cc" />
     <ClCompile Include="Source\Helper\Math\Random.cc" />
     <ClCompile Include="Libraries\imgui\imgui\imgui.cpp" />
     <ClCompile Include="Libraries\imgui\imgui\imgui_impl_opengl3.cpp" />
@@ -375,7 +374,6 @@
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Include\Dy\Management\Interface\ISingletonCrtp.h" />
     <ClInclude Include="Include\Dy\Helper\Math\Random.h" />
-    <ClInclude Include="Include\Dy\Helper\Math\Math.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui.h" />
     <ClInclude Include="Libraries\imgui\imgui\imconfig.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />

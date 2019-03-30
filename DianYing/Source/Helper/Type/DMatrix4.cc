@@ -68,12 +68,12 @@ DMat4 FMat4::CreateWithTranslation(const DVec3& vec)
 
 DMat4 FMat4::Rotate(const DMat4& matrix, const DVec3& angle, bool isDegree)
 {
-  return matrix * DQuaternion(angle, isDegree).GetRotationMatrix4x4();
+  return matrix * DQuat(angle, isDegree).ToMatrix4();
 }
 
-DMat4 FMat4::Rotate(const DMat4& matrix, const DQuaternion& quat)
+DMat4 FMat4::Rotate(const DMat4& matrix, const DQuat& quat)
 {
-  return matrix * quat.GetRotationMatrix4x4();
+  return matrix * quat.ToMatrix4();
 }
 
 DMat4 FMat4::Scale(const DMat4& matrix, const DVec3& scale)
@@ -113,7 +113,7 @@ DMat4 FMat4::CreateMat4(const glm::mat4& mat) noexcept
 
 DMat4 FMat4::CreateMat4(const physx::PxTransform& transform) noexcept
 {
-  auto quatMatrix = DQuaternion{transform.q}.GetRotationMatrix4x4();
+  auto quatMatrix = FQuat::CreateQuat(transform.q).ToMatrix4();
   quatMatrix[3][0] = transform.p.x;
   quatMatrix[3][1] = transform.p.y;
   quatMatrix[3][2] = transform.p.z;

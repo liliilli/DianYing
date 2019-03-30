@@ -23,7 +23,7 @@
 #include <Dy/Element/Widget/FWidgetBasicGaugeBar.h>
 #include <Dy/Management/MInput.h>
 #include <Dy/Management/Internal/MProfiling.h>
-#include <Dy/Helper/Math/Math.h>
+
 #include <Dy/Helper/Math/Random.h>
 #include <Dy/Management/MGameTimer.h>
 #include "Dy/Element/Widget/FWidgetImage.h"
