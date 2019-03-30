@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_HELPER_TYPE_PLANE_H
-#define GUARD_DY_HELPER_TYPE_PLANE_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,13 +12,31 @@
 /// SOFTWARE.
 ///
 
-#include <Math/Type/Shape/DPlane.h>
+#include <Dy/Helper/GlobalType.h>
+#include <Math/Type/Micellanous/DBounds2D.h>
+#include <Math/Type/Micellanous/DBounds3D.h>
+
+namespace physx 
+{
+class PxBounds3;
+}
 
 namespace dy
 {
 
-using DPlane = math::DPlane<TReal>;
+using DBounds2D = math::DBounds2D<TReal>;
+using DBounds3D = math::DBounds3D<TReal>;
+
+struct FBounds3D final
+{
+  static DBounds3D CreateWith(const physx::PxBounds3& iBound);
+};
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_HELPER_TYPE_PLANE_H
+namespace dy::math
+{
+
+
+
+} /// ::dy::math namespace

@@ -77,6 +77,11 @@ public:
   void SetDepth(TValueType depth) noexcept;
   /// @brief Get depth value.
   TValueType GetDepth() const noexcept;
+  
+  /// @brief Set (width, height, depth) as vector3 into area.
+  void SetWhd(const DVector3<TValueType>& whd);
+  /// @brief Get (width, height, depth) as vector3.
+  DVector3<TValueType> GetWhd() const noexcept;
 
 private:
   /// @brief Relocate position to be satisfied width, height and depth will be positive.
@@ -129,6 +134,18 @@ public:
   void SetDepth(TValueType depth) noexcept;
   /// @brief Get depth value.
   TValueType GetDepth() const noexcept;
+    
+  /// @brief Set (width, height, depth) as vector3 into area.
+  void SetWhd(const DVector3<TValueType>& whd);
+  /// @brief Get (width, height, depth) as vector3.
+  DVector3<TValueType> GetWhd() const noexcept;
+  
+  /// @brief Check value has NaN.
+  bool HasNaN() const noexcept;
+  /// @brief Check value has Infinity.
+  bool HasInfinity() const noexcept;
+  /// @brief Check values are normal value, neither NaN nor Inf.
+  bool HasOnlyNormal() const noexcept;
 
 private:
   /// @brief Relocate position to be satisfied width, height and depth will be positive.

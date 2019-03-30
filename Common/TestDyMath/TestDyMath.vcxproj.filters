@@ -71,5 +71,11 @@
     <ClCompile Include="Source\DQuat\TestDQuat.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DBounds\TestDBounds2D.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DBounds\TestDBounds3D.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

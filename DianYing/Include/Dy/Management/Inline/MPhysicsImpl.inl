@@ -115,7 +115,7 @@ inline void MPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
       const auto pxBound = physx::PxShapeExt::getWorldBounds(*shape, refRigidActor);
       auto* ptrCollider = static_cast<CBasePhysicsCollider*>(shape->userData);
       MDY_ASSERT_MSG(ptrCollider != nullptr, "Unexpected error occurred.");
-      ptrCollider->UpdateBound(pxBound);
+      ptrCollider->UpdateBound(FBounds3D::CreateWith(pxBound));
     }
   }
 }

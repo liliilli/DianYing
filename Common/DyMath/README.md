@@ -56,7 +56,8 @@ Dy(DianYing) Common Math (a.k.a `DyMath`) has value category to support automati
 
 ## Log
 
-2019-03-30 Add Quaternion. Move Random function into DyMath
+2019-03-30 Add Quaternion. Move Random function into DyMath	
+2019-03-31 Add DBounds (AABB) 2D & 3D Type. Add `ExtractMin` `ExtractMax` math api for DVectors.
 
 ## Copyright
 

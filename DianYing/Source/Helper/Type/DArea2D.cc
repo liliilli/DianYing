@@ -17,39 +17,24 @@
 
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Helper/Type/DVector2.h>
 
-//!
-//! Forward declaration & local translation unit data
-//!
-
-namespace
+namespace dy::math
 {
 
-MDY_SET_IMMUTABLE_STRING(sHeader_LeftDown,  "LeftDown");
-MDY_SET_IMMUTABLE_STRING(sHeader_RightUp,   "RightUp");
-
-} /// ::unnamed namespace
-
-//!
-//! Implementation
-//!
-
-namespace dy
+void to_json(nlohmann::json& oJson, const DArea2D<TReal>& iArea)
 {
-
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DArea2D& p)
-{
-  j = nlohmann::json
+  oJson = nlohmann::json
   {
-      {(sHeader_LeftDown), p.mLeftDown},
-      {(sHeader_RightUp),  p.mRightUp}
+    {"Start", iArea.GetStartPoint()},
+    {"Length", iArea.GetWh()}
   };
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DArea2D& p)
+void from_json(const nlohmann::json& iJson, DArea2D<TReal>& oArea)
 {
-  p.mLeftDown = json::GetValueFrom<DVec2>(j, sHeader_LeftDown);
-  p.mRightUp  = json::GetValueFrom<DVec2>(j, sHeader_RightUp);
+  oArea.SetStartPoint(json::GetValueFrom<DVec2>(iJson, "Start"));
+  oArea.SetWh(json::GetValueFrom<DVec2>(iJson, "Length"));
 }
 
 } /// ::dy namespace

@@ -65,7 +65,7 @@ EDySuccess CBasePhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMeta
   return DY_SUCCESS;
 }
 
-void CBasePhysicsCollider::UpdateBound(_MIN_ const DArea3D& iArea)
+void CBasePhysicsCollider::UpdateBound(const DBounds3D& iArea)
 {
   this->mAABBBound = iArea;
 }
@@ -105,7 +105,7 @@ EDyColliderType CBasePhysicsCollider::GetColliderType() const noexcept
   return this->mColliderType;
 }
 
-const DArea3D& CBasePhysicsCollider::GetBound() const noexcept
+const DBounds3D& CBasePhysicsCollider::GetBound() const noexcept
 {
   return this->mAABBBound;
 }

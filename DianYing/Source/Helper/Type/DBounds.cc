@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_HELPER_TYPE_PLANE_H
-#define GUARD_DY_HELPER_TYPE_PLANE_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,13 +12,17 @@
 /// SOFTWARE.
 ///
 
-#include <Math/Type/Shape/DPlane.h>
+#include <Dy/Helper/Type/DBounds.h>
+#include <foundation/PxBounds3.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy
 {
 
-using DPlane = math::DPlane<TReal>;
+DBounds3D FBounds3D::CreateWith(const physx::PxBounds3& iBound)
+{
+  return {FVec3::CreateVec3(iBound.minimum), FVec3::CreateVec3(iBound.maximum)};
+}
 
 } /// ::dy namespace
 
-#endif /// GUARD_DY_HELPER_TYPE_PLANE_H

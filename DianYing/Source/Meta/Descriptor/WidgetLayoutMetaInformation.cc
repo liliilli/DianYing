@@ -45,8 +45,8 @@ PDyMetaWidgetHorizontalLayout::CreateMetaInformation(_MIN_ const nlohmann::json&
         "Parent": "Root",
         "Details": {
           "Area": {
-            "LeftDown": { "X": 0.0, "Y": 0.0 },
-            "RightUp" : { "X": 1.0, "Y": 1.0 }
+            "Start": { "X": 0.0, "Y": 0.0 },
+            "Length" : { "X": 1.0, "Y": 1.0 }
           },
           "Alignment": "Left"
         }
@@ -80,8 +80,8 @@ PDyMetaWidgetVerticalLayout::CreateMetaInformation(_MIN_ const nlohmann::json& i
         "Parent": "Root",
         "Details": {
           "Area": {
-            "LeftDown": { "X": 0.0, "Y": 0.0 },
-            "RightUp" : { "X": 1.0, "Y": 1.0 }
+            "Start": { "X": 0.0, "Y": 0.0 },
+            "Length" : { "X": 1.0, "Y": 1.0 }
           },
           "Alignment": "Bottom"
         }

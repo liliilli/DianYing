@@ -14,12 +14,15 @@
 ///
 
 #include <foundation/PxBounds3.h>
-#include <Dy/Helper/Type/DVector3.h>
+#include <Math/Type/Micellanous/DArea3D.h>
 #include <nlohmann/json_fwd.hpp>
 
 namespace dy
 {
 
+using DArea3D = math::DArea3D<TReal>;
+
+#ifdef false
 /// @struct DArea3D
 /// @brief  Area 3D (x, y, z) (LEFT_DOWN) to (x`, y`, z`) (RIGHT_UP) type.
 struct DArea3D final
@@ -41,9 +44,16 @@ struct DArea3D final
   }
 };
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const DArea3D& p);
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DArea3D& p);
+#endif
 
 } /// ::dy namespace
+
+namespace dy::math
+{
+
+void to_json(nlohmann::json& oJson, const DArea3D<TReal>& iArea);
+void from_json(const nlohmann::json& iJson, DArea3D<TReal>& oArea);
+
+} /// ::dy::math namespace
 
 #endif /// GAURD_DY_HELPER_TYPE_Area3D_H

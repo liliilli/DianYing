@@ -34,8 +34,8 @@ EDySuccess CCamera::Initialize(const PDyCameraComponentMetaInfo& descriptor)
   this->mFar                    = descriptor.mDetails.mFar;
   this->mFieldOfView            = descriptor.mDetails.mInitialFieldOfView;
   this->mIsOrthographicCamera   = descriptor.mDetails.mProjectionType == EDyCameraProjectionType::Orthographic;
-  this->mViewportRectXY         = descriptor.mDetails.mViewportSize.mLeftDown;
-  this->mViewportRectWH         = descriptor.mDetails.mViewportSize.mRightUp;
+  this->mViewportRectXY         = descriptor.mDetails.mViewportSize.GetStartPoint();
+  this->mViewportRectWH         = descriptor.mDetails.mViewportSize.GetWh();
 
   const auto& settingManager    = MSetting::GetInstance();
   this->mAspect                 = static_cast<float>(settingManager.GetWindowSizeWidth()) / settingManager.GetWindowSizeHeight();

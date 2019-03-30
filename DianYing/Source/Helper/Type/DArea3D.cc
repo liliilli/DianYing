@@ -15,14 +15,24 @@
 /// Header file
 #include <Dy/Helper/Type/DArea3D.h>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Helper/Type/DVector3.h>
 
-namespace dy
+namespace dy::math
 {
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DArea3D& p)
+void to_json(nlohmann::json& oJson, const DArea3D<TReal>& iArea)
 {
-  json::GetValueFromTo(j, "Min", p.mMin);
-  json::GetValueFromTo(j, "Max", p.mMax);
+  oJson = nlohmann::json
+  {
+    {"Start", iArea.GetStartPoint()},
+    {"Length", iArea.GetWhd()}
+  };
+}
+
+void from_json(const nlohmann::json& iJson, DArea3D<TReal>& oArea)
+{
+  oArea.SetStartPoint(json::GetValueFrom<DVec3>(iJson, "Start"));
+  oArea.SetWhd(json::GetValueFrom<DVec3>(iJson, "Length"));
 }
 
 } /// ::dy namespace

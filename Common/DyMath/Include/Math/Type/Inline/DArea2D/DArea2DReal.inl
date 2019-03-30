@@ -105,6 +105,30 @@ void DArea2D<TType, std::enable_if_t<kIsRealType<TType>>>
   this->RelocatePosition();
 }
 
+template <typename TType>
+typename DArea2D<TType, std::enable_if_t<kIsRealType<TType>>>::TValueType 
+DArea2D<TType, typename std::enable_if<kIsRealType<TType>>::type>
+::GetHeight() const noexcept
+{
+  return this->mLength.Y;
+}
+
+template<typename TType>
+void DArea2D<TType, std::enable_if_t<kIsRealType<TType>>>
+::SetWh(const DVector2<TValueType>& wh)
+{
+  this->mLength = wh;
+  this->RelocatePosition();
+}
+
+template<typename TType>
+DVector2<TType> 
+DArea2D<TType, std::enable_if_t<kIsRealType<TType>>>
+::GetWh() const noexcept
+{
+  return DVector2<TValueType>{this->GetWidth(), this->GetHeight()};
+}
+
 template<typename TType>
 bool DArea2D<TType, std::enable_if_t<kIsRealType<TType>>>
 ::HasNaN() const noexcept
@@ -124,14 +148,6 @@ bool DArea2D<TType, std::enable_if_t<kIsRealType<TType>>>
 ::HasOnlyNormal() const noexcept
 {
   return this->mStartPoint.HasOnlyNormal() && this->mLength.HasOnlyNormal();
-}
-
-template <typename TType>
-typename DArea2D<TType, std::enable_if_t<kIsRealType<TType>>>::TValueType 
-DArea2D<TType, typename std::enable_if<kIsRealType<TType>>::type>
-::GetHeight() const noexcept
-{
-  return this->mLength.Y;
 }
 
 template <typename TType>

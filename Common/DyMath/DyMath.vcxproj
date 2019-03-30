@@ -26,6 +26,8 @@
     <ClInclude Include="Include\Math\Type\Math\DQuat.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DArea2D.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DArea3D.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DBounds2D.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DBounds3D.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DClamp.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix2.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix3.h" />
@@ -58,6 +60,12 @@
     <None Include="Include\Math\Type\Inline\DArea2D\DArea2DReal.inl" />
     <None Include="Include\Math\Type\Inline\DArea3D\DArea3DInt.inl" />
     <None Include="Include\Math\Type\Inline\DArea3D\DArea3DReal.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds2D\DBounds2DCommon.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds2D\DBounds2DInt.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds2D\DBounds2DReal.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DCommon.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DInt.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DReal.inl" />
     <None Include="Include\Math\Type\Inline\DClamp\DClamp.inl" />
     <None Include="Include\Math\Type\Inline\DClamp\DClampOperator.inl" />
     <None Include="Include\Math\Type\Inline\DMatrix2\DMatrix2.inl" />
@@ -77,6 +85,7 @@
     <None Include="Include\Math\Utility\Inline\XMathTrigonometry.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\Lerp.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\MapValue.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\MinMax.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\ToNormalized.inl" />
     <None Include="Include\Math\Utility\Inline\XRandom.inl" />
     <None Include="README.md" />
