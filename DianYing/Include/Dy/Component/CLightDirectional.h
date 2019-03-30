@@ -171,10 +171,10 @@ private:
   /// Find a bounding box of whole camera frustum in light view space.
   DVec4 minFrustum {kMaxValueOf<TF32>};
   DVec4 maxFrustum {kMinValueOf<TF32>};
-  std::array<DArea2D, kCSMSegment>    mLightViewports;
+  std::array<DArea2D, kCSMSegment> mLightViewports;
 
   std::array<TF32, kCSMSegment> mFarPlanes;
-  DMat4                  mOldProjectionMatrix; 
+  DMat4 mOldProjectionMatrix; 
     
   DMat4 mLightViewMatrix;
   DMat4 mLightProjMatrix;

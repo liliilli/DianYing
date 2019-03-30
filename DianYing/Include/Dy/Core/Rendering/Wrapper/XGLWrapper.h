@@ -29,7 +29,6 @@
 namespace dy
 {
 struct PDyGLTextureCubemapDescriptor;
-struct DArea2D;
 enum class ETextureStyleType : unsigned char;
 enum class EDrawType;
 struct PDyGLVaoBindDescriptor;
@@ -136,13 +135,11 @@ public:
   /// @brief Set global viewport region.
   /// ...You always need to call glViewport() before starting to draw to a framebuffer with a different size. 
   /// This is necessary because the viewport is not part of the framebuffer state...
-  static void SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion);
-  static void SetViewport(_MIN_ const DArea2D& iViewportRegion);
+  static void SetViewport(const DArea2D& iViewportRegion);
   /// @brief Set global indexed viewport region. Keep caution to use this, it's different from general `SetViewport`.
   /// ...You always need to call glViewport() before starting to draw to a framebuffer with a different size. 
   /// This is necessary because the viewport is not part of the framebuffer state...
-  static void SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const std::array<TI32, 4>& iViewportRegion);
-  static void SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DArea2D& iViewportRegion);
+  static void SetViewportIndexed(TU32 iIndex, const DArea2D& iViewportRegion);
 
   /// @brief Bind frame buffer object.
   static void BindFrameBufferObject(_MIN_ TU32 iFboId);

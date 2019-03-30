@@ -428,7 +428,6 @@
     <ClCompile Include="Source\Helper\Type\DArea3D.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\DUuid.cc" />
-    <ClCompile Include="Source\Helper\Type\DPlane.cc" />
     <ClCompile Include="Source\Management\MGameTimer.cc" />
     <ClCompile Include="Source\Management\Helper\SProfilingHelper.cc" />
     <ClCompile Include="Source\Management\Internal\Input\MInputDelegates.cc" />

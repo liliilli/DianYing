@@ -125,6 +125,25 @@ DArea2D<TType, typename std::enable_if<kIsIntegerType<TType>>::type>
   return this->mLength.Y;
 }
 
+template<typename TType>
+void DArea2D<TType, std::enable_if_t<kIsIntegerType<TType>>>
+::SetWh(const DVector2<TValueType>& wh)
+{
+  this->mLength = wh;
+  if constexpr (kCategoryOf<TType> == EValueCategory::Signed)
+  {
+    this->RelocatePosition();
+  }
+}
+
+template<typename TType>
+DVector2<TType> 
+DArea2D<TType, std::enable_if_t<kIsIntegerType<TType>>>
+::GetWh() const noexcept
+{
+  return DVector2<TValueType>{this->GetWidth(), this->GetHeight()};
+}
+
 template <typename TType>
 void DArea2D<TType, std::enable_if_t<kIsIntegerType<TType>>>
 ::RelocatePosition()

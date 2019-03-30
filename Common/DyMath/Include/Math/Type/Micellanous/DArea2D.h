@@ -73,6 +73,12 @@ public:
   /// @brief Get height value.
   TValueType GetHeight() const noexcept;
 
+  /// @brief Set (width, height) as vector2 into area.
+  void SetWh(const DVector2<TValueType>& wh);
+
+  /// @brief Get (width, height) as vector2.
+  DVector2<TValueType> GetWh() const noexcept;
+
 private:
   /// @brief Relocate position to be satisfied width and heigth will be positive.
   void RelocatePosition();
@@ -119,6 +125,12 @@ public:
 
   /// @brief Get height value.
   TValueType GetHeight() const noexcept;
+  
+  /// @brief Set (width, height) as vector2 into area.
+  void SetWh(const DVector2<TValueType>& wh);
+
+  /// @brief Get (width, height) as vector2.
+  DVector2<TValueType> GetWh() const noexcept;
 
   /// @brief Check value has NaN.
   bool HasNaN() const noexcept;

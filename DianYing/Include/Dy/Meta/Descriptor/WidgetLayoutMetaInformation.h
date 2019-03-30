@@ -26,8 +26,8 @@ namespace dy
 ///
 struct PDyMetaWidgetHorizontalLayout final : public PDyMetaWidgetCommonBaseDesc
 {
-  DArea2D               mArea       = {};
-  EDyHorizontalAlignment  mAlignment  = EDyHorizontalAlignment::Left;
+  DArea2D mArea = {};
+  EDyHorizontalAlignment mAlignment = EDyHorizontalAlignment::Left;
 
   ///
   /// @brief Factory function for PDyMetaWidgetHorizontalLayout.

@@ -263,7 +263,6 @@
     <ClCompile Include="Source\Helper\Type\DColorRGBA32.cc" />
     <ClCompile Include="Source\Helper\Type\DString.cc" />
     <ClCompile Include="Source\Helper\Type\DQuaternion.cc" />
-    <ClCompile Include="Source\Helper\Type\DPlane.cc" />
     <ClCompile Include="Source\Helper\Type\DArea3D.cc" />
     <ClCompile Include="Source\Helper\Type\DArea2D.cc" />
     <ClCompile Include="Source\Management\MFont.cc" />

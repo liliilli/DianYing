@@ -239,8 +239,8 @@ void CLightDirectional::UpdateLightProjectionAndViewports(
     pixelOffsetTopLeft *= scaleFactor;
     pixelFrustumSize   *= scaleFactor;
 
-    mLightViewports[i].mLeftDown  = pixelOffsetTopLeft * -1;
-    mLightViewports[i].mRightUp   = pixelFrustumSize + mLightViewports[i].mLeftDown;
+    mLightViewports[i].SetStartPoint(pixelOffsetTopLeft * -1);
+    mLightViewports[i].SetWh(pixelFrustumSize);
 
     // Update light view-projection matrices per segments.
     using namespace math;

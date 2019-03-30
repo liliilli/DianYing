@@ -32,17 +32,17 @@ struct PDyMetaWidgetImageDescriptor final : public PDyMetaWidgetCommonBaseDesc
   /// Initial position of canvas.
   DIVec2 mInitialPosition = {};
   /// Originable to parent frame (except for list layout)
-  EDyOrigin     mOrigin = EDyOrigin::Center_Center;
+  EDyOrigin mOrigin = EDyOrigin::Center_Center;
 
   /// Image specifier name from texture.
-  std::string   mImageSpecifierName = {};
+  std::string mImageSpecifierName = {};
   /// Region to display on widget size. \n
   /// If `mIsSizeToContent` is true, widget will be realigned following partial region.
-  DArea2D     mImageRegion        = {};
+  DArea2D mImageRegion = {};
   /// ImageTintColor(rgb) + ImageAlpha(a)
-  DColorRGBA  mTintColor          = DColorRGBA::White;
+  DColorRGBA mTintColor = DColorRGBA::White;
   /// Check use automatically align size to image(texture) size.
-  bool          mIsSizeToContent    = false;
+  bool mIsSizeToContent = false;
 
   ///
   /// @brief Factory function for PDyMetaWidgetImageDescriptor.

@@ -820,38 +820,23 @@ EDySuccess XGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
   return DY_SUCCESS;
 }
 
-void XGLWrapper::SetViewport(_MIN_ const std::array<TI32, 4>& iViewportRegion)
-{
-  DArea2D area; 
-  area.mLeftDown  = DVec2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DVec2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
-  XGLWrapper::SetViewport(area);
-}
-
-void XGLWrapper::SetViewport(_MIN_ const DArea2D& iViewportRegion)
+void XGLWrapper::SetViewport(const DArea2D& iViewportRegion)
 {
   glViewport(
-      static_cast<TI32>(iViewportRegion.mLeftDown.X), 
-      static_cast<TI32>(iViewportRegion.mLeftDown.Y), 
-      static_cast<TI32>(iViewportRegion.mRightUp.X - iViewportRegion.mLeftDown.X), 
-      static_cast<TI32>(iViewportRegion.mRightUp.Y - iViewportRegion.mLeftDown.Y));
+    static_cast<TI32>(iViewportRegion.GetStartPoint().X), 
+    static_cast<TI32>(iViewportRegion.GetStartPoint().Y), 
+    static_cast<TI32>(iViewportRegion.GetWidth()), 
+    static_cast<TI32>(iViewportRegion.GetHeight())
+  );
 }
 
-void XGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex,_MIN_ const std::array<TI32, 4>& iViewportRegion)
-{
-  DArea2D area; 
-  area.mLeftDown  = DVec2{static_cast<TF32>(iViewportRegion[0]), static_cast<TF32>(iViewportRegion[1])};
-  area.mRightUp   = DVec2{static_cast<TF32>(iViewportRegion[2]), static_cast<TF32>(iViewportRegion[3])};
-  XGLWrapper::SetViewportIndexed(iIndex, area);
-}
-
-void XGLWrapper::SetViewportIndexed(_MIN_ TU32 iIndex, _MIN_ const DArea2D& iViewportRegion)
+void XGLWrapper::SetViewportIndexed(TU32 iIndex, const DArea2D& iViewportRegion)
 {
   glViewportIndexedf(iIndex, 
-      iViewportRegion.mLeftDown.X, 
-      iViewportRegion.mLeftDown.Y, 
-      iViewportRegion.mRightUp.X - iViewportRegion.mLeftDown.X, 
-      iViewportRegion.mRightUp.Y - iViewportRegion.mLeftDown.Y);
+    iViewportRegion.GetStartPoint().X, 
+    iViewportRegion.GetStartPoint().Y, 
+    iViewportRegion.GetWidth(), 
+    iViewportRegion.GetHeight());
 }
 
 void XGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)
@@ -1223,7 +1208,9 @@ void XGLWrapper::SetupInitialGlobalStatus()
       GLint defaultSize[4]; glGetIntegerv(GL_VIEWPORT, defaultSize);
       defaultViewport.mViewportSettingList.emplace_back(
         -1, // Global 
-        DArea2D{ defaultSize[0], defaultSize[1], defaultSize[2], defaultSize[3] }
+        DArea2D{ 
+          math::Cast<TReal>(defaultSize[0]), math::Cast<TReal>(defaultSize[1]), 
+          math::Cast<TReal>(defaultSize[2]), math::Cast<TReal>(defaultSize[3]) }
       );
       initialStatus.mViewportSettingList = defaultViewport;
     }
