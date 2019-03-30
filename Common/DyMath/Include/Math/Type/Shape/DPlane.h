@@ -44,6 +44,7 @@ struct MATH_NODISCARD DPlane final
   using TValueType = TType;
 
   /// @brief a, b, c will be normalized values as |a, b, c| == 1
+  DPlane() = default;
   DPlane(TValueType a, TValueType b, TValueType c, TValueType d);
   DPlane(const DVector3<TValueType>& normalizedVector, TValueType d);
 
@@ -69,7 +70,7 @@ struct MATH_NODISCARD DPlane final
 
 private:
   /// @brief Normal value.
-  DVector3<TValueType> mNormal; 
+  DVector3<TValueType> mNormal = DVector3<TValueType>::UnitY(); 
   /// @brief D value.
   TValueType mD;
 };
