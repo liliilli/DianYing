@@ -87,8 +87,14 @@ public:
   TValueType W() const noexcept;
 
 private:
-  TValueType mX, mY, mZ, mW = TValueType(1);
+  TValueType mX = 0, mY = 0, mZ = 0, mW = TValueType(1);
 };
+
+template<typename TType>
+DQuaternion<TType> operator+(const DQuaternion<TType>& q, const DQuaternion<TType>& p)
+{
+  return { q.X() + p.X(), q.Y() + p.Y(), q.Z() + p.Z(), q.W() + p.W() };
+}
 
 template<typename TType>
 DQuaternion<TType> operator*(const DQuaternion<TType>& q, const DQuaternion<TType>& p)
@@ -100,6 +106,24 @@ DQuaternion<TType> operator*(const DQuaternion<TType>& q, const DQuaternion<TTyp
     p.W() * q.Z() + p.Z() * q.W() + p.X() * q.Y() - p.Y() * q.X(),
     p.W() * q.W() - p.X() * q.X() - p.Y() * q.Y() - p.Z() * q.Z()
   };
+}
+
+template<typename TType>
+DQuaternion<TType> operator*(const DQuaternion<TType>& q, const TType& p)
+{
+  return { q.X() * p, q.Y() * p, q.Z() * p, q.W() * p };
+}
+
+template<typename TType>
+DQuaternion<TType> operator*(const TType& p, const DQuaternion<TType>& q)
+{
+  return q * p;
+}
+
+template<typename TType>
+DQuaternion<TType> operator/(const DQuaternion<TType>& q, const TType& p)
+{
+  return { q.X() / p, q.Y() / p, q.Z() / p, q.W() / p };
 }
 
 } /// ::dY()::math namespace

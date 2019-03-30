@@ -134,6 +134,7 @@
     <ClCompile Include="Source\DMatrix\TestDMatrix2.cc" />
     <ClCompile Include="Source\DMatrix\TestDMatrix3.cc" />
     <ClCompile Include="Source\DMatrix\TestDMatrix4.cc" />
+    <ClCompile Include="Source\DQuat\TestDQuat.cc" />
     <ClCompile Include="Source\DVector2\TestDVector2.cc" />
     <ClCompile Include="Source\TestXGlobalUtilities.cc" />
     <ClCompile Include="Source\XLinearMath\TestCross.cc" />

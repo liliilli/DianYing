@@ -30,6 +30,18 @@ TReal Dot(const DVector3<TLeft>& lhs, const DVector3<TRight>& rhs) noexcept
 }
 
 template <typename TLeft, typename TRight>
+TReal Dot(const DVector4<TLeft>& lhs, const DVector4<TRight>& rhs) noexcept
+{
+  return Cast<TReal>(lhs.X * rhs.X + lhs.Y * rhs.Y + lhs.Z * rhs.Z + lhs.W * rhs.W);
+}
+
+template <typename TLeft, typename TRight>
+TReal Dot(const DQuaternion<TLeft>& lhs, const DQuaternion<TRight>& rhs) noexcept
+{
+  return Cast<TReal>(lhs.X() * rhs.X() + lhs.Y() * rhs.Y() + lhs.Z() * rhs.Z() + lhs.W() * rhs.W());
+}
+
+template <typename TLeft, typename TRight>
 DVector3<GetBiggerType<TLeft, TRight>> 
 Cross(const DVector3<TLeft>& lhs, const DVector3<TRight>& rhs) noexcept
 {
@@ -110,6 +122,43 @@ AngleWithAxis(TType angle, const DVector3<TType>& axis, bool isDegree)
   const auto y = axis.Y * s;
   const auto z = axis.Z * s;
   return {x, y, z, w};
+}
+
+template <typename TType>
+DQuaternion<TType> 
+Slerp(const DQuaternion<TType>& lhs, const DQuaternion<TType>& rhs, TReal factor)
+{
+  DQuaternion<TType> z = rhs;
+  TReal cosTheta = Dot(lhs, rhs);
+
+  // If cosTheta < 0, the interpolation will take the long way around the sphere.
+  // To fix this, one quat must be negated.
+  if (cosTheta < TReal(0))
+  {
+    z        = lhs * TType(-1);
+    cosTheta = -cosTheta;
+  }
+
+  // Perform a linear interpolation when cosTheta is close to 1 
+  // to avoid side effect of sin(angle) becoming a zero denominator
+  if(IsNearlyEqual(cosTheta, 1.f) == true)
+  {
+    // Linear interpolation
+    return 
+    {
+      Lerp(lhs.W(), z.W(), factor),
+      Lerp(lhs.X(), z.X(), factor),
+      Lerp(lhs.Y(), z.Y(), factor),
+      Lerp(lhs.Z(), z.Z(), factor)
+    };
+  }
+  else
+  {
+    // https://en.wikipedia.org/wiki/Slerp
+    TReal angle = std::acos(cosTheta);
+    return 
+      (std::sin((TType(1.0) - factor) * angle) * lhs + std::sin(factor * angle) * z) / std::sin(angle);
+  }
 }
 
 } /// ::dy::math namespace
