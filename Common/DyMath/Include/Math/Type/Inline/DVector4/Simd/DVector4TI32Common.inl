@@ -37,5 +37,53 @@ operator==(const DVector4<TI32>& lhs, const DVector4<TI32>& rhs) noexcept
   return static_cast<bool>(_mm_test_all_zeros(neq, neq));
 }
 
+inline DVector4<TI32>& 
+DVector4<TI32>::operator+=(const DVector4<TI32>& value) noexcept
+{
+  this->__mVal = _mm_add_epi32(this->__mVal, value.__mVal);
+  return *this;
+}
+
+inline DVector4<TI32>& 
+DVector4<TI32>::operator-=(const DVector4<TI32>& value) noexcept
+{
+  this->__mVal = _mm_sub_epi32(this->__mVal, value.__mVal);
+  return *this;
+}
+
+inline DVector4<TI32>& 
+DVector4<TI32>::operator*=(const DVector4<TI32>& value) noexcept
+{
+  this->__mVal = _mm_mul_epi32(this->__mVal, value.__mVal);
+  return *this;
+}
+
+inline DVector4<TI32>& 
+DVector4<TI32>::operator*=(TI32 value) noexcept
+{
+  this->__mVal = _mm_mullo_epi32(this->__mVal, _mm_set_epi32(value, value, value, value));
+  return *this;
+}
+
+inline DVector4<TI32>& 
+DVector4<TI32>::operator/=(const DVector4<TI32>& value) noexcept
+{
+  this->X /= value.X;
+  this->Y /= value.Y; 
+  this->Z /= value.Z; 
+  this->W /= value.W;
+  return *this;
+}
+
+inline DVector4<TI32>& 
+DVector4<TI32>::operator/=(TI32 value) noexcept
+{
+  this->X /= value;
+  this->Y /= value;
+  this->Z /= value; 
+  this->W /= value;
+  return *this;
+}
+
 }
 #endif /// MATH_ENABLE_SIMD
