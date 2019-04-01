@@ -50,7 +50,7 @@ public:
   static void PopulateResource(
       _MIN_ const std::string& specifier, 
       _MIN_ EResourceType resourceType, 
-      _MIN_ EDyResourceStyle resourceStyle, 
+      _MIN_ EResourceStyle resourceStyle, 
       _MIN_ EResourceScope scope);
 
   /// @brief Create and populate resource list which have specifier that can be found in meta info container. \n
@@ -84,12 +84,12 @@ public:
   static bool IsReferenceInstanceExist(
       _MIN_ const std::string& iSpecifier,
       _MIN_ EResourceType iType,
-      _MIN_ EDyResourceStyle iStyle);
+      _MIN_ EResourceStyle iStyle);
 
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
   /// is only Valid resource but count is 0. \n
   /// This function may causes time consuming, call this carefully.
-  static void TryGC(_MIN_ EResourceScope iScope, _MIN_ EDyResourceStyle iStyle);
+  static void TryGC(_MIN_ EResourceScope iScope, _MIN_ EResourceStyle iStyle);
 
   /// @brief Try stop IO thread manually. this function is thread-safe to I/O Thread.
   static void TryStop();

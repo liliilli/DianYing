@@ -319,19 +319,19 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(RemoveLevel)()
   MScript::GetInstance().ClearWidgetScriptGCList();
   MScript::GetInstance().ClearActorScriptGCList();
 
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Information);
 
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Information);
 
   // Must reset depedent manager on this.
   MPhysics::GetInstance().ReleaseScene();

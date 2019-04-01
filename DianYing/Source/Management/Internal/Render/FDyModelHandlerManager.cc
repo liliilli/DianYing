@@ -52,7 +52,7 @@ EDySuccess FDyModelHandlerManager::TryCreateHandler(_MIN_ const std::string& iMo
   if (SDyIOConnectionHelper::IsReferenceInstanceExist(
       iModelSpecifier, 
       EResourceType::Model, 
-      EDyResourceStyle::Resource) == false)
+      EResourceStyle::Resource) == false)
   {
     // Check if model is exist in meta information manager (so, Model can be required)
     const auto& metaManager = MIOMeta::GetInstance();

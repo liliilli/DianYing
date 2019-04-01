@@ -24,7 +24,7 @@ namespace dy
 void SDyIOConnectionHelper::PopulateResource(
     _MIN_ const std::string& specifier,
     _MIN_ EResourceType resourceType,
-    _MIN_ EDyResourceStyle resourceStyle,
+    _MIN_ EResourceStyle resourceStyle,
     _MIN_ EResourceScope scope)
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
@@ -34,7 +34,7 @@ void SDyIOConnectionHelper::PopulateResource(
   if (resourceType == EResourceType::Skeleton
   ||  resourceType == EResourceType::AnimationScrap)
   {
-    if (resourceStyle == EDyResourceStyle::Resource) { resourceStyle = EDyResourceStyle::Information; }
+    if (resourceStyle == EResourceStyle::Resource) { resourceStyle = EResourceStyle::Information; }
   }
 
   MDY_CALL_ASSERT_SUCCESS(ioThread.outTryEnqueueTask(specifier, resourceType, resourceStyle, scope));
@@ -47,7 +47,7 @@ void SDyIOConnectionHelper::TryStop()
   ioThread.outTryStop();
 }
 
-void SDyIOConnectionHelper::TryGC(_MIN_ EResourceScope iScope, _MIN_ EDyResourceStyle iStyle)
+void SDyIOConnectionHelper::TryGC(_MIN_ EResourceScope iScope, _MIN_ EResourceStyle iStyle)
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
@@ -61,7 +61,7 @@ void SDyIOConnectionHelper::PopulateResourceList(
 {
   for (const auto& [type, specifier] : specifierList)
   {
-    PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope);
+    PopulateResource(specifier, type, EResourceStyle::Resource, iScope);
   }
 
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
@@ -82,9 +82,9 @@ void SDyIOConnectionHelper::PopulateResourceList(
       if (type == EResourceType::AnimationScrap
       ||  type == EResourceType::Skeleton
       ||  type == EResourceType::Sound)
-      { PopulateResource(specifier, type, EDyResourceStyle::Information, iScope); }
+      { PopulateResource(specifier, type, EResourceStyle::Information, iScope); }
       else // Other type can be populated with Resource & Information.
-      { PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope); }
+      { PopulateResource(specifier, type, EResourceStyle::Resource, iScope); }
     }
   }
 
@@ -100,7 +100,7 @@ void SDyIOConnectionHelper::PopulateResourceList(
 {
   for (const auto& [type, specifier] : iSpecifierSet)
   {
-    PopulateResource(specifier, type, EDyResourceStyle::Resource, iScope);
+    PopulateResource(specifier, type, EResourceStyle::Resource, iScope);
   }
 
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
@@ -132,7 +132,7 @@ void SDyIOConnectionHelper::PopulateInstantMaterialResource(
 bool SDyIOConnectionHelper::IsReferenceInstanceExist(
     _MIN_ const std::string& iSpecifier, 
     _MIN_ EResourceType iType, 
-    _MIN_ EDyResourceStyle iStyle)
+    _MIN_ EResourceStyle iStyle)
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();

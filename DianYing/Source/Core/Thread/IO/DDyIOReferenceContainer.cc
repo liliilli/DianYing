@@ -195,7 +195,7 @@ void DDyIOReferenceContainer::ForwardCandidateRIFromList(
 
 EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
     _MIN_ const std::string& specifier,
-    _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EResourceScope scope)
+    _MIN_ EResourceType type, _MIN_ EResourceStyle style, _MIN_ EResourceScope scope)
 {
   TRefInstanceMap* ptrRIHashMap;
 

@@ -46,7 +46,7 @@ namespace dy
 class MScript final : public ISingleton<MScript>
 {
 public:
-  MDY_SINGLETON_DERIVED(MScript);
+  DY_PIMPL_SINGELTON_DERIVED(MScript);
   MDY_SINGLETON_PROPERTIES(MScript);
 
   /// @brief Get reference of lua instance.
@@ -115,9 +115,6 @@ public:
   void CallonStartGlobalScriptList();
   /// @brief Call `onEnd` function to all global script.
   void CallonEndGlobalScriptList();
-
-private:
-  class Impl; Impl* mPimpl = nullptr;
 };
 
 } /// ::dy namespace

@@ -47,7 +47,7 @@ namespace dy
 /// @brief Manages level and helping access each level's unique properties.
 class MWorld final : public ISingleton<MWorld>, public IUpdatable
 {
-  MDY_SINGLETON_DERIVED(MWorld);
+  DY_PIMPL_SINGELTON_DERIVED(MWorld);
   MDY_SINGLETON_PROPERTIES(MWorld);
 public:
   /// @brief Update level structures prior to dive in level objects tree hierarchy.
@@ -227,8 +227,6 @@ private:
   /// @param  validComponent
   /// @return
   MDY_NODISCARD TI32 pfEnrollActiveCamera(CCamera& validComponent) noexcept;
-
-  class Impl; Impl* mInternal = nullptr;
 
   friend class FLevel;
   friend class CModelRenderer;

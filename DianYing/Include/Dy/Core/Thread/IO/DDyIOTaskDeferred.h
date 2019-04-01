@@ -25,14 +25,14 @@ struct DDyIOTaskDeferred final
   {
     std::string       mSpecifier  = MDY_INITIALIZE_EMPTYSTR;
     EResourceType   mType       = EResourceType::NoneError;
-    EDyResourceStyle  mStyle      = EDyResourceStyle::NoneError;
+    EResourceStyle  mStyle      = EResourceStyle::NoneError;
 
     friend MDY_NODISCARD bool operator==(_MIN_ const DConditionItem& lhs, _MIN_ const DConditionItem& rhs) noexcept
     {
       return std::tie(lhs.mSpecifier, lhs.mType, lhs.mStyle) == std::tie(rhs.mSpecifier, rhs.mType, rhs.mStyle);
     }
 
-    DConditionItem(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ EDyResourceStyle iStyle) :
+    DConditionItem(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ EResourceStyle iStyle) :
         mSpecifier{iSpecifier}, mType{iType}, mStyle{iStyle} {};
   };
   using TConditionList = std::vector<DDyIOTaskDeferred::DConditionItem>;
@@ -47,7 +47,7 @@ struct DDyIOTaskDeferred final
   MDY_NODISCARD EDySuccess TryRemoveDependenciesItem(
       _MIN_ const std::string& iSpecifier, 
       _MIN_ EResourceType& iType, 
-      _MIN_ EDyResourceStyle& iStyle) noexcept;
+      _MIN_ EResourceStyle& iStyle) noexcept;
 
   /// @brief
   MDY_NODISCARD bool IsSatisfiedReinsertCondition() const noexcept { return mCondition.empty(); }

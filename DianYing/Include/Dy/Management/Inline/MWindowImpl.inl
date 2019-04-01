@@ -16,7 +16,7 @@
 namespace dy
 {
 
-inline MWindow::Impl::Impl()
+inline MWindow::Impl::Impl(MWindow& parent) : mImplParent{parent}
 {
   /// @brief This function is not implemented yet.
   static auto InitializeVulkan = [this]()

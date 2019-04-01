@@ -21,7 +21,7 @@
 namespace dy
 {
 
-bool FDyIOGC::IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EDyResourceStyle style)
+bool FDyIOGC::IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EResourceStyle style)
 {
   return ContainsIf(
     this->mRIGarbageCandidateList, 
@@ -36,7 +36,7 @@ bool FDyIOGC::IsReferenceInstanceExist(const std::string& specifier, EResourceTy
 }
 
 std::optional<std::unique_ptr<DDyIOReferenceInstance>> 
-FDyIOGC::MoveInstanceFromGC(const std::string& specifier, EResourceType type, EDyResourceStyle style)
+FDyIOGC::MoveInstanceFromGC(const std::string& specifier, EResourceType type, EResourceStyle style)
 {
   // Check nullility.
   auto it = std::find_if(
@@ -88,11 +88,11 @@ EDySuccess FDyIOGC::TryGarbageCollectCandidateList() noexcept
 
       switch (style)
       {
-      case EDyResourceStyle::Information: 
+      case EResourceStyle::Information: 
       { // Try remove informaiton instance. This function call must be succeeded.
         MDY_CALL_ASSERT_SUCCESS(MIORescInfo::GetInstance().MDY_PRIVATE(TryRemove)(name, type));
       } break;
-      case EDyResourceStyle::Resource: 
+      case EResourceStyle::Resource: 
       { // Try remove resource instance. This funtion call must be succeeded.
         MDY_CALL_ASSERT_SUCCESS(MIOResource::GetInstance().MDY_PRIVATE(TryRemove)(name, type));
       } break;

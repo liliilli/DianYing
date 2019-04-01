@@ -28,14 +28,14 @@ SDyIOBindingHelper::MDY_PRIVATE(pTryRequireInformation)
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
 
-  if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EDyResourceStyle::Information) == false)
+  if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EResourceStyle::Information) == false)
   { // If binding is failed, it specifies that RI has not been created (Related task queue was not created neither).
     // So we need populate task queue for resource as temporary.
-    SDyIOConnectionHelper::PopulateResource(iSpecifier, iType, EDyResourceStyle::Information, EResourceScope::Temporal);
+    SDyIOConnectionHelper::PopulateResource(iSpecifier, iType, EResourceStyle::Information, EResourceScope::Temporal);
   }
 
   MDY_CALL_ASSERT_SUCCESS(ioThread.TryBindBinderToInformationRI(iSpecifier, iType, iPtrBinder));
-  if (ioThread.pIsReferenceInstanceBound(iSpecifier, iType, EDyResourceStyle::Information) == false)
+  if (ioThread.pIsReferenceInstanceBound(iSpecifier, iType, EResourceStyle::Information) == false)
   {
     return DY_FAILURE;
   }
@@ -182,7 +182,7 @@ EDySuccess SDyIOBindingHelper::MDY_PRIVATE(pTryDetachInformation)
 
   // If binding is failed, it specifies that RI has not been created (Related task queue was not created neither).
   // So we need populate task queue for resource as temporary.
-  if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EDyResourceStyle::Information) == false)
+  if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EResourceStyle::Information) == false)
   { 
     MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
   }

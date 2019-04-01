@@ -171,99 +171,67 @@
     __MAHeapInstance__ = MDY_INITIALIZE_NULL; \
   }
 
-///
-/// @macro MDY_U8
-/// @brief
-///
-#define MDY_U8(__MAString__) u8##__MAString__
-
-///
 /// @macro MDY_INITIALIZE_DEFINT
 /// @brief Initialize arbitary variable with -1.
-///
 #define MDY_INITIALIZE_DEFINT -1
 
-///
 /// @macro MDY_INITIALIZE_DEFUINT
 /// @brief Initialize arbitary variable with 0.
-///
 #define MDY_INITIALIZE_DEFUINT 0
 
-///
 /// @macro MDY_NOT_INITIALIZED_STR
 /// @brief Initialize arbitary string variable (const char*, std::string, std::string_view) with empty but '\0'.
-///
 #define MDY_INITIALIZE_EMPTYSTR ""
 
-///
 /// @macro MDY_INITIALIZE_NULL
 /// @brief Initialize arbitary pointer with nullptr.
-///
 #define MDY_INITIALIZE_NULL nullptr
 
-///
 /// @macro MDY_BIND_BEGIN_END
 /// @brief Help forward iteratable type to bind .begin() and .end() to function.
-///
 #define MDY_BIND_BEGIN_END(__MAIteratorableType__) __MAIteratorableType__.begin(), __MAIteratorableType__.end()
 
-///
 /// @macro MDY_BIND_CBEGIN_CEND
 /// @brief Help forward iteratable type to bind .begin() and .end() to function.
-///
 #define MDY_BIND_CBEGIN_CEND(__MAIteratorableType__) __MAIteratorableType__.cbegin(), __MAIteratorableType__.cend()
 
-///
 /// @macro MDY_SET_IMMUTABLE_STRING
 /// @brief Set immutable compile string_view variable __MAName__ with __MAString__.
-///
 #define MDY_SET_IMMUTABLE_STRING(__MAName__, __MAString__) \
   constexpr const char* __MAName__ = __MAString__
 
-///
 /// @macro MDY_UNEXEPCTED_BRANCH_BUT_RETURN
-///
 #define MDY_UNEXPECTED_BRANCH_BUT_RETURN(__MAExpression__) \
   MDY_UNEXPECTED_BRANCH(); \
   return (__MAExpression__)
 
-///
 /// @macro MDY_SLEEP_FOR_ATOMIC_TIME
 /// @brief Sleep for atomic time (1 microsecond) for thread scheduling.
-///
 #define MDY_SLEEP_FOR_ATOMIC_TIME() \
 { \
   using namespace std::chrono_literals; \
   std::this_thread::sleep_for(0ms); \
 }
 
-///
 /// @macro MDY_SYNC_LOCK_GUARD
 /// @brief lock mutex reducing a amount of typing and verbosity.
-///
 #define MDY_SYNC_LOCK_GUARD(__MAMutex__) \
   std::lock_guard<decltype(__MAMutex__)> MDY_TOKENPASTE2(lock, __LINE__)(__MAMutex__)
 
-///
 /// @macro MDY_SYNC_WAIT_CONDITION
 /// @brief lock mutex and wait condition is satisfied by reducing a amount of typing and verbosity.
-///
 #define MDY_SYNC_WAIT_CONDITION(__MAMutex__, __MAConditionVariable__, __MACondition__) \
   std::unique_lock<decltype(__MAMutex__)> lock(__MAMutex__); \
   __MAConditionVariable__.wait(lock, __MACondition__)
 
-///
 /// @macro MDY_SYNC_WAIT_CONDITION
 /// @brief lock mutex and wait condition is satisfied by reducing a amount of typing and verbosity.
-///
 #define MDY_SYNC_WAIT_CONDITION_FOR(__MAMutex__, __MAConditionVariable__, __MATime__, __MACondition__) \
   std::unique_lock<decltype(__MAMutex__)> lock(__MAMutex__); \
   __MAConditionVariable__.wait_for(lock, __MATime__, __MACondition__)
 
-///
 /// @macro MDY_ATOMIC_COMPARE_SWAP_WEAK
 /// @brief Do `compare and swap` to atomic variable weakly.
-///
 #define MDY_ATOMIC_COMPARE_SWAP_WEAK(__MAAtomic__, __MAExpected__, __MASwapValue__) \
   { \
     using __type = std::decay_t<decltype(__MAAtomic__)>; \
@@ -272,10 +240,8 @@
       ; \
   }
 
-///
 /// @macro MDY_ATOMIC_COMPARE_SWAP_STRONG
 /// @brief Do `compare and swap` to atomic variable strongly.
-///
 #define MDY_ATOMIC_COMPARE_SWAP_STRONG(__MAAtomic__, __MAExpected__, __MASwapValue__) \
   { \
     using __type = std::decay_t<decltype(__MAAtomic__)>; \
@@ -284,17 +250,13 @@
       ; \
   }
 
-///
 /// @macro MDY_UNQMVCAST
 /// @brief Static cast with moving of unique_ptr
-///
 #define MDY_UNQMVCAST(__MACastType__, __MAInstance__) \
   std::unqiue_ptr<__MACastType__*>(static_cast<__MACastType__*>(__MAInstance__.release()))
 
-///
 /// @macro MDY_TEST_PARAM_PACK_COUNT
 /// @brief Check parameter pack count is same to speicified number.
-///
 #define MDY_TEST_PARAM_PACK_COUNT(__MAParamPack__, __MAGoalCount__) \
   static_assert(sizeof...(__MAParamPack__) == __MAGoalCount__, \
                 __FILE__ " " __LINE__ " Parameter pack test failed, the number of parameter pack must be " #__MAGoalCount__ ".")
@@ -352,25 +314,20 @@
 //! Macroes related to implementation
 //!
 
-///
 /// @macro MDY_SET_CRC32_HASH
 /// @brief Declare type member variable, which is used for storing hashed type value.
 /// and value it in compile time.
-///
 #define MDY_SET_CRC32_HASH(__MAType__) \
 public: \
 static constexpr TU32 __mHashVal = dy::hash::DyToCrc32Hash(__MAType__);
 
-///
 /// @macro MDY_SET_CRC32_HASH
 /// @brief Declare type member variable, which is used for storing hashed type value.
 /// and value it in compile time.
-///
 #define MDY_SET_CRC32_HASH_WITH_TYPE(__MAType__) \
 public: \
 static constexpr TU32 __mHashVal = dy::hash::DyToCrc32Hash(MDY_TO_STRING(__MAType__));
 
-///
 /// @macro OVERRIDE_TYPEMATCH
 /// @brief Define override function of component::CComponent's DoesTypeMatch() to match with
 /// new type value of __DERIVED__ type. Defined function does not throw exception.
@@ -378,7 +335,6 @@ static constexpr TU32 __mHashVal = dy::hash::DyToCrc32Hash(MDY_TO_STRING(__MATyp
 /// @param[in] __BASE__ Base type of __DERIVED__ type.
 /// The argument has to be a full name, with namespace.
 /// @param[in] __DERIVED__ __DERIVED__ type itself. The argument doesn't have to be a full name.
-///
 #define MDY_SET_TYPEMATCH_FUNCTION(__BASE__, __DERIVED__) \
 public: \
 virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
@@ -392,22 +348,66 @@ virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
   } \
 }
 
-///
+//!
+//! Pointer to implementation section
+//!
+
+#define __DY__PIMPL Impl
+#define __DY__PIMPL_DELETER __DY__PIMPL##Deleter
+
+/// @def DY_DECLARE_PIMPL
+/// @brief Declrare pimpl (pointer to implemetation) idiom into structure.
+/// @reference https://stackoverflow.com/questions/9954518/stdunique-ptr-with-an-incomplete-type-wont-compile
+#define DY_DECLARE_PIMPL() \
+private: \
+  struct __DY__PIMPL;\
+  struct __DY__PIMPL_DELETER { void operator()(__DY__PIMPL*) const; }; \
+  std::unique_ptr<__DY__PIMPL, __DY__PIMPL_DELETER> mImpl; \
+public: 
+
+/// @def DY_DEFINE_PIMPL
+/// @brief Define on .cc (local translation unit). This macro must be on final translation unit file.
+#define DY_DEFINE_PIMPL(__Type__) \
+  void __Type__::__DY__PIMPL_DELETER::operator()(__Type__::__DY__PIMPL* ptr) const { delete ptr; }
+
+/// @def DY_DEFINE_DEFAULT_DESTRUCTOR
+/// @brief Define default destructor on .cc (local translation unit).
+#define DY_DEFINE_DEFAULT_DESTRUCTOR(__Type__) __Type__::~__Type__() = default;
+
+/// @def DY_DECLARE_PIMPL_CTOR
+#define DY_DECLARE_PIMPL_CTOR(__Parent__) \
+  __Parent__& mImplParent; \
+  __DY__PIMPL(__Parent__& parent)
+#define DY_DEFAULT_PIMPL_CTOR(__Parent__) \
+  DY_DECLARE_PIMPL_CTOR(__Parent__) : mImplParent{parent} {};
+
+/// @def DY_PIMPL
+/// @brief Get pimpl instance.
+#define DY_PIMPL this->mImpl
+
+/// @def DY_INITIALIZE_PIMPL
+/// @brief Initialize pimpl instance.
+#define DY_INITIALIZE_PIMPL() \
+  DY_PIMPL = std::unique_ptr<__DY__PIMPL, __DY__PIMPL_DELETER>(new __DY__PIMPL(*this))
+
+/// @def DY_RESET_PIMPL
+/// @brief Reset pimpl instance.
+#define DY_RESET_PIMPL() DY_PIMPL = nullptr
+
+//!
+//! Others
+//!
+
 /// @macro MDY_INTERFACE
 /// @brief INTERFACE because pure virtual function must be exposed to outside.
-///
 #define MDY_INTERFACE struct
 
-///
 /// @macro MDY_ABSTRACT
 /// @brief ABSTRACT because non-static member variables might be in type.
-///
 #define MDY_ABSTRACT class
 
-///
 /// @macro MDY_GETSET
 /// @brief Helping construction of get and set boilerplate function of member variable.
-///
 #define MDY_GETSET(__MAVariable__)                                                    \
   [[nodiscard]] const decltype(__MAVariable__)& Get##__MAVariable__() const noexcept  \
   {                                                                                   \
@@ -419,38 +419,22 @@ virtual bool IsTypeMatched(const TU32 hashVal) const noexcept override { \
     this->__MAVariable__ = input##__MAVariable__;                                     \
   }
 
-///
 /// @macro _MIN_
 /// @brief Specify that this parameter is input only.
-///
 #define _MIN_
 
-///
 /// @macro _MOUT_
 /// @brief Specify that this parameter is output only.
-///
 #define _MOUT_
 
-///
 /// @macro _MIO_
 /// @brief Specify that this paremeter will be read from function body and altered some properties.
 /// @deprecated This macro will be deprecated.
-///
 #define _MIO_
 
-///
 /// @macro _MINOUT_
 /// @brief Specify that this parameter will be read from function body and altered some properties.
-///
 #define _MINOUT_
-
-///
-/// @macro MDY_INTERFACE_PROPERTY
-/// @brief INTERFACE variable
-/// @todo NOT WORKING! FIX THIS SOMEDAY.
-///
-#define MDY_INTERFACE_PROPERTY(__MAInterfaceType__) \
-  static_assert(std::is_abstract_v<__MAInterfaceType__>, MDY_TO_STRING(__MAInterfaceType__) " is not satisfied interface property.")
 
 #define MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(__MAType__)\
   __MAType__(const __MAType__&)             = delete;   \

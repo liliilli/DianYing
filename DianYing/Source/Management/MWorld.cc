@@ -37,9 +37,10 @@
 namespace dy
 {
 
-class MWorld::Impl final : public IUpdatable
+struct MWorld::Impl final : public IUpdatable
 {
-public:
+  DY_DEFAULT_PIMPL_CTOR(MWorld);
+
   /// @brief Update scene structures prior to dive in scene objects tree hierarchy.
   /// Level transition will be executed maybe.
   void Update(TF32 dt) override final;
@@ -262,47 +263,47 @@ namespace dy
 
 EDySuccess MWorld::pfInitialize()
 {
-  this->mInternal = new Impl();
+  DY_INITIALIZE_PIMPL();
   return DY_SUCCESS;
 }
 
 EDySuccess MWorld::pfRelease()
 {
-  delete this->mInternal; this->mInternal = nullptr;
+  DY_RESET_PIMPL();
   return DY_SUCCESS;
 }
 
-void MWorld::Update(TF32 iDt)         { this->mInternal->Update(iDt); }
-void MWorld::UpdateObjects(TF32 iDt)  { this->mInternal->UpdateObjects(iDt); }
-void MWorld::UpdateAnimator(TF32 iDt) { this->mInternal->UpdateAnimator(iDt); }
+void MWorld::Update(TF32 iDt)         { DY_PIMPL->Update(iDt); }
+void MWorld::UpdateObjects(TF32 iDt)  { DY_PIMPL->UpdateObjects(iDt); }
+void MWorld::UpdateAnimator(TF32 iDt) { DY_PIMPL->UpdateAnimator(iDt); }
 
 std::vector<NotNull<FActor*>> 
 MWorld::GetAllActorsWithTag(const std::string& iTagSpecifier) const noexcept
 {
-  return this->mInternal->GetAllActorsWithTag(iTagSpecifier);
+  return DY_PIMPL->GetAllActorsWithTag(iTagSpecifier);
 }
 
 std::vector<NotNull<FActor*>>
 MWorld::GetAllActorsWithTagRecursive(const std::string& iTagSpecifier) const noexcept
 {
-  return this->mInternal->GetAllActorsWithTagRecursive(iTagSpecifier);
+  return DY_PIMPL->GetAllActorsWithTagRecursive(iTagSpecifier);
 }
 
 std::vector<NotNull<FActor*>> 
 MWorld::GetAllActorsWithName(const std::string& iNameSpecifier) const noexcept
 {
-  return this->mInternal->GetAllActorsWithName(iNameSpecifier);
+  return DY_PIMPL->GetAllActorsWithName(iNameSpecifier);
 }
 
 std::vector<NotNull<FActor*>> 
 MWorld::GetAllActorsWithNameRecursive(const std::string& iNameSpecifier) const noexcept
 {
-  return this->mInternal->GetAllActorsWithNameRecursive(iNameSpecifier);
+  return DY_PIMPL->GetAllActorsWithNameRecursive(iNameSpecifier);
 }
 
 FActor* MWorld::GetActorWithObjectId(TU32 iObjectId) noexcept
 {
-  return this->mInternal->GetActorWithObjectId(iObjectId);
+  return DY_PIMPL->GetActorWithObjectId(iObjectId);
 }
 
 DActorBinder MWorld::CreateActor(
@@ -336,18 +337,18 @@ DActorBinder MWorld::CreateActor(
   }
 
   // Push requisition actor item.
-  SafeUniquePtrEmplaceBack(this->mInternal->mActorCreationDescList, descriptor);
+  SafeUniquePtrEmplaceBack(DY_PIMPL->mActorCreationDescList, descriptor);
 
   // Bind actor.
   DActorBinder resultBinder {};
-  resultBinder.__BindDescriptor(this->mInternal->mActorCreationDescList.back().get());
+  resultBinder.__BindDescriptor(DY_PIMPL->mActorCreationDescList.back().get());
 
   return resultBinder;
 }
 
 void MWorld::DestroyActor(_MIN_ FActor& iRefActor)
 {
-  return this->mInternal->DestroyActor(iRefActor);
+  return DY_PIMPL->DestroyActor(iRefActor);
 }
 
 std::optional<DWidgetBinder> 
@@ -357,172 +358,175 @@ MWorld::CreateUiObject(
   bool isForcedZOrder,
   TU32 ZOrder)
 {
-  return this->mInternal->CreateUiObject(iUiName, iNewCustomizedName, isForcedZOrder, ZOrder);
+  return DY_PIMPL->CreateUiObject(iUiName, iNewCustomizedName, isForcedZOrder, ZOrder);
 }
 
 std::optional<DWidgetBinder> MWorld::GetUiObject(const std::string& iUiName)
 {
-  return this->mInternal->GetUiObject(iUiName);
+  return DY_PIMPL->GetUiObject(iUiName);
 }
 
 EDySuccess MWorld::DestoryUiObject(DWidgetBinder& ioUiBInder)
 {
-  return this->mInternal->DestoryUiObject(ioUiBInder);
+  return DY_PIMPL->DestoryUiObject(ioUiBInder);
 }
 
 EDySuccess MWorld::DestroyUiObject(const std::string& iUiName)
 {
-  return this->mInternal->DestroyUiObject(iUiName);
+  return DY_PIMPL->DestroyUiObject(iUiName);
 }
 
 CCamera* MWorld::GetPtrMainLevelCamera() const noexcept
 {
-  return this->mInternal->GetPtrMainLevelCamera();
+  return DY_PIMPL->GetPtrMainLevelCamera();
 }
 
 TI32 MWorld::GetFocusedCameraCount() const noexcept
 {
-  return this->mInternal->GetFocusedCameraCount();
+  return DY_PIMPL->GetFocusedCameraCount();
 }
 
 std::optional<CCamera*> MWorld::GetFocusedCameraValidReference(const TI32 index) const noexcept
 {
-  return this->mInternal->GetFocusedCameraValidReference(index);
+  return DY_PIMPL->GetFocusedCameraValidReference(index);
 }
 
 EDySuccess MWorld::OpenLevel(const std::string& levelName)
 {
-  return this->mInternal->OpenLevel(levelName);
+  return DY_PIMPL->OpenLevel(levelName);
 }
 
 bool MWorld::IsNeedTransitNextLevel() const noexcept
 {
-  return this->mInternal->IsNeedTransitNextLevel();
+  return DY_PIMPL->IsNeedTransitNextLevel();
 }
 
 EDySuccess MWorld::MDY_PRIVATE(OpenFirstLevel)()
 {
-  return this->mInternal->MDY_PRIVATE(OpenFirstLevel)();
+  return DY_PIMPL->MDY_PRIVATE(OpenFirstLevel)();
 }
 
 EDySuccess MWorld::MDY_PRIVATE(RemoveLevel)()
 {
-  return this->mInternal->MDY_PRIVATE(RemoveLevel)();
+  return DY_PIMPL->MDY_PRIVATE(RemoveLevel)();
 }
 
 EDySuccess MWorld::MDY_PRIVATE(PopulateNextLevelResources)()
 {
-  return this->mInternal->MDY_PRIVATE(PopulateNextLevelResources)();
+  return DY_PIMPL->MDY_PRIVATE(PopulateNextLevelResources)();
 }
 
 void MWorld::MDY_PRIVATE(BuildNextLevel)()
 {
-  this->mInternal->__BuildNextLevel();
+  DY_PIMPL->__BuildNextLevel();
 }
 
-EDySuccess MWorld::MDY_PRIVATE(TransitionToNextLevel)() { return this->mInternal->__TransitionToNextLevel(); }
+EDySuccess MWorld::MDY_PRIVATE(TransitionToNextLevel)() { return DY_PIMPL->__TransitionToNextLevel(); }
 
-bool MWorld::IsLevelPresentValid() const noexcept { return this->mInternal->IsLevelPresentValid(); }
-FLevel& MWorld::GetValidLevelReference() noexcept { return this->mInternal->GetValidLevelReference(); }
+bool MWorld::IsLevelPresentValid() const noexcept { return DY_PIMPL->IsLevelPresentValid(); }
+FLevel& MWorld::GetValidLevelReference() noexcept { return DY_PIMPL->GetValidLevelReference(); }
 
-EDySuccess MWorld::TryCreateDebugUi()        { return this->mInternal->TryCreateDebugUi(); }
-bool MWorld::IsDebugUiExist() const noexcept { return this->mInternal->IsDebugUiExist(); }
-EDySuccess MWorld::TryRemoveDebugUi()        { return this->mInternal->TryRemoveDebugUi(); }
+EDySuccess MWorld::TryCreateDebugUi()        { return DY_PIMPL->TryCreateDebugUi(); }
+bool MWorld::IsDebugUiExist() const noexcept { return DY_PIMPL->IsDebugUiExist(); }
+EDySuccess MWorld::TryRemoveDebugUi()        { return DY_PIMPL->TryRemoveDebugUi(); }
 
-EDySuccess MWorld::TryCreateLoadingUi()        { return this->mInternal->TryCreateLoadingUi(); }
-bool MWorld::IsLoadingUiExist() const noexcept { return this->mInternal->IsLoadingUiExist(); } 
-EDySuccess MWorld::TryRemoveLoadingUi()        { return this->mInternal->TryRemoveLoadingUi(); }
+EDySuccess MWorld::TryCreateLoadingUi()        { return DY_PIMPL->TryCreateLoadingUi(); }
+bool MWorld::IsLoadingUiExist() const noexcept { return DY_PIMPL->IsLoadingUiExist(); } 
+EDySuccess MWorld::TryRemoveLoadingUi()        { return DY_PIMPL->TryRemoveLoadingUi(); }
 
-bool MWorld::CheckCreationActorExist() const noexcept { return this->mInternal->CheckCreationActorExist(); }
+bool MWorld::CheckCreationActorExist() const noexcept { return DY_PIMPL->CheckCreationActorExist(); }
 
 void MWorld::TryCreateActorsOfCreationActorList() noexcept
 {
-  this->mInternal->TryCreateActorsOfCreationActorList();
+  DY_PIMPL->TryCreateActorsOfCreationActorList();
 }
 
 void MWorld::CleanCreationActorList() noexcept
 {
-  this->mInternal->CleanCreationActorList();
+  DY_PIMPL->CleanCreationActorList();
 }
 
 bool MWorld::CheckIsGcActorExist() const noexcept
 {
-  return this->mInternal->CheckIsGcActorExist();
+  return DY_PIMPL->CheckIsGcActorExist();
 }
 
 void MWorld::MDY_PRIVATE(TryRemoveActorGCList)() noexcept
 {
-  this->mInternal->__TryRemoveActorGCList();
+  DY_PIMPL->__TryRemoveActorGCList();
 }
 
 void MWorld::pfMoveActorToGc(NotNull<FActor*> actorRawPtr) noexcept
 {
-  this->mInternal->pfMoveActorToGc(actorRawPtr);
+  DY_PIMPL->pfMoveActorToGc(actorRawPtr);
 }
 
 void MWorld::pfUnenrollActiveModelRenderer(TI32 index) noexcept
 {
-  this->mInternal->pfUnenrollActiveModelRenderer(index);
+  DY_PIMPL->pfUnenrollActiveModelRenderer(index);
 }
 
 void MWorld::pfUnenrollActiveCamera(TI32& index) noexcept
 {
-  this->mInternal->pfUnenrollActiveCamera(index);
+  DY_PIMPL->pfUnenrollActiveCamera(index);
 }
 
 EDySuccess MWorld::MDY_PRIVATE(TryDetachActiveModelRenderer)(CModelRenderer* iPtrRenderer)
 {
-  return this->mInternal->__TryDetachActiveModelRenderer(iPtrRenderer);
+  return DY_PIMPL->__TryDetachActiveModelRenderer(iPtrRenderer);
 }
 
 void MWorld::__BindActiveModelAnimator(CModelAnimator& iRefComponent)
 {
-  this->mInternal->__BindActiveModelAnimator(iRefComponent);
+  DY_PIMPL->__BindActiveModelAnimator(iRefComponent);
 }
 
 EDySuccess MWorld::__UnbindActiveModelAnimator(CModelAnimator& iRefComponent)
 {
-  return this->mInternal->__UnbindActiveModelAnimator(iRefComponent);
+  return DY_PIMPL->__UnbindActiveModelAnimator(iRefComponent);
 }
 
 std::optional<NotNull<CSkybox*>> MWorld::GetPtrMainLevelSkybox() const noexcept
 {
-  return this->mInternal->GetPtrMainLevelSkybox();
+  return DY_PIMPL->GetPtrMainLevelSkybox();
 }
 
 void MWorld::__BindActiveSkybox(CSkybox& iRefComponent)
 {
-  this->mInternal->__BindActiveSkybox(iRefComponent);
+  DY_PIMPL->__BindActiveSkybox(iRefComponent);
 }
 
 EDySuccess MWorld::__UnbindActiveSkybox(CSkybox& iRefComponent)
 {
-  return this->mInternal->__UnbindActiveSkybox(iRefComponent);
+  return DY_PIMPL->__UnbindActiveSkybox(iRefComponent);
 }
 
 MWorldUIContainers& MWorld::MDY_PRIVATE(GetUiContainer)() noexcept
 {
-  return this->mInternal->__GetUiContainer();
+  return DY_PIMPL->__GetUiContainer();
 }
 
 void MWorld::MDY_PRIVATE(BindActiveUiObject)(FWidget& iRefWidget)
 {
-  this->mInternal->__BindActiveUiObject(iRefWidget);
+  DY_PIMPL->__BindActiveUiObject(iRefWidget);
 }
 
 EDySuccess MWorld::MDY_PRIVATE(UnbindActiveUiObject)(FWidget& iRefWidget)
 {
-  return this->mInternal->__UnbindActiveUiObject(iRefWidget);
+  return DY_PIMPL->__UnbindActiveUiObject(iRefWidget);
 }
 
 TI32 MWorld::pfEnrollActiveModelRenderer(CModelRenderer& validComponent) noexcept
 {
-  return this->mInternal->pfEnrollActiveModelRenderer(validComponent);
+  return DY_PIMPL->pfEnrollActiveModelRenderer(validComponent);
 }
 
 TI32 MWorld::pfEnrollActiveCamera(CCamera& validComponent) noexcept
 {
-  return this->mInternal->pfEnrollActiveCamera(validComponent);
+  return DY_PIMPL->pfEnrollActiveCamera(validComponent);
 }
+
+DY_DEFINE_PIMPL(MWorld);
+DY_DEFINE_DEFAULT_DESTRUCTOR(MWorld);
 
 } /// ::dy namespace
