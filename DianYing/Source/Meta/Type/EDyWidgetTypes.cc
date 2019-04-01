@@ -68,11 +68,11 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyHorizontalAlignment& p)
 
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyHorizontalAlignment& p)
 {
-  switch (SwitchStrInput(j.get<std::string>()))
+  switch (string::Input(j.get<std::string>()))
   {
-  case CaseStr("Left"): { p = EDyHorizontalAlignment::Left; } break;
-  case CaseStr("Center"): { p = EDyHorizontalAlignment::Center; } break;
-  case CaseStr("Right"): { p = EDyHorizontalAlignment::Right; } break;
+  case string::Case("Left"): { p = EDyHorizontalAlignment::Left; } break;
+  case string::Case("Center"): { p = EDyHorizontalAlignment::Center; } break;
+  case string::Case("Right"): { p = EDyHorizontalAlignment::Right; } break;
   default: MDY_UNEXPECTED_BRANCH();
   }
 }

@@ -24,9 +24,9 @@ public:
   virtual ~IPlatformDependent() = default;
 
   /// @brief Initialize dependent platform window manager.
-  virtual void InitializeDep() = 0;
+  virtual void InitializeDep() {};
   /// @brief Release dependent platform window manager.
-  virtual void ReleaseDep() = 0;
+  virtual void ReleaseDep() {};
 
   /// @brief  Create console window if OS supports. Even though OS does not support console window,
   /// This function will return DY_SUCCESS because of conformity with remove function.

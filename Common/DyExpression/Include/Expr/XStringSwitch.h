@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_HELPER_HASH_COMPILE_CRC32_H
-#define GUARD_DY_HELPER_HASH_COMPILE_CRC32_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -15,12 +14,18 @@
 
 #include <Expr/TCrc32.h>
 
-namespace dy::hash 
+namespace dy::expr::string
 {
 
-using ::dy::expr::THashVal32;
-using ::dy::expr::ToHashCrc32;
+/// @brief Get runtime string to crc-32 hash value for using switch-case statements.
+constexpr THashVal32 Input(const char* input);
 
-} /// ::dy::hash namespace
+/// @brief Get runtime string to crc-32 hash value for using switch-case statements.
+THashVal32 Input(const std::string& iInput);
 
-#endif /// GUARD_DY_HELPER_HASH_COMPILE_CRC32_H
+/// @brief Do compile time conversion of literal string to hash value.
+/// Case only support and should be executed on compile time.
+constexpr THashVal32 Case(const char* iLiteral);
+
+} /// ::dy::expr::string namespace
+#include <Expr/Inline/XStringSwitch.inl>

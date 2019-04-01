@@ -21,7 +21,7 @@ namespace dy
 MDY_NODISCARD EDySuccess DDyIOTaskDeferred::TryRemoveDependenciesItem(
     _MIN_ const std::string& iSpecifier, 
     _MIN_ EResourceType& iType, 
-    _MIN_ EDyResourceStyle& iStyle) noexcept
+    _MIN_ EResourceStyle& iStyle) noexcept
 {
   const DConditionItem item{iSpecifier, iType, iStyle};
 

@@ -81,7 +81,7 @@ public:
   /// @brief Create new reference instance. `specifier` must not be duplicated given type, style container.
   MDY_NODISCARD EDySuccess CreateReferenceInstance(
       _MIN_ const std::string& specifier,
-      _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EResourceScope scope);
+      _MIN_ EResourceType type, _MIN_ EResourceStyle style, _MIN_ EResourceScope scope);
   
   /// @brief Move old Reference Instance.
   MDY_NODISCARD EDySuccess MoveReferenceInstance(std::unique_ptr<DDyIOReferenceInstance>&& ioRi);

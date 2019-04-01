@@ -43,7 +43,7 @@ private:
   /// @brief Notify from IO.
   static void TryNotify();
 
-  /// @brief Forward task to be processed main thread into `TDyIO::mIOProcessMainTaskList`.
+  /// @brief Forward task to be processed main thread into `TRescIO::mIOProcessMainTaskList`.
   static void TryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept;
 
   friend class TDyIOWorker;

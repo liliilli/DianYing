@@ -496,19 +496,19 @@ void GDyEngine::pfReleaseDependentManager()
   MDY_CALL_ASSERT_SUCCESS(dy::MInput::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MRendering::Release());
 
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Information);
 
-  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EDyResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EResourceStyle::Information);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EResourceStyle::Resource);
+  SDyIOConnectionHelper::TryGC(EResourceScope::Global, EResourceStyle::Information);
 
   MDY_CALL_ASSERT_SUCCESS(dy::MSynchronization::Release());
   MDY_CALL_ASSERT_SUCCESS(dy::MIOResource::Release());
@@ -530,7 +530,7 @@ void GDyEngine::pfReleaseIndependentManager()
   MDY_CALL_ASSERT_SUCCESS(dy::MLog::Release());
 }
 
-NotNull<TDyIO*> GDyEngine::pfGetIOThread()
+NotNull<TRescIO*> GDyEngine::pfGetIOThread()
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->mSynchronization), "Synchronization manager must be valid.");
   return this->mSynchronization->pfGetIOThread();

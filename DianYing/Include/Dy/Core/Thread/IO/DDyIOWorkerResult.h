@@ -27,7 +27,7 @@ namespace dy
 struct DDyIOWorkerResult final
 {
   std::string       mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
-  EDyResourceStyle  mResourceStyle  = EDyResourceStyle::NoneError;
+  EResourceStyle  mResourceStyle  = EResourceStyle::NoneError;
   EResourceType   mResourceType   = EResourceType::NoneError;
   bool              mIsHaveDeferredTask = false;
   // @TODO NEED TO CHANGE TYPE TO MORE LIABLE TYPE.

@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_HELPER_STRINGSWITCH_H
-#define GUARD_DY_HELPER_STRINGSWITCH_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,15 +12,21 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/System/HashCompileCrc32.h>
-#include <Expr/XStringSwitch.h>
+#include <cstdint>
+#include <string_view>
 
-namespace dy::string
+#include <Expr/Inline/TCrc32Pre.inl>
+namespace dy::expr
 {
+  
+/// @brief Crc 32-bit hash value type.
+using THashVal32 = uint32_t; 
 
-using ::dy::expr::string::Input;
-using ::dy::expr::string::Case;
+/// @brief Do encryption and return crc32 hash value for arbitary string in compile time.
+constexpr THashVal32 ToHashCrc32(const char* s) noexcept;
 
-} /// ::dy namespace
+/// @brief Do encryption and return crc32 hash value for arbitary string in compile time.
+constexpr THashVal32 ToHashCrc32(std::string_view sv) noexcept;
 
-#endif /// GUARD_DY_HELPER_STRINGSWITCH_H
+} /// ::dy::expr namespace
+#include <Expr/Inline/TCrc32Post.inl>

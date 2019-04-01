@@ -67,9 +67,9 @@ namespace
 namespace dy
 {
 
-class MRendering::Impl final : IInitializeHelper<void>
+struct MRendering::Impl final : IInitializeHelper<void>
 {
-public:
+  DY_DEFAULT_PIMPL_CTOR(MRendering);
   EDySuccess Initialize() override final;
   void Release() override final;
   ~Impl();
@@ -210,25 +210,25 @@ namespace dy
 
 EDySuccess MRendering::pfInitialize()
 { 
-  this->mInternal = new (std::nothrow) Impl();
-  this->mInternal->Initialize();
+  DY_INITIALIZE_PIMPL();
+  DY_PIMPL->Initialize();
   return DY_SUCCESS;
 }
 
 EDySuccess MRendering::pfRelease()
 {
-  delete this->mInternal; this->mInternal = nullptr;
+  DY_RESET_PIMPL();
   return DY_SUCCESS;
 }
 
 void MRendering::PreRender(TF32 iDt) 
 { 
-  this->mInternal->PreRender(iDt); 
+  DY_PIMPL->PreRender(iDt); 
 }
 
 void MRendering::SetupDrawModelTaskQueue() 
 { 
-  this->mInternal->SetupDrawModelTaskQueue(); 
+  DY_PIMPL->SetupDrawModelTaskQueue(); 
 }
 
 void MRendering::EnqueueDrawMesh(
@@ -236,50 +236,50 @@ void MRendering::EnqueueDrawMesh(
   const FDyMeshResource& iRefValidMesh, 
   const FDyMaterialResource& iRefValidMat)
 {
-  this->mInternal->EnqueueDrawMesh(iRefModelRenderer, iRefValidMesh, iRefValidMat);
+  DY_PIMPL->EnqueueDrawMesh(iRefModelRenderer, iRefValidMesh, iRefValidMat);
 }
 
 void MRendering::EnqueueDebugDrawCollider(
   CBasePhysicsCollider& iRefCollider, 
   const DMat4& iTransformMatrix)
 {
-  this->mInternal->EnqueueDebugDrawCollider(iRefCollider, iTransformMatrix);
+  DY_PIMPL->EnqueueDebugDrawCollider(iRefCollider, iTransformMatrix);
 }
 
 void MRendering::RenderPipelines() 
 { 
-  this->mInternal->RenderPipelines(); 
+  DY_PIMPL->RenderPipelines(); 
 }
 
 void MRendering::MDY_PRIVATE(BindMainDirectionalLight)(CLightDirectional& iRefLight)
 {
-  return this->mInternal->MDY_PRIVATE(BindMainDirectionalLight)(iRefLight);
+  return DY_PIMPL->MDY_PRIVATE(BindMainDirectionalLight)(iRefLight);
 }
 CLightDirectional* MRendering::GetPtrMainDirectionalLight() const noexcept
 {
-  return this->mInternal->GetPtrMainDirectionalLight();
+  return DY_PIMPL->GetPtrMainDirectionalLight();
 }
 EDySuccess MRendering::MDY_PRIVATE(UnbindMainDirectionalLight)(CLightDirectional& iRefLight)
 {
-  return this->mInternal->MDY_PRIVATE(UnbindMainDirectionalLight)(iRefLight);
+  return DY_PIMPL->MDY_PRIVATE(UnbindMainDirectionalLight)(iRefLight);
 }
 
 void MRendering::MDY_PRIVATE(BindMainDirectionalShadow)(CLightDirectional& iRefLight)
 {
-  this->mInternal->MDY_PRIVATE(BindMainDirectionalShadow)(iRefLight);
+  DY_PIMPL->MDY_PRIVATE(BindMainDirectionalShadow)(iRefLight);
 }
 CLightDirectional* MRendering::GetPtrMainDirectionalShadow() const noexcept
 {
-  return this->mInternal->GetPtrMainDirectionalShadow();
+  return DY_PIMPL->GetPtrMainDirectionalShadow();
 }
 EDySuccess MRendering::MDY_PRIVATE(UnbindMainDirectionalShadow)(CLightDirectional& iRefLight)
 {
-  return this->mInternal->MDY_PRIVATE(UnbindMainDirectionalShadow)(iRefLight);
+  return DY_PIMPL->MDY_PRIVATE(UnbindMainDirectionalShadow)(iRefLight);
 }
 
 void MRendering::MDY_PRIVATE(BindPointLight)(CLightPoint& iRefLight)
 {
-  auto& handleList = this->mInternal->mActivatedPointLights;
+  auto& handleList = DY_PIMPL->mActivatedPointLights;
   if (Contains(handleList, &iRefLight) == true)
   {
     MDY_UNEXPECTED_BRANCH();
@@ -291,7 +291,7 @@ void MRendering::MDY_PRIVATE(BindPointLight)(CLightPoint& iRefLight)
 
 EDySuccess MRendering::MDY_PRIVATE(UnbindPointLight)(CLightPoint& iRefLight)
 {
-  auto& handleList = this->mInternal->mActivatedPointLights;
+  auto& handleList = DY_PIMPL->mActivatedPointLights;
   if (Contains(handleList, &iRefLight) == false)
   {
     DyPushLogCritical("Failed to unbind handle of point light.");
@@ -306,12 +306,12 @@ EDySuccess MRendering::MDY_PRIVATE(UnbindPointLight)(CLightPoint& iRefLight)
 MRendering::TPointLightHandleList&
 MRendering::MDY_PRIVATE(GetActivatedPointLights)() noexcept
 {
-  return this->mInternal->mActivatedPointLights;
+  return DY_PIMPL->mActivatedPointLights;
 }
 
 void MRendering::MDY_PRIVATE(BindSpotLight)(CLightSpot& iRefLight)
 {
-  auto& handleList = this->mInternal->mActivatedSpotLights;
+  auto& handleList = DY_PIMPL->mActivatedSpotLights;
   if (Contains(handleList, &iRefLight) == true)
   {
     MDY_UNEXPECTED_BRANCH();
@@ -323,7 +323,7 @@ void MRendering::MDY_PRIVATE(BindSpotLight)(CLightSpot& iRefLight)
 
 EDySuccess MRendering::MDY_PRIVATE(UnbindSpotLight)(CLightSpot& iRefLight)
 {
-  auto& handleList = this->mInternal->mActivatedSpotLights;
+  auto& handleList = DY_PIMPL->mActivatedSpotLights;
   if (Contains(handleList, &iRefLight) == false)
   {
     DyPushLogCritical("Failed to unbind handle of spot light.");
@@ -338,39 +338,39 @@ EDySuccess MRendering::MDY_PRIVATE(UnbindSpotLight)(CLightSpot& iRefLight)
 MRendering::TSpotLightHandleList& 
 MRendering::MDY_PRIVATE(GetActivatedSpotLights)() noexcept
 {
-  return this->mInternal->mActivatedSpotLights;
+  return DY_PIMPL->mActivatedSpotLights;
 }
 
 const DMat4& MRendering::GetGeneralUiProjectionMatrix() const noexcept
 {
-  return this->mInternal->GetGeneralUiProjectionMatrix();
+  return DY_PIMPL->GetGeneralUiProjectionMatrix();
 }
 
-void MRendering::SwapBuffers() { this->mInternal->SwapBuffers(); }
+void MRendering::SwapBuffers() { DY_PIMPL->SwapBuffers(); }
 
 std::vector<MRendering::TMeshDrawCallItem>& MRendering::GetOpaqueMeshQueueList()
 {
-  return this->mInternal->mOpaqueMeshDrawingList;
+  return DY_PIMPL->mOpaqueMeshDrawingList;
 }
 
 std::vector<MRendering::TMeshDrawCallItem>& MRendering::GetTranclucentOitMeshQueueList()
 {
-  return this->mInternal->mTranslucentMeshDrawingList;
+  return DY_PIMPL->mTranslucentMeshDrawingList;
 }
 
 std::vector<MRendering::TDrawColliderItem>& MRendering::GetColliderMeshQueueList()
 {
-  return this->mInternal->mDebugColliderDrawingList;
+  return DY_PIMPL->mDebugColliderDrawingList;
 }
 
 std::vector<MRendering::TUiDrawCallItem>& MRendering::GetUiObjectQueuelist()
 {
-  return this->mInternal->mUiObjectDrawingList;
+  return DY_PIMPL->mUiObjectDrawingList;
 }
 
 bool MRendering::HasRenderItem(const std::string& iRenderItemName)
 {
-  return Contains(this->mInternal->mRenderItems, iRenderItemName);
+  return Contains(DY_PIMPL->mRenderItems, iRenderItemName);
 }
 
 FWrapperRenderItem* MRendering::GetRenderItem(const std::string& iRenderItemName)
@@ -380,12 +380,12 @@ FWrapperRenderItem* MRendering::GetRenderItem(const std::string& iRenderItemName
     return nullptr; 
   }
 
-  return this->mInternal->mRenderItems.at(iRenderItemName).get();
+  return DY_PIMPL->mRenderItems.at(iRenderItemName).get();
 }
 
 bool MRendering::HasRenderPipeline(const std::string& iRenderPipelineName)
 {
-  return Contains(this->mInternal->mRenderPipelines, iRenderPipelineName);
+  return Contains(DY_PIMPL->mRenderPipelines, iRenderPipelineName);
 }
 
 FWrapperRenderPipeline* MRendering::GetRenderPipeline(const std::string& iRenderPipelineName)
@@ -395,17 +395,20 @@ FWrapperRenderPipeline* MRendering::GetRenderPipeline(const std::string& iRender
     return nullptr;
   }
 
-  return this->mInternal->mRenderPipelines.at(iRenderPipelineName).get();
+  return DY_PIMPL->mRenderPipelines.at(iRenderPipelineName).get();
 }
 
 bool MRendering::HasEntryRenderPipeline(const std::string& iEntryPipelineName)
 {
-  return this->mInternal->HasEntryRenderPipeline(iEntryPipelineName);
+  return DY_PIMPL->HasEntryRenderPipeline(iEntryPipelineName);
 }
 
 EDySuccess MRendering::ActivateEntryRenderPipeline(const std::string& iEntryPipelineName, bool iIsActivated)
 {
-  return this->mInternal->ActivateEntryRenderPipeline(iEntryPipelineName, iIsActivated);
+  return DY_PIMPL->ActivateEntryRenderPipeline(iEntryPipelineName, iIsActivated);
 }
+
+DY_DEFINE_PIMPL(MRendering);
+DY_DEFINE_DEFAULT_DESTRUCTOR(MRendering);
 
 } /// ::dy namespace

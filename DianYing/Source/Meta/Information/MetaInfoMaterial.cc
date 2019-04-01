@@ -89,9 +89,9 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
    */
 
   const auto loadingTypeString = json::GetValueFrom<std::string>(j, "LoadingType");
-  switch(SwitchStrInput(loadingTypeString))
+  switch(string::Input(loadingTypeString))
   {
-  case CaseStr("Internal"):
+  case string::Case("Internal"):
   {
     json::GetValueFromTo(j, "ShaderSpecifier", p.mShaderSpecifier);
     json::GetValueFromTo(j, "BlendMode",       p.mBlendMode);
@@ -102,7 +102,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
     json::GetValueFromTo(j, "TextureSpecifierList", texList);
     for (TU32 i = 0, size = static_cast<TU32>(texList.size()); i < size; ++i) { p.mTextureNames[i] = texList[i]; }
   } break;
-  case CaseStr("External"):
+  case string::Case("External"):
   {
     // If `IsCompressed` is true, load file from `ExternalPath` and decompress.
     if (j["IsCompressed"].get<bool>() == true)
@@ -246,7 +246,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ PDyMaterialInstanceMetaIn
       }
     }
   } break;
-  case CaseStr("Binary"):
+  case string::Case("Binary"):
   {
     MDY_NOT_IMPLEMENTED_ASSERT();
   } break;

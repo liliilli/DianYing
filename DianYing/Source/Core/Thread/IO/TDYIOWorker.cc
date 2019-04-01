@@ -114,8 +114,8 @@ DDyIOWorkerResult TDyIOWorker::PopulateIOResource(_MIN_ const DDyIOTask& assigne
   // RESOURCE 을 만드는데, 각각의 CDy~~ 을 조정해줄 필요가 있을 듯 함.
   switch (assignedTask.mResourcecStyle)
   {
-  case EDyResourceStyle::Information: return this->pPopulateIOResourceInformation(assignedTask);
-  case EDyResourceStyle::Resource:    return this->pPopulateIOResourceResource(assignedTask);
+  case EResourceStyle::Information: return this->pPopulateIOResourceInformation(assignedTask);
+  case EResourceStyle::Resource:    return this->pPopulateIOResourceResource(assignedTask);
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 

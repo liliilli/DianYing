@@ -85,7 +85,7 @@ struct RGlobalInstanceRegistration final : public RGlobalInstanceManager
 /// @brief Get pointer of global instance, __MAStringLiteral__ global instance type.
 /// This macro is null-safe and compile time checking when __MAStringLiteral__ can be processed in compile time.
 #define MDY_GET_GLOBALINSTANCE(__MAStringLiteral__) \
-  ::dy::reflect::RGlobalInstanceManager::GetGlobalInstance<::dy::hash::DyToCrc32Hash(MDY_TO_STRING(__MAStringLiteral__))>()
+  ::dy::reflect::RGlobalInstanceManager::GetGlobalInstance<::dy::hash::ToHashCrc32(MDY_TO_STRING(__MAStringLiteral__))>()
 
 } /// ::dy::reflect namespace
 

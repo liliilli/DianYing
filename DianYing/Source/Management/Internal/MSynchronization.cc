@@ -26,8 +26,8 @@ namespace dy
 EDySuccess MSynchronization::pfInitialize()
 {
   // Initialize threads.
-  this->mIOThreadInstance = std::make_unique<TDyIO>();
-  this->mIOThreadThread   = std::thread(&TDyIO::operator(), std::ref(*this->mIOThreadInstance));
+  this->mIOThreadInstance = std::make_unique<TRescIO>();
+  this->mIOThreadThread   = std::thread(&TRescIO::operator(), std::ref(*this->mIOThreadInstance));
   return DY_SUCCESS;
 }
 
@@ -39,7 +39,7 @@ EDySuccess MSynchronization::pfRelease()
   return DY_SUCCESS;
 }
 
-NotNull<TDyIO*> MSynchronization::pfGetIOThread()
+NotNull<TRescIO*> MSynchronization::pfGetIOThread()
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(this->mIOThreadInstance), "IOThread Instance must not be null except for initialization and destruction.");
   return DyMakeNotNull(this->mIOThreadInstance.get());

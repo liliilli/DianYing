@@ -53,9 +53,9 @@ namespace dy
 /// @brief Rendering maanger
 class MRendering final : public ISingleton<MRendering>
 {
-  MDY_SINGLETON_PROPERTIES(MRendering);
-  MDY_SINGLETON_DERIVED(MRendering);
 public:
+  MDY_SINGLETON_PROPERTIES(MRendering);
+  DY_PIMPL_SINGELTON_DERIVED(MRendering);
   using TMeshDrawCallItem = std::tuple<
       NotNull<DDyModelHandler::DActorInfo*>,
       NotNull<const FDyMeshResource*>, 
@@ -147,8 +147,6 @@ private:
   void EnqueueDebugDrawCollider(
       CBasePhysicsCollider& iRefCollider, 
       const DMat4& iTransformMatrix);
-
-  class Impl; Impl* mInternal = nullptr;
 
   friend class MPhysics;
 };

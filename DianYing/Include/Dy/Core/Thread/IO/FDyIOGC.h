@@ -31,11 +31,11 @@ public:
   /// @param specifier Resource specifier name.
   /// @param type  Resource type.
   /// @param style Resource style mode.
-  MDY_NODISCARD bool IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EDyResourceStyle style);
+  MDY_NODISCARD bool IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EResourceStyle style);
 
   /// @brief Move instance from gc list as return value.
   MDY_NODISCARD std::optional<std::unique_ptr<DDyIOReferenceInstance>> 
-    MoveInstanceFromGC(const std::string& speicifer, EResourceType type, EDyResourceStyle style);
+    MoveInstanceFromGC(const std::string& speicifer, EResourceType type, EResourceStyle style);
 
   /// @brief Insert RI gc-ed candidate into container.
   /// Inserted argument will be empty.

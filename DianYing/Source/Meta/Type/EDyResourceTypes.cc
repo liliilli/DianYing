@@ -21,14 +21,14 @@ namespace dy
 
 EDyShaderFragmentType DyConvertStringToEDyShaderFragmentType(_MIN_ const std::string& iString) noexcept
 {
-  switch (SwitchStrInput(iString))
+  switch (string::Input(iString))
   {
-  case CaseStr("Vert"): return EDyShaderFragmentType::Vertex; 
-  case CaseStr("Hull"): return EDyShaderFragmentType::Hull; 
-  case CaseStr("Domn"): return EDyShaderFragmentType::Domain; 
-  case CaseStr("Geom"): return EDyShaderFragmentType::Geometry; 
-  case CaseStr("Pixl"): return EDyShaderFragmentType::Pixel; 
-  case CaseStr("Comp"): return EDyShaderFragmentType::Compute; 
+  case string::Case("Vert"): return EDyShaderFragmentType::Vertex; 
+  case string::Case("Hull"): return EDyShaderFragmentType::Hull; 
+  case string::Case("Domn"): return EDyShaderFragmentType::Domain; 
+  case string::Case("Geom"): return EDyShaderFragmentType::Geometry; 
+  case string::Case("Pixl"): return EDyShaderFragmentType::Pixel; 
+  case string::Case("Comp"): return EDyShaderFragmentType::Compute; 
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDyShaderFragmentType::NoneError);
   }
 }
