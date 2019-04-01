@@ -84,7 +84,7 @@ public:
   }
 
 private:
-  /// @brief Insert result from TDyIO (I/O GC-IN Phase)
+  /// @brief Insert result from TRescIO (I/O GC-IN Phase)
   void InsertResult(_MIN_ EResourceType type, _MIN_ void* ptrrawInstance);
 
   /// @brief Try remove information instance with iSpecifier name and iType. \n
@@ -105,7 +105,7 @@ private:
   __THashMap<FDyFrameBufferInformation> __mFrameBufferContainer = {};
   __THashMap<FDySoundInformation> __mSoundContainer = {};
 
-  friend class TDyIO;
+  friend class TRescIO;
   friend class FDyIOGC;
 };
 

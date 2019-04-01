@@ -78,7 +78,7 @@ public:
 
 private:
   /// @brief Get IO Thread Instance which not be nulled.
-  NotNull<TDyIO*> pfGetIOThread();
+  NotNull<TRescIO*> pfGetIOThread();
 
   /// @brief Reflect game status transition.
   void MDY_PRIVATE(ReflectGameStatusTransition)();

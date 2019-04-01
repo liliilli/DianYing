@@ -909,7 +909,6 @@
     <None Include="Include\Dy\Management\Inline\MLogHelper.inl" />
     <None Include="Include\Dy\Management\Inline\MScriptImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MSoundImpl.inl" />
-    <None Include="Include\Dy\Management\Inline\MLogImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MWindowImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MRenderingImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MWorldImpl.inl" />

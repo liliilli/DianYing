@@ -43,45 +43,51 @@ MDY_INTERFACE IBinderBase;
 namespace dy
 {
 
-///
-/// @class TDyIO
+/// @class TRescIO
 /// @brief File IO Thread
-///
-class TDyIO final : public IInitializeHelper<void>
+class TRescIO final : public IInitializeHelper<void>
 {
 public:
   /// @struct PRIVerificationItem
   /// @brief
   struct PRIVerificationItem final
   {
-    const std::string   mSpecifier  = MDY_INITIALIZE_EMPTYSTR;
-    const EResourceType mType       = EResourceType::NoneError;
-    const EDyResourceStyle mStyle   = EDyResourceStyle::NoneError;
-    const EResourceScope   mScope   = EResourceScope::UserDefined;
+    const std::string     mSpecifier;
+    const EResourceType   mType  = EResourceType::NoneError;
+    const EResourceStyle  mStyle = EResourceStyle::NoneError;
+    const EResourceScope  mScope = EResourceScope::UserDefined;
 
     PRIVerificationItem(
-      const std::string& specifier, EResourceType type, EDyResourceStyle style, EResourceScope scope) 
-      : mSpecifier{specifier}, mType{type}, mStyle{style}, mScope{scope} {};
+      const std::string& specifier, 
+      EResourceType type, 
+      EResourceStyle style, 
+      EResourceScope scope) 
+      : mSpecifier{specifier}, 
+        mType{type}, 
+        mStyle{style}, 
+        mScope{scope} {};
   };
 
-  enum class EDyRIStatus : TU8
+  /// @enum   ERIState 
+  /// @brief  Specifies Reference instance state.
+  enum class ERIState : TU8
   {
-    NotValid,
-    NotBoundYet,
-    Valid,
+    NotExist,     // Reference Instance is not exist at all.
+    NotBoundYet,  // Reference Instance is exist but actual resource is not bound yet.
+    Valid,        // Reference Instance is exist and actual resource is valid.
   };
-  using TDependencyPair = std::pair<PRIVerificationItem, EDyRIStatus>;
+  using TDependencyPair = std::pair<PRIVerificationItem, ERIState>;
   using TDependencyList = std::vector<TDependencyPair>;
 
 public:
-  TDyIO();
-  ~TDyIO();
+  TRescIO();
+  ~TRescIO();
 
   /// @brief Entry point of Thread IO.
   void operator()();
 
   /// @brief Bind sleep callback function.
-  /// This function can be called if only TDyIO Thread is slept. \n
+  /// This function can be called if only TRescIO Thread is slept. \n
   /// And callback is called, bound function will be disappeared.
   void BindSleepCallbackFunction(_MIN_ std::function<void(void)> iCbFunc);
 
@@ -92,7 +98,7 @@ public:
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
   /// is only Valid resource but count is 0. \n
   /// This function may causes time consuming, call this carefully.
-  void outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ EDyResourceStyle iStyle);
+  void outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ EResourceStyle iStyle);
 
 private:
   /// @struct FTaskQueueCmpFunctor
@@ -105,9 +111,9 @@ private:
     };
   };
 
-  /// @brief Initialize TDyIO.
+  /// @brief Initialize TRescIO.
   EDySuccess Initialize() override final;
-  /// @brief Release TDyIO.
+  /// @brief Release TRescIO.
   void Release() override final;
 
   //!
@@ -139,14 +145,14 @@ private:
   /// @brief Enqueue IO Populating task without any binding to dy object.
   EDySuccess outTryEnqueueTask(
       const std::string& specifier,
-      EResourceType resourceType, EDyResourceStyle resourceStyle,
+      EResourceType resourceType, EResourceStyle resourceStyle,
       EResourceScope scope, bool isDerivedFromResource = false);
 
   /// @brief
   MDY_NODISCARD std::vector<PRIVerificationItem> pMakeDependenciesCheckList(
       _MIN_ const std::string& iSpecifier,
       _MIN_ EResourceType iResourceType,
-      _MIN_ EDyResourceStyle iResourceStyle,
+      _MIN_ EResourceStyle iResourceStyle,
       _MIN_ EResourceScope iScope) const;
 
   /// @brief Enqueue IO Populating `instant` material task.
@@ -162,7 +168,7 @@ private:
 
   /// @brief Check Reference instance is bounded. (resource is bounded or not).
   /// If there is not specified instance in contianer, UB might be happened.
-  MDY_NODISCARD bool pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD bool pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style);
 
   /// @brief Check specified meta information is exist on meta information.
   /// @param specifier Resource specifier name.
@@ -173,7 +179,7 @@ private:
   /// @param specifier Resource specifier name.
   /// @param type  Resource type.
   /// @param style Resource style mode.
-  MDY_NODISCARD bool pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD bool pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style);
 
   /// @brief Try bind binder instance to Resource Reference Instance.
   /// If not found RI, just return DY_FAILURE.
@@ -208,7 +214,7 @@ private:
   void pTryEnlargeResourceScope(
       _MIN_ EResourceScope scope,
       _MIN_ const std::string& specifier,
-      _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
+      _MIN_ EResourceType type, _MIN_ EResourceStyle style);
 
   ///
   /// @brief Try retrieve reference instance from gc.
@@ -216,10 +222,10 @@ private:
   /// @param type  Resource type.
   /// @param style Resource style mode.
   ///
-  MDY_NODISCARD EDySuccess outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
+  MDY_NODISCARD EDySuccess outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style);
 
   /// @brief Create reference instance.
-  MDY_NODISCARD EDySuccess outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style, _MIN_ EResourceScope scope);
+  MDY_NODISCARD EDySuccess outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style, _MIN_ EResourceScope scope);
 
   /// @brief Force Try process deferred task list which must be processed in main thread, \n
   /// so Insert created resource instance into result instance list for IO GC/IN Phase.
@@ -239,7 +245,7 @@ private:
 
   /// @brief Try update deferred task which can be insered to list insert into queue with more high priority.
   /// This function use mutex, so performance is afraid.
-  void pTryUpdateDeferredTaskList(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style);
+  void pTryUpdateDeferredTaskList(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style);
 
   /// @brief 
   void outForceProcessIOInsertPhase() noexcept;

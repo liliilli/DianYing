@@ -79,10 +79,9 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 namespace dy
 {
 
-class MWindow::Impl final : public IPlatformDependent
+struct MWindow::Impl final : public IPlatformDependent
 {
-public:
-  Impl();
+  DY_DECLARE_PIMPL_CTOR(MWindow);
   virtual ~Impl();
 
   /// @brief Check window is should closed this time.
@@ -118,7 +117,6 @@ public:
   /// @brief Get system font path with iFontKey. If not found, just return null value.
   std::optional<std::string> GetFontPathOnSystem(const std::string& iFontKey) const override final;
 
-private:
   void InitializeDep() override final {}; 
   void ReleaseDep() override final {};
   
@@ -139,62 +137,65 @@ namespace dy
 
 bool MWindow::IsWindowShouldClose() const noexcept
 {
-  return this->mInternal->IsWindowShouldClose();
+  return DY_PIMPL->IsWindowShouldClose();
 }
 
 EDySuccess MWindow::MDY_PRIVATE(TerminateWindow)() noexcept
 {
-  return this->mInternal->MDY_PRIVATE(TerminateWindow)();
+  return DY_PIMPL->MDY_PRIVATE(TerminateWindow)();
 }
 
 GLFWwindow* MWindow::GetGLMainWindow() const noexcept
 {
-  return this->mInternal->GetGLMainWindow();
+  return DY_PIMPL->GetGLMainWindow();
 }
 
 const std::array<GLFWwindow*, 2>& MWindow::GetGLWorkerWindowList() const noexcept
 {
-  return this->mInternal->GetGLWorkerWindowList();
+  return DY_PIMPL->GetGLWorkerWindowList();
 }
 
 EDySuccess MWindow::CreateConsoleWindow()
 {
-  return this->mInternal->CreateConsoleWindow();
+  return DY_PIMPL->CreateConsoleWindow();
 }
 
 bool MWindow::IsCreatedConsoleWindow() const noexcept
 {
-  return this->mInternal->IsCreatedConsoleWindow();
+  return DY_PIMPL->IsCreatedConsoleWindow();
 }
 
 EDySuccess MWindow::RemoveConsoleWindow() 
 { 
-  return this->mInternal->RemoveConsoleWindow(); 
+  return DY_PIMPL->RemoveConsoleWindow(); 
 }
 
-TF32 MWindow::GetCpuUsage() { return this->mInternal->GetCpuUsage(); }
-TU64 MWindow::GetRamUsage() { return this->mInternal->GetRamUsage(); }
+TF32 MWindow::GetCpuUsage() { return DY_PIMPL->GetCpuUsage(); }
+TU64 MWindow::GetRamUsage() { return DY_PIMPL->GetRamUsage(); }
 
 bool MWindow::IsFontExistOnSystem(const std::string& iFontKey) const
 {
-  return this->mInternal->IsFontExistOnSystem(iFontKey);
+  return DY_PIMPL->IsFontExistOnSystem(iFontKey);
 }
 
 std::optional<std::string> MWindow::GetFontPathOnSystem(const std::string& iFontKey) const
 {
-  return this->mInternal->GetFontPathOnSystem(iFontKey);
+  return DY_PIMPL->GetFontPathOnSystem(iFontKey);
 }
 
 EDySuccess MWindow::pfInitialize()
 {
-  this->mInternal = new (std::nothrow) Impl();
+  DY_INITIALIZE_PIMPL();
   return DY_SUCCESS;
 }
 
 EDySuccess MWindow::pfRelease()
 {
-  delete this->mInternal; this->mInternal = nullptr;
+  DY_RESET_PIMPL();
   return DY_SUCCESS;
 }
+
+DY_DEFINE_PIMPL(MWindow);
+DY_DEFINE_DEFAULT_DESTRUCTOR(MWindow);
 
 } /// ::dy namespace

@@ -23,7 +23,7 @@ namespace dy
 
 class MWindow final : public ISingleton<MWindow>, public IPlatformDependent
 {
-  MDY_SINGLETON_DERIVED(MWindow);
+  DY_PIMPL_SINGELTON_DERIVED(MWindow);
   MDY_SINGLETON_PROPERTIES(MWindow);
 public:
   /// @brief Check window is should closed this time.
@@ -58,12 +58,6 @@ public:
   MDY_NODISCARD bool IsFontExistOnSystem(const std::string& iFontKey) const override final;
   /// @brief Get system font path with iFontKey. If not found, just return null value.
   MDY_NODISCARD std::optional<std::string> GetFontPathOnSystem(const std::string& iFontKey) const override final;
-
-private:
-  void InitializeDep() override final {}; 
-  void ReleaseDep() override final {};
-  
-  class Impl; Impl* mInternal = nullptr;
 };
 
 } /// ::dy namespace

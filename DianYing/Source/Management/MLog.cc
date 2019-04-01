@@ -36,7 +36,7 @@ namespace
 using ELevel = ::dy::MLog::ELevel;
 
 /// @brief spdlog internal error callback function.
-void DyCallbackLoggerError(_MIN_ const std::string& message)
+void DyCallbackLoggerError(const std::string& message)
 {
   std::printf("DianYing internal error : %s\n", message.c_str());
 }
@@ -44,7 +44,7 @@ void DyCallbackLoggerError(_MIN_ const std::string& message)
 /// @brief Get spdlog::level enum from abstracted log level EDyLogLevel.
 /// @param level `Dy` Log level value
 /// @return `spdlog` dependent log level.
-MDY_NODISCARD spdlog::level::level_enum DyGetLogLevel(_MIN_ ELevel level) noexcept
+MDY_NODISCARD spdlog::level::level_enum DyGetLogLevel(ELevel level) noexcept
 {
   switch (level)
   {
@@ -67,68 +67,147 @@ namespace dy
 
 /// @class MLog::Impl 
 /// @brief Implementation of logging management type.
-class MLog::Impl final
+struct MLog::Impl final
 {
-public:
-  Impl() = default;
-  ~Impl();
+  DY_DEFAULT_PIMPL_CTOR(MLog);
 
-  /// @brief Set logging output visibility level.
-  void SetVisibleLevel(ELevel newLogLevel);
- 
-  /// @brief This function can push the log manually.
-  /// In case of being intentialiy, recommend use MACRO version (DyPushLogDebugInfo)
-  void PushLog(ELevel logLevel, const std::string& iLogString);
-
-  /// @brief Allocate and bind logger resource. (Enable)
-  /// This function must be called when only MSetting::mIsEnabledLogging value is being on.
-  EDySuccess pfTurnOn();
-  /// @brief Release logger resource. (Disable)
-  /// This function must be called when only MSetting::mIsEnabledLogging value is being off.
-  EDySuccess pfTurnOff();
- 
-private:
   std::vector<spdlog::sink_ptr>   mSinks        = {};
   std::shared_ptr<spdlog::logger> mLogger       = nullptr;
   ELevel                          mLogLevel     = ELevel::Debug;
 };
 
 } /// ::dy namespace
-#include <Dy/Management/Inline/MLogImpl.inl>
 
 namespace dy
 {
 
 EDySuccess MLog::pfInitialize()
 {
-  this->mPimpl = new (std::nothrow) Impl();
+  DY_INITIALIZE_PIMPL();
   return DY_SUCCESS;
 }
 
 EDySuccess MLog::pfRelease()
 {
-  delete this->mPimpl;
+  spdlog::shutdown();
+
+  DY_RESET_PIMPL();
   return DY_SUCCESS;
 }
 
 EDySuccess MLog::pfTurnOn()
 {
-  return this->mPimpl->pfTurnOn();
+  // If logger is alreay turned on,
+  if (DY_PIMPL->mLogger != nullptr)
+  {
+    DyPushLogDebugInfo("MLog::mLogger already allocated.");
+    return DY_SUCCESS;
+  }
+
+  // Create sinks for logging.
+  const auto& settingManager = MSetting::GetInstance();
+  if (settingManager.IsEnabledFeatureLogging() == false) { return DY_FAILURE; }
+
+  if (settingManager.IsEnableSubFeatureLoggingToFile() == false
+  &&  settingManager.IsEnabledSubFeatureLoggingToConsole() == false)
+  {
+    #if defined(_WIN32)
+    DY_PIMPL->mSinks.emplace_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
+    #else
+    DY_PIMPL->mSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+    #endif
+  }
+  else
+  {
+    if (settingManager.IsEnabledSubFeatureLoggingToConsole() == true)
+    {
+      if (auto& managerWindow = MWindow::GetInstance();
+          managerWindow.IsInitialized() == true)
+      {
+        MDY_CALL_ASSERT_SUCCESS(managerWindow.CreateConsoleWindow());
+      }
+
+      #if defined(_WIN32)
+      DY_PIMPL->mSinks.emplace_back(std::make_shared<spdlog::sinks::wincolor_stdout_sink_mt>());
+      #else
+      DY_PIMPL->mSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+      #endif
+    }
+
+    if (settingManager.IsEnableSubFeatureLoggingToFile() == true)
+    { // Caution :: To let spdlog create log file to specific path, directories must be created in advance.
+      DY_PIMPL->mSinks.push_back(
+        std::make_shared<spdlog::sinks::basic_file_sink_mt>(settingManager.GetLogFilePath(), false));
+    }
+  }
+
+  // Also, create gui logging sink.
+  DY_PIMPL->mSinks.push_back(std::make_shared<TGuiLogStreamSinkMt>());
+
+  // Create logger instance and thread pool for logging.
+  spdlog::init_thread_pool(8192, 1);
+  DY_PIMPL->mLogger = std::make_shared<spdlog::async_logger>(
+    "DianYing",
+    DY_PIMPL->mSinks.begin(), DY_PIMPL->mSinks.end(),
+    spdlog::thread_pool(),
+    spdlog::async_overflow_policy::overrun_oldest);
+  DY_PIMPL->mLogger->set_level(DyGetLogLevel(DY_PIMPL->mLogLevel));
+
+  // Register logger.
+  DyPushLogDebugDebug("MLog::mLogger level : {}.", DyGetLogLevel(DY_PIMPL->mLogLevel));
+  DyPushLogDebugDebug("MLog::mLogger resource allocated.");
+  spdlog::register_logger(DY_PIMPL->mLogger);
+
+  DyPushLogDebugDebug("MLog::mLogger resource registered.");
+  spdlog::set_error_handler(DyCallbackLoggerError);
+
+  return DY_SUCCESS;
 }
 
 EDySuccess MLog::pfTurnOff()
 {
-  return this->mPimpl->pfTurnOff();
+  // Drop all registration of logging sink, instance.
+  spdlog::drop_all();
+  DY_PIMPL->mLogger.reset();
+  DY_PIMPL->mSinks.clear();
+
+  if (auto& windowManager = MWindow::GetInstance();
+      windowManager.IsCreatedConsoleWindow() == true)
+  {
+    MDY_CALL_ASSERT_SUCCESS(windowManager.RemoveConsoleWindow());
+  }
+  return DY_SUCCESS;
 }
 
 void MLog::SetVisibleLevel(ELevel newLogLevel)
 {
-  this->mPimpl->SetVisibleLevel(newLogLevel);
+  DY_PIMPL->mLogLevel = newLogLevel;
+
+  if (MSetting::GetInstance().IsEnabledFeatureLogging() == true)
+  {
+    const auto logLevelValue = DyGetLogLevel(DY_PIMPL->mLogLevel);
+
+    DY_PIMPL->mLogger->set_level(logLevelValue);
+    DyPushLogDebugDebug("MLog::mLogger level : {}.", logLevelValue);
+  }
 }
 
 void MLog::PushLog(ELevel logLevel, const std::string& iLogString)
 {
-  this->mPimpl->PushLog(logLevel, iLogString);
+  if (DY_PIMPL->mLogger == nullptr) { return; }
+
+  switch (logLevel)
+  {
+  case ELevel::Trace:        DY_PIMPL->mLogger->trace(iLogString);     break;
+  case ELevel::Information:  DY_PIMPL->mLogger->info(iLogString);      break;
+  case ELevel::Debug:        DY_PIMPL->mLogger->debug(iLogString);     break;
+  case ELevel::Warning:      DY_PIMPL->mLogger->warn(iLogString);      break;
+  case ELevel::Error:        DY_PIMPL->mLogger->error(iLogString);     break;;
+  case ELevel::Critical:     DY_PIMPL->mLogger->critical(iLogString);  break;
+  }
 }
+
+DY_DEFINE_PIMPL(MLog);
+DY_DEFINE_DEFAULT_DESTRUCTOR(MLog);
 
 } /// ::dy namespace

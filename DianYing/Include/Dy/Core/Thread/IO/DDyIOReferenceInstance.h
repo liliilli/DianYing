@@ -43,7 +43,7 @@ struct DDyIOReferenceInstance final
   using TConditionCallback = bool(*)();
 
   std::string      mSpecifierName;
-  EDyResourceStyle mResourcecStyle = EDyResourceStyle::NoneError;
+  EResourceStyle mResourcecStyle = EResourceStyle::NoneError;
   EResourceType    mResourceType   = EResourceType::NoneError;
   EResourceScope   mScope          = EResourceScope::Global;
 
@@ -58,7 +58,7 @@ struct DDyIOReferenceInstance final
   /// In this case, Reference count would be 0 and nothing.
   DDyIOReferenceInstance(
     const std::string& specifier, 
-    EDyResourceStyle style, EResourceType type, EResourceScope scope)
+    EResourceStyle style, EResourceType type, EResourceScope scope)
     : mSpecifierName(specifier), 
       mResourcecStyle(style), mResourceType(type), mScope(scope)
   {};

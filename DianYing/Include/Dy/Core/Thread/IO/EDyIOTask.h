@@ -19,10 +19,10 @@ namespace dy
 {
 
 ///
-/// @enum EDyResourceStyle
+/// @enum EResourceStyle
 /// @brief Specifies each resource style (not type)
 ///
-enum class EDyResourceStyle : TU8
+enum class EResourceStyle : TU8
 {
   Information,
   Resource,

@@ -18,7 +18,7 @@
 namespace dy
 {
 
-inline MPhysics::Impl::Impl()
+inline MPhysics::Impl::Impl(MPhysics& parent) : mImplParent(parent)
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->gFoundation), "Foundation is already exist.");
   MDY_ASSERT_MSG(MDY_CHECK_ISNULL(this->gPhysicx), "Physics is already exist.");
@@ -47,7 +47,7 @@ inline MPhysics::Impl::Impl()
   this->gPhysicx->registerDeletionListener(*this, physx::PxDeletionEventFlag::eUSER_RELEASE);
 
   // Setup default material.
-  const auto& defaultSetting = this->GetDefaultSetting();
+  const auto& defaultSetting = this->mImplParent.GetDefaultSetting();
   //
   this->mDefaultMaterial = this->gPhysicx->createMaterial(
     defaultSetting.mCommonProperty.mDefaultStaticFriction,
@@ -82,69 +82,18 @@ inline MPhysics::Impl::~Impl()
   this->gFoundation = nullptr;
 
   // This function just check all resource is released.
-  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gScene), "PhysX scene is not released before release Physics manager.");
-  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gDispatcher), "PhysX cpu dispatcher is not released before release Physics manager.");
-  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gPhysicx), "PhysX physics is not released before release Physics manager.");
-  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gPvd), "PhysX pvd is not released before release Physics manager.");
-  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->mCooking), "PhysX mesh cooker is not released before release Physics manager.");
-  MDY_ASSERT_MSG_FORCE(MDY_CHECK_ISNULL(this->gFoundation), "PhysX foundation is not released before release Physics manager.");
-}
-
-inline void MPhysics::Impl::UpdateRenderObjectTransform(TF32 iDt)
-{
-  // Lock
-  physx::PxSceneWriteLock scopedLock(*this->gScene);
-
-  // Iterate activated CDyPhysicsRigidbodies.
-  for (auto& ptrRigidbodyComp : this->mActivatedRigidbodyList)
-  {
-    auto& refRigidActor = ptrRigidbodyComp->MDY_PRIVATE(GetRefInternalRigidbody)();
-    const auto numberShape = refRigidActor.getNbShapes();
-    for (TU32 i = 0; i < numberShape; ++i)
-    {
-      physx::PxShape* shape = nullptr;
-      MDY_NOTUSED const TU32 n = refRigidActor.getShapes(&shape, 1, i);
-      MDY_ASSERT_MSG(n == 1, "Unexpected error occurred.");
-
-      // Get transform and copy physics pose to graphics pose.
-      const auto pxTransform = physx::PxShapeExt::getGlobalPose(*shape, refRigidActor);
-      auto ptrTransformComp = ptrRigidbodyComp->GetBindedActor()->GetTransform();
-      ptrTransformComp->MDY_PRIVATE(SetPxTransform)(pxTransform);
-
-      // Set AABB (Axis-aligned bounding box) bound to each collider.
-      const auto pxBound = physx::PxShapeExt::getWorldBounds(*shape, refRigidActor);
-      auto* ptrCollider = static_cast<CBasePhysicsCollider*>(shape->userData);
-      MDY_ASSERT_MSG(ptrCollider != nullptr, "Unexpected error occurred.");
-      ptrCollider->UpdateBound(FBounds3D::CreateWith(pxBound));
-    }
-  }
-}
-
-inline void MPhysics::Impl::CallCallbackIssueOnce()
-{
-  while (this->mCollisionCallbackIssueQueue.empty() == false)
-  {
-    auto& refIssue = this->mCollisionCallbackIssueQueue.front();
-    //
-    auto* ptrSelfRigidbody = refIssue.mPtrSelfActor->GetRigidbody();
-    MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(ptrSelfRigidbody), "Unexpected error occurred.");
-
-    //
-    ptrSelfRigidbody->CallCollisionCallback(refIssue.mType, refIssue);
-    this->mCollisionCallbackIssueQueue.pop();
-  }
-  // List will be cleard automatically.
-}
-
-inline void MPhysics::Impl::Update(TF32 iDt)
-{
-  if (iDt > 0)
-  {
-    this->gScene->simulate(iDt);
-    this->gScene->fetchResults(true);
-
-    // We need to process callback & update transform information.
-  }
+  MDY_ASSERT_MSG_FORCE(this->gScene == nullptr, 
+    "PhysX scene is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(this->gDispatcher == nullptr, 
+    "PhysX cpu dispatcher is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(this->gPhysicx == nullptr, 
+    "PhysX physics is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(this->gPvd == nullptr, 
+    "PhysX pvd is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(this->mCooking == nullptr, 
+    "PhysX mesh cooker is not released before release Physics manager.");
+  MDY_ASSERT_MSG_FORCE(this->gFoundation == nullptr, 
+    "PhysX foundation is not released before release Physics manager.");
 }
 
 inline void MPhysics::Impl::InitLevel()
@@ -213,56 +162,6 @@ inline void MPhysics::Impl::ReleaseScene()
 
   this->gDispatcher->release();
   this->gDispatcher = nullptr;
-}
-
-inline void MPhysics::Impl::UpdateInternalPxSceneParameter()
-{
-  // If gScene is null, just return to outside and do nothing.
-  if (this->gScene == nullptr) { return; }
-
-  static constexpr TF32 enable = 1.0f;
-  static constexpr TF32 disable = 0.0f;
-  using PxVP = physx::PxVisualizationParameter;
-
-  // Set collision shape.
-  // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/apireference/files/structPxVisualizationParameter.html
-  if (MSetting::GetInstance().IsRenderPhysicsCollisionShape() == true)
-  {
-    if (this->gScene->getVisualizationParameter(PxVP::eCOLLISION_SHAPES) == disable)
-    { this->gScene->setVisualizationParameter(PxVP::eCOLLISION_SHAPES, enable); }
-  }
-  else
-  {
-    if (this->gScene->getVisualizationParameter(PxVP::eCOLLISION_SHAPES) == enable)
-    { this->gScene->setVisualizationParameter(PxVP::eCOLLISION_SHAPES, disable); }
-  }
-}
-
-inline void MPhysics::Impl::TryEnqueueDebugDrawCall()
-{
-  // If gScene is null, just return to outside and do nothing.
-  if (this->gScene == nullptr) { return; }
-
-  auto& renderingManager = MRendering::GetInstance();
-
-  // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/DebugVisualization.html#debugvisualization
-  // https://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/guide/Manual/BestPractices.html
-  for (auto& ptrRigidbody : this->mActivatedRigidbodyList)
-  {
-    auto& internalRigidbody = ptrRigidbody->MDY_PRIVATE(GetRefInternalRigidbody)();
-    const auto globalTransform = internalRigidbody.getGlobalPose();
-    const auto& colliderList = ptrRigidbody->GetBindedActivatedColliderList();
-
-    for (auto& ptrCollider : colliderList)
-    {
-      auto* ptrPxShape = ptrCollider->MDY_PRIVATE(GetPtrInternalShape)();
-      const auto localPose = ptrPxShape->getLocalPose();
-      const auto transformMatrix = FMat4::CreateMat4(globalTransform * localPose);
-      // Enqueue draw list.
-      // Iterate `Collider` and insert queue with transform + mesh.
-      renderingManager.EnqueueDebugDrawCollider(*ptrCollider, transformMatrix);
-    }
-  }
 }
 
 inline void MPhysics::Impl::onRelease(

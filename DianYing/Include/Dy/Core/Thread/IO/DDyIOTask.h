@@ -24,7 +24,7 @@ namespace dy
 
 ///
 /// @struct DDyIOTask
-/// @brief Task for populating information or resources to TDyIO thread.
+/// @brief Task for populating information or resources to TRescIO thread.
 ///
 struct DDyIOTask final
 {
@@ -33,7 +33,7 @@ private:
 public:
   /// Must be moved except for Requiring.
   std::string       mSpecifierName  = {};
-  EDyResourceStyle  mResourcecStyle = EDyResourceStyle::NoneError;
+  EResourceStyle  mResourcecStyle = EResourceStyle::NoneError;
   EResourceType   mResourceType   = EResourceType::NoneError;
   EResourceScope          mScope          = EResourceScope::Global;
   EDyObject         mBoundObjectStyle    = EDyObject::NoneError;

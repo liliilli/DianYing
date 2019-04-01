@@ -45,7 +45,7 @@ namespace dy
 class MPhysics final : public ISingleton<MPhysics>, public IUpdatable
 {
   MDY_SINGLETON_PROPERTIES(MPhysics);
-  MDY_SINGLETON_DERIVED(MPhysics);
+  DY_PIMPL_SINGELTON_DERIVED(MPhysics);
 public:
   /// @brief Update render object transform.
   void UpdateRenderObjectTransform(TF32 dt);
@@ -77,9 +77,6 @@ public:
   void MDY_PRIVATE(RegisterRigidbody)(_MIN_ CPhysicsRigidbody& iRefRigidbody);
   /// @brief Unregister deactivated rigidbody instance.
   void MDY_PRIVATE(UnregisterRigidbody)(_MIN_ CPhysicsRigidbody& iRefRigidbody);
-
-private:
-  class Impl; Impl* mPimpl = nullptr;
 };
 
 } /// ::dy namespace
