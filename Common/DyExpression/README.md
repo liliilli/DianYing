@@ -153,6 +153,17 @@ SECTION("TZip begin, end and ranged for loop")
 }
 ```
 
+### Compile/Runtime CRC32 Hash
+
+User can create CRC32 Hash value on compile-time or runtime.
+If given argument is characters literal or created on compile time, CRC32 Hash function `ToHashCrc32` returns uint32_t value in compile time.
+Otherwise, `ToHashCrc32` function call will be deferred into runtime.
+
+``` c++
+/// Just use `ToHashCrc32(const char*)` or `ToHashCrc32(std::string_view)` function.
+static_assert(ToHashCrc32("Hello world!") == 0x1B851995);
+```
+
 ### Extended `type_traits`
 
 Extended type_trait API provides more complicated compile time type cabatility checking.
@@ -184,6 +195,7 @@ SECTION("TZip initialization")
 
 19-03-19 Make Project, Add TypeList.
 19-03-25 Add TZip, Extended type_traits.
+19-04-01 Add Crc32 Hash value creation function.
 
 ## Copyright
 

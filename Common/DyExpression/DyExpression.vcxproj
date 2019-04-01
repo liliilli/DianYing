@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Include\Expr\Inline\TCrc32Post.inl" />
+    <None Include="Include\Expr\Inline\TCrc32Pre.inl" />
     <None Include="Include\Expr\Inline\TExtendedTraits.inl" />
     <None Include="Include\Expr\Inline\TTypeList.inl" />
     <None Include="Include\Expr\Inline\TZip.inl" />
@@ -29,6 +31,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Expr\TCrc32.h" />
     <ClInclude Include="Include\Expr\TNull.h" />
     <ClInclude Include="Include\Expr\TTypeList.h" />
     <ClInclude Include="Include\Expr\TZip.h" />
