@@ -164,6 +164,35 @@ Otherwise, `ToHashCrc32` function call will be deferred into runtime.
 static_assert(ToHashCrc32("Hello world!") == 0x1B851995);
 ```
 
+### String Switch/Case Helper Function
+
+String can be used in switch/case statement using `string::Input` and `string::Case` function.
+
+`string::Case` function must be processed compile-time when using in `case` statement.
+`string::Input` function can be also processed in runtime.
+
+This functions has dependencies on `TCrc32`, creates crc32 hash values.
+
+``` c++
+// ..
+std::string keyword;
+std::cin >> keyword;
+
+switch (string::Input(keyword))
+{
+	case string::Case("Input_DefaultVao"):       buffer += Buffer_Input_DefaultVao; break;
+	case string::Case("Input_UboCamera"):        buffer += Buffer_Input_UboCamera; break;
+	case string::Case("Input_SkinAnimation"):    buffer += Buffer_Input_SkinAnimation; break;
+	case string::Case("Input_DefaultTexture2D"): buffer += Buffer_Input_DefaultTexture2D; break;
+	case string::Case("Input_UboDirLight"):      buffer += Buffer_Input_UboDirLight; break;
+	case string::Case("Input_UStrPointLight"):   buffer += Buffer_Input_UStrPointLight; break;
+	case string::Case("Output_OpaqueStream"):    buffer += Buffer_Output_OpaqueStream; break;
+	case string::Case("Etc_Miscellaneous"):      buffer += Buffer_Etc_Miscellaneous; break;
+	default: break;
+}
+// ..
+```
+
 ### Extended `type_traits`
 
 Extended type_trait API provides more complicated compile time type cabatility checking.

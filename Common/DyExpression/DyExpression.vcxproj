@@ -28,6 +28,7 @@
     <None Include="Include\Expr\Inline\TZipIterator.inl" />
     <None Include="Include\Expr\Inline\TZipIteratorType.inl" />
     <None Include="Include\Expr\Inline\TZipTypesT.inl" />
+    <None Include="Include\Expr\Inline\XStringSwitch.inl" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +39,7 @@
     <ClInclude Include="Include\Expr\TExtendedTraits.h" />
     <ClInclude Include="Include\Expr\TZipConstIterator.h" />
     <ClInclude Include="Include\Expr\TZipIterator.h" />
+    <ClInclude Include="Include\Expr\XStringSwitch.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
