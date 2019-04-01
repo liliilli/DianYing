@@ -17,7 +17,7 @@
 namespace dy::expr::details
 {
 
-static constexpr uint32_t Crc32Tbl[] = 
+static constexpr uint32_t kCrc32Tbl[] = 
 {
   0, 0x77073096, 0xEE0E612C, 0x990951BA,
   0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
@@ -93,7 +93,7 @@ struct DCrc32Impl<TCrc, THead, TTail...>
 {
   static constexpr uint32_t value = 
     DCrc32Impl<
-      Crc32Tbl[static_cast<uint8_t>(TCrc) ^ static_cast<uint8_t>(THead)] ^ (TCrc >> 8)
+      kCrc32Tbl[static_cast<uint8_t>(TCrc) ^ static_cast<uint8_t>(THead)] ^ (TCrc >> 8)
     , TTail...>
     ::value;
 };
@@ -113,7 +113,7 @@ constexpr uint32_t Crc32Rec(uint32_t crc, const char *s) noexcept
   return *s == 0 
   ? crc ^ 0xFFFFFFFF 
   : Crc32Rec(
-      Crc32Tbl[static_cast<uint8_t>(crc) ^ static_cast<uint8_t>(*s)] ^ (crc >> 8),
+      kCrc32Tbl[static_cast<uint8_t>(crc) ^ static_cast<uint8_t>(*s)] ^ (crc >> 8),
       s + 1
     );
 }
