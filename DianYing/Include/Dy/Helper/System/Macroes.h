@@ -319,14 +319,14 @@
 /// and value it in compile time.
 #define MDY_SET_CRC32_HASH(__MAType__) \
 public: \
-static constexpr TU32 __mHashVal = dy::hash::DyToCrc32Hash(__MAType__);
+static constexpr TU32 __mHashVal = dy::hash::ToHashCrc32(__MAType__);
 
 /// @macro MDY_SET_CRC32_HASH
 /// @brief Declare type member variable, which is used for storing hashed type value.
 /// and value it in compile time.
 #define MDY_SET_CRC32_HASH_WITH_TYPE(__MAType__) \
 public: \
-static constexpr TU32 __mHashVal = dy::hash::DyToCrc32Hash(MDY_TO_STRING(__MAType__));
+static constexpr TU32 __mHashVal = dy::hash::ToHashCrc32(MDY_TO_STRING(__MAType__));
 
 /// @macro OVERRIDE_TYPEMATCH
 /// @brief Define override function of component::CComponent's DoesTypeMatch() to match with

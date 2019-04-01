@@ -21,13 +21,13 @@ namespace dy
 /// @brief Get runtime string to crc-32 hash value for using switch-case statements.
 inline TU32 SwitchStrInput(const std::string& iInput)
 {
-  return hash::DyToCrc32Hash(iInput.c_str());
+  return hash::ToHashCrc32(iInput.c_str());
 }
 
 /// @brief Do compile time or runtime conversion of literal string to hash value.
 constexpr TU32 CaseStr(const char* iLiteral)
 {
-  return hash::DyToCrc32Hash(iLiteral);
+  return hash::ToHashCrc32(iLiteral);
 }
 
 } /// ::dy namespace
