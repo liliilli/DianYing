@@ -39,6 +39,7 @@
     <ClInclude Include="Include\Expr\TExtendedTraits.h" />
     <ClInclude Include="Include\Expr\TZipConstIterator.h" />
     <ClInclude Include="Include\Expr\TZipIterator.h" />
+    <ClInclude Include="Include\Expr\XMacroes.h" />
     <ClInclude Include="Include\Expr\XStringSwitch.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

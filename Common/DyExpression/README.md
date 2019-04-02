@@ -220,11 +220,17 @@ SECTION("TZip initialization")
 }
 ```
 
+### Common MACROes
+
+DyExpr provides helper macroes that used on Dy~ Projects.
+To see what macroes are implemented, see `XMacroes.h` file.
+
 ### Log
 
 19-03-19 Make Project, Add TypeList.
 19-03-25 Add TZip, Extended type_traits.
 19-04-01 Add Crc32 Hash value creation function.
+19-04-03 Add Common macroes.
 
 ## Copyright
 
