@@ -17,10 +17,10 @@
 #include <queue>
 #include <Dy/Management/IO/MIORescInfo.h>
 #include <Dy/Management/IO/MIOResource.h>
-#include <Dy/Core/Thread/IO/DDyIOTask.h>
+#include <Dy/Core/Thread/IO/DRescIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
 #include <Dy/Core/Thread/IO/FDyIOGC.h>
-#include <Dy/Core/Thread/IO/TDyIOWorker.h>
+#include <Dy/Core/Thread/IO/TRescIOWorker.h>
 #include <Dy/Core/Thread/IO/DDyIOTaskDeferred.h>
 #include <Dy/Helper/Internal/FSemaphore.h>
 #include <Dy/Component/Interface/IInitializeHelper.h>
@@ -105,7 +105,7 @@ private:
   /// @brief  IO Task queue comparsion function type.
   struct FTaskQueueCmpFunctor final
   {
-    bool operator()(const DDyIOTask& lhs, const DDyIOTask& rhs) const noexcept
+    bool operator()(const DRescIOTask& lhs, const DRescIOTask& rhs) const noexcept
     {
       return lhs.mTaskPriority < rhs.mTaskPriority;
     };
@@ -121,10 +121,7 @@ private:
   //!
 
   /// @brief Insert result instance from IO Worker safely.
-  void outInsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept;
-
-  /// @brief Notify semaphore to proceed next queue.
-  void outTryNotifyWorkerIsIdle();
+  void outInsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept;
 
   /// @brief Find that if any task which is same to `taskSpecifier` name in deferred task list,
   ///  so reinsert deferred task into Queue with high priority.
@@ -133,7 +130,7 @@ private:
 
   /// @brief
   ///
-  void outTryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept;
+  void outTryForwardToMainTaskList(const DRescIOTask& deferredTask) noexcept;
 
   //!
   //! Logic & Render thread side.
@@ -230,7 +227,7 @@ private:
   /// @brief Force Try process deferred task list which must be processed in main thread, \n
   /// so Insert created resource instance into result instance list for IO GC/IN Phase.
   void outMainForceProcessDeferredMainTaskList();
-  MDY_NODISCARD static DDyIOWorkerResult outMainProcessTask(_MIN_ const DDyIOTask& task);
+  MDY_NODISCARD static DRescIOWorkerResult outMainProcessTask(_MIN_ const DRescIOTask& task);
 
   /// @brief Insert deferred task list.
   void outInsertDeferredTaskList(_MIN_ const DDyIOTaskDeferred& task);
@@ -270,25 +267,23 @@ private:
   MDY_NODISCARD bool isoutIsMainTaskListIsEmpty() const noexcept;
 
   inline static constexpr TI32 kWorkerThreadCount = 2;
-  using TWorkerPair = std::pair<std::unique_ptr<TDyIOWorker>, std::thread>;
+  using TWorkerPair = std::pair<std::unique_ptr<TRescIOWorker>, std::thread>;
   using TWorkerList = std::array<TWorkerPair, kWorkerThreadCount>;
-  using TWorkerResultList = std::vector<DDyIOWorkerResult>;
+  using TWorkerResultList = std::vector<DRescIOWorkerResult>;
   /// @brief Type for priority task queue.
-  using TIOTaskQueue      = std::priority_queue<DDyIOTask, std::vector<DDyIOTask>, FTaskQueueCmpFunctor>;
+  using TIOTaskQueue      = std::priority_queue<DRescIOTask, std::vector<DRescIOTask>, FTaskQueueCmpFunctor>;
   using TDeferredTaskList = std::vector<DDyIOTaskDeferred>;
-  using TMainTaskList     = std::vector<DDyIOTask>;
+  using TMainTaskList     = std::vector<DRescIOTask>;
 
   DDyIOReferenceContainer   mRIInformationMap = {};
   DDyIOReferenceContainer   mRIResourceMap = {};
   FDyIOGC                   mGarbageCollector = {};
 
-  std::mutex                mQueueMutex;
+  std::mutex                mMutexTaskQueue;
   std::condition_variable   mConditionVariable;
   TIOTaskQueue              mIOTaskQueue = {};
 
-  FSemaphore               mWorkerSemaphore{kWorkerThreadCount};
   TWorkerList               mWorkerList{};
-  std::atomic<TI32>         mIdleWorkerCounter{kWorkerThreadCount};
 
   std::mutex                mResultListMutex;
   TWorkerResultList         mWorkerResultList{};

@@ -19,8 +19,8 @@
 
 namespace dy
 {
-struct DDyIOTask;
-struct DDyIOWorkerResult;
+struct DRescIOTask;
+struct DRescIOWorkerResult;
 } /// ::dy namespace
 
 //!
@@ -38,15 +38,12 @@ class SDyIOWorkerConnHelper final
 {
 private:
   /// @brief Insert result instance from IO Worker.
-  static void InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept;
-
-  /// @brief Notify from IO.
-  static void TryNotify();
+  static void InsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept;
 
   /// @brief Forward task to be processed main thread into `TRescIO::mIOProcessMainTaskList`.
-  static void TryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept;
+  static void TryForwardToMainTaskList(_MIN_ const DRescIOTask& task) noexcept;
 
-  friend class TDyIOWorker;
+  friend class TRescIOWorker;
 };
 
 } /// ::dy namespace

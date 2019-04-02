@@ -14,8 +14,8 @@
 ///
 
 #include <atomic>
-#include <Dy/Core/Thread/IO/DDyIOTask.h>
-#include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
+#include <Dy/Core/Thread/IO/DRescIOTask.h>
+#include <Dy/Core/Thread/IO/DRescIOWorkerResult.h>
 #include <Dy/Helper/System/Pointer.h>
 
 namespace dy
@@ -31,53 +31,54 @@ namespace dy
 {
 
 ///
-/// @class TDyIOWorker
+/// @class TRescIOWorker
 /// @brief IO Worker sub-thread class type.
 ///
-class TDyIOWorker final
+class TRescIOWorker final
 {
 public:
-  TDyIOWorker(const MIOMeta& metaManager) : mMetaManager(metaManager) {};
-  ~TDyIOWorker()  = default;
-  TDyIOWorker(const TDyIOWorker&)             = delete;
-  TDyIOWorker(TDyIOWorker&&)                  = delete;
-  TDyIOWorker& operator=(const TDyIOWorker&)  = delete;
-  TDyIOWorker& operator=(TDyIOWorker&&)       = delete;
+  TRescIOWorker(const MIOMeta& metaManager) : mMetaManager(metaManager) {};
+  ~TRescIOWorker()  = default;
+  TRescIOWorker(const TRescIOWorker&)             = delete;
+  TRescIOWorker(TRescIOWorker&&)                  = delete;
+  TRescIOWorker& operator=(const TRescIOWorker&)  = delete;
+  TRescIOWorker& operator=(TRescIOWorker&&)       = delete;
 
   /// @brief Operation of TDYIOWorker.
-  void operator()(_MIN_ NotNull<GLFWwindow*> ptrWorkerWnd);
+  void operator()(GLFWwindow& ptrWorkerWnd);
 
   /// @brief Assign Task to TDYIOWorker.
-  EDySuccess outTryAssign(_MIN_ const DDyIOTask& DDyIOTask);
+  EDySuccess outTryAssign(_MIN_ const DRescIOTask& DDyIOTask);
+
+  /// @brief Check Worker is idle.
+  bool SyncIsIdle() const noexcept;
 
   /// @brief Try stop this thread type.
-  void outTryStop();
+  void SyncTryStop();
 
 private:
-  ///
   /// @brief DO IO Task.
   /// @param assignedTask assigned task to proceed.
-  ///
-  MDY_NODISCARD DDyIOWorkerResult PopulateIOResource(_MIN_ const DDyIOTask& assignedTask);
+  MDY_NODISCARD DRescIOWorkerResult PopulateIOResource(const DRescIOTask& assignedTask);
 
   /// @brief Process Information heap instance creation.
-  MDY_NODISCARD DDyIOWorkerResult pPopulateIOResourceInformation(_MIN_ const DDyIOTask& assignedTask);
+  MDY_NODISCARD DRescIOWorkerResult pPopulateIOResourceInformation(const DRescIOTask& assignedTask);
 
   /// @brief Process Resource heap instance creation.
-  MDY_NODISCARD DDyIOWorkerResult pPopulateIOResourceResource(_MIN_ const DDyIOTask& assignedTask);
+  MDY_NODISCARD DRescIOWorkerResult pPopulateIOResourceResource(const DRescIOTask& assignedTask);
 
   /// @brief Routine
   void inWork();
 
-  DDyIOTask                 mAssignedTask;
+  DRescIOTask mAssignedTask;
 
-  std::mutex                mTaskMutex;
-  std::condition_variable   mTaskCV;
+  mutable std::mutex mTaskMutex;
+  mutable std::condition_variable mTaskCV;
 
-  std::atomic<bool>         mIsAssigned   = false;
-  bool                      mIsShouldStop = false;
+  bool mIsAssigned   = false;
+  bool mIsShouldStop = false;
 
-  const MIOMeta&        mMetaManager;
+  const MIOMeta& mMetaManager;
 };
 
 } /// ::dy namespace

@@ -139,7 +139,7 @@ bool SDyIOConnectionHelper::IsReferenceInstanceExist(
   return ioThread.pIsReferenceInstanceExist(iSpecifier, iType, iStyle);
 }
 
-void SDyIOConnectionHelper::InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept
+void SDyIOConnectionHelper::InsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();

@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Thread/IO/DDyIOTask.h>
+#include <Dy/Core/Thread/IO/DRescIOTask.h>
 #include <Dy/Helper/System/Idioms.h>
 
 namespace dy
@@ -37,10 +37,10 @@ struct DDyIOTaskDeferred final
   };
   using TConditionList = std::vector<DDyIOTaskDeferred::DConditionItem>;
 
-  DDyIOTask mTask;
+  DRescIOTask mTask;
   std::vector<DConditionItem> mCondition;
 
-  DDyIOTaskDeferred(_MIN_ const DDyIOTask& iTask, _MIN_ const std::vector<DConditionItem>& iCondition) :
+  DDyIOTaskDeferred(_MIN_ const DRescIOTask& iTask, _MIN_ const std::vector<DConditionItem>& iCondition) :
       mTask{iTask}, mCondition{iCondition} {};
 
   /// @brief
