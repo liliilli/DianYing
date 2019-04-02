@@ -19,9 +19,9 @@
 #include <Dy/Management/IO/MIOResource.h>
 #include <Dy/Core/Thread/IO/DRescIOTask.h>
 #include <Dy/Core/Thread/IO/DDyIOReferenceContainer.h>
-#include <Dy/Core/Thread/IO/FDyIOGC.h>
+#include <Dy/Core/Thread/IO/FRescIOGC.h>
 #include <Dy/Core/Thread/IO/TRescIOWorker.h>
-#include <Dy/Core/Thread/IO/DDyIOTaskDeferred.h>
+#include <Dy/Core/Thread/IO/DRescIODeferredTask.h>
 #include <Dy/Helper/Internal/FSemaphore.h>
 #include <Dy/Component/Interface/IInitializeHelper.h>
 
@@ -101,9 +101,9 @@ public:
   void outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ EResourceStyle iStyle);
 
 private:
-  /// @struct FTaskQueueCmpFunctor
+  /// @struct FTaskQueueOrderCmpFunctor
   /// @brief  IO Task queue comparsion function type.
-  struct FTaskQueueCmpFunctor final
+  struct FTaskQueueOrderCmpFunctor final
   {
     bool operator()(const DRescIOTask& lhs, const DRescIOTask& rhs) const noexcept
     {
@@ -119,25 +119,27 @@ private:
   //!
   //! IO Worker side
   //!
+  
+  /// @brief Forward deferred task from IOWorker into Main task list of IO main thread.
+  void SyncTryForwardTaskToMainList(const DRescIOTask& forwardedMainTask) noexcept;
+
+  /// @brief Insert task that has dependencies into deferred task list.
+  void SyncInsertTaskToDeferredList(const DRescIODeferredTask& deferredTask);
 
   /// @brief Insert result instance from IO Worker safely.
-  void outInsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept;
+  void SyncInsertResult(const DRescIOWorkerResult& result) noexcept;
 
   /// @brief Find that if any task which is same to `taskSpecifier` name in deferred task list,
   ///  so reinsert deferred task into Queue with high priority.
   /// This function use mutex. Performance would be afraid.
   bool outTryUpdateDeferredTaskListFromWorker(_MIN_ const std::string& taskSpecifier) noexcept;
 
-  /// @brief
-  ///
-  void outTryForwardToMainTaskList(const DRescIOTask& deferredTask) noexcept;
-
   //!
   //! Logic & Render thread side.
   //!
 
   /// @brief Stop IO thread task and terminate thread.
-  void outTryStop();
+  void SyncTryStop();
 
   /// @brief Enqueue IO Populating task without any binding to dy object.
   EDySuccess outTryEnqueueTask(
@@ -208,7 +210,7 @@ private:
   /// Level  < Temporal \n
   /// RI's scope will be changed to big range.
   ///
-  void pTryEnlargeResourceScope(
+  void TryEnlargeResourceScope(
       _MIN_ EResourceScope scope,
       _MIN_ const std::string& specifier,
       _MIN_ EResourceType type, _MIN_ EResourceStyle style);
@@ -222,15 +224,12 @@ private:
   MDY_NODISCARD EDySuccess outTryRetrieveReferenceInstanceFromGC(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style);
 
   /// @brief Create reference instance.
-  MDY_NODISCARD EDySuccess outCreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style, _MIN_ EResourceScope scope);
+  MDY_NODISCARD EDySuccess CreateReferenceInstance(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style, _MIN_ EResourceScope scope);
 
   /// @brief Force Try process deferred task list which must be processed in main thread, \n
   /// so Insert created resource instance into result instance list for IO GC/IN Phase.
   void outMainForceProcessDeferredMainTaskList();
   MDY_NODISCARD static DRescIOWorkerResult outMainProcessTask(_MIN_ const DRescIOTask& task);
-
-  /// @brief Insert deferred task list.
-  void outInsertDeferredTaskList(_MIN_ const DDyIOTaskDeferred& task);
 
   /// @brief Insert valid const reference of RI into gc list as copied instance of original instance.
   /// Use this funciton carefully.
@@ -271,13 +270,13 @@ private:
   using TWorkerList = std::array<TWorkerPair, kWorkerThreadCount>;
   using TWorkerResultList = std::vector<DRescIOWorkerResult>;
   /// @brief Type for priority task queue.
-  using TIOTaskQueue      = std::priority_queue<DRescIOTask, std::vector<DRescIOTask>, FTaskQueueCmpFunctor>;
-  using TDeferredTaskList = std::vector<DDyIOTaskDeferred>;
+  using TIOTaskQueue      = std::priority_queue<DRescIOTask, std::vector<DRescIOTask>, FTaskQueueOrderCmpFunctor>;
+  using TDeferredTaskList = std::vector<DRescIODeferredTask>;
   using TMainTaskList     = std::vector<DRescIOTask>;
 
   DDyIOReferenceContainer   mRIInformationMap = {};
   DDyIOReferenceContainer   mRIResourceMap = {};
-  FDyIOGC                   mGarbageCollector = {};
+  FRescIOGC                   mGarbageCollector = {};
 
   std::mutex                mMutexTaskQueue;
   std::condition_variable   mConditionVariable;
@@ -289,12 +288,12 @@ private:
   TWorkerResultList         mWorkerResultList{};
 
   /// @brief used to be synchronize with I/O-worker thread and I/O-thread.
-  std::mutex                mDeferredTaskMutex;
+  std::mutex                mMutexDeferredTask;
   TDeferredTaskList         mIODeferredTaskList = {};
 
   /// @brief used to maintain task list to be processed from main
   /// because sharding context of arbitary resource between threads can not support.
-  std::mutex                mProcessTaskFromMainMutex;
+  std::mutex                mMutexMainProcessTask;
   /// @brief used to manage task list from mIOTaskQueue, which to be processed in main thread
   /// prior to IO GC/IN Phase if not empty. This list is atomic between IO Worker and Main thread.
   TMainTaskList             mIOProcessMainTaskList = {};

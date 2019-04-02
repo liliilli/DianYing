@@ -95,7 +95,7 @@ private:
   __THashMap<FDyFrameBufferResource>  __mFrameBufferContainer = {};
 
   friend class TRescIO;
-  friend class FDyIOGC;
+  friend class FRescIOGC;
 };
 
 } /// ::dy namespace

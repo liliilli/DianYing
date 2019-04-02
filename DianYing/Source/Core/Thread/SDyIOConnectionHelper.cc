@@ -44,7 +44,7 @@ void SDyIOConnectionHelper::TryStop()
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
-  ioThread.outTryStop();
+  ioThread.SyncTryStop();
 }
 
 void SDyIOConnectionHelper::TryGC(_MIN_ EResourceScope iScope, _MIN_ EResourceStyle iStyle)
@@ -143,7 +143,7 @@ void SDyIOConnectionHelper::InsertResult(_MIN_ const DRescIOWorkerResult& result
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
-  ioThread.outInsertResult(result);
+  ioThread.SyncInsertResult(result);
 }
 
 void SDyIOConnectionHelper::InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>&& iRefRI)

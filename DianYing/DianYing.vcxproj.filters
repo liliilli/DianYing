@@ -70,7 +70,6 @@
     <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
@@ -117,7 +116,6 @@
     <ClCompile Include="Source\Component\Internal\Script\Actor\FDyActorScriptStatus.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\DDyIOTaskDeferred.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
     <ClCompile Include="data\Script\FDyBtScTestLoadingUi.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScActorTest1.cc" />
@@ -367,6 +365,8 @@
     <ClCompile Include="Source\Helper\Type\DBounds.cc" />
     <ClCompile Include="Source\Helper\Type\DArea.cc" />
     <ClCompile Include="Source\Core\Thread\IO\TRescIOWorker.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DRescIODeferredTask.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\FRescIOGC.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -483,7 +483,6 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAO.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Editor\RenderGrid.h" />
@@ -506,7 +505,6 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMeshResource.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMaterialResource.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
@@ -896,6 +894,8 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\TRescIOWorker.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOWorkerResult.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIODeferredTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\FRescIOGC.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

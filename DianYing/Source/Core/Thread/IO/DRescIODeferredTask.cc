@@ -13,23 +13,24 @@
 ///
 
 /// Header file
-#include <Dy/Core/Thread/IO/DDyIOTaskDeferred.h>
+#include <Dy/Core/Thread/IO/DRescIODeferredTask.h>
 
 namespace dy
 {
 
-MDY_NODISCARD EDySuccess DDyIOTaskDeferred::TryRemoveDependenciesItem(
-    _MIN_ const std::string& iSpecifier, 
-    _MIN_ EResourceType& iType, 
-    _MIN_ EResourceStyle& iStyle) noexcept
+EDySuccess DRescIODeferredTask::TryRemoveDependentItem(
+  const std::string& iSpecifier, 
+  EResourceType& iType, 
+  EResourceStyle& iStyle) noexcept
 {
   const DConditionItem item{iSpecifier, iType, iStyle};
 
   for (auto it = this->mCondition.begin(); it != this->mCondition.end(); ++it)
   {
-    if (*it == item) {
-      const auto index = std::distance(this->mCondition.begin(), it);
-      FaseErase(this->mCondition, static_cast<TU32>(index));
+    // Check Condition item informations are same to each other.
+    if (*it == item) 
+    {
+      FaseErase(this->mCondition, it);
       return DY_SUCCESS;
     }
   }

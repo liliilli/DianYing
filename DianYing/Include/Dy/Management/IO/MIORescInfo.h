@@ -106,7 +106,7 @@ private:
   __THashMap<FDySoundInformation> __mSoundContainer = {};
 
   friend class TRescIO;
-  friend class FDyIOGC;
+  friend class FRescIOGC;
 };
 
 } /// ::dy namespace

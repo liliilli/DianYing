@@ -21,10 +21,10 @@ namespace dy
 {
 
 ///
-/// @struct FDyIOGC
+/// @struct FRescIOGC
 /// @brief IO Instance Garbage collection manager
 ///
-class FDyIOGC final
+class FRescIOGC final
 {
 public:
   /// @brief Check whether resource's Reference Instance is exist on now as any kind of information.
@@ -34,7 +34,7 @@ public:
   MDY_NODISCARD bool IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EResourceStyle style);
 
   /// @brief Move instance from gc list as return value.
-  MDY_NODISCARD std::optional<std::unique_ptr<DDyIOReferenceInstance>> 
+  MDY_NODISCARD std::unique_ptr<DDyIOReferenceInstance> 
     MoveInstanceFromGC(const std::string& speicifer, EResourceType type, EResourceStyle style);
 
   /// @brief Insert RI gc-ed candidate into container.

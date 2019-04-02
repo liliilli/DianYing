@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Core/Thread/IO/FDyIOGC.h>
+#include <Dy/Core/Thread/IO/FRescIOGC.h>
 #include <Dy/Management/MLog.h>
 #include <Dy/Management/IO/MIORescInfo.h>
 #include <Dy/Management/IO/MIOResource.h>
@@ -21,7 +21,7 @@
 namespace dy
 {
 
-bool FDyIOGC::IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EResourceStyle style)
+bool FRescIOGC::IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EResourceStyle style)
 {
   return ContainsIf(
     this->mRIGarbageCandidateList, 
@@ -35,11 +35,11 @@ bool FDyIOGC::IsReferenceInstanceExist(const std::string& specifier, EResourceTy
   );
 }
 
-std::optional<std::unique_ptr<DDyIOReferenceInstance>> 
-FDyIOGC::MoveInstanceFromGC(const std::string& specifier, EResourceType type, EResourceStyle style)
+std::unique_ptr<DDyIOReferenceInstance> 
+FRescIOGC::MoveInstanceFromGC(const std::string& specifier, EResourceType type, EResourceStyle style)
 {
   // Check nullility.
-  auto it = std::find_if(
+  const auto it = std::find_if(
     MDY_BIND_BEGIN_END(this->mRIGarbageCandidateList), 
     [&specifier, type, style](const auto& item) 
     { 
@@ -49,20 +49,20 @@ FDyIOGC::MoveInstanceFromGC(const std::string& specifier, EResourceType type, ER
       return istyle == style && itype == type && iname == specifier;
     }
   );
-  if (it == this->mRIGarbageCandidateList.end()) { return std::nullopt; }
+  if (it == this->mRIGarbageCandidateList.end()) { return nullptr; }
 
   // Get value and remove memory space of item in list.
   auto result = std::move(*it);
   FaseErase(this->mRIGarbageCandidateList, it);
-  return std::move(result);
+  return result;
 }
 
-void FDyIOGC::InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& ioRICandidateList) noexcept
+void FRescIOGC::InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& ioRICandidateList) noexcept
 {
   this->mRIGarbageCandidateList.emplace_back(std::move(ioRICandidateList));
 }
 
-void FDyIOGC::InsertGcCandidateList(std::vector<std::unique_ptr<DDyIOReferenceInstance>> iRICandidateList) noexcept
+void FRescIOGC::InsertGcCandidateList(std::vector<std::unique_ptr<DDyIOReferenceInstance>> iRICandidateList) noexcept
 {
   for (auto& smtptrGcedRiItem : iRICandidateList)
   {
@@ -71,7 +71,7 @@ void FDyIOGC::InsertGcCandidateList(std::vector<std::unique_ptr<DDyIOReferenceIn
   //this->mRIGarbageCandidateList.insert(this->mRIGarbageCandidateList.end(), MDY_BIND_BEGIN_END(iRICandidateList));
 }
 
-EDySuccess FDyIOGC::TryGarbageCollectCandidateList() noexcept
+EDySuccess FRescIOGC::TryGarbageCollectCandidateList() noexcept
 {
   if (this->mRIGarbageCandidateList.empty() == true) { return DY_FAILURE; }
 

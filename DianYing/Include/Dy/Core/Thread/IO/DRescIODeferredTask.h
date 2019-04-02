@@ -19,7 +19,7 @@
 namespace dy
 {
 
-struct DDyIOTaskDeferred final
+struct DRescIODeferredTask final
 {
   struct DConditionItem final
   {
@@ -35,16 +35,16 @@ struct DDyIOTaskDeferred final
     DConditionItem(_MIN_ const std::string& iSpecifier, _MIN_ EResourceType iType, _MIN_ EResourceStyle iStyle) :
         mSpecifier{iSpecifier}, mType{iType}, mStyle{iStyle} {};
   };
-  using TConditionList = std::vector<DDyIOTaskDeferred::DConditionItem>;
+  using TConditionList = std::vector<DRescIODeferredTask::DConditionItem>;
 
   DRescIOTask mTask;
   std::vector<DConditionItem> mCondition;
 
-  DDyIOTaskDeferred(_MIN_ const DRescIOTask& iTask, _MIN_ const std::vector<DConditionItem>& iCondition) :
+  DRescIODeferredTask(_MIN_ const DRescIOTask& iTask, _MIN_ const std::vector<DConditionItem>& iCondition) :
       mTask{iTask}, mCondition{iCondition} {};
 
   /// @brief
-  MDY_NODISCARD EDySuccess TryRemoveDependenciesItem(
+  MDY_NODISCARD EDySuccess TryRemoveDependentItem(
       _MIN_ const std::string& iSpecifier, 
       _MIN_ EResourceType& iType, 
       _MIN_ EResourceStyle& iStyle) noexcept;

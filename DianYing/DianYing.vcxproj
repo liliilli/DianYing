@@ -353,8 +353,8 @@
     <ClCompile Include="Source\Core\Resource\Type\Shader\AUniformValueContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\DDyIOTaskDeferred.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DRescIODeferredTask.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\FRescIOGC.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperResc.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
@@ -773,7 +773,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\XTemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\XTemplateUniformType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Uniform\TUniformValue.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIODeferredTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
     <ClInclude Include="Include\DyMacroPlatformSetting.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
@@ -889,7 +889,7 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOWorkerResult.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\FRescIOGC.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\TRescIOWorker.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOWorkerConnHelper.h" />

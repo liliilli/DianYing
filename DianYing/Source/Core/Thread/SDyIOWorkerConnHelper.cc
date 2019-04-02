@@ -23,14 +23,14 @@ void SDyIOWorkerConnHelper::InsertResult(_MIN_ const DRescIOWorkerResult& result
 {
   MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
-  ioThread.outInsertResult(result);
+  ioThread.SyncInsertResult(result);
 }
 
 void SDyIOWorkerConnHelper::TryForwardToMainTaskList(_MIN_ const DRescIOTask& task) noexcept
 {
   MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
-  ioThread.outTryForwardToMainTaskList(task);
+  ioThread.SyncTryForwardTaskToMainList(task);
 }
 
 } /// ::dy namespace

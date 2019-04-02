@@ -22,7 +22,8 @@
 namespace dy
 {
 
-bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type) const noexcept
+bool DDyIOReferenceContainer::IsReferenceInstanceExist(
+  const std::string& specifier, EResourceType type) const noexcept
 {
   switch (type)
   {
@@ -40,7 +41,8 @@ bool DDyIOReferenceContainer::IsReferenceInstanceExist(_MIN_ const std::string& 
   }
 }
 
-bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EResourceType type) const noexcept
+bool DDyIOReferenceContainer::IsReferenceInstanceBound(
+  const std::string& specifier, EResourceType type) const noexcept
 {
   switch (type)
   {
@@ -58,7 +60,8 @@ bool DDyIOReferenceContainer::IsReferenceInstanceBound(_MIN_ const std::string& 
   }
 }
 
-bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EResourceScope scope, _MIN_ const std::string& specifier, _MIN_ EResourceType type)
+bool DDyIOReferenceContainer::TryEnlargeResourceScope(
+  EResourceScope scope, const std::string& specifier, EResourceType type)
 {
   // Find given resource type instance. Given specifier and type must be valid on list.
   std::unique_ptr<DDyIOReferenceInstance>* ptrInstance = nullptr;
@@ -74,7 +77,7 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(_MIN_ EResourceScope scope
   case EResourceType::Skeleton:       { ptrInstance = &this->mMapModelSkeletonReference[specifier]; } break;
   case EResourceType::AnimationScrap: { ptrInstance = &this->mMapModelAnimScrapReference[specifier]; } break;
   case EResourceType::Sound:          { ptrInstance = &this->mMapSoundReference[specifier]; } break; 
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
+  default: MDY_UNEXPECTED_BRANCH(); throw;
   }
 
   // Compare scope and if previous scope is not larger than given input scope, update it.
@@ -109,7 +112,7 @@ EDySuccess DDyIOReferenceContainer::TryBindBinderToResourceRI(
   case EResourceType::Skeleton:       this->mMapModelSkeletonReference[iSpecifier]->AttachBinder(iPtrBinder);    break;
   case EResourceType::AnimationScrap: this->mMapModelAnimScrapReference[iSpecifier]->AttachBinder(iPtrBinder);   break;
   case EResourceType::Sound:          this->mMapSoundReference[iSpecifier]->AttachBinder(iPtrBinder);   break;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  default: MDY_UNEXPECTED_BRANCH(); throw;
   }
   return DY_SUCCESS;
 }
@@ -136,7 +139,7 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   case EResourceType::Skeleton:       ptrRiMap = &this->mMapModelSkeletonReference; break;
   case EResourceType::AnimationScrap: ptrRiMap = &this->mMapModelAnimScrapReference; break;
   case EResourceType::Sound:          ptrRiMap = &this->mMapSoundReference; break;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  default: MDY_UNEXPECTED_BRANCH(); throw;
   }
 
   // Detach binder from given instance.
@@ -194,8 +197,8 @@ void DDyIOReferenceContainer::ForwardCandidateRIFromList(
 }
 
 EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
-    _MIN_ const std::string& specifier,
-    _MIN_ EResourceType type, _MIN_ EResourceStyle style, _MIN_ EResourceScope scope)
+  const std::string& specifier,
+  EResourceType type, EResourceStyle style, EResourceScope scope)
 {
   TRefInstanceMap* ptrRIHashMap;
 
@@ -211,7 +214,7 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
   case EResourceType::Skeleton:       { ptrRIHashMap = &this->mMapModelSkeletonReference; } break;
   case EResourceType::AnimationScrap: { ptrRIHashMap = &this->mMapModelAnimScrapReference; } break;
   case EResourceType::Sound:          { ptrRIHashMap = &this->mMapSoundReference; } break;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  default: MDY_UNEXPECTED_BRANCH(); throw;
   }
 
   auto instanceRI = std::make_unique<DDyIOReferenceInstance>(specifier, style, type, scope);
@@ -236,7 +239,7 @@ EDySuccess DDyIOReferenceContainer::MoveReferenceInstance(std::unique_ptr<DDyIOR
   case EResourceType::Skeleton:       { ptrRIHashMap = &this->mMapModelSkeletonReference; } break;
   case EResourceType::AnimationScrap: { ptrRIHashMap = &this->mMapModelAnimScrapReference; } break;
   case EResourceType::Sound:          { ptrRIHashMap = &this->mMapSoundReference; } break;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  default: MDY_UNEXPECTED_BRANCH(); throw;
   }
 
   auto [it, isSuccessful] = ptrRIHashMap->try_emplace(ioRi->mSpecifierName, std::move(ioRi));
@@ -261,7 +264,7 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
   case EResourceType::Skeleton:       ptrMap = &this->mMapModelSkeletonReference;    break;
   case EResourceType::AnimationScrap: ptrMap = &this->mMapModelAnimScrapReference;   break;
   case EResourceType::Sound:          ptrMap = &this->mMapSoundReference;   break;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  default: MDY_UNEXPECTED_BRANCH(); throw;
   }
 
   // Get `not-valid` Reference Instance instance, try to update validity to true to use this from outside world.
