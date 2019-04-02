@@ -14,6 +14,7 @@
 
 #ifdef MATH_ENABLE_SIMD
 #include <emmintrin.h>
+#include <smmintrin.h>
 
 namespace dy::math
 {
@@ -156,6 +157,56 @@ inline const DVector4<TF32>::TValueType*
 DVector4<TF32, void>::Data() const noexcept
 {
   return &this->X;
+}
+
+inline TReal 
+DVector4<TF32, void>::GetSquareLength() const noexcept
+{
+  // Do dot product. (SSE4.1)
+  const auto result = _mm_dp_ps(this->__mVal, this->__mVal, 0xFF);    
+  // Store float into values. (SSE)
+  TF32 value[4];
+  _mm_store_ps(value, result);                        
+  return value[3];
+}
+
+inline TReal 
+DVector4<TF32, void>::GetLength() const noexcept
+{
+  return std::sqrt(this->GetSquareLength());
+}
+
+inline TReal 
+DVector4<TF32, void>::GetHomogeneousLength() const noexcept
+{
+  TF32 vectorValues[4]; _mm_store_ps(vectorValues, this->__mVal);                        
+  // Do dot product. (SSE4.1)
+  const auto rejectedWSimd = _mm_set_ps(0, vectorValues[2], vectorValues[1], vectorValues[0]);
+  const auto result = _mm_sqrt_ps(_mm_dp_ps(rejectedWSimd, rejectedWSimd, 0xFF));    
+
+#ifndef MATH_USE_REAL_AS_DOUBLE
+  // Store float into values. (SSE)
+  TF32 value[4]; _mm_store_ps(value, result);                        
+  return value[3];
+#else
+  // Store double into values. (SSE)
+  TF64 value[4]; _mm_store_pd(value, _mm_cvtps_pd(result));                        
+  return value[3];
+#endif
+}
+
+inline DVector4<TReal> 
+DVector4<TF32, void>::Normalize() const noexcept
+{
+#ifndef MATH_USE_REAL_AS_DOUBLE
+  // Do dot product. (SSE4.1) and sqrt (SSE2) to get length.
+  const auto result = _mm_sqrt_ps(_mm_dp_ps(this->__mVal, this->__mVal, 0xFF));    
+  return DVector4<TReal>{_mm_div_ps(this->__mVal, result)};
+#else
+  // Do dot product. (SSE4.1) and sqrt (SSE2) to get length.
+  const auto result = _mm_sqrt_pd(_mm_dp_pd(this->__mVal, this->__mVal, 0xFF));    
+  return DVector4<TReal>{_mm_div_pd(simd, result)};
+#endif
 }
 
 inline DVector4<TF32>& 

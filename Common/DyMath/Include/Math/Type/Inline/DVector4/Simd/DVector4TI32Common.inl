@@ -33,6 +33,7 @@ operator-(const DVector4<TI32>& lhs, const DVector4<TI32>& rhs) noexcept
 inline bool 
 operator==(const DVector4<TI32>& lhs, const DVector4<TI32>& rhs) noexcept
 {
+  // Do XOR and if not matched, neq has at least '1' value onto 128 bits.
   const auto neq = _mm_xor_si128(lhs.__mVal, rhs.__mVal);
   return static_cast<bool>(_mm_test_all_zeros(neq, neq));
 }
@@ -61,6 +62,7 @@ DVector4<TI32>::operator*=(const DVector4<TI32>& value) noexcept
 inline DVector4<TI32>& 
 DVector4<TI32>::operator*=(TI32 value) noexcept
 {
+  // Mulitply but stores low-bit [31:0] into __mVal.
   this->__mVal = _mm_mullo_epi32(this->__mVal, _mm_set_epi32(value, value, value, value));
   return *this;
 }
