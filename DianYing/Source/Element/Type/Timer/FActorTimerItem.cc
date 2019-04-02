@@ -17,7 +17,7 @@
 #include <utility>
 #include <Dy/Element/Type/Timer/FTimerHandle.h>
 #include <Dy/Component/Abstract/AActorCppScript.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/GEngine.h>
 
 namespace dy
 {

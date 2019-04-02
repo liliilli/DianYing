@@ -40,6 +40,7 @@ struct MATH_NODISCARD DBounds2D<TType, std::enable_if_t<kIsIntegerType<TType>>> 
 {
 public:
   using TValueType  = TType;
+  using TItem = DVector2<TValueType>;
 
   DBounds2D() = default;
   DBounds2D(const DVector2<TValueType>& point);
@@ -68,6 +69,7 @@ struct MATH_NODISCARD DBounds2D<TType, std::enable_if_t<kIsRealType<TType>>> fin
 {
 public:
   using TValueType  = TType;
+  using TItem = DVector2<TValueType>;
 
   DBounds2D() = default;
   DBounds2D(const DVector2<TValueType>& point);

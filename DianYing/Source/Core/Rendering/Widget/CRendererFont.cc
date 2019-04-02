@@ -17,8 +17,8 @@
 
 #include <Dy/Builtin/ShaderGl/Font/RenderFontArraySDF.h>
 #include <Dy/Builtin/Mesh/FDyBtMsUiFontQuad.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Element/Widget/FWidgetText.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>

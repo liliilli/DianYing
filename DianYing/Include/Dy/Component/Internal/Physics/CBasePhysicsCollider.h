@@ -17,7 +17,6 @@
 #include <Dy/Component/Interface/IInitializeHelper.h>
 #include <Dy/Element/Abstract/AGeneralBaseComponent.h>
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
-#include "Dy/Helper/Type/DArea3D.h"
 #include <Dy/Helper/Type/DBounds.h>
 
 //!

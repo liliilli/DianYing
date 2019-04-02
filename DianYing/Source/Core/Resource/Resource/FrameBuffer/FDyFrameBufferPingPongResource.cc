@@ -13,8 +13,8 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferPingPongResource.h>
-#include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FResourceFrameBufferPingPong.h>
+#include <Dy/Core/Resource/Information/FInformationFrameBuffer.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
 #include <Dy/Management/IO/MIOResource.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
@@ -23,8 +23,8 @@
 namespace dy
 {
 
-FDyFrameBufferPingPongResource::FDyFrameBufferPingPongResource(
-  const FDyFrameBufferInformation& iInformation) 
+FResourceFrameBufferPingPong::FResourceFrameBufferPingPong(
+  const FInformationFrameBuffer& iInformation) 
 {
   this->mSpecifierName = iInformation.GetSpecifierName();
   this->mFrameBufferSize = iInformation.GetFrameBufferSize();
@@ -117,7 +117,7 @@ FDyFrameBufferPingPongResource::FDyFrameBufferPingPongResource(
   }
 }
 
-FDyFrameBufferPingPongResource::~FDyFrameBufferPingPongResource()
+FResourceFrameBufferPingPong::~FResourceFrameBufferPingPong()
 {
   for (size_t i = 0; i < 2; ++i)
   {
@@ -126,13 +126,13 @@ FDyFrameBufferPingPongResource::~FDyFrameBufferPingPongResource()
   }
 }
 
-TU32 FDyFrameBufferPingPongResource::GetTargetFrameBufferId() const noexcept
+TU32 FResourceFrameBufferPingPong::GetTargetFrameBufferId() const noexcept
 {
   if (this->mIsLeftTarget == true)  { return this->mFrameBufferIds[0]; }
   else                              { return this->mFrameBufferIds[1]; }
 }
 
-EDySuccess FDyFrameBufferPingPongResource::BindFrameBuffer() const noexcept
+EDySuccess FResourceFrameBufferPingPong::BindFrameBuffer() const noexcept
 {
   if (this->GetTargetFrameBufferId() == 0) { return DY_FAILURE; }
 
@@ -140,7 +140,7 @@ EDySuccess FDyFrameBufferPingPongResource::BindFrameBuffer() const noexcept
   return DY_SUCCESS;
 }
 
-void FDyFrameBufferPingPongResource::Swap()
+void FResourceFrameBufferPingPong::Swap()
 {
   this->mIsLeftTarget = !this->mIsLeftTarget;
 

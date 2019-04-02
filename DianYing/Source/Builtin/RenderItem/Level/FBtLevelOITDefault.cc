@@ -15,15 +15,15 @@
 #include <Dy/Builtin/RenderItem/Level/FBtLevelOITDefault.h>
 #include <Dy/Management/MWorld.h>
 #include <Dy/Management/Rendering/MUniformBufferObject.h>
-#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
+#include <Dy/Core/Resource/Resource/AResourceFrameBufferBase.h>
 #include <Dy/Component/CModelRenderer.h>
 #include <Dy/Element/FActor.h>
-#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMaterial.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/AResourceAttachmentBase.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Component/CTransform.h>
@@ -91,7 +91,7 @@ void FBtRenderLevelOitDefault::OnRender()
   auto& drawList = MRendering::GetInstance().GetTranclucentOitMeshQueueList();
 
     // Make instancing list.
-  std::unordered_map<const FDyMeshResource*, std::vector<MRendering::TMeshDrawCallItem*>> instancingList;
+  std::unordered_map<const FResourceMesh*, std::vector<MRendering::TMeshDrawCallItem*>> instancingList;
 
   for (auto& item : drawList)
   {
@@ -106,8 +106,8 @@ void FBtRenderLevelOitDefault::OnRender()
       // Render without instancing.
       this->RenderObject(
         *iPtrModel->mPtrModelRenderer,
-        const_cast<FDyMeshResource&>(*iPtrValidMesh),
-        const_cast<FDyMaterialResource&>(*iPtrValidMat)
+        const_cast<FResourceMesh&>(*iPtrValidMesh),
+        const_cast<FResourceMaterial&>(*iPtrValidMat)
       );
     }
   }
@@ -131,7 +131,7 @@ void FBtRenderLevelOitDefault::OnRender()
 
     // We need to construct vertex binding and attribute binding connection 
     // whenever instancing buffer is renewed. (maybe)
-    auto& ptr = const_cast<FDyMeshResource&>(*iMainValidMesh);
+    auto& ptr = const_cast<FResourceMesh&>(*iMainValidMesh);
     ptr.BindVertexArray();
     glBindVertexArray(iMainValidMesh->GetVertexArrayId());
     glBindBuffer(GL_ARRAY_BUFFER, instancingId);
@@ -160,8 +160,8 @@ void FBtRenderLevelOitDefault::OnRender()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     this->RenderStaticInstancingObjects(
-      const_cast<FDyMeshResource&>(*iMainValidMesh),
-      const_cast<FDyMaterialResource&>(*iMainValidMaterial), itemList.size());
+      const_cast<FResourceMesh&>(*iMainValidMesh),
+      const_cast<FResourceMaterial&>(*iMainValidMaterial), itemList.size());
   }
 
   SProfilingHelper::AddScreenRenderedActorCount(static_cast<TI32>(drawList.size()));
@@ -170,8 +170,8 @@ void FBtRenderLevelOitDefault::OnRender()
 
 void FBtRenderLevelOitDefault::RenderObject(
   CModelRenderer& iRefRenderer, 
-  FDyMeshResource& iRefMesh,
-  FDyMaterialResource& iRefMaterial)
+  FResourceMesh& iRefMesh,
+  FResourceMaterial& iRefMaterial)
 {
   // General deferred rendering
   auto ptrModelTransform = iRefRenderer.GetBindedActor()->GetTransform();
@@ -201,8 +201,8 @@ void FBtRenderLevelOitDefault::RenderObject(
 }
 
 void FBtRenderLevelOitDefault::RenderStaticInstancingObjects(
-  FDyMeshResource& iRefMesh,
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMesh& iRefMesh,
+  FResourceMaterial& iRefMaterial, 
   TU32 iCount)
 {
   auto& shaderBinder = iRefMaterial.GetShaderResourceBinder();

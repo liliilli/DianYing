@@ -339,7 +339,7 @@ inline void MRendering::Impl::SetupDrawModelTaskQueue()
   
     // Get 
     const auto& refBinder = smtInstance->GetModelBinderReference();
-    const FDyModelResource* ptrModelResc = refBinder.Get();
+    const FResourceModel* ptrModelResc = refBinder.Get();
 
     const auto& bindMeshList = ptrModelResc->GetMeshResourceList();
     const auto& bindMateList = ptrModelResc->GetMaterialResourceList();
@@ -362,8 +362,8 @@ inline void MRendering::Impl::SetupDrawModelTaskQueue()
 
 inline void MRendering::Impl::EnqueueDrawMesh(
   DDyModelHandler::DActorInfo& iRefModelRenderer,
-  const FDyMeshResource& iRefValidMesh, 
-  const FDyMaterialResource& iRefValidMat)
+  const FResourceMesh& iRefValidMesh, 
+  const FResourceMaterial& iRefValidMat)
 {
   switch (iRefValidMat.GetBlendMode())
   {

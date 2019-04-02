@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Component/CSkybox.h>
-#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Dy/Core/Resource/Resource/AResourceTextureBase.h>
 #include <Dy/Management/MWorld.h>
 
 namespace dy

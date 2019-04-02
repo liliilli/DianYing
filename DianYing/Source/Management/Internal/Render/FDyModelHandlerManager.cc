@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Thread/SIOConnectionHelper.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Management/MLog.h>
@@ -49,7 +49,7 @@ bool FDyModelHandlerManager::IsBoundModelExist(_MIN_ const std::string& iModelSp
 
 EDySuccess FDyModelHandlerManager::TryCreateHandler(_MIN_ const std::string& iModelSpecifier) noexcept
 {
-  if (SDyIOConnectionHelper::IsReferenceInstanceExist(
+  if (SIOConnectionHelper::IsReferenceInstanceExist(
       iModelSpecifier, 
       EResourceType::Model, 
       EResourceStyle::Resource) == false)

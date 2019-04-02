@@ -12,13 +12,13 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Resource/Attachment/FDyAttachmentPingpongResource.h>
+#include <Dy/Core/Resource/Resource/Attachment/FResourceAttachmentPingpong.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PGLAttachmentDescriptor.h>
 
 namespace dy
 {
-FDyAttachmentPingpongResource::FDyAttachmentPingpongResource(const FDyAttachmentInformation& iInformation)
+FResourceAttachmentPingpong::FResourceAttachmentPingpong(const FInformationAttachment& iInformation)
 {
   this->mSpecifierName = iInformation.GetSpecifierName();
   this->mInformationBinder.TryRequireResource(this->mSpecifierName);
@@ -48,7 +48,7 @@ FDyAttachmentPingpongResource::FDyAttachmentPingpongResource(const FDyAttachment
   }
 }
 
-FDyAttachmentPingpongResource::~FDyAttachmentPingpongResource()
+FResourceAttachmentPingpong::~FResourceAttachmentPingpong()
 {
   for (auto& id : this->mAttachmentIds)
   {
@@ -59,19 +59,19 @@ FDyAttachmentPingpongResource::~FDyAttachmentPingpongResource()
   }
 }
 
-TU32 FDyAttachmentPingpongResource::GetSourceAttachmentId() const noexcept
+TU32 FResourceAttachmentPingpong::GetSourceAttachmentId() const noexcept
 {
   if (this->mIsLeftTarget == true)  { return this->mAttachmentIds[1]; }
   else                              { return this->mAttachmentIds[0]; }
 }
 
-TU32 FDyAttachmentPingpongResource::GetTargetAttachmentId() const noexcept
+TU32 FResourceAttachmentPingpong::GetTargetAttachmentId() const noexcept
 {
   if (this->mIsLeftTarget == true)  { return this->mAttachmentIds[0]; }
   else                              { return this->mAttachmentIds[1]; }
 }
 
-void FDyAttachmentPingpongResource::Swap()
+void FResourceAttachmentPingpong::Swap()
 {
   this->mIsLeftTarget = !this->mIsLeftTarget;
 }

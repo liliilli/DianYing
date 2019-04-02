@@ -13,8 +13,8 @@
 ///
 
 /// Header file
-#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferGeneralResource.h>
-#include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FResourceFrameBufferGeneral.h>
+#include <Dy/Core/Resource/Information/FInformationFrameBuffer.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
 #include <Dy/Management/IO/MIOResource.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
@@ -23,7 +23,7 @@
 namespace dy
 {
 
-FDyFrameBufferGeneralResource::FDyFrameBufferGeneralResource(const FDyFrameBufferInformation& iInformation) 
+FResourceFrameBufferGeneral::FResourceFrameBufferGeneral(const FInformationFrameBuffer& iInformation) 
 {
   this->mSpecifierName = iInformation.GetSpecifierName();
   this->mFrameBufferSize = iInformation.GetFrameBufferSize();
@@ -85,18 +85,18 @@ FDyFrameBufferGeneralResource::FDyFrameBufferGeneralResource(const FDyFrameBuffe
   this->mFrameBufferId = optFrameBufferId.value();
 }
 
-FDyFrameBufferGeneralResource::~FDyFrameBufferGeneralResource()
+FResourceFrameBufferGeneral::~FResourceFrameBufferGeneral()
 {
   MDY_GRAPHIC_SET_CRITICALSECITON();
   MDY_CALL_ASSERT_SUCCESS(XGLWrapper::DeleteFrameBuffer(this->mFrameBufferId));
 }
 
-TU32 FDyFrameBufferGeneralResource::GetTargetFrameBufferId() const noexcept
+TU32 FResourceFrameBufferGeneral::GetTargetFrameBufferId() const noexcept
 {
   return this->mFrameBufferId;
 }
 
-EDySuccess FDyFrameBufferGeneralResource::BindFrameBuffer() const noexcept
+EDySuccess FResourceFrameBufferGeneral::BindFrameBuffer() const noexcept
 {
   if (this->GetTargetFrameBufferId() == 0) { return DY_FAILURE; }
 

@@ -21,7 +21,7 @@
 #include <Dy/Meta/Type/EDyComponentTypes.h>
 #include <Dy/Meta/Type/Physics/EDyColliderType.h>
 #include <Dy/Meta/Type/Physics/EDyRigidbodyType.h>
-#include <Dy/Helper/Type/DArea2D.h>
+#include <Dy/Helper/Type/DArea.h>
 #include <Dy/Helper/Type/DClamp.h>
 #include <Dy/Helper/Type/DColorRGB.h>
 #include <Dy/Management/Type/SettingContainer.h>

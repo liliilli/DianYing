@@ -123,10 +123,10 @@ inline void MIOMeta::Impl::MDY_PRIVATE(PopulateBootResourceSpecifierList)() cons
   static bool mIsCalled = false;
   MDY_ASSERT_MSG(mIsCalled == false, "This function must not be called twice.");
 
-  SDyIOConnectionHelper::PopulateResourceList(
+  SIOConnectionHelper::PopulateResourceList(
       this->mBootResourceSpecifierList, 
       EResourceScope::Global,
-      []() { GDyEngine::GetInstance().SetNextGameStatus(EGlobalGameState::FirstLoading); }
+      []() { GEngine::GetInstance().SetNextGameStatus(EGlobalGameState::FirstLoading); }
   );
 
   mIsCalled = true;
@@ -138,14 +138,14 @@ inline void MIOMeta::Impl::MDY_PRIVATE(PopulateGlobalResourceSpecifierList)() co
   MDY_ASSERT_MSG_FORCE(mIsCalled == false, "This function must not be called twice.");
 
   // Global resource list consists of many sub-global resource list from each global resource script.
-  SDyIOConnectionHelper::PopulateResourceList(mGlobalResourceSpecifierList, EResourceScope::Global,
+  SIOConnectionHelper::PopulateResourceList(mGlobalResourceSpecifierList, EResourceScope::Global,
     [] 
     { 
       // Create global scripts.
       auto& scriptManager = MScript::GetInstance();
       scriptManager.CreateGlobalScriptInstances();
       scriptManager.CallonStartGlobalScriptList();
-      GDyEngine::GetInstance().SetNextGameStatus(EGlobalGameState::Loading); 
+      GEngine::GetInstance().SetNextGameStatus(EGlobalGameState::Loading); 
     }
   );
   mIsCalled = true;

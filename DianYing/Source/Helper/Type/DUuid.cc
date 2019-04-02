@@ -31,22 +31,11 @@ DUuid::DUuid(bool iCreateValue) : mUuid()
   }
 }
 
-DUuid::DUuid(const std::string& iUuidString, bool iIsStrict) : mUuid()
+DUuid::DUuid(const std::string& iUuidString, bool iIsStrict) 
+  : mUuid()
 {
-  try
-  {
-    const boost::uuids::string_generator gen;
-    this->mUuid = gen(iUuidString);
-  }
-  catch (std::runtime_error& err)
-  {
-    MDY_ASSERT_MSG_FORCE(
-      iIsStrict == false, 
-      MakeStringU8(
-        "Failed to convert given string {} to appropriate uuid. {}", iUuidString, err.what()).c_str());
-
-    DyPushLogError("Failed to convert given string {} to appropriate uuid.", iUuidString); 
-  }
+  const boost::uuids::string_generator gen;
+  this->mUuid = gen(iUuidString);
 }
 
 bool DUuid::HasValue() const

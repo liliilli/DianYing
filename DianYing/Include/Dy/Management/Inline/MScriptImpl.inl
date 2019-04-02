@@ -138,17 +138,6 @@ inline void MScript::Impl::UpdateWidgetScript(TF32 dt, EScriptState type)
   }
 }
 
-inline void MScript::Impl::CallDestroyFuncWidgetScriptGCList()
-{
-  for (auto& ptrsmtScript : this->mGCedWidgetScriptList)
-  {
-    if (ptrsmtScript == nullptr) { continue; }
-    ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-}
-
 inline void MScript::Impl::RemoveEmptyOnWidgetScriptList()
 {
   EraseRemove(this->mWidgetScriptList, nullptr);
@@ -182,17 +171,6 @@ inline void MScript::Impl::UpdateActorScript(TF32 dt, EScriptState type)
   {
     if (ptrsmtScript == nullptr) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
-    // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
-  }
-}
-
-inline void MScript::Impl::CallDestroyFuncActorScriptGcList()
-{
-  for (auto& ptrsmtScript : this->mGCedActorScriptList)
-  {
-    if (ptrsmtScript == nullptr) { continue; }
-    ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
     // If engine must be stopped and end application, return instantly.
     if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }

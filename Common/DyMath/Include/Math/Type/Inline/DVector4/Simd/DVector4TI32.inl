@@ -14,10 +14,11 @@
 
 #ifdef MATH_ENABLE_SIMD
 #include <emmintrin.h>
+#include <smmintrin.h>
 
 namespace dy::math
 {
-
+  
 template <>
 struct MATH_NODISCARD DVector4<TI32, void> final
 {
@@ -147,6 +148,64 @@ inline const DVector4<TI32>::TValueType*
 DVector4<TI32, void>::Data() const noexcept
 {
   return &this->X;
+}
+
+TReal DVector4<TI32, void>::GetSquareLength() const noexcept
+{
+  TReal value[4];
+#ifndef MATH_USE_REAL_AS_DOUBLE
+  const auto simd   = _mm_cvtepi32_ps(this->__mVal);  // Convert epi32 into ps (SSE2)
+  const auto result = _mm_dp_ps(simd, simd, 0xFF);    // Do dot product. (SSE4.1)
+  _mm_store_ps(value, result);                        // Store float into values. (SSE)
+  return value[3];
+#else
+  const auto simd   = _mm_cvtepi32_pd(this->__mVal);  // Convert epi32 into ps (SSE2)
+  const auto result = _mm_dp_pd(simd, simd, 0xFF);    // Do dot product. (SSE4.1)
+  _mm_store_pd(value, result);                        // Store float into values. (SSE)
+  return value[3];
+#endif
+}
+
+TReal DVector4<TI32, void>::GetHomogeneousLength() const noexcept
+{
+  TReal value[4];
+#ifndef MATH_USE_REAL_AS_DOUBLE
+  // Reset w using moving instrinct (SSE2) and convert epi32 into ps (SSE2)
+  const auto simd   = _mm_cvtepi32_ps(_mm_bslli_si128(this->__mVal, 4));  
+  // Do dot product. (SSE4.1) and sqrt to __m128 (SSE2)
+  const auto result = _mm_sqrt_ps(_mm_dp_ps(simd, simd, 0xFF));    
+  // Store float into values. (SSE)
+  _mm_store_ps(value, result);                        
+  return value[3];
+#else
+  // Reset w using moving instrinct (SSE2) and convert epi32 into ps (SSE2)
+  const auto simd = _mm_cvtepi32_pd(_mm_bslli_si128(this->__mVal, 4));    
+  // Do dot product. (SSE4.1) and sqrt to __m128d (SSE2)
+  const auto result = _mm_sqrt_pd(_mm_dp_pd(simd, simd, 0xFF));    
+  // Store float into values. (SSE)
+  _mm_store_pd(value, result);                        
+  return value[3];
+#endif
+}
+
+TReal DVector4<TI32, void>::GetLength() const noexcept
+{
+  return std::sqrt(this->GetSquareLength());
+}
+
+DVector4<TReal> DVector4<TI32, void>::Normalize() const noexcept
+{
+#ifndef MATH_USE_REAL_AS_DOUBLE
+  const auto simd   = _mm_cvtepi32_ps(this->__mVal);  // Convert epi32 into ps (SSE2)
+  // Do dot product. (SSE4.1) and sqrt (SSE2) to get length.
+  const auto result = _mm_sqrt_ps(_mm_dp_ps(simd, simd, 0xFF));    
+  return DVector4<TReal>{_mm_div_ps(simd, result)};
+#else
+  const auto simd   = _mm_cvtepi32_pd(this->__mVal);  // Convert epi32 into ps (SSE2)
+  // Do dot product. (SSE4.1) and sqrt (SSE2) to get length.
+  const auto result = _mm_sqrt_pd(_mm_dp_pd(simd, simd, 0xFF));    
+  return DVector4<TReal>{_mm_div_pd(simd, result)};
+#endif
 }
 
 } /// ::dy::math namespace

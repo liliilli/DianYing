@@ -12,7 +12,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/GlobalType.h>
+#include <nlohmann/json_fwd.hpp>
 #include <Math/Type/Micellanous/DBounds2D.h>
 #include <Math/Type/Micellanous/DBounds3D.h>
 
@@ -36,7 +36,11 @@ struct FBounds3D final
 
 namespace dy::math
 {
+  
+void to_json(nlohmann::json& oJson, const DBounds2D<TReal>& iArea);
+void from_json(const nlohmann::json& iJson, DBounds2D<TReal>& oArea);
 
-
+void to_json(nlohmann::json& oJson, const DBounds3D<TReal>& iArea);
+void from_json(const nlohmann::json& iJson, DBounds3D<TReal>& oArea);
 
 } /// ::dy::math namespace

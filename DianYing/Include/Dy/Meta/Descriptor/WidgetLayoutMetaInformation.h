@@ -15,7 +15,7 @@
 
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
-#include <Dy/Helper/Type/DArea2D.h>
+#include <Dy/Helper/Type/DArea.h>
 
 namespace dy
 {
