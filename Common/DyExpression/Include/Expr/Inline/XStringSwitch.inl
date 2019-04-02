@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_HELPER_STRINGSWITCH_H
-#define GUARD_DY_HELPER_STRINGSWITCH_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,15 +12,22 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/System/HashCompileCrc32.h>
-#include <Expr/XStringSwitch.h>
-
-namespace dy::string
+namespace dy::expr::string
 {
 
-using ::dy::expr::string::Input;
-using ::dy::expr::string::Case;
+constexpr THashVal32 Input(const char* input)
+{
+  return ToHashCrc32(input);
+}
 
-} /// ::dy namespace
+inline THashVal32 Input(const std::string& iInput)
+{
+  return ToHashCrc32(iInput.c_str());
+}
 
-#endif /// GUARD_DY_HELPER_STRINGSWITCH_H
+constexpr THashVal32 Case(const char* iLiteral)
+{
+  return ToHashCrc32(iLiteral);
+}
+
+} /// ::dy::expr::string namespace

@@ -96,6 +96,7 @@
       <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/Bt+ %(AdditionalOptions)</AdditionalOptions>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -123,6 +124,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +154,7 @@
       <PreprocessorDefinitions>NDEBUG;__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -425,7 +428,6 @@
     <ClCompile Include="Source\Helper\Library\HelperString.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
-    <ClCompile Include="Source\Helper\Type\DArea3D.cc" />
     <ClCompile Include="Source\Helper\Type\DBounds.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\DUuid.cc" />
@@ -463,7 +465,7 @@
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
     <ClCompile Include="Source\Helper\Library\HelperJson.cc" />
     <ClCompile Include="Source\Helper\Internal\FThreadPool.cc" />
-    <ClCompile Include="Source\Helper\Type\DArea2D.cc" />
+    <ClCompile Include="Source\Helper\Type\DArea.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB24.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGBA.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGBA32.cc" />
@@ -801,7 +803,6 @@
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DArea3D.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DBounds.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DSphere.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DPlane.h" />
@@ -963,7 +964,7 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperJson.h" />
     <ClInclude Include="Include\Dy\Helper\System\Pointer.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FThreadPool.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DArea2D.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DArea.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DClamp.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DString.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DTristateBool.h" />

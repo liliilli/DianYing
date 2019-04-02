@@ -13,11 +13,12 @@
 ///
 
 /// Header file
-#include <Dy/Helper/Type/DArea2D.h>
+#include <Dy/Helper/Type/DArea.h>
 
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Type/DVector2.h>
+#include <Dy/Helper/Type/DVector3.h>
 
 namespace dy::math
 {
@@ -35,6 +36,22 @@ void from_json(const nlohmann::json& iJson, DArea2D<TReal>& oArea)
 {
   oArea.SetStartPoint(json::GetValueFrom<DVec2>(iJson, "Start"));
   oArea.SetWh(json::GetValueFrom<DVec2>(iJson, "Length"));
+}
+
+
+void to_json(nlohmann::json& oJson, const DArea3D<TReal>& iArea)
+{
+  oJson = nlohmann::json
+  {
+    {"Start", iArea.GetStartPoint()},
+    {"Length", iArea.GetWhd()}
+  };
+}
+
+void from_json(const nlohmann::json& iJson, DArea3D<TReal>& oArea)
+{
+  oArea.SetStartPoint(json::GetValueFrom<DVec3>(iJson, "Start"));
+  oArea.SetWhd(json::GetValueFrom<DVec3>(iJson, "Length"));
 }
 
 } /// ::dy namespace

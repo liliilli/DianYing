@@ -24,15 +24,15 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyRigidbodyType& p)
 {
   const auto string = j.get<std::string>();
 
-  switch (SwitchStrInput(string))
+  switch (string::Input(string))
   {
-  case CaseStr("Static"):
+  case string::Case("Static"):
   { p = EDyRigidbodyType::Static;
   } break;
-  case CaseStr("Kinematic"):
+  case string::Case("Kinematic"):
   { p = EDyRigidbodyType::Kinematic;
   } break;
-  case CaseStr("Dynamic"):
+  case string::Case("Dynamic"):
   { p = EDyRigidbodyType::Dynamic;
   } break;
   default: MDY_ASSERT_MSG_FORCE(false, "Rigidbody type is not valid."); break;

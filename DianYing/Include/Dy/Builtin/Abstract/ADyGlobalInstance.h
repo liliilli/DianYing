@@ -29,17 +29,17 @@ namespace dy
 #define MDY_GLOBALINSTANCE_REGISTER(__MAGlobalInstance__) \
 class __MAGlobalInstance__; \
 template <> \
-class ::dy::TDyGlobalInstance<::dy::hash::DyToCrc32Hash(MDY_TO_STRING(__MAGlobalInstance__))> \
+class ::dy::TDyGlobalInstance<::dy::hash::ToHashCrc32(MDY_TO_STRING(__MAGlobalInstance__))> \
 { \
 public: \
-  inline static constexpr auto kHashVal = hash::DyToCrc32Hash(MDY_TO_STRING(__MAGlobalInstance__)); \
+  inline static constexpr auto kHashVal = hash::ToHashCrc32(MDY_TO_STRING(__MAGlobalInstance__)); \
   using Type = __MAGlobalInstance__; \
 }; 
 
 /// @macro MDY_GLOBALINSTANCE_PROPERTY
 /// @brief Set essential properties of given Global instance type.
 #define MDY_GLOBALINSTANCE_PROPERTY(__MAGlobalInstance__) \
-inline static constexpr auto kHashVal = ::dy::TDyGlobalInstance<hash::DyToCrc32Hash(MDY_TO_STRING(__MAGlobalInstance__))>::kHashVal; \
+inline static constexpr auto kHashVal = ::dy::TDyGlobalInstance<hash::ToHashCrc32(MDY_TO_STRING(__MAGlobalInstance__))>::kHashVal; \
 inline static ::dy::reflect::RGlobalInstanceRegistration<__MAGlobalInstance__> __rfc__Register{kHashVal};
 
 /// @class ADyGlobalInstance

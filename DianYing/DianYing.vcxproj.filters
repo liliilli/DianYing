@@ -263,8 +263,6 @@
     <ClCompile Include="Source\Helper\Type\DColorRGBA32.cc" />
     <ClCompile Include="Source\Helper\Type\DString.cc" />
     <ClCompile Include="Source\Helper\Type\DQuaternion.cc" />
-    <ClCompile Include="Source\Helper\Type\DArea3D.cc" />
-    <ClCompile Include="Source\Helper\Type\DArea2D.cc" />
     <ClCompile Include="Source\Management\MFont.cc" />
     <ClCompile Include="Source\Management\MGameTimer.cc" />
     <ClCompile Include="Source\Management\MInput.cc" />
@@ -368,6 +366,7 @@
     <ClCompile Include="Source\Builtin\Texture\FDyBtTexWhiteTexture.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\FDyBtShOITPlainColor.cc" />
     <ClCompile Include="Source\Helper\Type\DBounds.cc" />
+    <ClCompile Include="Source\Helper\Type\DArea.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -713,8 +712,6 @@
     <ClInclude Include="Include\Dy\Helper\Type\DQuaternion.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DTristateBool.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DPlane.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DArea3D.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DArea2D.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Management\MFont.h" />
     <ClInclude Include="Include\Dy\Management\MGameTimer.h" />
@@ -898,6 +895,7 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\FDyBtShOITPlainColor.h" />
     <ClInclude Include="Include\Dy\Helper\Type\EAxis.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DBounds.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DArea.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

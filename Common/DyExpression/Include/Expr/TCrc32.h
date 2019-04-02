@@ -1,4 +1,4 @@
-#include <precompiled.h>
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,27 +12,21 @@
 /// SOFTWARE.
 ///
 
-/// Header file
-#include <Dy/Helper/Type/DArea3D.h>
-#include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Helper/Type/DVector3.h>
+#include <cstdint>
+#include <string_view>
 
-namespace dy::math
+#include <Expr/Inline/TCrc32Pre.inl>
+namespace dy::expr
 {
+  
+/// @brief Crc 32-bit hash value type.
+using THashVal32 = uint32_t; 
 
-void to_json(nlohmann::json& oJson, const DArea3D<TReal>& iArea)
-{
-  oJson = nlohmann::json
-  {
-    {"Start", iArea.GetStartPoint()},
-    {"Length", iArea.GetWhd()}
-  };
-}
+/// @brief Do encryption and return crc32 hash value for arbitary string in compile time.
+constexpr THashVal32 ToHashCrc32(const char* s) noexcept;
 
-void from_json(const nlohmann::json& iJson, DArea3D<TReal>& oArea)
-{
-  oArea.SetStartPoint(json::GetValueFrom<DVec3>(iJson, "Start"));
-  oArea.SetWhd(json::GetValueFrom<DVec3>(iJson, "Length"));
-}
+/// @brief Do encryption and return crc32 hash value for arbitary string in compile time.
+constexpr THashVal32 ToHashCrc32(std::string_view sv) noexcept;
 
-} /// ::dy namespace
+} /// ::dy::expr namespace
+#include <Expr/Inline/TCrc32Post.inl>

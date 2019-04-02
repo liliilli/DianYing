@@ -77,5 +77,8 @@
     <ClCompile Include="Source\DBounds\TestDBounds3D.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DVector2\TestDVectorSimd.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

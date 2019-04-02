@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_HELPER_TYPE_AREA_H
-#define GUARD_DY_HELPER_TYPE_AREA_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,22 +12,20 @@
 /// SOFTWARE.
 ///
 
-#include <Math/Type/Micellanous/DArea2D.h>
-#include <nlohmann/json_fwd.hpp>
-
-namespace dy
+namespace dy::expr
 {
 
-using DArea2D = math::DArea2D<TReal>;
+/// @brief Do encryption and return crc32 hash value for arbitary string in compile time.
+constexpr THashVal32 ToHashCrc32(const char* s) noexcept 
+{ 
+  return details::Crc32Rec(0xFFFFFFFF, s); 
+}
 
-} /// ::dy namespace
-
-namespace dy::math
+constexpr THashVal32 ToHashCrc32(std::string_view sv) noexcept
 {
+  return details::Crc32Rec(0xFFFFFFFF, sv.data());
+}
 
-void to_json(nlohmann::json& oJson, const DArea2D<TReal>& iArea);
-void from_json(const nlohmann::json& iJson, DArea2D<TReal>& oArea);
+static_assert(ToHashCrc32("Hello world!") == 0x1B851995);
 
-} /// ::dy::math namespace
-
-#endif /// GUARD_DY_HELPER_TYPE_AREA_H
+} /// ::dy::expr namespace

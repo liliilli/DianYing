@@ -47,20 +47,20 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const ETextureMapType& p)
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ ETextureMapType& p)
 {
   const auto serializedString = j.get<std::string>();
-  switch (SwitchStrInput(serializedString))
+  switch (string::Input(serializedString))
   {
-  case CaseStr("Diffuse"):  p = ETextureMapType::Diffuse; break;
-  case CaseStr("Specular"): p = ETextureMapType::Specular; break;
-  case CaseStr("Ambient"):  p = ETextureMapType::Ambient; break;
-  case CaseStr("Emissive"): p = ETextureMapType::Emissive; break;
-  case CaseStr("Height"):   p = ETextureMapType::Height; break;
-  case CaseStr("Normal"):   p = ETextureMapType::Normal; break;
-  case CaseStr("Shininess"):p = ETextureMapType::Shininess; break;
-  case CaseStr("Opacity"):  p = ETextureMapType::Opacity; break;
-  case CaseStr("Displacement"): p = ETextureMapType::Displacement; break;
-  case CaseStr("LightMap"):   p = ETextureMapType::LightMap; break;
-  case CaseStr("Reflection"): p = ETextureMapType::Reflection; break;
-  case CaseStr("Unknown"):    p = ETextureMapType::Unknown; break;
+  case string::Case("Diffuse"):  p = ETextureMapType::Diffuse; break;
+  case string::Case("Specular"): p = ETextureMapType::Specular; break;
+  case string::Case("Ambient"):  p = ETextureMapType::Ambient; break;
+  case string::Case("Emissive"): p = ETextureMapType::Emissive; break;
+  case string::Case("Height"):   p = ETextureMapType::Height; break;
+  case string::Case("Normal"):   p = ETextureMapType::Normal; break;
+  case string::Case("Shininess"):p = ETextureMapType::Shininess; break;
+  case string::Case("Opacity"):  p = ETextureMapType::Opacity; break;
+  case string::Case("Displacement"): p = ETextureMapType::Displacement; break;
+  case string::Case("LightMap"):   p = ETextureMapType::LightMap; break;
+  case string::Case("Reflection"): p = ETextureMapType::Reflection; break;
+  case string::Case("Unknown"):    p = ETextureMapType::Unknown; break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }
