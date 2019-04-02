@@ -21,8 +21,8 @@
 #include <nlohmann/json.hpp>
 
 #include <Dy/Core/Reflection/RBuiltinResources.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/Thread/SIOConnectionHelper.h>
+#include <Dy/Core/GEngine.h>
 
 #include <Dy/Helper/System/Pointer.h>
 #include <Dy/Helper/Library/HelperContainer.h>

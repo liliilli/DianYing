@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Core/Thread/TDyIO.h>
+#include <Dy/Core/Thread/TRescIO.h>
 #include <Dy/Management/Type/EGlobalGameState.h>
 
 namespace dy

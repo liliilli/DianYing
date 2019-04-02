@@ -48,7 +48,7 @@ public:
   void operator()(GLFWwindow& ptrWorkerWnd);
 
   /// @brief Assign Task to TDYIOWorker.
-  EDySuccess outTryAssign(_MIN_ const DRescIOTask& DDyIOTask);
+  EDySuccess outTryAssign(const DRescIOTask& DDyIOTask);
 
   /// @brief Check Worker is idle.
   bool SyncIsIdle() const noexcept;

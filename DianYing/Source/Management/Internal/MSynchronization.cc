@@ -14,8 +14,8 @@
 
 /// Header file
 #include <Dy/Management/Internal/MSynchronization.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/Thread/SIOConnectionHelper.h>
+#include <Dy/Core/GEngine.h>
 #include <Dy/Management/MWorld.h>
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MScript.h>
@@ -33,7 +33,7 @@ EDySuccess MSynchronization::pfInitialize()
 
 EDySuccess MSynchronization::pfRelease()
 {
-  SDyIOConnectionHelper::TryStop();
+  SIOConnectionHelper::TryStop();
   this->mIOThreadThread.join();
   this->mIOThreadInstance = nullptr;
   return DY_SUCCESS;
@@ -60,37 +60,37 @@ void MSynchronization::TrySynchronization()
 
 void MSynchronization::pRunFrameBooted()
 {
-  if (SDyIOConnectionHelper::IsMainTaskListIsEmpty() == false)
+  if (SIOConnectionHelper::IsMainTaskListEmpty() == false)
   {
-    SDyIOConnectionHelper::ForceProcessDeferredMainTaskList();
+    SIOConnectionHelper::ForceProcessDeferredMainTaskList();
   }
 
-  if (SDyIOConnectionHelper::CheckIOResultInCondition() == true)
+  if (SIOConnectionHelper::IsWorkerResultExist() == true)
   {
-    SDyIOConnectionHelper::ForceProcessIOInsertPhase();
+    SIOConnectionHelper::ForceProcessIOInsertPhase();
   }
 
-  SDyIOConnectionHelper::TryCallSleptCallbackFunction();
+  SIOConnectionHelper::TryCallSleptCallbackFunction();
 }
 
 void MSynchronization::pRunFrameFirstLoading()
 {
-  using TSyncHelper = SDyIOConnectionHelper;
-  if (TSyncHelper::IsMainTaskListIsEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
-  if (TSyncHelper::CheckIOResultInCondition() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
+  using TSyncHelper = SIOConnectionHelper;
+  if (TSyncHelper::IsMainTaskListEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
+  if (TSyncHelper::IsWorkerResultExist() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
 
   // Check whether IO thread working is done, if so change status to `Loading`. 
-  SDyIOConnectionHelper::TryCallSleptCallbackFunction();
+  SIOConnectionHelper::TryCallSleptCallbackFunction();
 }
 
 void MSynchronization::pRunFrameLoading()
 {
-  using TSyncHelper = SDyIOConnectionHelper;
-  if (TSyncHelper::IsMainTaskListIsEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
-  if (TSyncHelper::CheckIOResultInCondition() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
+  using TSyncHelper = SIOConnectionHelper;
+  if (TSyncHelper::IsMainTaskListEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
+  if (TSyncHelper::IsWorkerResultExist() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
 
   // Check whether IO thread working is done, if so change status to `Loading`. 
-  SDyIOConnectionHelper::TryCallSleptCallbackFunction();
+  SIOConnectionHelper::TryCallSleptCallbackFunction();
 }
 
 void MSynchronization::pRunFrameGameRuntime()
@@ -112,32 +112,42 @@ void MSynchronization::pRunFrameGameRuntime()
   }
 
   {
-    // Level Try create actors.
+    // Try create actors in level.
     auto& world = MWorld::GetInstance(); 
-    if (world.CheckCreationActorExist() == true)
+    if (world.IsActorCreationExist() == true)
     {
-      world.TryCreateActorsOfCreationActorList();
-      world.CleanCreationActorList();
+      world.TryCreateActorsFromCreationList();
+      world.CleanActorCreationList();
     }
     
     // Remove GC actor list.
-    if (world.CheckIsGcActorExist() == true)
+    if (world.IsActorGCCandidateExist() == true)
     {
       world.MDY_PRIVATE(TryRemoveActorGCList)();
-      // Check Resource GC to IO Thread,...
     }
   }
 
+  // Check Resource GC to IO Thread,...
+  if (SIOConnectionHelper::IsGcCandidateExist() == true)
+  {
+    SIOConnectionHelper::TryGC();
+  }
+
   // Synchronization 
-  using TSyncHelper = SDyIOConnectionHelper;
-  if (TSyncHelper::IsMainTaskListIsEmpty() == false)  { TSyncHelper::ForceProcessDeferredMainTaskList(); }
-  if (TSyncHelper::CheckIOResultInCondition() == true){ TSyncHelper::ForceProcessIOInsertPhase(); }
+  if (SIOConnectionHelper::IsMainTaskListEmpty() == false)    
+  { 
+    SIOConnectionHelper::ForceProcessDeferredMainTaskList(); 
+  }
+  if (SIOConnectionHelper::IsWorkerResultExist() == true)
+  { 
+    SIOConnectionHelper::ForceProcessIOInsertPhase(); 
+  }
 }
 
 void MSynchronization::PRunFrameShutdown()
 {
   // Check whether IO thread working is done, if so change status to `Loading`. 
-  SDyIOConnectionHelper::TryCallSleptCallbackFunction();
+  SIOConnectionHelper::TryCallSleptCallbackFunction();
 }
 
 } /// ::dy namespace

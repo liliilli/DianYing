@@ -15,7 +15,7 @@
 
 #include <Dy/Core/Resource/Type/EResourceScope.h>
 #include <Dy/Core/Reflection/RBuiltinResources.h>
-#include <Dy/Core/Thread/IO/EDyIOTask.h>
+#include <Dy/Core/Thread/IO/EIOTask.h>
 
 #include <Dy/Helper/Type/DClamp.h>
 

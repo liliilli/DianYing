@@ -14,14 +14,14 @@
 
 /// Header file
 #include <Dy/Core/Resource/Type/Material/AUniformHelper.h>
-#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMaterial.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 
 namespace dy
 {
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier,
   const MDY_PRIVATE(UniformBinder)<EUniformVariableType::Matrix4>::ValueType& iValue)
 {
@@ -30,7 +30,7 @@ void AUniformHelper::UpdateUniform(
 }
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier,
   const __UniformBinder<TEnum::Matrix4Array>::ValueType& iValue)
 {
@@ -39,7 +39,7 @@ void AUniformHelper::UpdateUniform(
 }
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier, 
   const MDY_PRIVATE(UniformBinder)<EUniformVariableType::Matrix3>::ValueType& iValue)
 {
@@ -48,7 +48,7 @@ void AUniformHelper::UpdateUniform(
 }
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier, 
   const MDY_PRIVATE(UniformBinder)<EUniformVariableType::Vector4>::ValueType& iValue)
 {
@@ -57,7 +57,7 @@ void AUniformHelper::UpdateUniform(
 };
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier,
   const __UniformBinder<TEnum::Vector3>::ValueType& iValue)
 {
@@ -66,7 +66,7 @@ void AUniformHelper::UpdateUniform(
 }
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier,
   const __UniformBinder<TEnum::Vector3Array>::ValueType& iValue)
 {
@@ -75,7 +75,7 @@ void AUniformHelper::UpdateUniform(
 }
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier,
   const __UniformBinder<TEnum::Vector2>::ValueType& iValue)
 {
@@ -84,7 +84,7 @@ void AUniformHelper::UpdateUniform(
 }
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier, 
   const MDY_PRIVATE(UniformBinder)<EUniformVariableType::Integer>::ValueType& iValue)
 {
@@ -93,7 +93,7 @@ void AUniformHelper::UpdateUniform(
 }
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier,
   const __UniformBinder<TEnum::Float>::ValueType& iValue)
 {
@@ -102,7 +102,7 @@ void AUniformHelper::UpdateUniform(
 }
 
 void AUniformHelper::UpdateUniform(
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMaterial& iRefMaterial, 
   const std::string& iSpecifier,
   const __UniformBinder<TEnum::Bool>::ValueType& iValue)
 {
@@ -110,7 +110,7 @@ void AUniformHelper::UpdateUniform(
   shaderBinder->TryUpdateUniform<EUniformVariableType::Bool>(iSpecifier, iValue);
 }
 
-EDySuccess AUniformHelper::MDY_PRIVATE(TryUpdateUniformList)(FDyMaterialResource& iRefMateiral)
+EDySuccess AUniformHelper::MDY_PRIVATE(TryUpdateUniformList)(FResourceMaterial& iRefMateiral)
 {
   auto& shaderBinder = iRefMateiral.GetShaderResourceBinder();
   return shaderBinder->TryUpdateUniformList();

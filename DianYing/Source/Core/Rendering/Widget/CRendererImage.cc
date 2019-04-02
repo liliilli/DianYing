@@ -16,13 +16,13 @@
 #include <Dy/Component/Internal/WidgetRenderer/CRendererImage.h>
 
 #include <Dy/Builtin/Mesh/FDyBtMsUiImgQuad.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Element/Widget/FWidgetImage.h>
-#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Core/Resource/Resource/AResourceTextureBase.h>
+#include <Dy/Core/Thread/SIOConnectionHelper.h>
+#include <Dy/Core/Resource/Resource/FResourceMaterial.h>
 #include <Dy/Management/Rendering/MRendering.h>
 
 namespace dy
@@ -128,7 +128,7 @@ void CRendererImage::Render()
   info.mShaderSpecifier = mDefaultImageShader->GetSpecifierName();
   info.mTextureNames[0] = {mPtrObject->GetRenderableImageName().first, ETextureMapType::Unknown};
   info.mBlendMode       = EMaterialBlendMode::Opaque;
-  SDyIOConnectionHelper::PopulateInstantMaterialResource(info, static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable));
+  SIOConnectionHelper::PopulateInstantMaterialResource(info, static_cast<TDyResourceBinderMaterial&>(*this->mBinderRenderable));
 #endif
  */
 void CRendererImage::UpdateRenderableTarget() noexcept

@@ -21,7 +21,7 @@
 
 namespace dy
 {
-class FDyMaterialResource;
+class FResourceMaterial;
 class DDyMatrix4;
 } /// ::dy namespace
 
@@ -41,58 +41,58 @@ public:
   using TEnum = EUniformVariableType;
 protected:
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Matrix4>::ValueType& iValue);
 
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Matrix4Array>::ValueType& iValue);
 
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Matrix3>::ValueType& iValue);
 
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Vector4>::ValueType& iValue);
  
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Vector3>::ValueType& iValue);
     
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Vector3Array>::ValueType& iValue);
  
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Vector2>::ValueType& iValue);
  
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Integer>::ValueType& iValue);
      
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Float>::ValueType& iValue);
      
   void UpdateUniform(
-    FDyMaterialResource& iRefMaterial, 
+    FResourceMaterial& iRefMaterial, 
     const std::string& iSpecifier, 
     const MDY_PRIVATE(UniformBinder)<TEnum::Bool>::ValueType& iValue);
  
   /// @brief Try update uniform list of valid mateiral instance.
   MDY_NODISCARD EDySuccess 
-  __TryUpdateUniformList(FDyMaterialResource& iRefMateiral);
+  __TryUpdateUniformList(FResourceMaterial& iRefMateiral);
 };
 
 inline AUniformHelper::~AUniformHelper() = default;

@@ -25,7 +25,7 @@
 
 namespace dy
 {
-class FDyModelAnimScrapInformation;
+class FInformationModelAnimScrap;
 } /// ::dy namespace
 
 //!
@@ -97,7 +97,7 @@ private:
     EAnimatorStatus     mStatus = EAnimatorStatus::Init;
     EAnimationScrapMode mScrapMode = EAnimationScrapMode::PlayOnce;
     TF32                mElapsedTime = 0.0f;
-    const FDyModelAnimScrapInformation* mPtrPresentAnimatorInfo = nullptr; 
+    const FInformationModelAnimScrap* mPtrPresentAnimatorInfo = nullptr; 
     
     /// @brief
     std::vector<DMat4> mFinalTransformList;

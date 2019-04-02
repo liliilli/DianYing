@@ -19,9 +19,9 @@
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MScript.h>
 #include <Dy/Management/MPhysics.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Thread/SIOConnectionHelper.h>
 #include <Dy/Core/Resource/Type/EResourceScope.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/GEngine.h>
 #include <Dy/Component/CModelRenderer.h>
 #include <Dy/Component/CCamera.h>
 #include <Dy/Component/CModelAnimator.h>
@@ -434,19 +434,19 @@ EDySuccess MWorld::TryCreateLoadingUi()        { return DY_PIMPL->TryCreateLoadi
 bool MWorld::IsLoadingUiExist() const noexcept { return DY_PIMPL->IsLoadingUiExist(); } 
 EDySuccess MWorld::TryRemoveLoadingUi()        { return DY_PIMPL->TryRemoveLoadingUi(); }
 
-bool MWorld::CheckCreationActorExist() const noexcept { return DY_PIMPL->CheckCreationActorExist(); }
+bool MWorld::IsActorCreationExist() const noexcept { return DY_PIMPL->CheckCreationActorExist(); }
 
-void MWorld::TryCreateActorsOfCreationActorList() noexcept
+void MWorld::TryCreateActorsFromCreationList() noexcept
 {
   DY_PIMPL->TryCreateActorsOfCreationActorList();
 }
 
-void MWorld::CleanCreationActorList() noexcept
+void MWorld::CleanActorCreationList() noexcept
 {
   DY_PIMPL->CleanCreationActorList();
 }
 
-bool MWorld::CheckIsGcActorExist() const noexcept
+bool MWorld::IsActorGCCandidateExist() const noexcept
 {
   return DY_PIMPL->CheckIsGcActorExist();
 }

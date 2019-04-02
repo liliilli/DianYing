@@ -58,8 +58,8 @@ public:
   DY_PIMPL_SINGELTON_DERIVED(MRendering);
   using TMeshDrawCallItem = std::tuple<
       NotNull<DDyModelHandler::DActorInfo*>,
-      NotNull<const FDyMeshResource*>, 
-      NotNull<const FDyMaterialResource*>
+      NotNull<const FResourceMesh*>, 
+      NotNull<const FResourceMaterial*>
   >;
 
   using TDrawColliderItem = std::pair<NotNull<CBasePhysicsCollider*>, DMat4>; 
@@ -140,8 +140,8 @@ private:
   /// @brief Enqueue static draw call to mesh with material.
   void EnqueueDrawMesh(
       DDyModelHandler::DActorInfo& iRefModelRenderer,
-      const FDyMeshResource& iRefValidMesh, 
-      const FDyMaterialResource& iRefValidMat);
+      const FResourceMesh& iRefValidMesh, 
+      const FResourceMaterial& iRefValidMat);
 
   /// @brief Enqueue debug collider draw call.
   void EnqueueDebugDrawCollider(

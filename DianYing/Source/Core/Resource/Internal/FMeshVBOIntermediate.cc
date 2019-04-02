@@ -16,14 +16,14 @@
 #include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PGLBufferDescriptor.h>
-#include <Dy/Core/Resource/Information/FDyMeshInformation.h>
+#include <Dy/Core/Resource/Information/FInformationMesh.h>
 #include <Dy/Meta/Information/MetaInfoModelMesh.h>
 #include <Dy/Builtin/Constant/GeneralValue.h>
 
 namespace dy
 {
 
-FMeshVBOIntermediate::FMeshVBOIntermediate(const FDyMeshInformation& information, bool iIsInstancing) 
+FMeshVBOIntermediate::FMeshVBOIntermediate(const FInformationMesh& information, bool iIsInstancing) 
   : mSpecifierName{information.GetSpecifierName()},
     mVaoBindAttributeInfo{information.GetMeshInformationList().mVAOBindingInfo},
     mIsSupportingInstancing{iIsInstancing}
@@ -37,7 +37,7 @@ FMeshVBOIntermediate::FMeshVBOIntermediate(const FDyMeshInformation& information
   }
 }
 
-void FMeshVBOIntermediate::MDY_PRIVATE(CreateVertexArrayBuffer)(const FDyMeshInformation& iInformation)
+void FMeshVBOIntermediate::MDY_PRIVATE(CreateVertexArrayBuffer)(const FInformationMesh& iInformation)
 {
   const DMeshData& info = iInformation.GetMeshInformationList();
   { // Set vertex count.
@@ -78,7 +78,7 @@ void FMeshVBOIntermediate::MDY_PRIVATE(CreateVertexArrayBuffer)(const FDyMeshInf
   }
 }
 
-void FMeshVBOIntermediate::MDY_PRIVATE(CreateElementArrayBuffer)(const FDyMeshInformation& iInformation)
+void FMeshVBOIntermediate::MDY_PRIVATE(CreateElementArrayBuffer)(const FInformationMesh& iInformation)
 {
   const DMeshData& info = iInformation.GetMeshInformationList();
   { // Set flag and count for mesh geometry information & index count.

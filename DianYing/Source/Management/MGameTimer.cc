@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Management/MGameTimer.h>
 #include <Dy/Element/Type/Timer/FTimerHandle.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/GEngine.h>
 
 namespace dy
 {

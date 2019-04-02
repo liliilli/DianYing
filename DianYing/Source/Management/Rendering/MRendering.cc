@@ -30,9 +30,9 @@
 #include <Dy/Component/CModelRenderer.h>
 #include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMaterial.h>
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
-#include "Dy/Core/Resource/Resource/FDyModelResource.h"
+#include "Dy/Core/Resource/Resource/FResourceModel.h"
 #include "Dy/Management/MWindow.h"
 #include "Dy/Management/MPhysics.h"
 #include "Dy/Component/CModelFilter.h"
@@ -118,8 +118,8 @@ struct MRendering::Impl final : IInitializeHelper<void>
   /// @brief Enqueue static draw call to mesh with material.
   void EnqueueDrawMesh(
       _MIN_ DDyModelHandler::DActorInfo& iRefModelRenderer,
-      _MIN_ const FDyMeshResource& iRefValidMesh, 
-      _MIN_ const FDyMaterialResource& iRefValidMat);
+      _MIN_ const FResourceMesh& iRefValidMesh, 
+      _MIN_ const FResourceMaterial& iRefValidMat);
 
   /// @brief Enqueue debug collider draw call.
   void EnqueueDebugDrawCollider(
@@ -233,8 +233,8 @@ void MRendering::SetupDrawModelTaskQueue()
 
 void MRendering::EnqueueDrawMesh(
   DDyModelHandler::DActorInfo& iRefModelRenderer,
-  const FDyMeshResource& iRefValidMesh, 
-  const FDyMaterialResource& iRefValidMat)
+  const FResourceMesh& iRefValidMesh, 
+  const FResourceMaterial& iRefValidMat)
 {
   DY_PIMPL->EnqueueDrawMesh(iRefModelRenderer, iRefValidMesh, iRefValidMat);
 }

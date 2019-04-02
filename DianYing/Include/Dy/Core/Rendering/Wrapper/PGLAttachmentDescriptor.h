@@ -18,7 +18,7 @@
 #include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 #include <Dy/Meta/Type/EDyResourceTypes.h>
-#include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
+#include <Dy/Core/Resource/Information/FInformationAttachment.h>
 
 namespace dy
 {

@@ -28,7 +28,7 @@
 #include <Dy/Management/MWorld.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/GEngine.h>
 
 //!
 //! Independent anonymous namespace

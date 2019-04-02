@@ -25,7 +25,7 @@
 #include <Dy/Management/Type/Input/DAnalogInputItem.h>
 #include <Dy/Management/Type/Render/DDyPixelInfo.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/GEngine.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Element/Internal/TIdDistributor.h>
 #include <Dy/Element/FActor.h>
