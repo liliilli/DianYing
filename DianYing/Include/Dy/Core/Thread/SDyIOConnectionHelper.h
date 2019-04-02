@@ -15,7 +15,7 @@
 
 #include <string>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
-#include <Dy/Core/Thread/IO/DDyIOWorkerResult.h>
+#include <Dy/Core/Thread/IO/DRescIOWorkerResult.h>
 
 //!
 //! Forward declaration
@@ -95,7 +95,7 @@ public:
   static void TryStop();
 
   /// @brief Insert result instance from IO Worker.
-  static void InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept;
+  static void InsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept;
 
   /// @brief Insert RI to gcList anyway. Use this carefully.
   static void InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>&& iRefRI);

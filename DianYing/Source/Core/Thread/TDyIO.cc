@@ -61,11 +61,12 @@ EDySuccess TRescIO::Initialize()
     workerWndList.size() == this->mWorkerList.size(), 
     "WndList and I/O Worker list size must be same.");
 
+  // Make worker instance list.
   for (TIndex i = 0, size = this->mWorkerList.size(); i < size; ++i)
   {
     auto& [instance, thread] = this->mWorkerList[i];
-    instance = std::make_unique<TDyIOWorker>(MIOMeta::GetInstance());
-    thread = std::thread(&TDyIOWorker::operator(), std::ref(*instance), DyMakeNotNull(workerWndList[i]));
+    instance = std::make_unique<TRescIOWorker>(MIOMeta::GetInstance());
+    thread = std::thread(&TRescIOWorker::operator(), std::ref(*instance), std::ref(*workerWndList[i]));
   }
 
   return DY_SUCCESS;
@@ -78,81 +79,78 @@ void TRescIO::Release()
 
 void TRescIO::operator()()
 {
-  /// @brief Waiting callback for condition variable for task queueing processing routine.
-  static auto CbTaskQueueWaiting = [this]
-  {
-    return this->mIsThreadStopped == true || this->mIOTaskQueue.empty() == false;
-  };
-
-  /// @brief Assign picked to workers.
-  static auto inAssignTaskToWorkers = [](_MIN_ const DDyIOTask& task, _MIO_ TRescIO::TWorkerList& workerList)
-  {
-    for (auto& [instance, thread] : workerList)
-    {
-      const auto isSuccessful = instance->outTryAssign(task);
-      if (isSuccessful == DY_SUCCESS) { return; }
-    }
-    MDY_UNEXPECTED_BRANCH();
-  };
-
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTION BODY
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   MDY_CALL_ASSERT_SUCCESS(this->Initialize());
   while (true)
   {
-    DDyIOTask task;
-    { // Wait task in the queue, and try pop task when not empty.
-      MDY_SYNC_WAIT_CONDITION(this->mQueueMutex, this->mConditionVariable, CbTaskQueueWaiting);
-      if (this->mIsThreadStopped == true && this->mIOTaskQueue.empty() == true) 
-      { 
+    DRescIOTask task;
+    { 
+      // Wait task in the queue, and try pop task when not empty.
+      // Wait for condition variable for task queueing processing routine.
+      MDY_SYNC_WAIT_CONDITION(
+        this->mMutexTaskQueue, this->mConditionVariable, 
+        [this] { return this->mIsThreadStopped == true || this->mIOTaskQueue.empty() == false; }
+      );
+
+      // If IO thread must be stopped, reset all task queue.
+      if (this->mIsThreadStopped == false)
+      {
+        task = this->mIOTaskQueue.top();
+        this->mIOTaskQueue.pop();
+      }
+      else
+      {
+        while (this->mIOTaskQueue.empty() == false) { this->mIOTaskQueue.pop(); }
+
         for (auto& [workerInstance, workerThread] : this->mWorkerList)
-        { // Wait all worker thread is terminated.
-          workerInstance->outTryStop();
+        { 
+          // Wait all worker thread are terminated.
+          // Wait worker instance to be ended and return `mMutexTask` signal.
+          workerInstance->SyncTryStop();
           workerThread.join();
           workerInstance = nullptr;
         }
         break; 
       }
-      task = this->mIOTaskQueue.top();
-      this->mIOTaskQueue.pop();
     }
 
-    { // Wait any worker is idle, if there is idle worker assign task to worker.
-      this->mWorkerSemaphore.Wait();
-      this->mIdleWorkerCounter.fetch_sub(1);
-      inAssignTaskToWorkers(task, this->mWorkerList);
-      MDY_SLEEP_FOR_ATOMIC_TIME();
+    // Wait any worker is idle, if there is idle worker assign task to worker.  
+    // We used spinlock, for avoiding complexity of control semaphore and counter.
+    while (true)
+    {
+      for (auto& [instance, thread] : this->mWorkerList)
+      {
+        const auto isSucceeded = instance->outTryAssign(task);
+        if (isSucceeded == DY_SUCCESS) 
+        { 
+          // We use goto statement intentionally.
+          goto LABEL_DY_AFTER_INSERT_TASK; 
+        } 
+      }
     }
+LABEL_DY_AFTER_INSERT_TASK:
+    MDY_SLEEP_FOR_ATOMIC_TIME();
   }
 
   this->Release();
 }
 
-void TRescIO::outInsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept
+void TRescIO::outInsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
   this->mWorkerResultList.emplace_back(result);
 }
 
-void TRescIO::outTryNotifyWorkerIsIdle()
-{
-  this->mWorkerSemaphore.Notify();
-  this->mIdleWorkerCounter.fetch_add(1);
-}
-
-void TRescIO::outTryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept
+void TRescIO::outTryForwardToMainTaskList(const DRescIOTask& deferredTask) noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mProcessTaskFromMainMutex);
-  this->mIOProcessMainTaskList.emplace_back(task);
+  this->mIOProcessMainTaskList.emplace_back(deferredTask);
 }
 
 void TRescIO::outTryStop()
 {
   MDY_ASSERT_MSG(this->outIsIOThreadSlept() == true, "To stop io thread, IO Thread must be slept.");
   {
-    MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+    MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
     this->mIsThreadStopped = true;
   }
   this->mConditionVariable.notify_one();
@@ -211,7 +209,7 @@ EDySuccess TRescIO::outTryEnqueueTask(
   );
 
   // Construct IO Tasks.
-  DDyIOTask task;
+  DRescIOTask task;
   {
     task.mSpecifierName       = iSpecifier;
     task.mResourceType        = iResourceType;
@@ -239,7 +237,7 @@ EDySuccess TRescIO::outTryEnqueueTask(
   else
   {   // Just insert task to queue, if anything does not happen.
     { // Critical section.
-      MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+      MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
       if (this->mIsThreadStopped == true) { return DY_FAILURE; }
       this->mIOTaskQueue.emplace(task);
     }
@@ -435,7 +433,7 @@ EDySuccess TRescIO::InstantPopulateMaterialResource(
       EResourceType::Material, EResourceStyle::Resource, iScope));
 
   // Construct IO Tasks.
-  DDyIOTask task;
+  DRescIOTask task;
   {
     task.mSpecifierName       = iDesc.mSpecifierName;
     task.mResourceType        = EResourceType::Material;
@@ -453,7 +451,7 @@ EDySuccess TRescIO::InstantPopulateMaterialResource(
   else
   {   // Just insert task to queue, if anything does not happen.
     { // Critical section.
-      MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+      MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
       if (this->mIsThreadStopped == true) { return DY_FAILURE; }
       this->mIOTaskQueue.emplace(task);
     }
@@ -539,25 +537,25 @@ void TRescIO::outForceProcessIOInsertPhase() noexcept
     MDY_ASSERT_MSG(resultItem.mResourceType != EResourceType::NoneError
             && resultItem.mResourceType != EResourceType::Script
             && resultItem.mResourceType != EResourceType::WidgetMeta, "Unexpected error occurred.");
-    if (resultItem.mSmtPtrResultInstance == nullptr) { continue; }
+    if (resultItem.mRawResultInstance == nullptr) { continue; }
 
     if (resultItem.mResourceStyle == EResourceStyle::Information)
     {
-      this->mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
+      this->mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mRawResultInstance);
       MDY_CALL_ASSERT_SUCCESS(this->mRIInformationMap.TryUpdateValidity(
           resultItem.mResourceType, 
           resultItem.mSpecifierName, 
           true,
-          resultItem.mSmtPtrResultInstance));
+          resultItem.mRawResultInstance));
     }
     else
     {
-      this->mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
+      this->mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mRawResultInstance);
       MDY_CALL_ASSERT_SUCCESS(this->mRIResourceMap.TryUpdateValidity(
           resultItem.mResourceType, 
           resultItem.mSpecifierName, 
           true,
-          resultItem.mSmtPtrResultInstance));
+          resultItem.mRawResultInstance));
     }
 
     // If need to insert resource task of deferred list into queue, do this.
@@ -570,7 +568,7 @@ void TRescIO::outForceProcessIOInsertPhase() noexcept
 void TRescIO::pTryUpdateDeferredTaskList(
   const std::string& iSpecifier, EResourceType iType, EResourceStyle iStyle)
 {
-  std::vector<DDyIOTask> reinsertionTasklist = {};
+  std::vector<DRescIOTask> reinsertionTasklist = {};
 
   { // Critical Section
     MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
@@ -591,7 +589,7 @@ void TRescIO::pTryUpdateDeferredTaskList(
   for (auto& task : reinsertionTasklist) { task.mTaskPriority = 0xFF; }
 
   { // Critical Section
-    MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+    MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
     for (const auto& task : reinsertionTasklist)
     {
       if (this->mIsThreadStopped == true) { return; }
@@ -615,9 +613,9 @@ void TRescIO::outMainForceProcessDeferredMainTaskList()
   this->mIOProcessMainTaskList.clear();
 }
 
-DDyIOWorkerResult TRescIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
+DRescIOWorkerResult TRescIO::outMainProcessTask(_MIN_ const DRescIOTask& task)
 {
-  DDyIOWorkerResult result{};
+  DRescIOWorkerResult result{};
   { // Copy properties to result instance.
     result.mResourceType        = task.mResourceType;
     result.mResourceStyle       = task.mResourcecStyle;
@@ -638,7 +636,7 @@ DDyIOWorkerResult TRescIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     const auto instance = new FDyShaderResource(
       *infoManager.GetPtrInformation<EResourceType::GLShader>(result.mSpecifierName));
 
-    result.mSmtPtrResultInstance = instance;
+    result.mRawResultInstance = instance;
   } break;
   case EResourceType::Mesh:
   { 
@@ -649,7 +647,7 @@ DDyIOWorkerResult TRescIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     const auto instance = new FDyMeshResource(*ptrrawIntermediateInstance);
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
 
-    result.mSmtPtrResultInstance = instance;
+    result.mRawResultInstance = instance;
   } break;
   case EResourceType::GLFrameBuffer:
   { 
@@ -659,12 +657,12 @@ DDyIOWorkerResult TRescIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     if (refInfo.IsPingPong() == true)
     {
       const auto instance = new FDyFrameBufferPingPongResource(refInfo);
-      result.mSmtPtrResultInstance = instance;
+      result.mRawResultInstance = instance;
     }
     else
     {
       const auto instance = new FDyFrameBufferGeneralResource(refInfo);
-      result.mSmtPtrResultInstance = instance;
+      result.mRawResultInstance = instance;
     }
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
@@ -760,12 +758,19 @@ bool TRescIO::outIsIOThreadSlept() noexcept
 {
   bool sleptFlag;
   {
-    MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+    MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
     MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
     MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
 
+    for (const auto& [instance, thread] : this->mWorkerList)
+    {
+      if (instance->SyncIsIdle() == false) 
+      { 
+        sleptFlag = false; break; 
+      };
+    }
+
     sleptFlag = this->mIOTaskQueue.empty()
-        && this->mIdleWorkerCounter.load() == dy::TRescIO::kWorkerThreadCount
         && this->mIODeferredTaskList.empty()
         && this->mWorkerResultList.empty();
   }

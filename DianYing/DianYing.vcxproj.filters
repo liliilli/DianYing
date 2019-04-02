@@ -71,7 +71,6 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoMaterial.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
@@ -367,6 +366,7 @@
     <ClCompile Include="Source\Builtin\Shader\Render\FDyBtShOITPlainColor.cc" />
     <ClCompile Include="Source\Helper\Type\DBounds.cc" />
     <ClCompile Include="Source\Helper\Type\DArea.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\TRescIOWorker.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -480,9 +480,7 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoTexture.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoMaterial.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\TDyIOWorker.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
@@ -494,7 +492,6 @@
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIBasicGaugeBar.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\UI\RenderUIImage.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyShaderInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOWorkerResult.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureInformation.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOWorkerConnHelper.h" />
@@ -896,6 +893,9 @@
     <ClInclude Include="Include\Dy\Helper\Type\EAxis.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DBounds.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DArea.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\TRescIOWorker.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOWorkerResult.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

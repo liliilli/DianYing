@@ -19,23 +19,16 @@
 namespace dy
 {
 
-void SDyIOWorkerConnHelper::InsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept
+void SDyIOWorkerConnHelper::InsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   ioThread.outInsertResult(result);
 }
 
-void SDyIOWorkerConnHelper::TryNotify()
+void SDyIOWorkerConnHelper::TryForwardToMainTaskList(_MIN_ const DRescIOTask& task) noexcept
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
-  ioThread.outTryNotifyWorkerIsIdle();
-}
-
-void SDyIOWorkerConnHelper::TryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept
-{
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   ioThread.outTryForwardToMainTaskList(task);
 }

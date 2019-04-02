@@ -21,17 +21,17 @@ namespace dy
 {
 
 ///
-/// @struct DDyIOWorkerResult
+/// @struct DRescIOWorkerResult
 /// @brief Result type of worker task processing.
 ///
-struct DDyIOWorkerResult final
+struct DRescIOWorkerResult final
 {
   std::string       mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   EResourceStyle  mResourceStyle  = EResourceStyle::NoneError;
   EResourceType   mResourceType   = EResourceType::NoneError;
   bool              mIsHaveDeferredTask = false;
   // @TODO NEED TO CHANGE TYPE TO MORE LIABLE TYPE.
-  void*             mSmtPtrResultInstance;
+  void*             mRawResultInstance;
 };
 
 } /// ::dy namespace

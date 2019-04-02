@@ -358,7 +358,7 @@
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperResc.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\TRescIOWorker.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
     <ClCompile Include="Source\Element\Widget\FWidgetBasicGuageBar.cc" />
     <ClCompile Include="Source\Element\Widget\FWidgetImage.cc" />
@@ -885,12 +885,12 @@
     <ClInclude Include="Include\Dy\Core\Reflection\RBuiltinResources.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOWorkerResult.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOWorkerResult.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\TDyIOWorker.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\TRescIOWorker.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
     <ClInclude Include="Include\Dy\Core\Thread\SDyIOWorkerConnHelper.h" />
     <ClInclude Include="Include\Dy\Core\Thread\TDyIO.h" />

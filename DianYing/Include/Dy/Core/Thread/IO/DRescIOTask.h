@@ -22,26 +22,24 @@
 namespace dy
 {
 
-///
-/// @struct DDyIOTask
+/// @struct DRescIOTask
 /// @brief Task for populating information or resources to TRescIO thread.
-///
-struct DDyIOTask final
+struct DRescIOTask final
 {
 private:
   using TPriority = DClamp<TU8, 0, 255>;
 public:
   /// Must be moved except for Requiring.
-  std::string       mSpecifierName  = {};
-  EResourceStyle  mResourcecStyle = EResourceStyle::NoneError;
-  EResourceType   mResourceType   = EResourceType::NoneError;
-  EResourceScope          mScope          = EResourceScope::Global;
-  EDyObject         mBoundObjectStyle    = EDyObject::NoneError;
-  TPriority         mTaskPriority   = 0;
-  bool              mIsResourceDeferred = false;
+  std::string    mSpecifierName  = {};
+  EResourceStyle mResourcecStyle = EResourceStyle::NoneError;
+  EResourceType  mResourceType   = EResourceType::NoneError;
+  EResourceScope mScope          = EResourceScope::Global;
+  EDyObject      mBoundObjectStyle = EDyObject::NoneError;
+  TPriority      mTaskPriority   = 0;
+  bool           mIsResourceDeferred = false;
 
-  void*             mPtrBoundObject = nullptr;
-  std::any          mRawInstanceForUsingLater;
+  void*          mPtrBoundObject = nullptr;
+  std::any       mRawInstanceForUsingLater;
 };
 
 } /// ::dy namespace
