@@ -25,7 +25,7 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Core/Resource/Internal/XShaderTypes.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
-#include <Dy/Helper/Type/DArea2D.h>
+#include <Dy/Helper/Type/DArea.h>
 
 #define MDY_GL_NONE 0
 #define MDY_GL_NONE_VAO 0

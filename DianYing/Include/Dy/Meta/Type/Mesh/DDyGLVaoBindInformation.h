@@ -26,10 +26,9 @@ enum class EDyGLPixelFormatType : char
   NoneError,
 };
 
-///
 /// @brief Get internal GLenum value from `EDyGLPixelFormatType`.
-///
-inline static MDY_NODISCARD GLenum DyGetGLTypeFrom(_MIN_ EDyGLPixelFormatType type) noexcept
+MDY_NODISCARD inline static GLenum 
+DyGetGLTypeFrom(EDyGLPixelFormatType type) 
 {
   switch(type)
   {
@@ -41,26 +40,32 @@ inline static MDY_NODISCARD GLenum DyGetGLTypeFrom(_MIN_ EDyGLPixelFormatType ty
 
 struct PDyVaoAttributeFormat final
 {
-  EDyGLPixelFormatType mType     = EDyGLPixelFormatType::NoneError;
+  EDyGLPixelFormatType mType = EDyGLPixelFormatType::NoneError;
   bool  mIsMustNormalized = false;
   TU32  mElementCount     = MDY_INITIALIZE_DEFUINT;
   TU32  mOffsetByteSize   = MDY_INITIALIZE_DEFUINT;
 
-  PDyVaoAttributeFormat(_MIN_ EDyGLPixelFormatType type, _MIN_ bool isMustNormalized, _MIN_ TU32 elementCount, _MIN_ TU32 offsetByteSize) :
-      mType{ type }, 
+  PDyVaoAttributeFormat(
+    EDyGLPixelFormatType type, 
+    bool isMustNormalized, 
+    TU32 elementCount, 
+    TU32 offsetByteSize) 
+    : mType{ type }, 
       mIsMustNormalized{ isMustNormalized }, 
       mElementCount{ elementCount }, 
       mOffsetByteSize{ offsetByteSize }
   {
-    MDY_ASSERT_MSG(mType != EDyGLPixelFormatType::NoneError, "Attribute format type must not be ::NullError.");
-    MDY_ASSERT_MSG(mElementCount != 0, "Attribute element count must be positive.");
+    MDY_ASSERT_MSG(
+      this->mType != EDyGLPixelFormatType::NoneError, 
+      "Attribute format type must not be ::NullError.");
+    MDY_ASSERT_MSG(
+      this->mElementCount != 0, 
+      "Attribute element count must be positive.");
   }
 };
 
-///
 /// @struct DDyGLVaoBindInformation
 /// @brief use this.
-///
 struct DDyGLVaoBindInformation final
 {
   TU32 mOffsetByteSize  = MDY_INITIALIZE_DEFUINT;

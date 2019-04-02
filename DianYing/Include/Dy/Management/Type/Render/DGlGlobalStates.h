@@ -14,7 +14,7 @@
 ///
 
 #include <optional>
-#include <Dy/Helper/Type/DArea2D.h>
+#include <Dy/Helper/Type/DArea.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
 
 namespace dy

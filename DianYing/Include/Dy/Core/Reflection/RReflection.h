@@ -117,7 +117,7 @@ public:
     }
 
     MDY_UNEXPECTED_BRANCH();
-    throw 0;
+    throw 0; // This is intentional.
   }
 
   static bool IsSubNameExist(const std::string& iSubName)

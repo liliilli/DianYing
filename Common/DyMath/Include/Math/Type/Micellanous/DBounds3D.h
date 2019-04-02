@@ -40,6 +40,7 @@ struct MATH_NODISCARD DBounds3D<TType, std::enable_if_t<kIsIntegerType<TType>>> 
 {
 public:
   using TValueType  = TType;
+  using TItem = DVector3<TValueType>;
 
   DBounds3D() = default;
   DBounds3D(const DVector3<TValueType>& point);
@@ -68,6 +69,7 @@ struct MATH_NODISCARD DBounds3D<TType, std::enable_if_t<kIsRealType<TType>>> fin
 {
 public:
   using TValueType  = TType;
+  using TItem = DVector3<TValueType>;
 
   DBounds3D() = default;
   DBounds3D(const DVector3<TValueType>& point);

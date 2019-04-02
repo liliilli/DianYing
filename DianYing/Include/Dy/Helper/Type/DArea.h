@@ -1,5 +1,5 @@
-#ifndef GAURD_DY_HELPER_TYPE_Area3D_H
-#define GAURD_DY_HELPER_TYPE_Area3D_H
+#ifndef GUARD_DY_HELPER_TYPE_AREA_H
+#define GUARD_DY_HELPER_TYPE_AREA_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,47 +13,27 @@
 /// SOFTWARE.
 ///
 
-#include <foundation/PxBounds3.h>
+#include <Math/Type/Micellanous/DArea2D.h>
 #include <Math/Type/Micellanous/DArea3D.h>
 #include <nlohmann/json_fwd.hpp>
 
 namespace dy
 {
 
+using DArea2D = math::DArea2D<TReal>;
 using DArea3D = math::DArea3D<TReal>;
-
-#ifdef false
-/// @struct DArea3D
-/// @brief  Area 3D (x, y, z) (LEFT_DOWN) to (x`, y`, z`) (RIGHT_UP) type.
-struct DArea3D final
-{
-  DVec3 mMin = {};
-  DVec3 mMax = {};
-
-  DArea3D() = default;
-  DArea3D& operator=(const DArea3D&) = default;
-
-  DArea3D(_MIN_ const physx::PxBounds3& iBound) 
-    : mMin{FVec3::ToVec3(iBound.minimum)}, 
-      mMax{FVec3::ToVec3(iBound.maximum)} {};
-  DArea3D& operator=(_MIN_ const physx::PxBounds3& iBound)
-  {
-    this->mMin = FVec3::ToVec3(iBound.minimum);
-    this->mMax = FVec3::ToVec3(iBound.maximum);
-    return *this;
-  }
-};
-
-#endif
 
 } /// ::dy namespace
 
 namespace dy::math
 {
 
+void to_json(nlohmann::json& oJson, const DArea2D<TReal>& iArea);
+void from_json(const nlohmann::json& iJson, DArea2D<TReal>& oArea);
+
 void to_json(nlohmann::json& oJson, const DArea3D<TReal>& iArea);
 void from_json(const nlohmann::json& iJson, DArea3D<TReal>& oArea);
 
 } /// ::dy::math namespace
 
-#endif /// GAURD_DY_HELPER_TYPE_Area3D_H
+#endif /// GUARD_DY_HELPER_TYPE_AREA_H
