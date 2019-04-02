@@ -23,7 +23,7 @@
 
 namespace dy
 {
-struct DDyIOReferenceInstance;
+struct DIOReferenceInstance;
 struct  PDyMaterialInstanceMetaInfo;
 enum class EResourceScope;
 template <EResourceType TType> class TResourceBinder;
@@ -82,31 +82,29 @@ public:
 
   /// @brief Check Reference Instance (RI) which has a given type, style and specifier name is exist.
   static bool IsReferenceInstanceExist(
-      _MIN_ const std::string& iSpecifier,
-      _MIN_ EResourceType iType,
-      _MIN_ EResourceStyle iStyle);
+    const std::string& iSpecifier,
+    EResourceType iType,
+    EResourceStyle iStyle);
 
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
   /// is only Valid resource but count is 0. \n
   /// This function may causes time consuming, call this carefully.
-  static void TryGC(_MIN_ EResourceScope iScope, _MIN_ EResourceStyle iStyle);
+  static void TryGC(EResourceScope iScope, EResourceStyle iStyle);
 
   /// @brief Try stop IO thread manually. this function is thread-safe to I/O Thread.
   static void TryStop();
 
   /// @brief Insert result instance from IO Worker.
-  static void InsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept;
+  static void InsertWorkerResult(const DRescIOWorkerResult& result) noexcept;
 
   /// @brief Insert RI to gcList anyway. Use this carefully.
-  static void InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>&& iRefRI);
-
-  // @TODO MUST BE PRIVATE
+  static void InsertGcCandidate(std::unique_ptr<DIOReferenceInstance>&& iRefRI);
 
   /// @brief Check IO Result in condition.
-  MDY_NODISCARD static bool CheckIOResultInCondition() noexcept;
+  MDY_NODISCARD static bool IsWorkerResultExist() noexcept;
 
   /// @brief Check Main deferred task list is empty. \n
-  MDY_NODISCARD static bool IsMainTaskListIsEmpty() noexcept;
+  MDY_NODISCARD static bool IsMainTaskListEmpty() noexcept;
 
   /// @brief Force Try process deferred task list which must be processed in main thread, \n
   /// so Insert created resource instance into result instance list for IO GC/IN Phase.

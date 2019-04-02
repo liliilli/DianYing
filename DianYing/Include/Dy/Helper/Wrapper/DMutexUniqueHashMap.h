@@ -25,6 +25,9 @@
 namespace dy
 {
 
+/// @class DMutexUniqueHashMap
+/// @brief HashMap that wraps std::unordered_map 
+/// and check atomic operation using shared RW lock.
 template <typename TKeyType, typename TValueType>
 class DMutexUniqueHashMap final
 {
@@ -32,49 +35,44 @@ class DMutexUniqueHashMap final
 
 public:
   /// @brief Move unique_ptr instance and insert container atomically.
-  void MoveInsert(_MIN_ const TKeyType& key, _MINOUT_ std::unique_ptr<TValueType>&& value) noexcept
+  void MoveInsert(const TKeyType& iKey, std::unique_ptr<TValueType>&& ioValue) noexcept
   {
-    this->pMoveInsert(key, std::move(value));
+    this->pMoveInsert(iKey, std::move(ioValue));
   }
 
   /// @brief Overload version of plain `MoveInsert`.
-  template <typename TDerivedType, typename = std::enable_if_t<std::is_same_v<TDerivedType, TValueType> == false>>
-  void MoveInsert(_MIN_ const TKeyType& key, _MINOUT_ std::unique_ptr<TDerivedType>&& value) noexcept
+  template <
+    typename TDerivedType, 
+    typename = std::enable_if_t<std::is_same_v<TDerivedType, TValueType> == false>
+  >
+  void MoveInsert(const TKeyType& iKey, std::unique_ptr<TDerivedType>&& ioValue) noexcept
   {
-    this->pMoveInsert(key, DyConvertUniquePtrTo<TValueType>(std::move(value)));
+    this->pMoveInsert(iKey, DyConvertUniquePtrTo<TValueType>(std::move(ioValue)));
   }
 
   /// @brief Check given item which has name key is valid and not empty.
-  MDY_NODISCARD bool IsExistAndNotEmpty(_MIN_ const TKeyType& key) const noexcept
+  MDY_NODISCARD bool IsExistAndNotEmpty(const TKeyType& key) const noexcept
   {
     std::shared_lock lock(this->mSharedMutex);
     return Contains(this->mContainer, key);
   }
 
   /// @brief
-  MDY_NODISCARD NotNull<TValueType*> GetInstancePtr(_MIN_ const TKeyType& key) noexcept
+  NotNull<TValueType*> GetInstancePtr(const TKeyType& key) noexcept
   {
     std::shared_lock lock(this->mSharedMutex);
     return this->mContainer.at(key).get();
   }
 
   /// @brief
-  MDY_NODISCARD NotNull<const TValueType*> GetInstancePtr(_MIN_ const TKeyType& key) const noexcept
+  NotNull<const TValueType*> GetInstancePtr(const TKeyType& key) const noexcept
   {
     std::shared_lock lock(this->mSharedMutex);
     return this->mContainer.at(key).get();
   }
 
   /// @brief
-  MDY_NODISCARD TValueType* TryGetInstancePtr(_MIN_ const TKeyType& key) noexcept
-  {
-    std::shared_lock lock(this->mSharedMutex);
-    if (this->IsExistAndNotEmpty(key) == false) { return nullptr; }
-
-    return this->mContainer.at(key).get();
-  }
-
-  MDY_NODISCARD const TValueType* TryGetInstancePtr(_MIN_ const TKeyType& key) const noexcept
+  TValueType* TryGetInstancePtr(const TKeyType& key) noexcept
   {
     std::shared_lock lock(this->mSharedMutex);
     if (this->IsExistAndNotEmpty(key) == false) { return nullptr; }
@@ -83,7 +81,16 @@ public:
   }
 
   /// @brief
-  MDY_NODISCARD TSmtValueType RemoveAndGetInstance(_MIN_ const TKeyType& key) noexcept
+  const TValueType* TryGetInstancePtr(const TKeyType& key) const noexcept
+  {
+    std::shared_lock lock(this->mSharedMutex);
+    if (this->IsExistAndNotEmpty(key) == false) { return nullptr; }
+
+    return this->mContainer.at(key).get();
+  }
+
+  /// @brief
+  MDY_NODISCARD TSmtValueType RemoveAndGetInstance(const TKeyType& key) noexcept
   {
     TSmtValueType smtptrReturnInstance = MDY_INITIALIZE_NULL;
     {
@@ -94,7 +101,8 @@ public:
     return std::move(smtptrReturnInstance);
   }
 
-  MDY_NODISCARD EDySuccess Remove(_MIN_ const TKeyType& key) noexcept
+  /// @brief
+  EDySuccess Remove(const TKeyType& key) noexcept
   {
     std::unique_lock lock{this->mSharedMutex};
     this->mContainer.erase(key);
@@ -102,13 +110,13 @@ public:
   }
 
 private:
-  FORCEINLINE void pMoveInsert(_MIN_ const TKeyType& key, _MINOUT_ std::unique_ptr<TValueType>&& value) noexcept
+  void pMoveInsert(const TKeyType& iKey, std::unique_ptr<TValueType>&& ioValue) noexcept
   {
     std::unique_lock lock{this->mSharedMutex};
-    mContainer.insert_or_assign(key, std::move(value));
+    mContainer.insert_or_assign(iKey, std::move(ioValue));
   }
 
-  MDY_TRANSIENT std::shared_mutex mSharedMutex;
+  mutable std::shared_mutex mSharedMutex;
   std::unordered_map<TKeyType, TSmtValueType> mContainer;
 };
 

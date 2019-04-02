@@ -352,7 +352,7 @@
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DSkeletonBone.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Shader\AUniformValueContainer.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DIOReferenceInstance.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DRescIODeferredTask.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FRescIOGC.cc" />
     <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
@@ -884,7 +884,7 @@
     <ClInclude Include="Include\Dy\Core\GDyEngine.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RBuiltinResources.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DIOReferenceInstance.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOWorkerResult.h" />

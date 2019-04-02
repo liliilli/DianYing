@@ -632,7 +632,7 @@ void TRescIO::outMainForceProcessDeferredMainTaskList()
   MDY_SYNC_LOCK_GUARD(this->mMutexMainProcessTask);
   for (const auto& task : this->mIOProcessMainTaskList)
   {
-    SDyIOConnectionHelper::InsertResult(outMainProcessTask(task));
+    SDyIOConnectionHelper::InsertWorkerResult(outMainProcessTask(task));
   }
   this->mIOProcessMainTaskList.clear();
 }
@@ -820,12 +820,12 @@ EDySuccess TRescIO::outTryCallSleptCallbackFunction()
   return DY_SUCCESS;
 }
 
-void TRescIO::outInsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& iRefRI)
+void TRescIO::outInsertGcCandidate(std::unique_ptr<DIOReferenceInstance>& iRefRI)
 {
   this->mGarbageCollector.InsertGcCandidate(iRefRI);
 }
 
-void TRescIO::outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ EResourceStyle iStyle)
+void TRescIO::outTryForwardCandidateRIToGCList(EResourceScope iScope, EResourceStyle iStyle)
 {
   switch (iStyle)
   {
@@ -834,17 +834,17 @@ void TRescIO::outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN
     // and reinsert it to gc list.
     auto gcCandidateList = this->mRIInformationMap.GetForwardCandidateRIAsList(iScope);
     this->mGarbageCollector.InsertGcCandidateList(std::move(gcCandidateList));
-    this->mGarbageCollector.TryGarbageCollectCandidateList();
   } break;
   case EResourceStyle::Resource:    
   { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
     // and reinsert it to gc list.
     auto gcCandidateList = this->mRIResourceMap.GetForwardCandidateRIAsList(iScope);
     this->mGarbageCollector.InsertGcCandidateList(std::move(gcCandidateList));
-    this->mGarbageCollector.TryGarbageCollectCandidateList();
   } break;
   default: MDY_UNEXPECTED_BRANCH();
   }
+
+  this->mGarbageCollector.TryGarbageCollectCandidateList();
 }
 
 bool TRescIO::isoutIsMainTaskListIsEmpty() const noexcept
@@ -852,7 +852,7 @@ bool TRescIO::isoutIsMainTaskListIsEmpty() const noexcept
   return this->mIOProcessMainTaskList.empty();
 }
 
-bool TRescIO::outCheckIOResultInCondition() noexcept
+bool TRescIO::SyncIsWorkerResultExist() noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
   return this->mWorkerResultList.empty() == false;

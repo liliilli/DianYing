@@ -169,13 +169,13 @@ public:
   MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
 
   /// @brief
-  MDY_NODISCARD bool CheckCreationActorExist() const noexcept;
+  MDY_NODISCARD bool IsActorCreationExist() const noexcept;
   /// @brief
-  void TryCreateActorsOfCreationActorList() noexcept;
+  void TryCreateActorsFromCreationList() noexcept;
   /// @brief
-  void CleanCreationActorList() noexcept;
+  void CleanActorCreationList() noexcept;
   /// @brief Check Gc-candidate actor list is not empty and exist something.
-  MDY_NODISCARD bool CheckIsGcActorExist() const noexcept;
+  MDY_NODISCARD bool IsActorGCCandidateExist() const noexcept;
   /// @brief Try remove actor gc list anyway. \n
   /// If there is something to do actors in GC list, call something to do prior to this.
   void MDY_PRIVATE(TryRemoveActorGCList)() noexcept;

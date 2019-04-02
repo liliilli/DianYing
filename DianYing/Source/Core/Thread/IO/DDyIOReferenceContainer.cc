@@ -64,7 +64,7 @@ bool DDyIOReferenceContainer::TryEnlargeResourceScope(
   EResourceScope scope, const std::string& specifier, EResourceType type)
 {
   // Find given resource type instance. Given specifier and type must be valid on list.
-  std::unique_ptr<DDyIOReferenceInstance>* ptrInstance = nullptr;
+  std::unique_ptr<DIOReferenceInstance>* ptrInstance = nullptr;
   switch (type)
   {
   case EResourceType::GLShader: { ptrInstance = &this->mMapGLShaderReference[specifier]; } break;
@@ -156,10 +156,10 @@ EDySuccess DDyIOReferenceContainer::TryDetachBinderFromResourceRI(
   return DY_SUCCESS;
 }
 
-std::vector<std::unique_ptr<DDyIOReferenceInstance>>
+std::vector<std::unique_ptr<DIOReferenceInstance>>
 DDyIOReferenceContainer::GetForwardCandidateRIAsList(EResourceScope iScope)
 {
-  std::vector<std::unique_ptr<DDyIOReferenceInstance>> result;
+  std::vector<std::unique_ptr<DIOReferenceInstance>> result;
   this->ForwardCandidateRIFromList(iScope, this->mMapTextureReference, result);
   this->ForwardCandidateRIFromList(iScope, this->mMapGLShaderReference, result);
   this->ForwardCandidateRIFromList(iScope, this->mMapMeshReference, result);
@@ -174,9 +174,9 @@ DDyIOReferenceContainer::GetForwardCandidateRIAsList(EResourceScope iScope)
 }
 
 void DDyIOReferenceContainer::ForwardCandidateRIFromList(
-    EResourceScope iScope,
-    TStringHashMap<std::unique_ptr<DDyIOReferenceInstance>>& ioContainer, 
-    std::vector<std::unique_ptr<DDyIOReferenceInstance>>& oResult)
+  EResourceScope iScope,
+  TStringHashMap<std::unique_ptr<DIOReferenceInstance>>& ioContainer, 
+  std::vector<std::unique_ptr<DIOReferenceInstance>>& oResult)
 {
   for (auto it = ioContainer.begin(); it != ioContainer.end();)
   {
@@ -186,8 +186,7 @@ void DDyIOReferenceContainer::ForwardCandidateRIFromList(
       ++it; continue; 
     }
 
-    if (instance->mIsResourceValid == true 
-    &&  instance->IsBeingBound() == false)
+    if (instance->mIsResourceValid == true && instance->IsBeingBound() == false)
     {
       oResult.emplace_back(std::move(instance));
       it = ioContainer.erase(it);
@@ -217,14 +216,14 @@ EDySuccess DDyIOReferenceContainer::CreateReferenceInstance(
   default: MDY_UNEXPECTED_BRANCH(); throw;
   }
 
-  auto instanceRI = std::make_unique<DDyIOReferenceInstance>(specifier, style, type, scope);
+  auto instanceRI = std::make_unique<DIOReferenceInstance>(specifier, style, type, scope);
   auto [it, isSuccessful] = ptrRIHashMap->try_emplace(specifier, std::move(instanceRI));
   MDY_ASSERT_MSG(isSuccessful == true, "RI Container creation must be successful.");
 
   return DY_SUCCESS;
 }
 
-EDySuccess DDyIOReferenceContainer::MoveReferenceInstance(std::unique_ptr<DDyIOReferenceInstance>&& ioRi)
+EDySuccess DDyIOReferenceContainer::MoveReferenceInstance(std::unique_ptr<DIOReferenceInstance>&& ioRi)
 {
   TRefInstanceMap* ptrRIHashMap;
   switch (ioRi->mResourceType)
@@ -272,21 +271,17 @@ EDySuccess DDyIOReferenceContainer::TryUpdateValidity(
   if (isValid != instance->mIsResourceValid) 
   { 
     if (isValid == true) 
-    { 
-      // If resource is valid so must forward instance pointer to binder...
+    { // If resource is valid so must forward instance pointer to binder...
       instance->SetValid(iPtrInstance); 
     }
     else
-    {
-      // If resource is not valid, so must detach instance pointer from binders...
+    { // If resource is not valid, so must detach instance pointer from binders...
       instance->SetNotValid();
     }
     return DY_SUCCESS; 
   }
-  else 
-  { 
-    return DY_FAILURE; 
-  }
+
+  return DY_FAILURE; 
 }
 
 } /// ::dy namespace

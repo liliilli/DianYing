@@ -35,7 +35,7 @@ bool FRescIOGC::IsReferenceInstanceExist(const std::string& specifier, EResource
   );
 }
 
-std::unique_ptr<DDyIOReferenceInstance> 
+std::unique_ptr<DIOReferenceInstance> 
 FRescIOGC::MoveInstanceFromGC(const std::string& specifier, EResourceType type, EResourceStyle style)
 {
   // Check nullility.
@@ -57,12 +57,12 @@ FRescIOGC::MoveInstanceFromGC(const std::string& specifier, EResourceType type, 
   return result;
 }
 
-void FRescIOGC::InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& ioRICandidateList) noexcept
+void FRescIOGC::InsertGcCandidate(std::unique_ptr<DIOReferenceInstance>& ioRICandidateList) noexcept
 {
   this->mRIGarbageCandidateList.emplace_back(std::move(ioRICandidateList));
 }
 
-void FRescIOGC::InsertGcCandidateList(std::vector<std::unique_ptr<DDyIOReferenceInstance>> iRICandidateList) noexcept
+void FRescIOGC::InsertGcCandidateList(std::vector<std::unique_ptr<DIOReferenceInstance>> iRICandidateList) noexcept
 {
   for (auto& smtptrGcedRiItem : iRICandidateList)
   {
@@ -71,20 +71,23 @@ void FRescIOGC::InsertGcCandidateList(std::vector<std::unique_ptr<DDyIOReference
   //this->mRIGarbageCandidateList.insert(this->mRIGarbageCandidateList.end(), MDY_BIND_BEGIN_END(iRICandidateList));
 }
 
-EDySuccess FRescIOGC::TryGarbageCollectCandidateList() noexcept
+EDySuccess FRescIOGC::TryGarbageCollectCandidateList() 
 {
   if (this->mRIGarbageCandidateList.empty() == true) { return DY_FAILURE; }
 
+  // We use while statement intentionally because resource deletion of GC candidate
+  // cause the insertion of dependent resource GC candidate into list.
   while (this->mRIGarbageCandidateList.empty() == false)
   {
     decltype(mRIGarbageCandidateList) mGClist = std::move(this->mRIGarbageCandidateList);
     this->mRIGarbageCandidateList.clear();
 
     for (const auto& ri : mGClist)
-    { // If garbase exist, detach from MIORescInfo & MIOResource.
-      const auto& name  = ri->mSpecifierName;
-      const auto type   = ri->mResourceType;
-      const auto style  = ri->mResourcecStyle;
+    { 
+      // If garbage is exist, detach from MIORescInfo & MIOResource.
+      const auto& name = ri->mSpecifierName;
+      const auto type  = ri->mResourceType;
+      const auto style = ri->mResourcecStyle;
 
       switch (style)
       {
@@ -96,7 +99,7 @@ EDySuccess FRescIOGC::TryGarbageCollectCandidateList() noexcept
       { // Try remove resource instance. This funtion call must be succeeded.
         MDY_CALL_ASSERT_SUCCESS(MIOResource::GetInstance().MDY_PRIVATE(TryRemove)(name, type));
       } break;
-      default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+      default: MDY_UNEXPECTED_BRANCH(); throw;
       }
     }
   }

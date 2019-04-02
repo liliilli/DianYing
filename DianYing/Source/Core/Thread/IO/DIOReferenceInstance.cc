@@ -13,25 +13,25 @@
 ///
 
 /// Header file
-#include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
+#include <Dy/Core/Thread/IO/DIOReferenceInstance.h>
 #include <Dy/Core/Resource/Type/IBinderBase.h>
 
 namespace dy
 {
 
-void DDyIOReferenceInstance::AttachBinder(IBinderBase& iRefBase) noexcept
+void DIOReferenceInstance::AttachBinder(IBinderBase& iRefBase) noexcept
 {
   MDY_SYNC_LOCK_GUARD(mContainerMutex);
   this->mInternalHandler.AttachHandle(iRefBase.mHandle);
 }
 
-void DDyIOReferenceInstance::DetachBinder(IBinderBase& iRefBase) noexcept
+void DIOReferenceInstance::DetachBinder(IBinderBase& iRefBase) noexcept
 {
   MDY_SYNC_LOCK_GUARD(mContainerMutex);
   this->mInternalHandler.DetachHandle(iRefBase.mHandle);
 }
 
-void DDyIOReferenceInstance::SetValid(void*& iPtrInstance) noexcept
+void DIOReferenceInstance::SetValid(void*& iPtrInstance) noexcept
 {
   if (this->mIsResourceValid == true) { return; }
 
@@ -50,7 +50,7 @@ void DDyIOReferenceInstance::SetValid(void*& iPtrInstance) noexcept
   }
 }
 
-void DDyIOReferenceInstance::SetNotValid() noexcept
+void DIOReferenceInstance::SetNotValid() noexcept
 {
   if (this->mIsResourceValid == false) { return; }
 
@@ -69,7 +69,7 @@ void DDyIOReferenceInstance::SetNotValid() noexcept
   }
 }
 
-bool DDyIOReferenceInstance::HaveToBeGCed() const noexcept
+bool DIOReferenceInstance::HaveToBeGCed() const noexcept
 {
   if (this->mIsResourceValid == true
   &&  this->mScope == EResourceScope::Temporal 
@@ -81,7 +81,7 @@ bool DDyIOReferenceInstance::HaveToBeGCed() const noexcept
   return false;
 }
 
-bool DDyIOReferenceInstance::IsBeingBound() const noexcept
+bool DIOReferenceInstance::IsBeingBound() const noexcept
 {
   return this->mInternalHandler.IsBeingBinded();
 }

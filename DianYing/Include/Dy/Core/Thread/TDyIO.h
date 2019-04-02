@@ -98,7 +98,7 @@ public:
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
   /// is only Valid resource but count is 0. \n
   /// This function may causes time consuming, call this carefully.
-  void outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ EResourceStyle iStyle);
+  void outTryForwardCandidateRIToGCList(EResourceScope iScope, EResourceStyle iStyle);
 
 private:
   /// @struct FTaskQueueOrderCmpFunctor
@@ -233,7 +233,7 @@ private:
 
   /// @brief Insert valid const reference of RI into gc list as copied instance of original instance.
   /// Use this funciton carefully.
-  void outInsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& iRefRI);
+  void outInsertGcCandidate(std::unique_ptr<DIOReferenceInstance>& iRefRI);
 
   //!
   //! Common methods (always must use mutex)
@@ -252,7 +252,7 @@ private:
 
   /// @brief Check IO Result list need to be inserted to each container.
   /// and so, need to be reinsert deferred queue list.
-  MDY_NODISCARD bool outCheckIOResultInCondition() noexcept;
+  MDY_NODISCARD bool SyncIsWorkerResultExist() noexcept;
 
   /// @brief Check IO Thread is slept. \n
   /// To be satisfied condition, \n
@@ -299,8 +299,8 @@ private:
   TMainTaskList             mIOProcessMainTaskList = {};
 
   bool                      mIsThreadStopped    = false;
-  std::function<void(void)> mCbSleepFunction    = nullptr;
-  std::function<void(void)> mCbNextSleepFunction= nullptr;
+  std::function<void()>     mCbSleepFunction    = nullptr;
+  std::function<void()>     mCbNextSleepFunction= nullptr;
 
   MIOMeta*              MIOMetaManager    = nullptr;
   MIORescInfo*                mIODataManager      = nullptr;

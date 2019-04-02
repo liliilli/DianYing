@@ -168,10 +168,6 @@ struct MScript::Impl final
   void UpdateWidgetScript(TF32 dt);
   /// @brief Update widget script if only script present type is type.
   void UpdateWidgetScript(TF32 dt, EScriptState type);
-  /// @brief Check widget script that must be gced is exist on list.
-  bool IsGcedWidgetScriptExist() const noexcept { return this->mGCedWidgetScriptList.empty() == false; }
-  /// @brief Call `destroy` GCed widget script 
-  void CallDestroyFuncWidgetScriptGCList();
   /// @brief Clear widget script gc list `mGCedWidgetScriptList` anyway.
   void ClearWidgetScriptGCList() { this->mGCedWidgetScriptList.clear(); }
   /// @brief remove emptied script list.
@@ -181,12 +177,6 @@ struct MScript::Impl final
   void UpdateActorScript(TF32 iDt);
   /// @brief Update actor script if only script present type is type.
   void UpdateActorScript(TF32 dt, EScriptState type);
-  /// @brief Check there are gced -candidate actor script instances.
-  bool IsGcedActorScriptExist() const noexcept { return this->mGCedActorScriptList.empty() == false; }
-  /// @brief Call `destroy` actor script 
-  void CallDestroyFuncActorScriptGcList();
-  /// @brief Clear actor script gc list `mGCedActorScriptList` anyway.
-  void ClearActorScriptGCList() { this->mGCedActorScriptList.clear(); }
 
   /// @brief Create global script instance list.
   /// This function must be called once per application runtime.
@@ -314,15 +304,58 @@ void MScript::TryMoveInsertActorScriptToMainContainer()
 
 void MScript::UpdateWidgetScript(TF32 dt) { DY_PIMPL->UpdateWidgetScript(dt); }
 void MScript::UpdateWidgetScript(TF32 dt, EScriptState type) { DY_PIMPL->UpdateWidgetScript(dt, type); }
-bool MScript::IsGcedWidgetScriptExist() const noexcept { return DY_PIMPL->IsGcedWidgetScriptExist(); }
-void MScript::CallDestroyFuncWidgetScriptGCList() { DY_PIMPL->CallDestroyFuncWidgetScriptGCList(); }
-void MScript::ClearWidgetScriptGCList() { DY_PIMPL->ClearWidgetScriptGCList(); }
+
+bool MScript::IsGcedWidgetScriptExist() const noexcept 
+{ 
+  return DY_PIMPL->mGCedWidgetScriptList.empty() == false; 
+}
+
+void MScript::CallDestroyFuncWidgetScriptGCList() 
+{ 
+  for (auto& ptrsmtScript : DY_PIMPL->mGCedWidgetScriptList)
+  {
+    if (ptrsmtScript == nullptr) { continue; }
+    ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
+
+    // If engine must be stopped and end application, return instantly.
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+  }
+}
+
+void MScript::ClearWidgetScriptGCList() 
+{ 
+  DY_PIMPL->mGCedWidgetScriptList.clear();
+}
+
 void MScript::RemoveEmptyOnWidgetScriptList() { return DY_PIMPL->RemoveEmptyOnWidgetScriptList(); }
 void MScript::UpdateActorScript(TF32 dt) { DY_PIMPL->UpdateActorScript(dt); }
 void MScript::UpdateActorScript(TF32 dt, EScriptState type) { DY_PIMPL->UpdateActorScript(dt, type); }
-bool MScript::IsGcedActorScriptExist() const noexcept { return DY_PIMPL->IsGcedActorScriptExist(); }
-void MScript::CallDestroyFuncActorScriptGCList() { DY_PIMPL->CallDestroyFuncActorScriptGcList(); }
-void MScript::ClearActorScriptGCList() { DY_PIMPL->ClearActorScriptGCList(); }
+
+bool MScript::IsGcedActorScriptExist() const noexcept 
+{ 
+  return DY_PIMPL->mGCedActorScriptList.empty() == false; 
+}
+
+void MScript::CallDestroyFuncActorScriptGCList() 
+{ 
+  for (auto& ptrsmtScript : DY_PIMPL->mGCedActorScriptList)
+  {
+    // Call `Destory` function of Actor script.
+    if (ptrsmtScript == nullptr) { continue; }
+    ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
+
+    // If engine must be stopped and end application, return instantly.
+    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) 
+    { 
+      return; 
+    }
+  }
+}
+
+void MScript::ClearActorScriptGCList() 
+{ 
+  DY_PIMPL->mGCedActorScriptList.clear(); 
+}
 
 DY_DEFINE_PIMPL(MScript);
 DY_DEFINE_DEFAULT_DESTRUCTOR(MScript);

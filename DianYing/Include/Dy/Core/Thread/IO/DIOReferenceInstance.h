@@ -36,27 +36,27 @@ MDY_INTERFACE IBinderBase;
 namespace dy
 {
 
-/// @struct DDyIOReferenceInstance
+/// @struct DIOReferenceInstance
 /// @brief Internal reference instance for checking GC'ing and verifying resource validation.
-struct DDyIOReferenceInstance final
+struct DIOReferenceInstance final
 {
   using TConditionCallback = bool(*)();
 
-  std::string      mSpecifierName;
-  EResourceStyle mResourcecStyle = EResourceStyle::NoneError;
-  EResourceType    mResourceType   = EResourceType::NoneError;
-  EResourceScope   mScope          = EResourceScope::Global;
+  std::string     mSpecifierName;
+  EResourceStyle  mResourcecStyle = EResourceStyle::NoneError;
+  EResourceType   mResourceType   = EResourceType::NoneError;
+  EResourceScope  mScope          = EResourceScope::Global;
 
   bool               mIsResourceValid   = false;
   TConditionCallback mConditionCallback = nullptr;
   void*              mPtrInstance       = nullptr;               
 
-  std::mutex mContainerMutex;
+  mutable std::mutex mContainerMutex;
 
-  DDyIOReferenceInstance() = default;
+  DIOReferenceInstance() = default;
   /// @brief Constructor without binding object ptr. \n
   /// In this case, Reference count would be 0 and nothing.
-  DDyIOReferenceInstance(
+  DIOReferenceInstance(
     const std::string& specifier, 
     EResourceStyle style, EResourceType type, EResourceScope scope)
     : mSpecifierName(specifier), 
@@ -66,7 +66,6 @@ struct DDyIOReferenceInstance final
   /// @brief Bind binder instance pointer address to this RI.
   /// Be careful of duplicating address pointer.
   void AttachBinder(IBinderBase& iRefBase) noexcept;
-
   /// @brief Unbind binder instance pointer address from this RI.
   /// If RI's scope is temporal and valid, GC candidate flag will be set up.
   void DetachBinder(IBinderBase& iRefBase) noexcept;

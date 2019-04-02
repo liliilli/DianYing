@@ -83,7 +83,6 @@
     <ClCompile Include="Source\Core\Rendering\Wrapper\FDyGLWrapperSub.cc" />
     <ClCompile Include="Source\Core\Resource\Information\FDyMaterialInformation.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FDyMaterialResource.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoAttachment.cc" />
@@ -367,6 +366,7 @@
     <ClCompile Include="Source\Core\Thread\IO\TRescIOWorker.cc" />
     <ClCompile Include="Source\Core\Thread\IO\DRescIODeferredTask.cc" />
     <ClCompile Include="Source\Core\Thread\IO\FRescIOGC.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DIOReferenceInstance.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -480,7 +480,6 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoTexture.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoMaterial.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\PostEffect\RenderDefaultSSAOBlurring.h" />
@@ -896,6 +895,7 @@
     <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOWorkerResult.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIODeferredTask.h" />
     <ClInclude Include="Include\Dy\Core\Thread\IO\FRescIOGC.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DIOReferenceInstance.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

@@ -15,15 +15,13 @@
 
 #include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Thread/IO/EDyIOTask.h>
-#include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
+#include <Dy/Core/Thread/IO/DIOReferenceInstance.h>
 
 namespace dy
 {
 
-///
 /// @struct FRescIOGC
 /// @brief IO Instance Garbage collection manager
-///
 class FRescIOGC final
 {
 public:
@@ -31,24 +29,25 @@ public:
   /// @param specifier Resource specifier name.
   /// @param type  Resource type.
   /// @param style Resource style mode.
-  MDY_NODISCARD bool IsReferenceInstanceExist(const std::string& specifier, EResourceType type, EResourceStyle style);
+  MDY_NODISCARD bool IsReferenceInstanceExist(
+    const std::string& specifier, EResourceType type, EResourceStyle style);
 
   /// @brief Move instance from gc list as return value.
-  MDY_NODISCARD std::unique_ptr<DDyIOReferenceInstance> 
+  MDY_NODISCARD std::unique_ptr<DIOReferenceInstance> 
     MoveInstanceFromGC(const std::string& speicifer, EResourceType type, EResourceStyle style);
 
   /// @brief Insert RI gc-ed candidate into container.
   /// Inserted argument will be empty.
-  void InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& ioRICandidateList) noexcept;
+  void InsertGcCandidate(std::unique_ptr<DIOReferenceInstance>& ioRICandidateList) noexcept;
   /// @brief Insert RI gc-ed candidate list into container.
-  void InsertGcCandidateList(std::vector<std::unique_ptr<DDyIOReferenceInstance>> iRICandidateList) noexcept;
+  void InsertGcCandidateList(std::vector<std::unique_ptr<DIOReferenceInstance>> iRICandidateList) noexcept;
 
   /// @brief 
-  EDySuccess TryGarbageCollectCandidateList() noexcept;
+  EDySuccess TryGarbageCollectCandidateList();
 
 private:
   /// @brief
-  std::vector<std::unique_ptr<DDyIOReferenceInstance>> mRIGarbageCandidateList = {};
+  std::vector<std::unique_ptr<DIOReferenceInstance>> mRIGarbageCandidateList = {};
 };
 
 } /// ::dy namespace

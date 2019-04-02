@@ -60,12 +60,12 @@ void MSynchronization::TrySynchronization()
 
 void MSynchronization::pRunFrameBooted()
 {
-  if (SDyIOConnectionHelper::IsMainTaskListIsEmpty() == false)
+  if (SDyIOConnectionHelper::IsMainTaskListEmpty() == false)
   {
     SDyIOConnectionHelper::ForceProcessDeferredMainTaskList();
   }
 
-  if (SDyIOConnectionHelper::CheckIOResultInCondition() == true)
+  if (SDyIOConnectionHelper::IsWorkerResultExist() == true)
   {
     SDyIOConnectionHelper::ForceProcessIOInsertPhase();
   }
@@ -76,8 +76,8 @@ void MSynchronization::pRunFrameBooted()
 void MSynchronization::pRunFrameFirstLoading()
 {
   using TSyncHelper = SDyIOConnectionHelper;
-  if (TSyncHelper::IsMainTaskListIsEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
-  if (TSyncHelper::CheckIOResultInCondition() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
+  if (TSyncHelper::IsMainTaskListEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
+  if (TSyncHelper::IsWorkerResultExist() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
 
   // Check whether IO thread working is done, if so change status to `Loading`. 
   SDyIOConnectionHelper::TryCallSleptCallbackFunction();
@@ -86,8 +86,8 @@ void MSynchronization::pRunFrameFirstLoading()
 void MSynchronization::pRunFrameLoading()
 {
   using TSyncHelper = SDyIOConnectionHelper;
-  if (TSyncHelper::IsMainTaskListIsEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
-  if (TSyncHelper::CheckIOResultInCondition() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
+  if (TSyncHelper::IsMainTaskListEmpty() == false)    { TSyncHelper::ForceProcessDeferredMainTaskList(); }
+  if (TSyncHelper::IsWorkerResultExist() == true)  { TSyncHelper::ForceProcessIOInsertPhase(); }
 
   // Check whether IO thread working is done, if so change status to `Loading`. 
   SDyIOConnectionHelper::TryCallSleptCallbackFunction();
@@ -112,26 +112,34 @@ void MSynchronization::pRunFrameGameRuntime()
   }
 
   {
-    // Level Try create actors.
+    // Try create actors in level.
     auto& world = MWorld::GetInstance(); 
-    if (world.CheckCreationActorExist() == true)
+    if (world.IsActorCreationExist() == true)
     {
-      world.TryCreateActorsOfCreationActorList();
-      world.CleanCreationActorList();
+      world.TryCreateActorsFromCreationList();
+      world.CleanActorCreationList();
     }
     
     // Remove GC actor list.
-    if (world.CheckIsGcActorExist() == true)
+    if (world.IsActorGCCandidateExist() == true)
     {
       world.MDY_PRIVATE(TryRemoveActorGCList)();
-      // Check Resource GC to IO Thread,...
     }
   }
 
+  // Check Resource GC to IO Thread,...
+  //SDyIOConnectionHelper::
+
   // Synchronization 
   using TSyncHelper = SDyIOConnectionHelper;
-  if (TSyncHelper::IsMainTaskListIsEmpty() == false)  { TSyncHelper::ForceProcessDeferredMainTaskList(); }
-  if (TSyncHelper::CheckIOResultInCondition() == true){ TSyncHelper::ForceProcessIOInsertPhase(); }
+  if (TSyncHelper::IsMainTaskListEmpty() == false)    
+  { 
+    TSyncHelper::ForceProcessDeferredMainTaskList(); 
+  }
+  if (TSyncHelper::IsWorkerResultExist() == true)
+  { 
+    TSyncHelper::ForceProcessIOInsertPhase(); 
+  }
 }
 
 void MSynchronization::PRunFrameShutdown()

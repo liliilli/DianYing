@@ -52,58 +52,60 @@ class MIORescInfo final : public ISingleton<MIORescInfo>
   MDY_SINGLETON_DERIVED(MIORescInfo);
 public:
   template <EResourceType TType>
-  MDY_NODISCARD typename __TDyRscInfo<TType>::type* GetPtrInformation(const std::string& specifier) noexcept
+  MDY_NODISCARD typename __TDyRscInfo<TType>::type* 
+  GetPtrInformation(const std::string& specifier) noexcept
   {
-    if constexpr (TType == EResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Mesh)    { return this->__mMeshContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Skeleton){ return this->__mModelSkeletonContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Sound){ return this->__mSoundContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::GLFrameBuffer) { return this->__mFrameBufferContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::AnimationScrap){ return this->__mModelAnimScrapContainer.TryGetInstancePtr(specifier); }
+    if constexpr (TType == EResourceType::GLShader)     { return this->mShaderContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Texture) { return this->mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Mesh)    { return this->mMeshContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Model)   { return this->mModelContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Skeleton){ return this->mModelSkeletonContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Material){ return this->mMaterialContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Sound)   { return this->mSoundContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::GLAttachment)  { return this->mAttachmentContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::GLFrameBuffer) { return this->mFrameBufferContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::AnimationScrap){ return this->mModelAnimScrapContainer.TryGetInstancePtr(specifier); }
     else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
   }
 
   template <EResourceType TType>
-  MDY_NODISCARD const typename __TDyRscInfo<TType>::type* GetPtrInformation(const std::string& specifier) const noexcept
+  MDY_NODISCARD const typename __TDyRscInfo<TType>::type* 
+  GetPtrInformation(const std::string& specifier) const noexcept
   {
-    if constexpr (TType == EResourceType::GLShader)     { return this->__mShaderContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Texture) { return this->__mTextureContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Mesh)    { return this->__mMeshContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Model)   { return this->__mModelContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Skeleton){ return this->__mModelSkeletonContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Material){ return this->__mMaterialContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::Sound)   { return this->__mSoundContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::GLAttachment)  { return this->__mAttachmentContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::GLFrameBuffer) { return this->__mFrameBufferContainer.TryGetInstancePtr(specifier); }
-    else if constexpr (TType == EResourceType::AnimationScrap){ return this->__mModelAnimScrapContainer.TryGetInstancePtr(specifier); }
+    if constexpr (TType == EResourceType::GLShader)     { return this->mShaderContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Texture) { return this->mTextureContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Mesh)    { return this->mMeshContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Model)   { return this->mModelContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Skeleton){ return this->mModelSkeletonContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Material){ return this->mMaterialContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::Sound)   { return this->mSoundContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::GLAttachment)  { return this->mAttachmentContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::GLFrameBuffer) { return this->mFrameBufferContainer.TryGetInstancePtr(specifier); }
+    else if constexpr (TType == EResourceType::AnimationScrap){ return this->mModelAnimScrapContainer.TryGetInstancePtr(specifier); }
     else { MDY_UNEXPECTED_BRANCH_BUT_RETURN(nullptr); }
   }
 
 private:
   /// @brief Insert result from TRescIO (I/O GC-IN Phase)
-  void InsertResult(_MIN_ EResourceType type, _MIN_ void* ptrrawInstance);
+  void InsertResult(EResourceType type, void* ptrrawInstance);
 
   /// @brief Try remove information instance with iSpecifier name and iType. \n
   /// If not exist, return DY_FAILURE.
-  MDY_NODISCARD EDySuccess MDY_PRIVATE(TryRemove)(_MIN_ const std::string& iSpcifier, _MIN_ EResourceType iType);
+  MDY_NODISCARD EDySuccess __TryRemove(const std::string& iSpcifier, EResourceType iType);
 
   template <typename TType>
-  using __THashMap = DMutexUniqueHashMap<std::string, TType>;
+  using THashMap = DMutexUniqueHashMap<std::string, TType>;
 
-  __THashMap<FDyShaderInformation>  __mShaderContainer    = {};
-  __THashMap<FDyTextureInformation> __mTextureContainer   = {};
-  __THashMap<FDyMeshInformation>    __mMeshContainer      = {};
-  __THashMap<FDyModelInformation>   __mModelContainer     = {};
-  __THashMap<FDyModelSkeletonInformation>   __mModelSkeletonContainer = {};
-  __THashMap<FDyModelAnimScrapInformation>  __mModelAnimScrapContainer = {};
-  __THashMap<FDyMaterialInformation>__mMaterialContainer  = {};
-  __THashMap<FDyAttachmentInformation> __mAttachmentContainer   = {};
-  __THashMap<FDyFrameBufferInformation> __mFrameBufferContainer = {};
-  __THashMap<FDySoundInformation> __mSoundContainer = {};
+  THashMap<FDyShaderInformation>  mShaderContainer    = {};
+  THashMap<FDyTextureInformation> mTextureContainer   = {};
+  THashMap<FDyMeshInformation>    mMeshContainer      = {};
+  THashMap<FDyModelInformation>   mModelContainer     = {};
+  THashMap<FDyModelSkeletonInformation>   mModelSkeletonContainer = {};
+  THashMap<FDyModelAnimScrapInformation>  mModelAnimScrapContainer = {};
+  THashMap<FDyMaterialInformation>mMaterialContainer  = {};
+  THashMap<FDyAttachmentInformation> mAttachmentContainer   = {};
+  THashMap<FDyFrameBufferInformation> mFrameBufferContainer = {};
+  THashMap<FDySoundInformation> mSoundContainer = {};
 
   friend class TRescIO;
   friend class FRescIOGC;

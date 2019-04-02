@@ -42,14 +42,14 @@ void SDyIOConnectionHelper::PopulateResource(
 
 void SDyIOConnectionHelper::TryStop()
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   ioThread.SyncTryStop();
 }
 
-void SDyIOConnectionHelper::TryGC(_MIN_ EResourceScope iScope, _MIN_ EResourceStyle iStyle)
+void SDyIOConnectionHelper::TryGC(EResourceScope iScope, EResourceStyle iStyle)
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   ioThread.outTryForwardCandidateRIToGCList(iScope, iStyle);
 }
@@ -130,39 +130,38 @@ void SDyIOConnectionHelper::PopulateInstantMaterialResource(
 }
 
 bool SDyIOConnectionHelper::IsReferenceInstanceExist(
-    _MIN_ const std::string& iSpecifier, 
-    _MIN_ EResourceType iType, 
-    _MIN_ EResourceStyle iStyle)
+  const std::string& iSpecifier, 
+  EResourceType iType, EResourceStyle iStyle)
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   return ioThread.pIsReferenceInstanceExist(iSpecifier, iType, iStyle);
 }
 
-void SDyIOConnectionHelper::InsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept
+void SDyIOConnectionHelper::InsertWorkerResult(const DRescIOWorkerResult& result) noexcept
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   ioThread.SyncInsertResult(result);
 }
 
-void SDyIOConnectionHelper::InsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>&& iRefRI)
+void SDyIOConnectionHelper::InsertGcCandidate(std::unique_ptr<DIOReferenceInstance>&& iRefRI)
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   ioThread.outInsertGcCandidate(iRefRI);
 }
 
-bool SDyIOConnectionHelper::CheckIOResultInCondition() noexcept
+bool SDyIOConnectionHelper::IsWorkerResultExist() noexcept
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
-  return ioThread.outCheckIOResultInCondition();
+  return ioThread.SyncIsWorkerResultExist();
 }
 
-bool SDyIOConnectionHelper::IsMainTaskListIsEmpty() noexcept
+bool SDyIOConnectionHelper::IsMainTaskListEmpty() noexcept
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
+  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
   auto& ioThread = *gEngine->pfGetIOThread();
   return ioThread.isoutIsMainTaskListIsEmpty();
 }

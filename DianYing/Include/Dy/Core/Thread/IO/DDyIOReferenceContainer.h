@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Thread/IO/DDyIOReferenceInstance.h>
+#include <Dy/Core/Thread/IO/DIOReferenceInstance.h>
 
 //!
 //! Forward declaration
@@ -38,7 +38,7 @@ namespace dy
 class DDyIOReferenceContainer final
 {
 public:
-  using TRefInstanceMap = TStringHashMap<std::unique_ptr<DDyIOReferenceInstance>>;
+  using TRefInstanceMap = TStringHashMap<std::unique_ptr<DIOReferenceInstance>>;
 
   /// @brief Check whether resource's Reference Instance is exist on now as any kind of information.
   /// @param specifier Resource specifier name.
@@ -75,7 +75,7 @@ public:
 
   /// @brief Get GC-Candidate Reference instance list from container. \n
   /// Condition-satisfied RI will be removed from container.
-  std::vector<std::unique_ptr<DDyIOReferenceInstance>>
+  std::vector<std::unique_ptr<DIOReferenceInstance>>
   GetForwardCandidateRIAsList(EResourceScope iScope);
 
   /// @brief Create new reference instance. `specifier` must not be duplicated given type, style container.
@@ -84,7 +84,7 @@ public:
       _MIN_ EResourceType type, _MIN_ EResourceStyle style, _MIN_ EResourceScope scope);
   
   /// @brief Move old Reference Instance.
-  MDY_NODISCARD EDySuccess MoveReferenceInstance(std::unique_ptr<DDyIOReferenceInstance>&& ioRi);
+  MDY_NODISCARD EDySuccess MoveReferenceInstance(std::unique_ptr<DIOReferenceInstance>&& ioRi);
 
   /// @brief Try update validity of this reference instance. \n
   /// If `isValid` is true, `iPtrInstance` must point to something valid, should not be null.
@@ -99,8 +99,8 @@ private:
   /// Gced candidate must have 0 item of __BinderBase.
   void ForwardCandidateRIFromList(
       EResourceScope iScope,
-      TStringHashMap<std::unique_ptr<DDyIOReferenceInstance>>& ioContainer, 
-      std::vector<std::unique_ptr<DDyIOReferenceInstance>>& oResult);
+      TStringHashMap<std::unique_ptr<DIOReferenceInstance>>& ioContainer, 
+      std::vector<std::unique_ptr<DIOReferenceInstance>>& oResult);
 
   TRefInstanceMap mMapTextureReference     = {};
   TRefInstanceMap mMapGLShaderReference    = {};
