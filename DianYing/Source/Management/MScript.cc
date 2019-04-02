@@ -18,7 +18,7 @@
 #define SOL_CHECK_ARGUMENT 1
 #include <sol2/sol.hpp>
 
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/GEngine.h>
 #include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
 #include <Dy/Component/Internal/Script/FWidgetScriptState.h>
 #include <Dy/Component/Internal/Script/FGlobalScriptState.h>

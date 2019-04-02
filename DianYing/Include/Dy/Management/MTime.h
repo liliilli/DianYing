@@ -85,7 +85,7 @@ private:
   MDY_TRANSIENT bool __mIsEnabledVsync          = false;
 
   friend class MSetting;
-  friend class GDyEngine;
+  friend class GEngine;
 };
 
 } /// ::dy namespace

@@ -27,7 +27,7 @@
 
 namespace dy
 {
-class FDyShaderResource;
+class FResourceShader;
 } /// ::dy namespace
 
 //!
@@ -48,7 +48,7 @@ public:
   void __TryClearUniformList();
   /// @brief Try construct default uniform variable list.
   /// If already have value, do nothing.
-  void __TryConstructDefaultUniformList(const FDyShaderResource& iResc);
+  void __TryConstructDefaultUniformList(const FResourceShader& iResc);
 
   /// @brief Try update uniform value.
   /// If uniform value is not exist on binding shader, just insert value with -1 id (garbage value)

@@ -14,16 +14,16 @@
 ///
 
 #include <Dy/Helper/Wrapper/DMutexUniqueHashMap.h>
-#include <Dy/Core/Resource/Information/FDyShaderInformation.h>
-#include <Dy/Core/Resource/Information/FDyTextureInformation.h>
-#include <Dy/Core/Resource/Information/FDyModelInformation.h>
-#include <Dy/Core/Resource/Information/FDyModelSkeletonInformation.h>
-#include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
-#include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
-#include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
-#include <Dy/Core/Resource/Information/FDyMeshInformation.h>
-#include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
-#include <Dy/Core/Resource/Information/FDySoundInformation.h>
+#include <Dy/Core/Resource/Information/FInformationShader.h>
+#include <Dy/Core/Resource/Information/FInformationTexture.h>
+#include <Dy/Core/Resource/Information/FInformationModel.h>
+#include <Dy/Core/Resource/Information/FInformationModelSkeleton.h>
+#include <Dy/Core/Resource/Information/FInformationMaterial.h>
+#include <Dy/Core/Resource/Information/FInformationAttachment.h>
+#include <Dy/Core/Resource/Information/FInformationFrameBuffer.h>
+#include <Dy/Core/Resource/Information/FInformationMesh.h>
+#include <Dy/Core/Resource/Information/FInformationModelAnimScrap.h>
+#include <Dy/Core/Resource/Information/FInformationSound.h>
 #include <Dy/Core/Resource/Type/XTemplateRescInfoType.h>
 #include <Dy/Meta/Type/EResourceType.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
@@ -96,16 +96,16 @@ private:
   template <typename TType>
   using THashMap = DMutexUniqueHashMap<std::string, TType>;
 
-  THashMap<FDyShaderInformation>  mShaderContainer    = {};
-  THashMap<FDyTextureInformation> mTextureContainer   = {};
-  THashMap<FDyMeshInformation>    mMeshContainer      = {};
-  THashMap<FDyModelInformation>   mModelContainer     = {};
-  THashMap<FDyModelSkeletonInformation>   mModelSkeletonContainer = {};
-  THashMap<FDyModelAnimScrapInformation>  mModelAnimScrapContainer = {};
-  THashMap<FDyMaterialInformation>mMaterialContainer  = {};
-  THashMap<FDyAttachmentInformation> mAttachmentContainer   = {};
-  THashMap<FDyFrameBufferInformation> mFrameBufferContainer = {};
-  THashMap<FDySoundInformation> mSoundContainer = {};
+  THashMap<FInformationShader>  mShaderContainer    = {};
+  THashMap<FInformationTexture> mTextureContainer   = {};
+  THashMap<FInformationMesh>    mMeshContainer      = {};
+  THashMap<FInformationModel>   mModelContainer     = {};
+  THashMap<FInformationModelSkeleton>   mModelSkeletonContainer = {};
+  THashMap<FInformationModelAnimScrap>  mModelAnimScrapContainer = {};
+  THashMap<FInformationMaterial>mMaterialContainer  = {};
+  THashMap<FInformationAttachment> mAttachmentContainer   = {};
+  THashMap<FInformationFrameBuffer> mFrameBufferContainer = {};
+  THashMap<FInformationSound> mSoundContainer = {};
 
   friend class TRescIO;
   friend class FRescIOGC;

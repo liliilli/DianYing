@@ -37,11 +37,11 @@ public:
   void OnRender() override final;
   void RenderObject(
     DDyModelHandler::DActorInfo& iRefRenderer,
-    FDyMeshResource& iRefMesh, 
-    FDyMaterialResource& iRefMaterial);
+    FResourceMesh& iRefMesh, 
+    FResourceMaterial& iRefMaterial);
   void RenderStaticInstancingObjects(
-    FDyMeshResource& iRefMesh,
-    FDyMaterialResource& iRefMaterial,
+    FResourceMesh& iRefMesh,
+    FResourceMaterial& iRefMaterial,
     TU32 iCount);
 
   void OnReleaseRenderingSetting() override final;

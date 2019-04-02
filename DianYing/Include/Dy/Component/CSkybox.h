@@ -24,9 +24,9 @@
 
 namespace dy
 {
-class FDyMaterialResource;
+class FResourceMaterial;
 class CModelFilter;
-class FDyMeshResource;
+class FResourceMesh;
 } /// ::dy namespace
 
 //!

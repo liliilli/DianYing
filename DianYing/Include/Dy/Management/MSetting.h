@@ -194,7 +194,7 @@ private:
   /// @brief If true, rendering manager should draw physics collision AABB as fixed color.
   bool mIsRenderPhysicsCollisionAABB = false;
 
-  friend class GDyEngine;
+  friend class GEngine;
 };
 
 } /// ::dy namespace

@@ -18,8 +18,8 @@
 #include <Dy/Element/FActor.h>
 #include <Dy/Component/CModelFilter.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
-#include <Dy/Core/Resource/Information/FDyModelSkeletonInformation.h>
+#include <Dy/Core/Resource/Information/FInformationModelAnimScrap.h>
+#include <Dy/Core/Resource/Information/FInformationModelSkeleton.h>
 
 namespace dy
 {

@@ -223,7 +223,7 @@ private:
   /// @brief Functor for actor picking in normal mode.
   std::function<void(FActor*)>  mActorPickingCallback = nullptr;
 
-  friend class GDyEngine;
+  friend class GEngine;
 };
 
 ///

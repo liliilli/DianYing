@@ -19,9 +19,9 @@
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MScript.h>
 #include <Dy/Management/MPhysics.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
+#include <Dy/Core/Thread/SIOConnectionHelper.h>
 #include <Dy/Core/Resource/Type/EResourceScope.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/GEngine.h>
 #include <Dy/Component/CModelRenderer.h>
 #include <Dy/Component/CCamera.h>
 #include <Dy/Component/CModelAnimator.h>

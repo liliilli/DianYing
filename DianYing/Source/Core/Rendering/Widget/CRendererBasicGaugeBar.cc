@@ -17,10 +17,10 @@
 
 #include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
 #include <Dy/Builtin/Mesh/Widget/FDyBtMsUiBarQuad.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Element/Widget/FWidgetBasicGaugeBar.h>
 #include <Dy/Management/MSetting.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PGLBufferDescriptor.h>
 #include <Dy/Management/Rendering/MRendering.h>

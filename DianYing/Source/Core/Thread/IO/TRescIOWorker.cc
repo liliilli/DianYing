@@ -14,26 +14,26 @@
 
 /// Header file
 #include <Dy/Core/Thread/IO/TRescIOWorker.h>
-#include <Dy/Core/Resource/Information/FDyShaderInformation.h>
-#include <Dy/Core/Resource/Information/FDyTextureInformation.h>
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/Thread/SDyIOWorkerConnHelper.h>
-#include <Dy/Core/Resource/Information/FDyModelInformation.h>
-#include <Dy/Core/Resource/Information/FDyTextureCubemapInformation.h>
-#include <Dy/Core/Resource/Information/FDyMaterialInformation.h>
-#include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
-#include <Dy/Core/Resource/Information/FDyFrameBufferInformation.h>
-#include <Dy/Core/Resource/Resource/FDyTextureGeneralResource.h>
-#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
-#include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
-#include <Dy/Core/Resource/Information/FDyModelSkeletonInformation.h>
-#include <Dy/Core/Resource/Information/FDyModelAnimScrapInformation.h>
-#include <Dy/Core/Resource/Information/FDySoundInformation.h>
-#include <Dy/Core/Resource/Information/FDyTextureGeneralInformation.h>
-#include <Dy/Core/Resource/Resource/FDyTextureCubemapResource.h>
-#include <Dy/Core/Resource/Resource/Attachment/FDyAttachmentGeneralResource.h>
-#include <Dy/Core/Resource/Resource/Attachment/FDyAttachmentPingpongResource.h>
+#include <Dy/Core/Resource/Information/FInformationShader.h>
+#include <Dy/Core/Resource/Information/FInformationTexture.h>
+#include <Dy/Core/Thread/SIOConnectionHelper.h>
+#include <Dy/Core/Thread/SIOWorkerConnHelper.h>
+#include <Dy/Core/Resource/Information/FInformationModel.h>
+#include <Dy/Core/Resource/Information/FInformationTextureCubemap.h>
+#include <Dy/Core/Resource/Information/FInformationMaterial.h>
+#include <Dy/Core/Resource/Information/FInformationAttachment.h>
+#include <Dy/Core/Resource/Information/FInformationFrameBuffer.h>
+#include <Dy/Core/Resource/Resource/Texture/FResourceTextureGeneral.h>
+#include <Dy/Core/Resource/Resource/FResourceMaterial.h>
+#include <Dy/Core/Resource/Resource/FResourceModel.h>
+#include <Dy/Core/Resource/Resource/AResourceAttachmentBase.h>
+#include <Dy/Core/Resource/Information/FInformationModelSkeleton.h>
+#include <Dy/Core/Resource/Information/FInformationModelAnimScrap.h>
+#include <Dy/Core/Resource/Information/FInformationSound.h>
+#include <Dy/Core/Resource/Information/FInformationTextureGeneral.h>
+#include <Dy/Core/Resource/Resource/Texture/FResourceTextureCubemap.h>
+#include <Dy/Core/Resource/Resource/Attachment/FResourceAttachmentGeneral.h>
+#include <Dy/Core/Resource/Resource/Attachment/FResourceAttachmentPingpong.h>
 #include <Dy/Management/IO/MIORescInfo.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
@@ -64,8 +64,8 @@ void TRescIOWorker::inWork()
       // Do process
       // (result have void* (heap object) as created resource instance,
       // need to be moved into resultContainer carefully without data race.
-      SDyIOWorkerConnHelper::InsertResult(this->PopulateIOResource(this->mAssignedTask));
-      // 만약에 `Deferred` 가 Checked 되어있다면, `SDyIOConnectionHelper` 을 사용해서 atomic 하게 specifier 을 리스트에 넣어야 함.
+      SIOWorkerConnHelper::InsertResult(this->PopulateIOResource(this->mAssignedTask));
+      // 만약에 `Deferred` 가 Checked 되어있다면, `SIOConnectionHelper` 을 사용해서 atomic 하게 specifier 을 리스트에 넣어야 함.
       // 그러면 리스트가 not empty 됨으로써 IO Reinsert 조건이 만족 됨. (IO Reinsert 는 IO IN 의 부수 페이즈임)
       // Synchronization 매니저에 의한 Sync 과정에서 리스트의 speicfier 에 대해 `Deferred List` 에서 해당하는 `Resource` 태스크를
       // 꺼내서 상위 우선순위로 Queue 에 넘겨야 함. 이 때 specifier 에 대해 리스트에서 가지고 있지 않은 경우는 없음. 그러면 로직이 X된거임.
@@ -74,7 +74,7 @@ void TRescIOWorker::inWork()
       this->mAssignedTask = {};
     }
 
-    //SDyIOWorkerConnHelper::TryNotify();
+    //SIOWorkerConnHelper::TryNotify();
     this->mTaskCV.notify_one();
     MDY_SLEEP_FOR_ATOMIC_TIME();
   }
@@ -146,7 +146,7 @@ DRescIOWorkerResult TRescIOWorker::pPopulateIOResourceInformation(const DRescIOT
     auto isInstanced  = false;
     if (shaderName != assignedTask.mSpecifierName) { isInstanced = true; }
 
-    result.mRawResultInstance = new FDyShaderInformation
+    result.mRawResultInstance = new FInformationShader
     (this->mMetaManager.GetGLShaderMetaInformation(shaderName), isInstanced);
   } break;
   case EResourceType::Texture:
@@ -155,27 +155,27 @@ DRescIOWorkerResult TRescIOWorker::pPopulateIOResourceInformation(const DRescIOT
     if (metaInfo.mTextureType == ETextureStyleType::D2Cubemap)
     { 
       // When cubemap, we should use separated information type.
-      result.mRawResultInstance = new FDyTextureCubemapInformation(metaInfo);
+      result.mRawResultInstance = new FInformationTextureCubemap(metaInfo);
     }
     else
     {
-      result.mRawResultInstance = new FDyTextureGeneralInformation(metaInfo);
+      result.mRawResultInstance = new FInformationTextureGeneral(metaInfo);
     }
   } break;
   case EResourceType::Mesh:
-    result.mRawResultInstance = new FDyMeshInformation
+    result.mRawResultInstance = new FInformationMesh
     (this->mMetaManager.GetBtMeshMetaInformation(assignedTask.mSpecifierName));
     break;
   case EResourceType::Model:
-    result.mRawResultInstance = new FDyModelInformation
+    result.mRawResultInstance = new FInformationModel
     (this->mMetaManager.GetModelMetaInformation(assignedTask.mSpecifierName));
     break;
   case EResourceType::Skeleton:
-    result.mRawResultInstance = new FDyModelSkeletonInformation
+    result.mRawResultInstance = new FInformationModelSkeleton
     (this->mMetaManager.GetModelSkeletonMetaInformation(assignedTask.mSpecifierName));
     break;
   case EResourceType::AnimationScrap:
-    result.mRawResultInstance = new FDyModelAnimScrapInformation
+    result.mRawResultInstance = new FInformationModelAnimScrap
     (this->mMetaManager.GetModelAnimScrapMetaInformation(assignedTask.mSpecifierName));
     break;
   case EResourceType::Material:
@@ -184,19 +184,19 @@ DRescIOWorkerResult TRescIOWorker::pPopulateIOResourceInformation(const DRescIOT
     // Check this is instancing material
     const auto isInstanced  = materialName != assignedTask.mSpecifierName;
 
-    result.mRawResultInstance = new FDyMaterialInformation
+    result.mRawResultInstance = new FInformationMaterial
     (this->mMetaManager.GetMaterialMetaInformation(materialName), isInstanced);
   } break;
   case EResourceType::GLAttachment:
-    result.mRawResultInstance = new FDyAttachmentInformation
+    result.mRawResultInstance = new FInformationAttachment
     (this->mMetaManager.GetGLAttachmentMetaInformation(assignedTask.mSpecifierName));
     break;
   case EResourceType::GLFrameBuffer:
-    result.mRawResultInstance = new FDyFrameBufferInformation
+    result.mRawResultInstance = new FInformationFrameBuffer
     (this->mMetaManager.GetGlFrameBufferMetaInformation(assignedTask.mSpecifierName));
     break;
   case EResourceType::Sound:
-    result.mRawResultInstance = new FDySoundInformation
+    result.mRawResultInstance = new FInformationSound
     (this->mMetaManager.GetSoundMetaInformation(assignedTask.mSpecifierName));
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;
@@ -220,7 +220,7 @@ DRescIOWorkerResult TRescIOWorker::pPopulateIOResourceResource(const DRescIOTask
   { 
     // https://www.khronos.org/opengl/wiki/OpenGL_Object#Object_Sharing
     // Shader can not create from other thread.
-    SDyIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
+    SIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
   } break;
   case EResourceType::Texture:
   { 
@@ -228,13 +228,13 @@ DRescIOWorkerResult TRescIOWorker::pPopulateIOResourceResource(const DRescIOTask
     const auto* ptr = infoManager.GetPtrInformation<EResourceType::Texture>(result.mSpecifierName);
     if (ptr->GetType() == ETextureStyleType::D2Cubemap)
     {
-      result.mRawResultInstance = new FDyTextureCubemapResource
-        (static_cast<const FDyTextureCubemapInformation&>(*ptr)); 
+      result.mRawResultInstance = new FResourceTextureCubemap
+        (static_cast<const FInformationTextureCubemap&>(*ptr)); 
     }
     else
     {
-      result.mRawResultInstance = new FDyTextureGeneralResource
-        (static_cast<const FDyTextureGeneralInformation&>(*ptr)); 
+      result.mRawResultInstance = new FResourceTextureGeneral
+        (static_cast<const FInformationTextureGeneral&>(*ptr)); 
     }
   } break;
   case EResourceType::__MeshVBO:
@@ -248,12 +248,12 @@ DRescIOWorkerResult TRescIOWorker::pPopulateIOResourceResource(const DRescIOTask
     task.mRawInstanceForUsingLater = new FMeshVBOIntermediate(
       *infoManager.GetPtrInformation<EResourceType::Mesh>(meshName), isInstanced);
 
-    SDyIOWorkerConnHelper::TryForwardToMainTaskList(task);
+    SIOWorkerConnHelper::TryForwardToMainTaskList(task);
   } break;
   case EResourceType::Model:
   { 
     // 
-    result.mRawResultInstance = new FDyModelResource
+    result.mRawResultInstance = new FResourceModel
       (*infoManager.GetPtrInformation<EResourceType::Model>(result.mSpecifierName));
   } break;
   case EResourceType::Material:
@@ -261,12 +261,12 @@ DRescIOWorkerResult TRescIOWorker::pPopulateIOResourceResource(const DRescIOTask
     // Material resource is just for binding allocated textures and shader instance ptr list.
     if (assignedTask.mRawInstanceForUsingLater.has_value() == true)
     {
-      result.mRawResultInstance = new FDyMaterialResource
+      result.mRawResultInstance = new FResourceMaterial
         (std::any_cast<const PDyMaterialInstanceMetaInfo&>(assignedTask.mRawInstanceForUsingLater));
     }
     else
     {
-      result.mRawResultInstance = new FDyMaterialResource
+      result.mRawResultInstance = new FResourceMaterial
         (*infoManager.GetPtrInformation<EResourceType::Material>(result.mSpecifierName));
     }
   } break;
@@ -277,17 +277,17 @@ DRescIOWorkerResult TRescIOWorker::pPopulateIOResourceResource(const DRescIOTask
       *infoManager.GetPtrInformation<EResourceType::GLAttachment>(result.mSpecifierName);
     if (refInfo.IsPingPong() == false)
     { // Create general attachment.
-      result.mRawResultInstance = new FDyAttachmentGeneralResource(refInfo);
+      result.mRawResultInstance = new FResourceAttachmentGeneral(refInfo);
     }
     else
     { // Create ping-pong attachment.
-      result.mRawResultInstance = new FDyAttachmentPingpongResource(refInfo);
+      result.mRawResultInstance = new FResourceAttachmentPingpong(refInfo);
     }
   } break;
   case EResourceType::GLFrameBuffer:
   { 
     // Framebuffer object must be created on main thread. so forward it to main deferred list.
-    SDyIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
+    SIOWorkerConnHelper::TryForwardToMainTaskList(assignedTask);
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

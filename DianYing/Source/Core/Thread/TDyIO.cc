@@ -13,14 +13,14 @@
 ///
 
 /// Header file
-#include <Dy/Core/Thread/TDyIO.h>
+#include <Dy/Core/Thread/TRescIO.h>
 
 #include <assimp/Importer.hpp>
 
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferGeneralResource.h>
-#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferPingPongResource.h>
+#include <Dy/Core/Thread/SIOConnectionHelper.h>
+#include <Dy/Core/Resource/Resource/FResourceModel.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FResourceFrameBufferGeneral.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FResourceFrameBufferPingPong.h>
 #include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
 
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
@@ -632,7 +632,7 @@ void TRescIO::outMainForceProcessDeferredMainTaskList()
   MDY_SYNC_LOCK_GUARD(this->mMutexMainProcessTask);
   for (const auto& task : this->mIOProcessMainTaskList)
   {
-    SDyIOConnectionHelper::InsertWorkerResult(outMainProcessTask(task));
+    SIOConnectionHelper::InsertWorkerResult(outMainProcessTask(task));
   }
   this->mIOProcessMainTaskList.clear();
 }
@@ -657,7 +657,7 @@ DRescIOWorkerResult TRescIO::outMainProcessTask(_MIN_ const DRescIOTask& task)
   case EResourceType::GLShader:
   { 
     // Need to move it as independent function.
-    const auto instance = new FDyShaderResource(
+    const auto instance = new FResourceShader(
       *infoManager.GetPtrInformation<EResourceType::GLShader>(result.mSpecifierName));
 
     result.mRawResultInstance = instance;
@@ -668,7 +668,7 @@ DRescIOWorkerResult TRescIO::outMainProcessTask(_MIN_ const DRescIOTask& task)
     Owner<FMeshVBOIntermediate*> ptrrawIntermediateInstance = 
       std::any_cast<FMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
 
-    const auto instance = new FDyMeshResource(*ptrrawIntermediateInstance);
+    const auto instance = new FResourceMesh(*ptrrawIntermediateInstance);
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
 
     result.mRawResultInstance = instance;
@@ -680,12 +680,12 @@ DRescIOWorkerResult TRescIO::outMainProcessTask(_MIN_ const DRescIOTask& task)
       *infoManager.GetPtrInformation<EResourceType::GLFrameBuffer>(result.mSpecifierName);
     if (refInfo.IsPingPong() == true)
     {
-      const auto instance = new FDyFrameBufferPingPongResource(refInfo);
+      const auto instance = new FResourceFrameBufferPingPong(refInfo);
       result.mRawResultInstance = instance;
     }
     else
     {
-      const auto instance = new FDyFrameBufferGeneralResource(refInfo);
+      const auto instance = new FResourceFrameBufferGeneral(refInfo);
       result.mRawResultInstance = instance;
     }
   } break;
@@ -844,6 +844,16 @@ void TRescIO::outTryForwardCandidateRIToGCList(EResourceScope iScope, EResourceS
   default: MDY_UNEXPECTED_BRANCH();
   }
 
+  this->mGarbageCollector.TryGarbageCollectCandidateList();
+}
+
+bool TRescIO::IsGcCandidateExist() const noexcept
+{
+  return this->mGarbageCollector.IsGcCandidateExist();
+}
+
+void TRescIO::TryGC()
+{
   this->mGarbageCollector.TryGarbageCollectCandidateList();
 }
 

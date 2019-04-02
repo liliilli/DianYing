@@ -13,13 +13,13 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
-#include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
-#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
-#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
+#include <Dy/Core/Resource/Resource/AResourceTextureBase.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
+#include <Dy/Core/Resource/Resource/FResourceModel.h>
+#include <Dy/Core/Resource/Resource/FResourceMaterial.h>
+#include <Dy/Core/Resource/Resource/AResourceAttachmentBase.h>
+#include <Dy/Core/Resource/Resource/AResourceFrameBufferBase.h>
 
 #include <Dy/Core/Resource/Type/XTemplateRescInfoType.h>
 #include <Dy/Helper/Wrapper/DMutexUniqueHashMap.h>
@@ -86,13 +86,13 @@ private:
   template <typename TType>
   using __THashMap = DMutexUniqueHashMap<std::string, TType>;
 
-  __THashMap<FDyShaderResource>   __mShaderContainer    = {};
-  __THashMap<FDyTextureResource>  __mTextureContainer   = {};
-  __THashMap<FDyMeshResource>     __mMeshContainer      = {};
-  __THashMap<FDyModelResource>    __mModelContainer     = {};
-  __THashMap<FDyMaterialResource> __mMaterialContainer  = {};
-  __THashMap<FDyAttachmentResource>   __mAttachmentContainer  = {};
-  __THashMap<FDyFrameBufferResource>  __mFrameBufferContainer = {};
+  __THashMap<FResourceShader>   __mShaderContainer    = {};
+  __THashMap<AResourceTextureBase>  __mTextureContainer   = {};
+  __THashMap<FResourceMesh>     __mMeshContainer      = {};
+  __THashMap<FResourceModel>    __mModelContainer     = {};
+  __THashMap<FResourceMaterial> __mMaterialContainer  = {};
+  __THashMap<AResourceAttachmentBase>   __mAttachmentContainer  = {};
+  __THashMap<AResourceFrameBufferBase>  __mFrameBufferContainer = {};
 
   friend class TRescIO;
   friend class FRescIOGC;

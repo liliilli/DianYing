@@ -27,8 +27,8 @@
 
 #include <Dy/Management/MGameTimer.h>
 #include "Dy/Element/Widget/FWidgetImage.h"
-#include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
-#include "Dy/Core/Resource/Resource/FDyShaderResource.h"
+#include "Dy/Core/Resource/Resource/FResourceMaterial.h"
+#include "Dy/Core/Resource/Resource/FResourceShader.h"
 #include "Dy/Management/MWorld.h"
 #include "Dy/Component/CCamera.h"
 #include <Math/Utility/XMath.h>

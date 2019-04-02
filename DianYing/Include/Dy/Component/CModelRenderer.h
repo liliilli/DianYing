@@ -25,9 +25,9 @@
 
 namespace dy
 {
-class FDyMaterialResource;
+class FResourceMaterial;
 class CModelFilter;
-class FDyMeshResource;
+class FResourceMesh;
 } /// ::dy namespace
 
 //!
@@ -76,12 +76,12 @@ public:
   /// @brief
   /// @param  index
   /// @return
-  const FDyMaterialResource& GetMaterialResourcePtr(TU32 index) const noexcept;
+  const FResourceMaterial& GetMaterialResourcePtr(TU32 index) const noexcept;
 
   /// @brief
   /// @param  index
   /// @return
-  const FDyMeshResource& GetSubmeshResourcePtr(TU32 index) const noexcept;
+  const FResourceMesh& GetSubmeshResourcePtr(TU32 index) const noexcept;
   
   /// @brief Get model resource binder. If renderer is not binding any Model, just return nullptr.
   MDY_NODISCARD TDyResourceBinderModel* GetModelResourceBinder() noexcept;

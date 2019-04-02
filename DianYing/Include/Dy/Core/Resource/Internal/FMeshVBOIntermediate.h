@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Information/FDyModelInformation.h>
+#include <Dy/Core/Resource/Information/FInformationModel.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
 
 //!
@@ -23,7 +23,7 @@
 namespace dy
 {
 class DDySubmeshInformation_Deprecated;
-class FDyMeshInformation;
+class FInformationMesh;
 } /// ::dy namespace
 
 //!
@@ -34,11 +34,11 @@ namespace dy
 {
 
 /// @class FMeshVBOIntermediate
-/// @brief Model vertex buffer object intermediate instance type. just used for creating FDyModelResource.
+/// @brief Model vertex buffer object intermediate instance type. just used for creating FResourceModel.
 class FMeshVBOIntermediate final
 {
 public:
-  FMeshVBOIntermediate(const FDyMeshInformation& information, bool iIsInstancing);
+  FMeshVBOIntermediate(const FInformationMesh& information, bool iIsInstancing);
   ~FMeshVBOIntermediate();
 
   /// @brief Reset all properties not to use this anymore.
@@ -60,8 +60,8 @@ public:
   MDY_NODISCARD bool IsSupportingInstancing() const noexcept;
     
 private:
-  void MDY_PRIVATE(CreateVertexArrayBuffer)(const FDyMeshInformation& iInformation);
-  void MDY_PRIVATE(CreateElementArrayBuffer)(const FDyMeshInformation& iInformation);
+  void MDY_PRIVATE(CreateVertexArrayBuffer)(const FInformationMesh& iInformation);
+  void MDY_PRIVATE(CreateElementArrayBuffer)(const FInformationMesh& iInformation);
 
   std::string             mSpecifierName;
   DGlBufferIdInformation  mBufferIdInformation  = {};

@@ -35,6 +35,11 @@ bool FRescIOGC::IsReferenceInstanceExist(const std::string& specifier, EResource
   );
 }
 
+bool FRescIOGC::IsGcCandidateExist() const noexcept
+{
+  return this->mRIGarbageCandidateList.empty() == false;
+}
+
 std::unique_ptr<DIOReferenceInstance> 
 FRescIOGC::MoveInstanceFromGC(const std::string& specifier, EResourceType type, EResourceStyle style)
 {

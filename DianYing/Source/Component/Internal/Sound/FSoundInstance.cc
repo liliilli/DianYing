@@ -18,7 +18,7 @@
 #include <Dy/Management/MSound.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/Type/Sound/FSoundChannel.h>
-#include <Dy/Core/Resource/Information/FDySoundInformation.h>
+#include <Dy/Core/Resource/Information/FInformationSound.h>
 #include <Dy/Management/Internal/Sound/XCallbackChannel.h>
 #include <Dy/Element/FActor.h>
 #include <Dy/Component/CTransform.h>

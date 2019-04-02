@@ -21,7 +21,7 @@
 #include <Dy/Management/Type/SettingContainer.h>
 #include <Dy/Management/Type/Input/EInputButtonStatus.h>
 #include <Dy/Management/MInput.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/GEngine.h>
 
 //!
 //! Forward declaration & local translation unit function.

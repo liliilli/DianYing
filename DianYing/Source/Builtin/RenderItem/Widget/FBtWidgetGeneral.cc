@@ -13,7 +13,7 @@
 ///
 
 #include <Dy/Builtin/RenderItem/Widget/FBtWidgetGeneral.h>
-#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
+#include <Dy/Core/Resource/Resource/AResourceFrameBufferBase.h>
 #include <Dy/Management/MFont.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Element/Widget/AWidgetObject.h>

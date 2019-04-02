@@ -14,13 +14,13 @@
 
 #include <Dy/Builtin/RenderItem/Level/FBtPpSkybox.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/AResourceFrameBufferBase.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Management/Rendering/MRendering.h>
-#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Dy/Core/Resource/Resource/AResourceTextureBase.h>
 #include <Dy/Component/CSkybox.h>
 
 namespace dy

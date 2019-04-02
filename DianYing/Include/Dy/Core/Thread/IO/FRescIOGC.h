@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Reflection/RBuiltinResources.h>
-#include <Dy/Core/Thread/IO/EDyIOTask.h>
+#include <Dy/Core/Thread/IO/EIOTask.h>
 #include <Dy/Core/Thread/IO/DIOReferenceInstance.h>
 
 namespace dy
@@ -31,6 +31,9 @@ public:
   /// @param style Resource style mode.
   MDY_NODISCARD bool IsReferenceInstanceExist(
     const std::string& specifier, EResourceType type, EResourceStyle style);
+
+  /// @brief Check IO GC candidate is exist on GC candidate list.
+  MDY_NODISCARD bool IsGcCandidateExist() const noexcept;
 
   /// @brief Move instance from gc list as return value.
   MDY_NODISCARD std::unique_ptr<DIOReferenceInstance> 
