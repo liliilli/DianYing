@@ -14,6 +14,7 @@
 ///
 
 #include <string>
+#include <functional>
 #include <Dy/Core/Thread/IO/EIOTask.h>
 #include <Dy/Core/Thread/IO/DRescIOWorkerResult.h>
 

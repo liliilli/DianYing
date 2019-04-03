@@ -16,6 +16,7 @@
 #include <Dy/Helper/MCS/GLShaderParser.h>
 
 #include <algorithm>
+#include <functional>
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <Dy/Helper/Internal/XStringSwitch.h>
 

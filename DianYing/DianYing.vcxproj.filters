@@ -890,6 +890,7 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FResourceShader.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureCubemap.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureGeneral.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -922,5 +923,11 @@
     <None Include="Include\Dy\Helper\Internal\Inline\FHandlerTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FHandleTmp.inl" />
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DyCore.rc" />
   </ItemGroup>
 </Project>
