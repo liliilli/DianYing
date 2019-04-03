@@ -1,8 +1,8 @@
 # Dy (DianYing)
 
-| Codacy |
-| ---- |
-| [![Codacy Badge](https://api.codacy.com/project/badge/Grade/88783a7a1a724c88bc106f601b6b2a31)](https://www.codacy.com/app/liliilli/DianYing?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=liliilli/DianYing&amp;utm_campaign=Badge_Grade) |
+| Appveyor | Codacy |
+| ---- | ---- |
+| [![Build status](https://ci.appveyor.com/api/projects/status/8bgpu922enlkqfac?svg=true)](https://ci.appveyor.com/project/liliilli/dianying) | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/88783a7a1a724c88bc106f601b6b2a31)](https://www.codacy.com/app/liliilli/DianYing?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=liliilli/DianYing&amp;utm_campaign=Badge_Grade) |
 
 
 DianYing(电影) (A.K.A `Dy`) is Open-sourced OpenGL 3D gaming framework. This framework uses OpenGL as rendering API, PhysX as Physics engine and miscellaneous features to support framework.
