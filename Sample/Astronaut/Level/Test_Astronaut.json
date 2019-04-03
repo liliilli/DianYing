@@ -1,0 +1,108 @@
+{
+  "Meta": 
+  {
+    "Uuid": "8026baec-da01-4029-b535-aa3dfc614e50",
+    "BackgroundColor": { "R": 0.0, "G": 0.0, "B": 0.1 }
+  },
+  "Object": 
+  [
+    {
+      "Name": "Camera", "Type": "Actor",
+      "CommonProperties": {
+        "ParentSpecifierName": "", "IsInitiallyActivated": true, "IsFromPrefab": true,
+        "PrefabSpecifierName": "DyCameraMan", "ObjectTag": "", "IsOverridePrefabTag": false
+      },
+      "ComponentList": [
+        { "Type": "Transform",
+          "Details": {
+            "LPosition": { "X": 0, "Y": 0, "Z": 0 }, "LRotation": { "X": 0, "Y": 0, "Z": 0 }, 
+            "LScale": { "X": 1, "Y": 1, "Z": 1 }, "WPosition": { "X": 0, "Y": 0, "Z": -400 }, 
+            "WRotation": { "X": 0, "Y": 0, "Z": 0 }, "WScale": { "X": 1, "Y": 1, "Z": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "GlobalScript", "Type": "Actor",
+      "CommonProperties": {
+        "ParentSpecifierName": "", "IsInitiallyActivated": true, "IsFromPrefab": false,
+        "PrefabSpecifierName": "", "ObjectTag": "", "IsOverridePrefabTag": false
+      },
+      "ComponentList": [
+        { "Type": "Script", "Activated": true, "Details": { "Specifier": "ScriptAstroidConstructor" } },
+        { "Type": "Skybox", "Activated": true,
+          "Details": { 
+            "Exposure" : 1.0, 
+            "Rotation" : 0.0, 
+            "TintColor": { "R": 1.0, "G": 1.0, "B": 1.0 },
+            "CubemapSpecifier": "Skybox_ame_nebula" 
+          }
+        },
+        { "Type": "DirectionalLight",
+          "Activated": true,
+          "Details": {
+            "LightDirection": { "X": 0.5, "Y": 0.5, "Z": 0.5 },
+            "LightIntensity": 75.00, 
+            "LightDiffuse": { "R": 1.0, "G": 1.0, "B": 1.0 }, 
+            "ShadowType": "Hard", "ShadowStrength": 0.5, "ShadowResolution": { "X": 128, "Y": 128 },
+            "IsUsingGlobalShadowResolution": false, "ShadowBias": 0.002, "ShadowCullingMaskLayer": [],
+            "IsCastingLight": true, "IsCastingShadow": true
+          }
+        }
+      ]
+    },
+    {
+      "Name": "PlanetBasis", "Type": "Actor",
+      "CommonProperties": {
+        "ParentSpecifierName": "", "IsInitiallyActivated": true, "IsFromPrefab": false,
+        "PrefabSpecifierName": "", "ObjectTag": "", "IsOverridePrefabTag": false
+      },
+      "ComponentList": [
+        { "Type": "Transform",
+          "Details": {
+            "LPosition": { "X": 0, "Y": 0, "Z": 0 }, "LRotation": { "X": 0, "Y": 0, "Z": 0 }, 
+            "LScale": { "X": 1, "Y": 1, "Z": 1 }, "WPosition": { "X": 0, "Y": 0, "Z": 0 }, 
+            "WRotation": { "X": 0, "Y": 0, "Z": 0 }, "WScale": { "X": 1, "Y": 1, "Z": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "Name": "Planet", "Type": "Actor",
+      "CommonProperties": {
+        "ParentSpecifierName": "PlanetBasis", "IsInitiallyActivated": true, "IsFromPrefab": false,
+        "PrefabSpecifierName": "", "ObjectTag": "", "IsOverridePrefabTag": false
+      },
+      "ComponentList": [
+        { "Type": "Script", "Activated": true, "Details": { "Specifier": "ScriptPlanetScript" } },
+        { "Type": "PointLight", "Activated": true,
+          "Details": {
+            "Intensity": 1000.0, 
+            "Range": 200.0,
+            "Color": { "R": 1.0, "G": 1.0, "B": 0.0 }, 
+            "IsCastingLight": true
+          }
+        },
+        { "Type": "SoundSource", "Activated": true,
+          "Details": {
+            "SoundSpecifier": "",
+            "2DSound": true,
+            "VolumeMultiplier": 1.0, "PitchMultiplier": 1.0,
+            "Channel": "", 
+            "Muted": false, "Looped": true,
+            "Attenuation": { "Activated": true, "Near": 0.5, "Far": 500 }
+          }
+        },
+        { "Type": "ModelFilter", "Activated": true, "Details": { "ModelName": "dyBtModelEmissiveSphere" } },
+        { "Type": "ModelRenderer", "Activated": true, "Details": { "Shadow": true } },
+        { "Type": "Transform",
+          "Details": {
+            "LPosition": { "X": 0, "Y": 0, "Z": 0 }, "LRotation": { "X": 0, "Y": 0, "Z": 0 }, 
+            "LScale": { "X": 50, "Y": 50, "Z": 50 }, "WPosition": { "X": 0, "Y": 0, "Z": 0 }, 
+            "WRotation": { "X": 0, "Y": 0, "Z": 0 }, "WScale": { "X": 1, "Y": 1, "Z": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}
