@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Helper/Type/DColorRGBA.h>
 
@@ -28,21 +28,21 @@ namespace dy
 struct PDyMetaWidgetImageDescriptor final : public PDyMetaWidgetCommonBaseDesc
 {
   /// Size (px) of text widget (leaf widget).
-  DVectorInt2 mWidgetSize = {};
+  DIVec2 mWidgetSize = {};
   /// Initial position of canvas.
-  DVectorInt2 mInitialPosition = {};
+  DIVec2 mInitialPosition = {};
   /// Originable to parent frame (except for list layout)
-  EDyOrigin     mOrigin = EDyOrigin::Center_Center;
+  EDyOrigin mOrigin = EDyOrigin::Center_Center;
 
   /// Image specifier name from texture.
-  std::string   mImageSpecifierName = {};
+  std::string mImageSpecifierName = {};
   /// Region to display on widget size. \n
   /// If `mIsSizeToContent` is true, widget will be realigned following partial region.
-  DArea2D     mImageRegion        = {};
+  DArea2D mImageRegion = {};
   /// ImageTintColor(rgb) + ImageAlpha(a)
-  DColorRGBA  mTintColor          = DColorRGBA::White;
+  DColorRGBA mTintColor = DColorRGBA::White;
   /// Check use automatically align size to image(texture) size.
-  bool          mIsSizeToContent    = false;
+  bool mIsSizeToContent = false;
 
   ///
   /// @brief Factory function for PDyMetaWidgetImageDescriptor.

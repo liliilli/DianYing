@@ -22,14 +22,14 @@ namespace dy
 /// @brief Primal transform list.
 struct DTransform
 {
-  DVector3 mLocalRelPosition  = {0, 0, 0};
-  DVector3 mWorldRelPosition  = {0, 0, 0};
+  DVec3 mLocalRelPosition  = {0, 0, 0};
+  DVec3 mWorldRelPosition  = {0, 0, 0};
 
-  DVector3 mLocalEulerAngle   = {0, 0, 0};
-  DVector3 mWorldEulerAngle   = {0, 0, 0};
+  DVec3 mLocalEulerAngle   = {0, 0, 0};
+  DVec3 mWorldEulerAngle   = {0, 0, 0};
 
-  DVector3 mLocalScale        = {1, 1, 1};
-  DVector3 mWorldScale        = {1, 1, 1};
+  DVec3 mLocalScale        = {1, 1, 1};
+  DVec3 mWorldScale        = {1, 1, 1};
 };
 
 } /// ::dy namespace

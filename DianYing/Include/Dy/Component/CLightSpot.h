@@ -83,9 +83,9 @@ public:
   MDY_NODISCARD TF32 GetAngle() const noexcept;
 
   /// @brief Set direction of spot light. input direction will be normalized automatically.
-  void SetDirection(const DVector3& iDirection);
+  void SetDirection(const DVec3& iDirection);
   /// @brief Get direction of spot light.
-  MDY_NODISCARD const DVector3& GetDirection() const noexcept;
+  MDY_NODISCARD const DVec3& GetDirection() const noexcept;
 
   /// @brief Get uniform-buffer-object information of this light.
   MDY_NODISCARD const DUboSpotLight& GetUboLightInfo() noexcept;

@@ -25,7 +25,7 @@
 #include <Dy/Management/Type/Input/DAnalogInputItem.h>
 #include <Dy/Management/Type/Render/DDyPixelInfo.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Core/GDyEngine.h>
+#include <Dy/Core/GEngine.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Element/Internal/TIdDistributor.h>
 #include <Dy/Element/FActor.h>
@@ -45,8 +45,8 @@ constexpr TU32 kMaximumStickCount = 6;
 std::array<dy::DButtonInputItem, dy::kEDyInputButtonCount> mInputButtonList = {};
 std::array<dy::DAnalogInputItem, kMaximumStickCount> mInputAnalogStickList = {};
 
-dy::DVector2    sMouseLastPosition    = {};
-dy::DVector2    sMousePresentPosition = {};
+dy::DVec2    sMouseLastPosition    = {};
+dy::DVec2    sMousePresentPosition = {};
 bool              sIsFirstMouseMovement = true;
 bool              sMousePositionDirty   = false;
 bool              mIsControllerConnected= false;
@@ -359,12 +359,12 @@ float MInput::GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept
   return keyIt->second.mAxisValue;
 }
 
-const DVector2& MInput::GetPresentMousePosition() const noexcept
+const DVec2& MInput::GetPresentMousePosition() const noexcept
 {
   return this->mMousePresentPosition;
 }
 
-const DVector2& MInput::GetPresentLastMousePosition() const noexcept
+const DVec2& MInput::GetPresentLastMousePosition() const noexcept
 {
   return this->mMouseLastPosition;
 }
@@ -811,7 +811,7 @@ EInputButtonStatus MInput::MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId
   return mInputButtonList[iId].Get();
 }
 
-EDySuccess MInput::TryPickObject(_MIN_ const DVector2& iScreenPosition)
+EDySuccess MInput::TryPickObject(_MIN_ const DVec2& iScreenPosition)
 {
   // Get position of present frame.
   const auto& position = this->mMousePresentPosition;

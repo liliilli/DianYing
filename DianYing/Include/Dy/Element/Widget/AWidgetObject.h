@@ -15,7 +15,7 @@
 
 #include <Dy/Element/ARenderableObject.h>
 #include <Dy/Helper/Type/DVector2.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Element/Type/ATristateSwitcher.h>
 #include <Dy/Element/Internal/TIdDistributor.h>
@@ -59,18 +59,18 @@ public:
 
   /// @brief Set central position of widget.
   /// @param position Position value.
-  virtual void SetRelativePosition(const DVector2& position) noexcept;
+  virtual void SetRelativePosition(const DVec2& position) noexcept;
   /// @brief Get widget relative position following origin anchor input (not final position)
   /// @return widget position from parent.
-  MDY_NODISCARD DVector2 GetRelativePosition(const EDyOrigin& origin) const noexcept;
+  MDY_NODISCARD DVec2 GetRelativePosition(const EDyOrigin& origin) const noexcept;
   /// @brief Get widget final position following origin anchor input (not final position)
   /// @return widget final position of screen.
-  MDY_NODISCARD DVector2 GetFinalPosition(const EDyOrigin& origin) const noexcept;
+  MDY_NODISCARD DVec2 GetFinalPosition(const EDyOrigin& origin) const noexcept;
 
   /// @brief Set frame size of widget.
-  virtual void SetFrameSize(const DVectorInt2& size) noexcept;
+  virtual void SetFrameSize(const DIVec2& size) noexcept;
   /// @brief Get frame size of widget.
-  MDY_NODISCARD const DVectorInt2& GetFrameSize() const noexcept;
+  MDY_NODISCARD const DIVec2& GetFrameSize() const noexcept;
 
   /// @brief Set origin axis value.
   virtual void SetOrigin(EDyOrigin iOrigin) noexcept;
@@ -94,11 +94,11 @@ public:
 
 private:
   AWidgetUiObjectChildrenable* mPtrParentUiObject = MDY_INITIALIZE_NULL;
-  DVector2    mCentralRelativePosition = {};
-  DVectorInt2 mFrameSize               = {};
+  DVec2    mCentralRelativePosition = {};
+  DIVec2 mFrameSize               = {};
 
 protected:
-  DVector2  mCentralFinalPosition  = {};
+  DVec2  mCentralFinalPosition  = {};
   EDyOrigin mOrigin = EDyOrigin::Center_Center;
   EDyOrigin mFibot  = EDyOrigin::Center_Center;
 };

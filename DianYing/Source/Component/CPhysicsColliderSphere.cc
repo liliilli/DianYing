@@ -16,9 +16,11 @@
 #include <Dy/Component/CPhysicsColliderSphere.h>
 
 #include <geometry/PxSphereGeometry.h>
+#include <PxPhysics.h>
+
 #include <Dy/Management/MPhysics.h>
 #include <Dy/Component/CPhysicsRigidbody.h>
-#include <PxPhysics.h>
+#include <Math/Utility/XMath.h>
 
 namespace dy
 {
@@ -98,7 +100,7 @@ void CPhysicsColliderSphere::UpdateColliderMesh()
 {
   // First, clear all information.
   this->mColliderMeshInformation.clear();
-  const TF32 step = math::Pi2<TF32> / (50 - 1);
+  const TF32 step = math::k2Pi<TF32> / (50 - 1);
 
   // (X, Y, 0)
   {

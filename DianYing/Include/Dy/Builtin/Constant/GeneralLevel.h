@@ -18,7 +18,7 @@
 namespace dy
 {
 
-inline static DVector3 kLevelUpDir = {0, 1, 0};
+inline static DVec3 kLevelUpDir = {0, 1, 0};
 
 } /// ::dy namespace
 

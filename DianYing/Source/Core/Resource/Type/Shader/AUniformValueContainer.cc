@@ -16,11 +16,11 @@
 #include <Dy/Core/Resource/Type/Shader/AUniformValueContainer.h>
 
 #include <regex>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Resource/Type/Uniform/TUniformValue.h>
 #include <Dy/Core/Resource/Type/TResourceBinder.h>
-#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include <Dy/Core/Resource/Resource/AResourceAttachmentBase.h>
 #include <Dy/Core/Reflection/RReflection.h>
 
 #define MDY_CONSTRUCT_UNIFORM_ITEM(__MATypeSpecifier__, __MASpecifier__, __MAId__) \
@@ -77,7 +77,7 @@ void AUniformValueContainer::__TryClearUniformList()
 
 #define MDY_NOUSEVAR MDY_TOKENPASTE2(_, __LINE__)
 
-void AUniformValueContainer::__TryConstructDefaultUniformList(const FDyShaderResource& iResc)
+void AUniformValueContainer::__TryConstructDefaultUniformList(const FResourceShader& iResc)
 {
   this->pTryConstructDefaultUniformVariables(iResc.GetUniformVariableList());
   this->pTryConstructDefaultUniformStructLists(iResc.GetUniformStructListMap());

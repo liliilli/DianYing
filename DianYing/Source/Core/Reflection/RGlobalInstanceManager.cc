@@ -21,7 +21,7 @@ namespace dy::reflect
 
 bool RGlobalInstanceManager::IsGlobalInstanceExist(const char* iSpecifier)
 {
-  const auto hashVal = ::dy::hash::DyToCrc32Hash(iSpecifier);
+  const auto hashVal = ::dy::hash::ToHashCrc32(iSpecifier);
 
   auto& map = GetInstanceMap();
   return Contains(map, hashVal);
@@ -34,7 +34,7 @@ bool RGlobalInstanceManager::IsGlobalInstanceExist(const std::string& iSpecifier
 
 ADyGlobalInstance* RGlobalInstanceManager::GetGlobalInstance(const char* iSpecifier) noexcept
 {
-  const auto hashVal = ::dy::hash::DyToCrc32Hash(iSpecifier);
+  const auto hashVal = ::dy::hash::ToHashCrc32(iSpecifier);
   
   auto& map = GetInstanceMap();
   if (Contains(map, hashVal) == false) { return nullptr; }

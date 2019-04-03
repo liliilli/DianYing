@@ -23,7 +23,7 @@ namespace dy
 struct FHitResult final
 {
   /// @brief specifies contact position between two physics shapes.
-  DVector3 mContactPosition{};
+  DVec3 mContactPosition{};
 };
 
 } /// ::dy namespace

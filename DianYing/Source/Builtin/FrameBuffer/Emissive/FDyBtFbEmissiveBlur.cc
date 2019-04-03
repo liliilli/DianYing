@@ -21,7 +21,7 @@ namespace dy::builtin
 void FDyBtFbEmissiveBlur::ConstructBuffer(PDyGlFrameBufferInstanceMetaInfo& oProperty) noexcept
 {
   oProperty.mSpecifierName   = sName;
-  oProperty.mFrameBufferSize = DVectorInt2{1280, 720};
+  oProperty.mFrameBufferSize = DIVec2{1280, 720};
   oProperty.mIsUsingDepthBuffer = false;
   oProperty.mIsPingpong = true;
 

@@ -23,7 +23,7 @@
 namespace
 {
 
-constexpr TC16 SURROGATE_SIGN = 0xFFFF;
+constexpr TChr16 SURROGATE_SIGN = 0xFFFF;
 
 ///
 /// @brief
@@ -52,23 +52,23 @@ MDY_NODISCARD constexpr TU32 DyGetByteOfUtf8Char(_MIN_ const char* utf8StartChar
 /// @param  utf8StartCharacter
 /// @return
 ///
-MDY_NODISCARD constexpr TC16 DyGetRawUtf16CharacterFrom(_MIN_ const char* utf8StartCharacter) noexcept
+MDY_NODISCARD constexpr TChr16 DyGetRawUtf16CharacterFrom(_MIN_ const char* utf8StartCharacter) noexcept
 {
   switch (DyGetByteOfUtf8Char(utf8StartCharacter))
   {
-  case 1: return TC16(*utf8StartCharacter);
+  case 1: return TChr16(*utf8StartCharacter);
   case 2:
   {
     const char16_t b1 = (*utf8StartCharacter) & 0b00001111;
     const char16_t b2 = *(utf8StartCharacter + 1) & 0b00111111;
-    return TC16((b1 << 6) | b2);
+    return TChr16((b1 << 6) | b2);
   }
   case 3:
   {
     const char16_t b1 = (*utf8StartCharacter) & 0b00001111;
     const char16_t b2 = *(utf8StartCharacter + 1) & 0b00111111;
     const char16_t b3 = *(utf8StartCharacter + 2) & 0b00111111;
-    return TC16((b1 << 12) | (b2 << 6) | b3);
+    return TChr16((b1 << 12) | (b2 << 6) | b3);
   }
   case 4:
   {

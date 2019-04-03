@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
-#include <Dy/Core/Resource/Information/FDyModelInformation.h>
+#include <Dy/Core/Resource/Information/FInformationModel.h>
 
 namespace dy
 {

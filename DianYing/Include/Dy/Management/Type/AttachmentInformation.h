@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Helper/Type/DColorRGBA.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 
 namespace dy
@@ -115,7 +115,7 @@ struct PDyGlAttachmentInformation final
 {
   std::string                               mAttachmentName = MDY_INITIALIZE_EMPTYSTR;
   std::vector<PDyGlTexParameterInformation> mParameterList  = {};
-  DVectorInt2                             mAttachmentSize = {};
+  DIVec2                             mAttachmentSize = {};
   DColorRGBA                              mBorderColor    = DColorRGBA::Black;
 
   ///

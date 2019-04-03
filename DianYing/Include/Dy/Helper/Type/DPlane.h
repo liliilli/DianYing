@@ -13,40 +13,12 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DVector3.h>
+#include <Math/Type/Shape/DPlane.h>
 
 namespace dy
 {
 
-/// @struct DPlane
-/// @brief Plane type.
-struct DPlane final
-{
-  enum EStatus
-  {
-    Front,
-    Behind,
-    OnPlane
-  };
-
-  TF32 A = 0;
-  TF32 B = 0;
-  TF32 C = 0;
-  TF32 D = 0;
-
-  /// @brief Normalize plane.
-  void Normalize();
-
-  /// @brief Get normal vector.
-  MDY_NODISCARD DVector3 GetNormalVector() const noexcept;
-
-  /// @brief Check given point is on plane, on front (pos), on behind (neg).
-  MDY_NODISCARD EStatus CheckPointStatusOnPlane(const DVector3& iPoint) const noexcept;
-  
-  /// @brief Get given point's distance from plane.
-  /// If second parameter is false, return value without absolute value.
-  MDY_NODISCARD TF32 GetDistanceFrom(const DVector3& iPoint, bool iIsAbs = true) const noexcept;
-};
+using DPlane = math::DPlane<TReal>;
 
 } /// ::dy namespace
 

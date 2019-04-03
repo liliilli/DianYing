@@ -15,7 +15,7 @@
 
 #include <Dy/Core/Resource/Type/IBinderBase.h>
 #include <Dy/Core/Resource/Type/XTemplateRescInfoType.h>
-#include <Dy/Core/Thread/SDyIOBindingHelper.h>
+#include <Dy/Core/Thread/SIOBindingHelper.h>
 #include <Dy/Meta/Type/EResourceType.h>
 
 namespace dy
@@ -94,7 +94,7 @@ EDySuccess TResourceBinderBase<TType>::pTryRequireResource(const std::string& iN
 {
   MDY_ASSERT_MSG(iNewSpecifier.empty() == false, "Resource specifier name must be valid to require resource.");
 
-  auto ptrResult = SDyIOBindingHelper::TryRequireResource<TType>(iNewSpecifier, *this);
+  auto ptrResult = SIOBindingHelper::TryRequireResource<TType>(iNewSpecifier, *this);
   if (ptrResult.has_value() == false) 
   { 
     this->mDelayedSpecifierName = iNewSpecifier;
@@ -115,7 +115,7 @@ EDySuccess TResourceBinderBase<TType>::pTryDetachResource() noexcept
   if (this->mPtrResource == nullptr) { return DY_FAILURE; }
 
   // Detach
-  MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachResource<TType>(this->mSpecifierName, *this));
+  MDY_CALL_ASSERT_SUCCESS(SIOBindingHelper::TryDetachResource<TType>(this->mSpecifierName, *this));
   this->mSpecifierName.clear();
   this->mPtrResource = nullptr;
   return DY_SUCCESS;

@@ -51,7 +51,7 @@ public:
   void OnSetupRenderingSetting() override final;
 
   void OnRender() override final;
-  void RenderObject(CBasePhysicsCollider& iRefCollider, const DMatrix4x4& iTransformMatrix);
+  void RenderObject(CBasePhysicsCollider& iRefCollider, const DMat4& iTransformMatrix);
 
   void OnReleaseRenderingSetting() override final;
 

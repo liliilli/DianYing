@@ -13,9 +13,9 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Helper/Type/DVector4.h>
 #include <Dy/Helper/Type/DMatrix4x4.h>
-#include <Dy/Helper/Type/DVectorInt4.h>
 
 namespace dy
 {
@@ -24,15 +24,15 @@ namespace dy
 /// @brief Vertex information (Input assembly unit data)
 struct DDefaultVertexInfo final
 {
-  DVector3    mPosition  = {};
-  DVector3    mNormal    = {};
-  DVector2    mTexCoord0 = {};
-  DVector2    mTexCoord1 = {};
-  DVector3    mTangent   = {};
-  DVector3    mBitangent = {};
+  DVec3    mPosition  = {};
+  DVec3    mNormal    = {};
+  DVec2    mTexCoord0 = {};
+  DVec2    mTexCoord1 = {};
+  DVec3    mTangent   = {};
+  DVec3    mBitangent = {};
   // Below elements are used when skeletal animation is applied.
-  DVectorInt4 mBoneId    = {-1, -1, -1, -1};
-  DVector4    mWeights   = { 0,  0,  0,  0};
+  DIVec4   mBoneId    = {-1, -1, -1, -1};
+  DVec4    mWeights   = {0};
 };
 
 /// @brief Deserialization function.

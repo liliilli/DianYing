@@ -15,7 +15,7 @@
 
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Helper/Type/DColorRGBA.h>
 #include <Dy/Core/Resource/Internal/ETextureEnums.h>
 #include <Dy/Helper/Type/DClamp.h>
@@ -31,7 +31,7 @@ struct PDyGlAttachmentInstanceMetaInfo final : public PDyCommonResourceMetaInfo
 {
   std::string                   mSpecifierName  = MDY_INITIALIZE_EMPTYSTR;
   TTextureParameterList         mParameterList  = {};
-  DVectorInt2                 mAttachmentSize = {};
+  DIVec2                 mAttachmentSize = {};
   DColorRGBA                  mBorderColor    = DColorRGBA::Black;
   EGlBufferDataInternalFormat mBufferFormat   = EGlBufferDataInternalFormat::NoneError;
   ETextureStyleType           mAttachmentType = ETextureStyleType::D2;

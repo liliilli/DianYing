@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Core/Thread/TDyIO.h>
+#include <Dy/Core/Thread/TRescIO.h>
 #include <Dy/Management/Type/EGlobalGameState.h>
 
 namespace dy
@@ -28,7 +28,7 @@ class MSynchronization final : public ISingleton<MSynchronization>
   MDY_SINGLETON_PROPERTIES(MSynchronization);
 public:
   /// @brief Get IO Thread Instance which not be nulled.
-  NotNull<TDyIO*> pfGetIOThread();
+  NotNull<TRescIO*> pfGetIOThread();
 
   /// @brief Run synchronization phase or operating system.
   void TrySynchronization();
@@ -45,7 +45,7 @@ private:
   /// @brief Run shutdown phase.
   void PRunFrameShutdown();
 
-  std::unique_ptr<TDyIO>  mIOThreadInstance = nullptr;
+  std::unique_ptr<TRescIO>  mIOThreadInstance = nullptr;
   std::thread             mIOThreadThread;
 };
 

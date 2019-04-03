@@ -15,10 +15,10 @@
 ///
 
 #include <Dy/Helper/Type/DColorRGBA.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 #include <Dy/Meta/Type/EDyResourceTypes.h>
-#include <Dy/Core/Resource/Information/FDyAttachmentInformation.h>
+#include <Dy/Core/Resource/Information/FInformationAttachment.h>
 
 namespace dy
 {
@@ -27,7 +27,7 @@ namespace dy
 /// @brief Descriptor instance for creating attachment context of opengl.
 struct PGLAttachmentDescriptor final
 {
-  DVectorInt2                   mBufferSize     = {};
+  DIVec2                   mBufferSize     = {};
   DColorRGBA                    mBorderColor    = {};
   TTextureParameterList         mParameterList  = {};
   bool                          mIsUsingCustomizedParameter = false;

@@ -29,7 +29,7 @@ namespace dy
 struct alignas(16) DUboDirectionalLight final
 {
   /// World space light direction
-  DVector3 mDirection = {};
+  DVec3 mDirection = {};
   MDY_BYTEPADDING(TI32)
   /// Light tint color
   DColorRGBA mDiffuse = DColorRGBA::White;
@@ -42,7 +42,7 @@ struct alignas(16) DUboDirectionalLight final
 struct alignas(16) DDyUboDirShadow final
 {
   /// @brief Calculated Cascaded Shadow Mapping VPSB Matrix list.
-  std::array<DMatrix4x4, 4>   mLightVPSBMatrix = {};
+  std::array<DMat4, 4>   mLightVPSBMatrix = {};
   /// @brief CSM normalized far planes.
   std::array<TF32, kCSMSegment> mNormalizedFarPlanes = {};
   DClamp<float, 0, 2>         mBias     = 0.02f;

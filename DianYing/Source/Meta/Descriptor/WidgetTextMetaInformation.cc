@@ -75,9 +75,9 @@ PDyMetaWidgetTextDescriptor::CreateMetaInformation(_MIN_ const nlohmann::json& i
   instance->mEdgeColor          = json::GetValueFrom<DColorRGB>(detailAtlas, "EdgeColor");
   instance->mIsUsingEdge        = json::GetValueFrom<bool>(detailAtlas, sHeader_IsUsingEdge);
 
-  instance->mInitialPosition    = DVectorInt2{json::GetValueFrom<DVector2>(detailAtlas, sHeader_InitialPosition)};
+  instance->mInitialPosition    = DIVec2{json::GetValueFrom<DVec2>(detailAtlas, sHeader_InitialPosition)};
   instance->mOrigin             = json::GetValueFrom<EDyOrigin>(detailAtlas, "Origin");
-  instance->mWidgetSize         = json::GetValueFrom<DVectorInt2>(detailAtlas, "WidgetSize");
+  instance->mWidgetSize         = json::GetValueFrom<DIVec2>(detailAtlas, "WidgetSize");
   json::GetValueFromTo(detailAtlas, "Alignment", instance->mAlignment);
 
   return instance;

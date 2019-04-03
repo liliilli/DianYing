@@ -31,9 +31,9 @@ struct DDyTextureCoordBox
   ///
   TU32        mChannel            = MDY_INITIALIZE_DEFUINT;
   ///
-  DVector2  mLeftDown           = {};
+  DVec2  mLeftDown           = {};
   ///
-  DVector2  mRightUp            = {};
+  DVec2  mRightUp            = {};
 };
 
 void to_json  (_MOUT_ nlohmann::json& j,      _MIN_ const DDyTextureCoordBox& p);
@@ -46,17 +46,17 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyTextureCoordBox& p);
 struct DDyFontCharacterInfo final
 {
   ///
-  TC16        mCharCode           = MDY_INITIALIZE_DEFUINT;
+  TChr16        mCharCode           = MDY_INITIALIZE_DEFUINT;
   ///
   TF32        mHorizontalAdvance  = MDY_INITIALIZE_DEFUINT;
   ///
-  DVector2  mHoritontalBearing  = {};
+  DVec2  mHoritontalBearing  = {};
   ///
-  DVector2  mScale              = {};
+  DVec2  mScale              = {};
   ///
-  DVector2  mSize               = {};
+  DVec2  mSize               = {};
   ///
-  DVector2  mTranslate          = {};
+  DVec2  mTranslate          = {};
   ///
   DDyTextureCoordBox mTexCoordInfo = {};
 
@@ -66,7 +66,7 @@ struct DDyFontCharacterInfo final
   /// @param  charCode character code UCS-2.
   /// @return Created character information instance.
   ///
-  static MDY_NODISCARD DDyFontCharacterInfo CreateInstance(_MIN_ const nlohmann::json& j, _MIN_ const TC16 charCode);
+  static MDY_NODISCARD DDyFontCharacterInfo CreateInstance(_MIN_ const nlohmann::json& j, _MIN_ const TChr16 charCode);
 };
 
 void to_json  (_MOUT_ nlohmann::json& j,      _MIN_ const DDyFontCharacterInfo& p);

@@ -25,7 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'" Label="Configuration">
@@ -37,7 +37,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -82,7 +82,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -91,19 +91,20 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/Bt+ %(AdditionalOptions)</AdditionalOptions>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>glfw3.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;zlibstaticd.lib;freetype.lib;lua_build.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;msvcrtd.lib;libcmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;Msdfgen.lib;zlibstaticd.lib;freetype.lib;Lua535.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;msvcrtd.lib;libcmtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>$(SolutionDir)Common\ThirdParty\assimp\lib\$(Configuration)\$(Platform);$(SolutionDir)Common\ThirdParty\vulkan\Lib;$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\freetype\objs\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Configuration);$(ProjectDir)Libraries\physX\lib\$(Configuration);$(ProjectDir)Libraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Common\ThirdParty\assimp\lib\$(Configuration)\$(Platform);$(SolutionDir)Common\ThirdParty\vulkan\Lib;$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\msdfgen\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Configuration);$(ProjectDir)Libraries\physX\lib\$(Configuration);$(ProjectDir)Libraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">
@@ -120,16 +121,17 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <PreprocessorDefinitions>MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>glfw3.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;Msdfgen.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;glfw3.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>msvcrt.lib;libcmt.lib</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>$(SolutionDir)Common\ThirdParty\assimp\lib\$(Configuration)\$(Platform);$(SolutionDir)Common\ThirdParty\vulkan\Lib;$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\freetype\objs\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Configuration);$(ProjectDir)Libraries\physX\lib\$(Configuration);$(ProjectDir)Libraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Common\ThirdParty\assimp\lib\$(Configuration)\$(Platform);$(SolutionDir)Common\ThirdParty\vulkan\Lib;$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\msdfgen\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Configuration);$(ProjectDir)Libraries\physX\lib\$(Configuration);$(ProjectDir)Libraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,7 +141,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -148,85 +150,21 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\lua\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(ProjectDir)Libraries\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(ProjectDir)Libraries\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib;$(ProjectDir)Libraries\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>glfw3.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;zlibstatic.lib;freetype.lib;lua_build.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)Common\ThirdParty\assimp\lib\$(Configuration)\$(Platform);$(SolutionDir)Common\ThirdParty\vulkan\Lib;$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\freetype\objs\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Configuration);$(ProjectDir)Libraries\physX\lib\$(Configuration);$(ProjectDir)Libraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;Msdfgen.lib;zlibstatic.lib;freetype.lib;Lua535.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Common\ThirdParty\assimp\lib\$(Configuration)\$(Platform);$(SolutionDir)Common\ThirdParty\vulkan\Lib;$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\msdfgen\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Configuration);$(ProjectDir)Libraries\physX\lib\$(Configuration);$(ProjectDir)Libraries\lua\lib\$(Platform)\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Bitmap.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Contour.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\edge-coloring.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\edge-segments.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\EdgeHolder.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\equation-solver.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\msdfgen.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\render-sdf.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\save-bmp.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\shape-description.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Shape.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\SignedDistance.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Common\ThirdParty\msdfgen\core\Vector2.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='TestBuild|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="data\Script\Astronaut\AstroidConstructor.cc" />
     <ClCompile Include="data\Script\Astronaut\PlanetScript.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
@@ -378,33 +316,33 @@
     <ClCompile Include="Source\Core\Rendering\Wrapper\FWrapperHandleRenderPipeline.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FWrapperRenderItem.cc" />
     <ClCompile Include="Source\Core\Rendering\Wrapper\FWrapperRenderPipeline.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyAttachmentInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyFrameBufferInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyMaterialInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyMeshInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyModelAnimScrapInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyModelInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyModelSkeletonInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyShaderInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDySoundInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyTextureCubemapInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyTextureGeneralInformation.cc" />
-    <ClCompile Include="Source\Core\Resource\Information\FDyTextureInformation.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationAttachment.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationFrameBuffer.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationMaterial.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationMesh.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationModelAnimScrap.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationModel.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationModelSkeleton.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationShader.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationSound.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationTextureCubemap.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationTextureGeneral.cc" />
+    <ClCompile Include="Source\Core\Resource\Information\FInformationTexture.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\XShaderTypes.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\FMeshVBOIntermediate.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\XGeometryTypes.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\ETextureEnums.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource\FDyAttachmentResource.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource\FDyFrameBufferResource.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource\FDyMaterialResource.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource\FDyMeshResource.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource\FDyModelResource.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource\FDyShaderResource.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource\FDyTextureCubemapResource.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource\FDyTextureGeneralResource.cc" />
-    <ClCompile Include="Source\Core\Resource\Resource\FDyTextureResource.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\AResourceAttachmentBase.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\AResourceFrameBufferBase.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FResourceMaterial.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FResourceMesh.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FResourceModel.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\FResourceShader.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\Texture\FResourceTextureCubemap.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\Texture\FResourceTextureGeneral.cc" />
+    <ClCompile Include="Source\Core\Resource\Resource\AResourceTextureBase.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Material\AUniformHelper.cc" />
@@ -413,15 +351,15 @@
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DMeshData.cc" />
     <ClCompile Include="Source\Core\Resource\Type\ModelMesh\DSkeletonBone.cc" />
     <ClCompile Include="Source\Core\Resource\Type\Shader\AUniformValueContainer.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceContainer.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\DDyIOReferenceInstance.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\DDyIOTaskDeferred.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\FDyIOGC.cc" />
-    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperInfo.cc" />
-    <ClCompile Include="Source\Core\Thread\SDyIOBindingHelperResc.cc" />
-    <ClCompile Include="Source\Core\Thread\SDyIOConnectionHelper.cc" />
-    <ClCompile Include="Source\Core\Thread\IO\TDYIOWorker.cc" />
-    <ClCompile Include="Source\Core\Thread\SDyIOWorkerConnHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DIOReferenceContainer.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DIOReferenceInstance.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\DRescIODeferredTask.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\FRescIOGC.cc" />
+    <ClCompile Include="Source\Core\Thread\SIOBindingHelperInfo.cc" />
+    <ClCompile Include="Source\Core\Thread\SIOBindingHelperResc.cc" />
+    <ClCompile Include="Source\Core\Thread\SIOConnectionHelper.cc" />
+    <ClCompile Include="Source\Core\Thread\IO\TRescIOWorker.cc" />
+    <ClCompile Include="Source\Core\Thread\SIOWorkerConnHelper.cc" />
     <ClCompile Include="Source\Element\Widget\FWidgetBasicGuageBar.cc" />
     <ClCompile Include="Source\Element\Widget\FWidgetImage.cc" />
     <ClCompile Include="Source\Element\Widget\AWidgetObject.cc" />
@@ -460,7 +398,7 @@
     <ClCompile Include="Source\Component\CTransform.cc" />
     <ClCompile Include="Source\Core\Rendering\Widget\CRendererFont.cc" />
     <ClCompile Include="Source\Core\Resource\Internal\EMaterialBlendMode.cc" />
-    <ClCompile Include="Source\Core\GDyEngine.cc" />
+    <ClCompile Include="Source\Core\GEngine.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
     <ClCompile Include="Source\Editor\Gui\Dialog\ProjectCreator.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
@@ -490,10 +428,9 @@
     <ClCompile Include="Source\Helper\Library\HelperString.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
-    <ClCompile Include="Source\Helper\Type\DArea3D.cc" />
+    <ClCompile Include="Source\Helper\Type\DBounds.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\DUuid.cc" />
-    <ClCompile Include="Source\Helper\Type\DPlane.cc" />
     <ClCompile Include="Source\Management\MGameTimer.cc" />
     <ClCompile Include="Source\Management\Helper\SProfilingHelper.cc" />
     <ClCompile Include="Source\Management\Internal\Input\MInputDelegates.cc" />
@@ -527,10 +464,8 @@
     <ClCompile Include="Source\Helper\Library\HelperZlib.cc" />
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
     <ClCompile Include="Source\Helper\Library\HelperJson.cc" />
-    <ClCompile Include="Source\Helper\Math\Math.cc" />
-    <ClCompile Include="Source\Helper\Math\Random.cc" />
     <ClCompile Include="Source\Helper\Internal\FThreadPool.cc" />
-    <ClCompile Include="Source\Helper\Type\DArea2D.cc" />
+    <ClCompile Include="Source\Helper\Type\DArea.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB24.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGBA.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGBA32.cc" />
@@ -539,11 +474,9 @@
     <ClCompile Include="Source\Helper\Type\DMatrix3.cc" />
     <ClCompile Include="Source\Helper\Type\DMatrix4.cc" />
     <ClCompile Include="Source\Helper\Type\DQuaternion.cc" />
-    <ClCompile Include="Source\Helper\Type\DTristateBool.cc" />
     <ClCompile Include="Source\Helper\Type\DVector2.cc" />
     <ClCompile Include="Source\Helper\Type\DVector3.cc" />
     <ClCompile Include="Source\Helper\Type\DVector4.cc" />
-    <ClCompile Include="Source\Helper\Type\DVectorInt2.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
     <ClCompile Include="Source\Management\BindingLua\BindingGlobalType.cc" />
     <ClCompile Include="Source\Management\BindingLua\Entry.cc" />
@@ -796,36 +729,35 @@
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLTextureDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLWindowContextDescriptor.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyAttachmentInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyFrameBufferInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMaterialInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyMeshInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelAnimScrapInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyModelSkeletonInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDySoundInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureCubemapInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureGeneralInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationAttachment.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationFrameBuffer.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationMaterial.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationMesh.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationModelAnimScrap.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationModel.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationModelSkeleton.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationSound.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationTextureCubemap.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationTextureGeneral.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Interface\IRenderableBinder.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\FMeshVBOIntermediate.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IUniformStructs.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\Uniform\IUniformValueBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\XHandleAliases.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentGeneralResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FDyAttachmentPingpongResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyAttachmentResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyFrameBufferResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMaterialResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyMeshResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyModelResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyShaderResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDySoundResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureCubemapResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureGeneralResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FDyTextureResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FResourceAttachmentGeneral.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Attachment\FResourceAttachmentPingpong.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\AResourceAttachmentBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\AResourceFrameBufferBase.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FResourceMaterial.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FResourceMesh.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FResourceModel.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FResourceShader.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureCubemap.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureGeneral.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\AResourceTextureBase.h" />
     <ClInclude Include="Include\Dy\Component\Type\EComponentType.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferGeneralResource.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FDyFrameBufferPingPongResource.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FResourceFrameBufferGeneral.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Resource\FrameBuffer\FResourceFrameBufferPingPong.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\IBinderBase.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\AUniformHelper.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Material\TResourceBinderMaterial.h" />
@@ -840,8 +772,8 @@
     <ClInclude Include="Include\Dy\Core\Resource\Type\XTemplateRescInfoType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Shader\XTemplateUniformType.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\Uniform\TUniformValue.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTaskDeferred.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\SDyIOBindingHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIODeferredTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SIOBindingHelper.h" />
     <ClInclude Include="Include\DyMacroPlatformSetting.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
     <ClInclude Include="Include\Dy\Element\Internal\TIdDistributor.h" />
@@ -870,11 +802,10 @@
     <ClInclude Include="Include\Dy\Helper\System\Idioms.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DArea3D.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DBounds.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DSphere.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DPlane.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DUuid.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DVectorInt4.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SProfilingHelper.h" />
@@ -946,22 +877,22 @@
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CBaseWidgetScript.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CWidgetScriptCpp.h" />
     <ClInclude Include="Include\Dy\Component\Internal\Widget\CWidgetScriptLua.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyShaderInformation.h" />
-    <ClInclude Include="Include\Dy\Core\Resource\Information\FDyTextureInformation.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationShader.h" />
+    <ClInclude Include="Include\Dy\Core\Resource\Information\FInformationTexture.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Type\EResourceScope.h" />
-    <ClInclude Include="Include\Dy\Core\GDyEngine.h" />
+    <ClInclude Include="Include\Dy\Core\GEngine.h" />
     <ClInclude Include="Include\Dy\Core\Reflection\RBuiltinResources.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Helper\FrameAttachmentString.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceInstance.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOTask.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOReferenceContainer.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\DDyIOWorkerResult.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\EDyIOTask.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\FDyIOGC.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\IO\TDyIOWorker.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\SDyIOConnectionHelper.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\SDyIOWorkerConnHelper.h" />
-    <ClInclude Include="Include\Dy\Core\Thread\TDyIO.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DIOReferenceInstance.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DIOReferenceContainer.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\DRescIOWorkerResult.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\EIOTask.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\FRescIOGC.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\IO\TRescIOWorker.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SIOConnectionHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\SIOWorkerConnHelper.h" />
+    <ClInclude Include="Include\Dy\Core\Thread\TRescIO.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
@@ -1014,11 +945,6 @@
     <ClInclude Include="Include\Dy\Editor\Gui\ViewDetailView.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewViewportMain.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\ViewWorldOutliner.h" />
-    <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiComponentBase.h" />
-    <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiWindowSingletonCrtp.h" />
-    <ClInclude Include="Include\Dy\Editor\Interface\IDyGuiHasChildren.h" />
-    <ClInclude Include="Include\Dy\Editor\Literals\DIalogMessageString.h" />
-    <ClInclude Include="Include\Dy\Editor\Literals\LibraryLicenseString.h" />
     <ClInclude Include="Include\Dy\Element\Interface\IColliable.h" />
     <ClInclude Include="Include\Dy\Element\FLevel.h" />
     <ClInclude Include="Include\Dy\Element\ARenderableObject.h" />
@@ -1032,11 +958,10 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperJson.h" />
     <ClInclude Include="Include\Dy\Helper\System\Pointer.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FThreadPool.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DArea2D.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\DArea.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DClamp.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DString.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DTristateBool.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\DVectorInt2.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperZlib.h" />
     <ClInclude Include="Include\Dy\Management\Helper\XLuaBindingEntry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\FPhysxSimulationCallback.h" />
@@ -1070,11 +995,9 @@
     <ClInclude Include="Include\Dy\Core\Resource\Internal\XGeometryTypes.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\DImageBinaryBuffer.h" />
     <ClInclude Include="Include\Dy\Helper\System\Macroes.h" />
-    <ClInclude Include="Include\Dy\Helper\Math\Math.h" />
-    <ClInclude Include="Include\Dy\Helper\Math\Random.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DColorRGBA.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DColorRGBA32.h" />
-    <ClInclude Include="Include\Dy\Helper\Type\EAxis3D.h" />
+    <ClInclude Include="Include\Dy\Helper\Type\EAxis.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix2x2.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix3x3.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DMatrix4x4.h" />
@@ -1138,6 +1061,7 @@
     <ClInclude Include="Libraries\stb\stb_image.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAO.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Level\Test_Astronaut.json" />
@@ -1158,7 +1082,6 @@
     <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
     <None Include="Include\Dy\Helper\Library\HelperString.inl" />
     <None Include="Include\Dy\Management\Inline\MLogHelper.inl" />
-    <None Include="Include\Dy\Management\Inline\MLogImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MMetaInfoImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MPhysicsImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MRenderingImpl.inl" />
@@ -1173,6 +1096,12 @@
     <None Include="TestResource\Lua\variables.lua">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DyCore.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

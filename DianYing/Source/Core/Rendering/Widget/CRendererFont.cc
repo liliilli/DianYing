@@ -17,8 +17,8 @@
 
 #include <Dy/Builtin/ShaderGl/Font/RenderFontArraySDF.h>
 #include <Dy/Builtin/Mesh/FDyBtMsUiFontQuad.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Element/Widget/FWidgetText.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
@@ -40,10 +40,10 @@ namespace
 /// @return Character glyph render vertices information.
 /// @see https://www.freetype.org/freetype2/docs/tutorial/step2.html
 ///
-MDY_NODISCARD std::array<dy::DVector2, 12>
+MDY_NODISCARD std::array<dy::DVec2, 12>
 GetCharacterVertices(
     _MIN_ const dy::DDyFontCharacterInfo& ch_info, 
-    _MIN_ const dy::DVector2& position, 
+    _MIN_ const dy::DVec2& position, 
     _MIN_ const TI32 fontSize)
 {
   const TF32 scale        = fontSize / 64.0f;
@@ -56,24 +56,24 @@ GetCharacterVertices(
   const auto& texLd = ch_info.mTexCoordInfo.mLeftDown;
   const auto& texRu = ch_info.mTexCoordInfo.mRightUp;
 
-  const auto chanMap = dy::DVector2{
+  const auto chanMap = dy::DVec2{
       static_cast<TF32>(ch_info.mTexCoordInfo.mChannel), 
       static_cast<TF32>(ch_info.mTexCoordInfo.mMapIndex)};
 
   return {
-    dy::DVector2{r, b}, dy::DVector2{texRu.X, texLd.Y}, chanMap,
-    dy::DVector2{r, t}, dy::DVector2{texRu.X, texRu.Y}, chanMap,
-    dy::DVector2{l, t}, dy::DVector2{texLd.X, texRu.Y}, chanMap,
-    dy::DVector2{l, b}, dy::DVector2{texLd.X, texLd.Y}, chanMap };
+    dy::DVec2{r, b}, dy::DVec2{texRu.X, texLd.Y}, chanMap,
+    dy::DVec2{r, t}, dy::DVec2{texRu.X, texRu.Y}, chanMap,
+    dy::DVec2{l, t}, dy::DVec2{texLd.X, texRu.Y}, chanMap,
+    dy::DVec2{l, b}, dy::DVec2{texLd.X, texLd.Y}, chanMap };
 }
 
-MDY_NODISCARD std::vector<std::array<dy::DVector2, 12>> 
+MDY_NODISCARD std::vector<std::array<dy::DVec2, 12>> 
 GetCharacterVertices(
     dy::IFontContainer& container, 
-    const std::vector<std::pair<TC16, dy::DVector2>>& lineList, 
+    const std::vector<std::pair<TChr16, dy::DVec2>>& lineList, 
     TI32 fontSize)
 {
-   std::vector<std::array<dy::DVector2, 12>> result;
+   std::vector<std::array<dy::DVec2, 12>> result;
    result.reserve(lineList.size());
    for (const auto& [charCode, position] : lineList)
    {
@@ -113,7 +113,7 @@ CRendererFont::CRendererFont(FWidgetText& iPtrWidget) :
     glVertexBindingDivisor(2, 1);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->mBinderFontMesh->GetVertexBufferId());
-    glBindVertexBuffer(0, this->mBinderFontMesh->GetVertexBufferId(), 0, sizeof(DVector2) * 2);
+    glBindVertexBuffer(0, this->mBinderFontMesh->GetVertexBufferId(), 0, sizeof(DVec2) * 2);
     VertexAttribDivisor // DO NOT USE IN CASE OF THiS.
 #endif
 void CRendererFont::Render()
@@ -133,24 +133,24 @@ void CRendererFont::Render()
   
   IFontContainer& container = this->mPtrWidget->GetFontContainer();
   const TI32 fontSize         = this->mPtrWidget->GetFontSize();
-  const DVector2 initPos    = this->mPtrWidget->GetRenderPosition();
-  DVector2 renderPosition   = initPos;
+  const DVec2 initPos    = this->mPtrWidget->GetRenderPosition();
+  DVec2 renderPosition   = initPos;
 
-  using TLineCharCodeList = std::vector<std::pair<TC16, DVector2>>;
+  using TLineCharCodeList = std::vector<std::pair<TChr16, DVec2>>;
   std::vector<TLineCharCodeList>  charCodeList{};
   std::vector<TI32>               lineActualWidthList{};
 
   { // Make char-code list with calculating lineActualWidth of each line..
     TLineCharCodeList lineCharCodeList{};
     TI32              lineActualWidth = 0;
-    for (const TC16& ucs2Char : string)
+    for (const TChr16& ucs2Char : string)
     {
       if (ucs2Char != '\n')
       { 
         const auto& charInfo = container[ucs2Char];
         if (container.IsCharacterGlyphExist(ucs2Char) == false) { continue; }
         // Insert and relocate next position.
-        lineCharCodeList.emplace_back(std::pair(ucs2Char, DVector2{renderPosition.X, renderPosition.Y}));
+        lineCharCodeList.emplace_back(std::pair(ucs2Char, DVec2{renderPosition.X, renderPosition.Y}));
         // Calculate width.
         const auto calculatedWidth = static_cast<TI32>(charInfo.mHorizontalAdvance * fontSize / 2);
         renderPosition.X += calculatedWidth;
@@ -208,7 +208,7 @@ void CRendererFont::Render()
   }
 
   // Render
-  using TBuffer = std::array<DVector2, 12>;
+  using TBuffer = std::array<DVec2, 12>;
   const std::vector<TBuffer> buffer = GetCharacterVertices(container, actualCharCodeList, fontSize);
   std::vector<TU32> indices = {};
   for (TU32 i = 0, num = static_cast<TU32>(buffer.size()); i < num; ++i)

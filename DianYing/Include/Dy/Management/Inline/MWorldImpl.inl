@@ -319,19 +319,19 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(RemoveLevel)()
   MScript::GetInstance().ClearWidgetScriptGCList();
   MScript::GetInstance().ClearActorScriptGCList();
 
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Temporal, EDyResourceStyle::Information);
+  SIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Resource);
+  SIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Information);
+  SIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Resource);
+  SIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Information);
+  SIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Resource);
+  SIOConnectionHelper::TryGC(EResourceScope::Temporal, EResourceStyle::Information);
 
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Information);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Resource);
-  SDyIOConnectionHelper::TryGC(EResourceScope::Level, EDyResourceStyle::Information);
+  SIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Resource);
+  SIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Information);
+  SIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Resource);
+  SIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Information);
+  SIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Resource);
+  SIOConnectionHelper::TryGC(EResourceScope::Level, EResourceStyle::Information);
 
   // Must reset depedent manager on this.
   MPhysics::GetInstance().ReleaseScene();
@@ -350,7 +350,7 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(PopulateNextLevelResources)()
 
   // Populate resource and wait until resource populating is done.
   // If done, call `build next level` in outside (MDySync). (GSS 12-13)
-  SDyIOConnectionHelper::PopulateResourceList(
+  SIOConnectionHelper::PopulateResourceList(
       levelResourceSet, 
       EResourceScope::Level,
       []() 
@@ -358,7 +358,7 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(PopulateNextLevelResources)()
     auto& mWorld = MWorld::GetInstance();
     mWorld.MDY_PRIVATE(BuildNextLevel)(); 
     mWorld.MDY_PRIVATE(TransitionToNextLevel)();
-    GDyEngine::GetInstance().SetNextGameStatus(EGlobalGameState::GameRuntime);
+    GEngine::GetInstance().SetNextGameStatus(EGlobalGameState::GameRuntime);
   });
   return DY_SUCCESS;
 }

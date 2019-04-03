@@ -27,13 +27,13 @@ class FDyBtMsSphere final : public AMeshResource
   MDY_REGISTER_RESOURCE_MESH(FDyBtMsSphere, "dyBtMsSphere");
 
   void pEmplaceVertex(
-      _MIN_ const DVector3& normalized_position,
-      _MIN_ const DVector2&,
+      _MIN_ const DVec3& normalized_position,
+      _MIN_ const DVec2&,
       _MOUT_ PDyDefaultMeshInformation& container);
 
   void pCreateVertexRecursively(
-      _MIN_ const DVector3& a, _MIN_ const DVector3& b, _MIN_ const DVector3& c,
-      _MIN_ const DVector2& ta, _MIN_ const DVector2& tb, _MIN_ const DVector2& tc,
+      _MIN_ const DVec3& a, _MIN_ const DVec3& b, _MIN_ const DVec3& c,
+      _MIN_ const DVec2& ta, _MIN_ const DVec2& tb, _MIN_ const DVec2& tc,
       _MIN_ const TI32 level,
       _MIO_ PDyDefaultMeshInformation& container
   );

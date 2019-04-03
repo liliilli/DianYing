@@ -14,11 +14,11 @@
 
 #include <Dy/Builtin/RenderItem/Debug/FBtDebugCollisionShape.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/AResourceFrameBufferBase.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Component/Internal/Physics/CBasePhysicsCollider.h>
 #include <Dy/Management/MSetting.h>
@@ -78,7 +78,7 @@ void FBtRenderDebugCollisionShape::OnRender()
 
 void FBtRenderDebugCollisionShape::RenderObject(
   CBasePhysicsCollider& iRefCollider,
-  const DMatrix4x4& iTransformMatrix)
+  const DMat4& iTransformMatrix)
 {
   //!
   //! Debug rendering.
@@ -102,7 +102,7 @@ void FBtRenderDebugCollisionShape::RenderObject(
   case EDyColliderType::Sphere:
   { this->mBinderSphere->BindVertexArray();
     glBindBuffer    (GL_ARRAY_BUFFER, this->mBinderSphere->GetVertexBufferId());
-    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVector3) * 100, iRefCollider.GetColliderMesh()[0].Data());
+    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVec3) * 100, iRefCollider.GetColliderMesh()[0].Data());
     glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
     // Render.
@@ -111,7 +111,7 @@ void FBtRenderDebugCollisionShape::RenderObject(
   case EDyColliderType::Capsule: 
   { this->mBinderCapsule->BindVertexArray();
     glBindBuffer    (GL_ARRAY_BUFFER, this->mBinderCapsule->GetVertexBufferId());
-    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVector3) * 100, iRefCollider.GetColliderMesh()[0].Data());
+    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVec3) * 100, iRefCollider.GetColliderMesh()[0].Data());
     glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
     // Render.
@@ -120,7 +120,7 @@ void FBtRenderDebugCollisionShape::RenderObject(
   case EDyColliderType::Box: 
   { this->mBinderBox->BindVertexArray(); 
     glBindBuffer    (GL_ARRAY_BUFFER, this->mBinderBox->GetVertexBufferId());
-    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVector3) * 20, iRefCollider.GetColliderMesh()[0].Data());
+    glBufferSubData (GL_ARRAY_BUFFER, 0, sizeof(DVec3) * 20, iRefCollider.GetColliderMesh()[0].Data());
     glBindBuffer    (GL_ARRAY_BUFFER, 0);
 
     // Render.

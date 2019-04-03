@@ -13,6 +13,7 @@
 /// SOFTWARE.
 ///
 
+#include <functional>
 #include <Dy/Element/Type/Timer/ETimerState.h>
 
 //!

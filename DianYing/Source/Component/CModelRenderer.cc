@@ -21,7 +21,7 @@
 #include <Dy/Management/MWorld.h>
 
 #include <Dy/Core/Resource/Type/TResourceBinder.h>
-#include <Dy/Core/Resource/Resource/FDyModelResource.h>
+#include <Dy/Core/Resource/Resource/FResourceModel.h>
 #include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Management/Internal/Render/FDyModelHandlerManager.h>
 
@@ -60,13 +60,13 @@ std::optional<TI32> CModelRenderer::GetModelSubmeshCount() const noexcept
   return static_cast<TI32>(this->mPtrModelFilterComponent->GetModelReference()->GetMeshResourceList().size());
 }
 
-const FDyMeshResource& CModelRenderer::GetSubmeshResourcePtr(TU32 index) const noexcept
+const FResourceMesh& CModelRenderer::GetSubmeshResourcePtr(TU32 index) const noexcept
 {
   const auto& submeshResourceList = this->mPtrModelFilterComponent->GetModelReference()->GetMeshResourceList();
   return *submeshResourceList[index]->Get();
 }
 
-const FDyMaterialResource& CModelRenderer::GetMaterialResourcePtr(TU32 index) const noexcept
+const FResourceMaterial& CModelRenderer::GetMaterialResourcePtr(TU32 index) const noexcept
 {
   //MDY_ASSERT_MSG(index < this->mBinderMaterialListSize, "Index for CModelRenderer::mMaterialResourcePtr is out of bound.");
   const auto& materialResourceList = this->mPtrModelFilterComponent->GetModelReference()->GetMaterialResourceList();

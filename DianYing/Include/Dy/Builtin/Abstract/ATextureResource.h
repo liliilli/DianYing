@@ -45,7 +45,7 @@ protected:
   /// Temporary texture meta info.
   PDyTextureInstanceMetaInfo mTextureMetaInfo{};
 public:
-  using TBufferType = std::vector<TU08>;
+  using TBufferType = std::vector<TU8>;
   static constexpr auto value = EResourceType::Texture;
 
   /// Buffer pointer to bind using `GetMetaInfo()`.
@@ -56,9 +56,9 @@ public:
 };
 
 template <int TN, int TV>
-MDY_NODISCARD std::vector<TU08> ConvertToTU08VectorList(const std::array<std::array<TU08, TN>, TV>& buffer) noexcept
+MDY_NODISCARD std::vector<TU8> ConvertToTU08VectorList(const std::array<std::array<TU8, TN>, TV>& buffer) noexcept
 {
-  std::vector<TU08> result {};
+  std::vector<TU8> result {};
   for (int y = 0; y < TV; ++y)
   {
     for (int x = 0; x < TN; ++x)
@@ -70,9 +70,9 @@ MDY_NODISCARD std::vector<TU08> ConvertToTU08VectorList(const std::array<std::ar
 }
 
 template <int TV>
-MDY_NODISCARD std::vector<TU08> ConvertToTU08VectorList(const std::array<dy::DColorRGBA32, TV>& buffer) noexcept
+MDY_NODISCARD std::vector<TU8> ConvertToTU08VectorList(const std::array<dy::DColorRGBA32, TV>& buffer) noexcept
 {
-  std::vector<TU08> result {};
+  std::vector<TU8> result {};
   result.reserve(TV * 4);
 
   for (int y = 0; y < TV; ++y)

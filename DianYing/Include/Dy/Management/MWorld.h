@@ -47,7 +47,7 @@ namespace dy
 /// @brief Manages level and helping access each level's unique properties.
 class MWorld final : public ISingleton<MWorld>, public IUpdatable
 {
-  MDY_SINGLETON_DERIVED(MWorld);
+  DY_PIMPL_SINGELTON_DERIVED(MWorld);
   MDY_SINGLETON_PROPERTIES(MWorld);
 public:
   /// @brief Update level structures prior to dive in level objects tree hierarchy.
@@ -169,13 +169,13 @@ public:
   MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
 
   /// @brief
-  MDY_NODISCARD bool CheckCreationActorExist() const noexcept;
+  MDY_NODISCARD bool IsActorCreationExist() const noexcept;
   /// @brief
-  void TryCreateActorsOfCreationActorList() noexcept;
+  void TryCreateActorsFromCreationList() noexcept;
   /// @brief
-  void CleanCreationActorList() noexcept;
+  void CleanActorCreationList() noexcept;
   /// @brief Check Gc-candidate actor list is not empty and exist something.
-  MDY_NODISCARD bool CheckIsGcActorExist() const noexcept;
+  MDY_NODISCARD bool IsActorGCCandidateExist() const noexcept;
   /// @brief Try remove actor gc list anyway. \n
   /// If there is something to do actors in GC list, call something to do prior to this.
   void MDY_PRIVATE(TryRemoveActorGCList)() noexcept;
@@ -227,8 +227,6 @@ private:
   /// @param  validComponent
   /// @return
   MDY_NODISCARD TI32 pfEnrollActiveCamera(CCamera& validComponent) noexcept;
-
-  class Impl; Impl* mInternal = nullptr;
 
   friend class FLevel;
   friend class CModelRenderer;

@@ -21,16 +21,16 @@ namespace dy
 {
   
 /// @macro MDY_SINGLETON_PROPERTIES
-/// This macro must not be attached to whichever class inherits ISingleton<>.
+/// This macro must not be attached to whichever class does not inherits ISingleton<>.
 #define MDY_SINGLETON_PROPERTIES(__MASingletonType__) \
 public: \
     __MASingletonType__(const __MASingletonType__##&) = delete; \
-    __MASingletonType__(__MASingletonType__##&&) = delete; \
+    __MASingletonType__(__MASingletonType__##&&) noexcept = delete; \
     __MASingletonType__##& operator=(const __MASingletonType__##&) = delete; \
-    __MASingletonType__##& operator=(__MASingletonType__##&&) = delete
+    __MASingletonType__##& operator=(__MASingletonType__##&&) noexcept = delete
 
 /// @macro MDY_SINGLETON_DERIVED
-/// This macro must not be attached to whichever class inherits ISingleton<>.
+/// This macro must not be attached to whichever class does not inherits ISingleton<>.
 #define MDY_SINGLETON_DERIVED(__MADerivedSingletonType__) \
 private:                                                  \
     __MADerivedSingletonType__() = default;               \
@@ -39,6 +39,18 @@ private:                                                  \
     friend class ISingleton<__MADerivedSingletonType__>;  \
 public:                                                   \
     virtual ~__MADerivedSingletonType__() = default;
+
+/// @def DY_PIMPL_SINGELTON_DERIVED
+/// This macro must not be attached to whichever class does not inherit ISingleton<>.
+#define DY_PIMPL_SINGELTON_DERIVED(__MADerivedSingletonType__) \
+    DY_DECLARE_PIMPL();                                   \
+  public:                                                 \
+    __MADerivedSingletonType__() = default;               \
+    [[nodiscard]] EDySuccess pfInitialize();              \
+    [[nodiscard]] EDySuccess pfRelease();                 \
+    friend class ISingleton<__MADerivedSingletonType__>;  \
+public:                                                   \
+    virtual ~__MADerivedSingletonType__(); 
 
 template <typename TType>
 class ISingleton

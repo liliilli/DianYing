@@ -14,11 +14,11 @@
 
 #include <Dy/Builtin/RenderItem/Debug/FBtDebugCollisionAabb.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/AResourceFrameBufferBase.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Component/Internal/Physics/CBasePhysicsCollider.h>
 #include <Dy/Management/MSetting.h>
@@ -69,7 +69,7 @@ void FBtRenderDebugCollisionAabb::OnRender()
 
 void FBtRenderDebugCollisionAabb::RenderObject(
   CBasePhysicsCollider& iRefCollider,
-  const DMatrix4x4& iTransformMatrix)
+  const DMat4& iTransformMatrix)
 {
   // Update uniform.
   this->mBinderShader->TryUpdateUniform<EUniformVariableType::Matrix4>("uTransform", iTransformMatrix);
@@ -88,20 +88,22 @@ void FBtRenderDebugCollisionAabb::RenderObject(
    * 7--------6
    */
   const auto& b = iRefCollider.GetBound();
-  std::vector<DVector3> aabbVbo;
-  aabbVbo.emplace_back(b.mMax.X, b.mMax.Y, b.mMin.Z);
-  aabbVbo.emplace_back(b.mMin.X, b.mMax.Y, b.mMin.Z);
-  aabbVbo.emplace_back(b.mMin.X, b.mMax.Y, b.mMax.Z);
-  aabbVbo.emplace_back(b.mMax.X, b.mMax.Y, b.mMax.Z);
+  std::vector<DVec3> aabbVbo;
+  const auto& min = b.GetMinimumPoint();
+  const auto& max = b.GetMaximumPoint();
+  aabbVbo.emplace_back(max.X, max.Y, min.Z);
+  aabbVbo.emplace_back(min.X, max.Y, min.Z);
+  aabbVbo.emplace_back(min.X, max.Y, max.Z);
+  aabbVbo.emplace_back(max.X, max.Y, max.Z);
 
-  aabbVbo.emplace_back(b.mMin.X, b.mMin.Y, b.mMin.Z);
-  aabbVbo.emplace_back(b.mMax.X, b.mMin.Y, b.mMin.Z);
-  aabbVbo.emplace_back(b.mMax.X, b.mMin.Y, b.mMax.Z);
-  aabbVbo.emplace_back(b.mMin.X, b.mMin.Y, b.mMax.Z);
+  aabbVbo.emplace_back(min.X, min.Y, min.Z);
+  aabbVbo.emplace_back(max.X, min.Y, min.Z);
+  aabbVbo.emplace_back(max.X, min.Y, max.Z);
+  aabbVbo.emplace_back(min.X, min.Y, max.Z);
 
   // Buffer binding.
   glBindBuffer(GL_ARRAY_BUFFER, this->mBinderAABB->GetVertexBufferId());
-  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(DVector3) * 8, &aabbVbo[0].X);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(DVec3) * 8, &aabbVbo[0].X);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   // Render.

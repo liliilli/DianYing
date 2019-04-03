@@ -25,6 +25,7 @@ namespace dy::math
 
 /// @struct DVector4
 /// @brief 4-element vector struct type.
+/// @todo Need to apply simd __m128 (SSE), __m128i, and two __m128d.
 template <typename TType, typename TExpression = void> 
 struct DVector4;
 
@@ -57,6 +58,11 @@ struct MATH_NODISCARD DVector4<TType, std::enable_if_t<kIsIntegerType<TType>>> f
 
   template <typename TAnotherType>
   explicit operator DVector4<TAnotherType>() const noexcept;
+
+  /// @brief Narrow conversion.
+  explicit operator DVector2<TValueType>() const noexcept;
+  /// @brief Narrow conversion.
+  explicit operator DVector3<TValueType>() const noexcept;
 
   /// @brief Get values with index. index must be 0, 1 or 2.
   TValueType& operator[](TIndex index);
@@ -100,6 +106,11 @@ struct MATH_NODISCARD DVector4<TType, std::enable_if_t<kIsRealType<TType>>> fina
 
   template <typename TAnotherType>
   explicit operator DVector4<TAnotherType>() const noexcept;
+  
+  /// @brief Narrow conversion.
+  explicit operator DVector2<TValueType>() const noexcept;
+  /// @brief Narrow conversion.
+  explicit operator DVector3<TValueType>() const noexcept;
 
   /// @brief Get values with index. index must be 0, 1 or 2.
   TValueType& operator[](TIndex index);
@@ -137,6 +148,8 @@ struct MATH_NODISCARD DVector4<TType, std::enable_if_t<kIsRealType<TType>>> fina
 };
 
 } /// ::dy::math namespace
+#include <Math/Type/Inline/DVector4/Simd/DVector4TF32.inl>
+#include <Math/Type/Inline/DVector4/Simd/DVector4TI32.inl>
 #include <Math/Type/Inline/DVector4/DVector4Common.inl>
 #include <Math/Type/Inline/DVector4/DVector4Int.inl>
 #include <Math/Type/Inline/DVector4/DVector4Real.inl>

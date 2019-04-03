@@ -41,7 +41,7 @@ void FDyBuiltinTextureErrorBlue::ConstructBuffer(_MOUT_ TBufferType& buffer, _MO
   property.mSpecifierName     = FDyBuiltinTextureErrorBlue::sName;
   property.mTextureType       = ETextureStyleType::D2;
   property.mTextureColorType  = EDyImageColorFormatStyle::RGBA;
-  property.mBuiltinBufferSize = DVectorInt2{ 16, 16 };
+  property.mBuiltinBufferSize = DIVec2{ 16, 16 };
   property.mTextureMapType_Deprecated = ETextureMapType::Diffuse;
 
   std::array<DColorRGBA32, 256> infoChunk =

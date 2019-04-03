@@ -48,82 +48,78 @@ namespace dy
 class MSound final : public ISingleton<MSound>, public IUpdatable
 {
   MDY_SINGLETON_PROPERTIES(MSound);
-  MDY_SINGLETON_DERIVED(MSound);
+  DY_PIMPL_SINGELTON_DERIVED(MSound);
 public:
   /// @brief Sound system should be ticked once per game update. 
-  void Update(float dt) override final;
-
-  /// @brief Check sound clip is exist on Dy resource system.
-  MDY_NODISCARD bool IsSoundClipExist(const std::string& iSoundSpecifier) const noexcept;
+  void Update(TF32 dt) override final;
 
   /// @brief Create a sound directly with no attenuation, perfect for UI Sounds.
   /// If failed to create, just return nullptr.
   std::unique_ptr<FInstantSound2D> CreateSound2D(
-      const std::string& iSoundSpecifier, 
-      const std::string& iSoundChannel,
-      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
-      const TF32 iDelay = 0.0f);
+    const std::string& iSoundSpecifier, 
+    const std::string& iSoundChannel,
+    const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+    const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+    const TF32 iDelay = 0.0f);
   
   /// @brief Play a sound directly with no attenuation, perfect for UI Sounds.
   /// Fire and forget!
   void PlaySound2D(
-      const std::string& iSoundSpecifier, 
-      const std::string& iSoundChannel,
-      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
-      const TF32 iDelay = 0.0f);
+    const std::string& iSoundSpecifier, 
+    const std::string& iSoundChannel,
+    const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+    const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+    const TF32 iDelay = 0.0f);
 
   /// @brief Play a sound directly with no attenuation, with looped.
   /// Return `FSound2DBinder` to control sound2d instance.
   MDY_NODISCARD std::optional<FSound2DBinder> PlaySound2DLooped(
-      const std::string& iSoundSpecifier,
-      const std::string& iSoundChannel,
-      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f);
+    const std::string& iSoundSpecifier,
+    const std::string& iSoundChannel,
+    const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+    const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f);
     
   inline static constexpr TF32 s3DMinDistance = 0.5f;
   inline static constexpr TF32 s3DMaxDistance = 500.f;
 
   /// @brief Play a sound directly with attenuation. Fire and forget!
   void PlaySound3D(
-      const std::string& iSoundSpecifier, 
-      const std::string& iSoundChannel,
-      const DVector3& iWorldPosition,
-      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
-      const TF32 iDelay = 0.0f,
-      const TF32 iMinDistance = s3DMinDistance,
-      const TF32 iMaxDistance = s3DMaxDistance);
+    const std::string& iSoundSpecifier, 
+    const std::string& iSoundChannel,
+    const DVec3& iWorldPosition,
+    const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+    const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+    const TF32 iDelay = 0.0f,
+    const TF32 iMinDistance = s3DMinDistance,
+    const TF32 iMaxDistance = s3DMaxDistance);
   
   /// @brief Play a sound directly with attenuation, with looped.
   /// Return `FSound3DBinder` to control sound 3d instance.
   MDY_NODISCARD std::optional<FSound3DBinder> PlaySound3DLooped(
-      const std::string& iSoundSpecifier, 
-      const std::string& iSoundChannel,
-      const DVector3& iWorldPosition,
-      const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
-      const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
-      const TF32 iMinDistance = s3DMinDistance,
-      const TF32 iMaxDistance = s3DMaxDistance);
+    const std::string& iSoundSpecifier, 
+    const std::string& iSoundChannel,
+    const DVec3& iWorldPosition,
+    const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
+    const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
+    const TF32 iMinDistance = s3DMinDistance,
+    const TF32 iMaxDistance = s3DMaxDistance);
 
   /// @brief Get channel pointer instance.
-  MDY_NODISCARD FSoundChannel* GetPtrChannel(const std::string& iSpecifier);
- 
+  FSoundChannel* GetPtrChannel(const std::string& iSpecifier);
   /// @brief Get reference of group channel which have given `iSpecifier` name.
-  MDY_NODISCARD FSoundGroup&    MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier);
+  FSoundGroup& MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier);
   /// @brief Get reference of internal sound library entry.
-  MDY_NODISCARD FMOD::System&     MDY_PRIVATE(GetSystem)();
+  FMOD::System& MDY_PRIVATE(GetSystem)();
   /// @brief Create sound instance for `CSoundSource`.
-  MDY_NODISCARD FSoundInstance* MDY_PRIVATE(CreateSoundInstance)(
+  FSoundInstance* MDY_PRIVATE(CreateSoundInstance)(
       const PDySoundSourceComponentMetaInfo& iMetaInfo,
       FActor& iRefActor);
+  
+  /// @brief Check sound clip is exist on Dy resource system.
+  MDY_NODISCARD bool IsSoundClipExist(const std::string& iSoundSpecifier) const noexcept;
 
   /// @brief Check sound system is available.
   MDY_NODISCARD bool IsSoundSystemAvailable() const noexcept;
-
-private:
-  class Impl; Impl* mPimpl = nullptr;
 };
 
 } /// ::dy namespace

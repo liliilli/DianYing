@@ -16,7 +16,7 @@
 namespace dy
 {
 
-inline MWindow::Impl::Impl()
+inline MWindow::Impl::Impl(MWindow& parent) : mImplParent{parent}
 {
   /// @brief This function is not implemented yet.
   static auto InitializeVulkan = [this]()
@@ -68,7 +68,7 @@ inline MWindow::Impl::Impl()
     descriptor.mIsUsingDefaultDoubleBuffer = true;
 
     const auto& settingManager = MSetting::GetInstance();
-    descriptor.mWindowSize = DVectorInt2{
+    descriptor.mWindowSize = DIVec2{
         settingManager.GetWindowSizeWidth(),
         settingManager.GetWindowSizeHeight()
     };

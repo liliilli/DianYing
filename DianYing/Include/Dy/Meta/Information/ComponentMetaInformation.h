@@ -21,7 +21,7 @@
 #include <Dy/Meta/Type/EDyComponentTypes.h>
 #include <Dy/Meta/Type/Physics/EDyColliderType.h>
 #include <Dy/Meta/Type/Physics/EDyRigidbodyType.h>
-#include <Dy/Helper/Type/DArea2D.h>
+#include <Dy/Helper/Type/DArea.h>
 #include <Dy/Helper/Type/DClamp.h>
 #include <Dy/Helper/Type/DColorRGB.h>
 #include <Dy/Management/Type/SettingContainer.h>
@@ -58,17 +58,17 @@ struct PDyTransformComponentMetaInfo final : public IDyMetaInformation
   struct DDetails final
   {
     /// Local position
-    DVector3        mLocalPosition = {};
+    DVec3        mLocalPosition = {};
     /// Local rotation
-    DVector3        mLocalRotation = {};
+    DVec3        mLocalRotation = {};
     /// Local scale
-    DVector3        mLocalScale = DVector3{ 1, 1, 1 };
+    DVec3        mLocalScale = DVec3{ 1, 1, 1 };
     /// World position
-    DVector3        mWorldPosition = {};
+    DVec3        mWorldPosition = {};
     /// World rotation
-    DVector3        mWorldRotation = {};
+    DVec3        mWorldRotation = {};
     /// World scale
-    DVector3        mWorldScale = DVector3{ 1, 1, 1 };
+    DVec3        mWorldScale = DVec3{ 1, 1, 1 };
   };
 
   /// Details
@@ -182,22 +182,22 @@ public:
   struct DDetails final
   {
     /// Fov must be range from 0.1f to 180.f
-    TF32       mInitialFieldOfView     = 70.f;
+    TF32    mInitialFieldOfView     = 70.f;
     ///
     EDyCameraProjectionType mProjectionType = EDyCameraProjectionType::NoneError;
     /// Near value of camera culling.
-    TF32       mNear                   = PDyCameraComponentMetaInfo::sInitialNear;
+    TF32    mNear                   = PDyCameraComponentMetaInfo::sInitialNear;
     /// Far value of camera culling.
-    TF32       mFar                    = PDyCameraComponentMetaInfo::sInitialFar;
+    TF32    mFar                    = PDyCameraComponentMetaInfo::sInitialFar;
     /// Viewport area
     /// Custom viewport size, but mIsCustomViewport must be enabled.
-    DArea2D   mViewportSize           = {};
+    DArea2D mViewportSize           = {};
     /// Camera will be focused instantly.
-    bool        mIsFocusInstantly       = false;
+    bool    mIsFocusInstantly       = false;
     /// Clipped camera will be unclipped.
-    bool        mIsEnableMeshUnClipped  = false;
+    bool    mIsEnableMeshUnClipped  = false;
     /// This camera is 3D sound listener.
-    bool        mIs3DListener = false;
+    bool    mIs3DListener = false;
   };
   /// Details
   DDetails    mDetails                = {};

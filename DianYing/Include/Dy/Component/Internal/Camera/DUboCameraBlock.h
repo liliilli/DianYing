@@ -25,8 +25,8 @@ MDY_SET_IMMUTABLE_STRING(sUboCameraBlock, "dyBtUboCameraBlock");
 /// @brief  This structure must be aligned by 16 bytes.
 struct alignas(16) DUboCameraBlock final
 {
-  DMatrix4x4 mProjMatrix = {};
-  DMatrix4x4 mViewMatrix = {};
+  DMat4 mProjMatrix = {};
+  DMat4 mViewMatrix = {};
 };
 
 } /// ::dy namespace

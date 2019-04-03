@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Helper/Type/DColorRGBA.h>
 #include <Dy/Helper/Type/DColorRGBA32.h>
+#include <Dy/Helper/Library/HelperJson.h>
 
 namespace dy {
 
@@ -85,9 +86,9 @@ std::array<TF32, 4> DColorRGBA::ToArray() const noexcept
   return {this->R, this->G, this->B, this->A};
 }
 
-DColorRGBA::operator DVector3() const noexcept
+DColorRGBA::operator DVec3() const noexcept
 {
-  return DVector3{this->R, this->G, this->B};
+  return DVec3{this->R, this->G, this->B};
 }
 
 DColorRGBA::operator glm::vec3() const noexcept
@@ -100,9 +101,9 @@ DColorRGBA::operator glm::vec4() const noexcept
   return glm::vec4{this->R, this->G, this->B, this->A};
 }
 
-DColorRGBA::operator DVector4() const noexcept
+DColorRGBA::operator DVec4() const noexcept
 {
-  return DVector4{this->R, this->G, this->B, this->A};
+  return DVec4{this->R, this->G, this->B, this->A};
 }
 
 void to_json(nlohmann::json& oJson, const DColorRGBA& iItem)

@@ -39,11 +39,11 @@ public:
   void OnRender() override final;
   void RenderObject(
     DDyModelHandler::DActorInfo& iRefRenderer,
-    FDyMeshResource& iRefMesh, 
-    FDyMaterialResource& iRefMaterial);
+    FResourceMesh& iRefMesh, 
+    FResourceMaterial& iRefMaterial);
   void RenderStaticInstancingObjects(
-    FDyMeshResource& iRefMesh,
-    FDyMaterialResource& iRefMaterial,
+    FResourceMesh& iRefMesh,
+    FResourceMaterial& iRefMaterial,
     TU32 iCount);
 
   void OnReleaseRenderingSetting() override final;
@@ -58,8 +58,8 @@ private:
   std::array<TF32, 2>           sViewportDims;
   std::ptrdiff_t                mAddrMainDirectionalShadow = 0;
 
-  DMatrix4x4 mViewMatrix;
-  DMatrix4x4 mProjMatrix;
+  DMat4 mViewMatrix;
+  DMat4 mProjMatrix;
 };
 
 } /// ::dy namespace

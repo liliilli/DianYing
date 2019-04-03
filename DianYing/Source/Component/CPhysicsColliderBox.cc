@@ -85,7 +85,7 @@ void CPhysicsColliderBox::InitializeInternalResource(_MINOUT_ CPhysicsRigidbody&
   iRefRigidbody.BindShapeToRigidbody(*this);
 }
 
-const DVector3& CPhysicsColliderBox::GetHalfExtent() const noexcept
+const DVec3& CPhysicsColliderBox::GetHalfExtent() const noexcept
 {
   return this->mHalfExtent;
 }
@@ -102,15 +102,15 @@ void CPhysicsColliderBox::UpdateColliderMesh()
   //!   |/      |/    \n
   //! lbf-----rbf
 
-  const auto ruf = DVector3{this->mHalfExtent};
-  const auto rud = DVector3{this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
-  const auto lud = DVector3{-this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
-  const auto luf = DVector3{-this->mHalfExtent.X, this->mHalfExtent.Y, this->mHalfExtent.Z};
+  const auto ruf = DVec3{this->mHalfExtent};
+  const auto rud = DVec3{this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto lud = DVec3{-this->mHalfExtent.X, this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto luf = DVec3{-this->mHalfExtent.X, this->mHalfExtent.Y, this->mHalfExtent.Z};
  
-  const auto rbf = DVector3{this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
-  const auto rbd = DVector3{this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
-  const auto lbd = DVector3{-this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
-  const auto lbf = DVector3{-this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
+  const auto rbf = DVec3{this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
+  const auto rbd = DVec3{this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto lbd = DVec3{-this->mHalfExtent.X, -this->mHalfExtent.Y, -this->mHalfExtent.Z};
+  const auto lbf = DVec3{-this->mHalfExtent.X, -this->mHalfExtent.Y, this->mHalfExtent.Z};
 
   // We do not need insert information for up & bottom plane.
   // Becasuse collider mesh will be drawn by line_strip.

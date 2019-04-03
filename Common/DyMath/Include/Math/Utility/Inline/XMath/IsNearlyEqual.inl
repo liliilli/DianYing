@@ -15,6 +15,26 @@
 namespace dy::math
 {
 
+constexpr bool IsNearlyEqual(TF32 lhs, TF32 rhs, TF32 tolerance) noexcept
+{
+  return (rhs < lhs ? lhs - rhs : rhs - lhs) < tolerance;
+}
+
+constexpr bool IsNearlyEqual(TF64 lhs, TF64 rhs, TF64 tolerance) noexcept
+{
+  return (rhs < lhs ? lhs - rhs : rhs - lhs) < tolerance;
+}
+
+constexpr bool IsNearlyZero(TF32 lhs, TF32 errorTolerance) noexcept
+{
+  return IsNearlyEqual(lhs, 0, errorTolerance);
+}
+
+constexpr bool IsNearlyZero(TF64 lhs, TF64 errorTolerance) noexcept
+{
+  return IsNearlyEqual(lhs, 0, errorTolerance);
+}
+
 template <typename TLeft, typename TRight>
 bool IsNearlyEqual(const DVector2<TLeft>& lhs, const DVector2<TRight>& rhs, TReal tolerance)
 {

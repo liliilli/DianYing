@@ -31,7 +31,7 @@ R"dy(
         "FieldOfView": 70.0, 
         "Projection": "Perspective", 
         "ClippingNear": 0.1, "ClippingFar": 600,
-        "ViewportRect": { "LeftDown": { "X": 0, "Y": 0 }, "RightUp": { "X": 1, "Y": 1 } },
+        "ViewportRect": { "Start": { "X": 0, "Y": 0 }, "Length": { "X": 1, "Y": 1 } },
         "IsFocusInstantly": true, "IsMeshUnclipped": false, "Is3DListener": false
       }
     }

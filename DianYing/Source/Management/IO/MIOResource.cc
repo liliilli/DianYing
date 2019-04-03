@@ -14,7 +14,7 @@
 
 /// Header file
 #include <Dy/Management/IO/MIOResource.h>
-#include <Dy/Core/Resource/Resource/FDyAttachmentResource.h>
+#include <Dy/Core/Resource/Resource/AResourceAttachmentBase.h>
 
 namespace dy
 {
@@ -35,37 +35,37 @@ void MIOResource::InsertResult(_MIN_ EResourceType type, _MIN_ void* ptrrawInsta
   {
   case EResourceType::GLShader:
   {
-    auto ptr = std::unique_ptr<FDyShaderResource>(static_cast<FDyShaderResource*>(ptrrawInstance));
+    auto ptr = std::unique_ptr<FResourceShader>(static_cast<FResourceShader*>(ptrrawInstance));
     this->__mShaderContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EResourceType::Texture:
   {
-    auto ptr = std::unique_ptr<FDyTextureResource>(static_cast<FDyTextureResource*>(ptrrawInstance));
+    auto ptr = std::unique_ptr<AResourceTextureBase>(static_cast<AResourceTextureBase*>(ptrrawInstance));
     this->__mTextureContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EResourceType::Mesh:
   {
-    auto ptr = std::unique_ptr<FDyMeshResource>(static_cast<FDyMeshResource*>(ptrrawInstance));
+    auto ptr = std::unique_ptr<FResourceMesh>(static_cast<FResourceMesh*>(ptrrawInstance));
     this->__mMeshContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EResourceType::Model:
   {
-    auto ptr = std::unique_ptr<FDyModelResource>(static_cast<FDyModelResource*>(ptrrawInstance));
+    auto ptr = std::unique_ptr<FResourceModel>(static_cast<FResourceModel*>(ptrrawInstance));
     this->__mModelContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EResourceType::Material:
   {
-    auto ptr = std::unique_ptr<FDyMaterialResource>(static_cast<FDyMaterialResource*>(ptrrawInstance));
+    auto ptr = std::unique_ptr<FResourceMaterial>(static_cast<FResourceMaterial*>(ptrrawInstance));
     this->__mMaterialContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EResourceType::GLAttachment:
   {
-    auto ptr = std::unique_ptr<FDyAttachmentResource>(static_cast<FDyAttachmentResource*>(ptrrawInstance));
+    auto ptr = std::unique_ptr<AResourceAttachmentBase>(static_cast<AResourceAttachmentBase*>(ptrrawInstance));
     this->__mAttachmentContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   case EResourceType::GLFrameBuffer:
   {
-    auto ptr = std::unique_ptr<FDyFrameBufferResource>(static_cast<FDyFrameBufferResource*>(ptrrawInstance));
+    auto ptr = std::unique_ptr<AResourceFrameBufferBase>(static_cast<AResourceFrameBufferBase*>(ptrrawInstance));
     this->__mFrameBufferContainer.MoveInsert(ptr->GetSpecifierName(), std::move(ptr));
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;

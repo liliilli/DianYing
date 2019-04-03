@@ -28,7 +28,7 @@ struct alignas(16) DUboPointLight final
   REGISTER_UNIFORM_STRUCT(DUboPointLight)
 
   /// @brief Light's position.
-  alignas(16) mutable DVector3 mPosition = DVector3{};
+  alignas(16) mutable DVec3 mPosition = DVec3{};
   /// @brief Light color
   alignas(16) DColorRGB mColor = DColorRGB::Black;
   /// @brief Light intensity for point light component.

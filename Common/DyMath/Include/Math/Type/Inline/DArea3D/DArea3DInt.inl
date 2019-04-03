@@ -146,6 +146,24 @@ DArea3D<TType, typename std::enable_if<kIsIntegerType<TType>>::type>
   return this->mLength.Z;
 }
 
+template<typename TType>
+void DArea3D<TType, std::enable_if_t<kIsIntegerType<TType>>>
+::SetWhd(const DVector3<TValueType>& whd)
+{
+  this->mLength = whd;
+  if constexpr (kCategoryOf<TType> == EValueCategory::Signed)
+  {
+    this->RelocatePosition();
+  }
+}
+
+template<typename TType>
+DVector3<TType> DArea3D<TType, std::enable_if_t<kIsIntegerType<TType>>>
+::GetWhd() const noexcept
+{
+  return this->mLength;
+}
+
 template <typename TType>
 void DArea3D<TType, std::enable_if_t<kIsIntegerType<TType>>>
 ::RelocatePosition()

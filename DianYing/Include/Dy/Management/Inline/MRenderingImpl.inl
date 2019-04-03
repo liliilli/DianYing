@@ -15,6 +15,7 @@
 
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
 #include <Dy/Component/CTransform.h>
+#include <Math/Utility/XGraphicsMath.h>
 
 namespace dy
 {
@@ -127,7 +128,10 @@ inline EDySuccess MRendering::Impl::Initialize()
   auto& refSetting  = MSetting::GetInstance();
   const auto width  = refSetting.GetWindowSizeWidth();
   const auto height = refSetting.GetWindowSizeHeight();
-  this->mUiGeneralProjectionMatrix = DMatrix4x4::OrthoProjection(0.f, TF32(width), 0.f, TF32(height), -1.f, 100.0f);
+  this->mUiGeneralProjectionMatrix = math::ProjectionMatrix<TReal>(
+    math::EGraphics::OpenGL, math::EProjection::Orthogonal,
+    0.f, TF32(width), 0.f, TF32(height), -1.f, 100.0f
+  );
 
   return DY_SUCCESS;
 }
@@ -335,7 +339,7 @@ inline void MRendering::Impl::SetupDrawModelTaskQueue()
   
     // Get 
     const auto& refBinder = smtInstance->GetModelBinderReference();
-    const FDyModelResource* ptrModelResc = refBinder.Get();
+    const FResourceModel* ptrModelResc = refBinder.Get();
 
     const auto& bindMeshList = ptrModelResc->GetMeshResourceList();
     const auto& bindMateList = ptrModelResc->GetMaterialResourceList();
@@ -358,8 +362,8 @@ inline void MRendering::Impl::SetupDrawModelTaskQueue()
 
 inline void MRendering::Impl::EnqueueDrawMesh(
   DDyModelHandler::DActorInfo& iRefModelRenderer,
-  const FDyMeshResource& iRefValidMesh, 
-  const FDyMaterialResource& iRefValidMat)
+  const FResourceMesh& iRefValidMesh, 
+  const FResourceMaterial& iRefValidMat)
 {
   switch (iRefValidMat.GetBlendMode())
   {
@@ -377,7 +381,7 @@ inline void MRendering::Impl::EnqueueDrawMesh(
 
 inline void MRendering::Impl::EnqueueDebugDrawCollider(
   CBasePhysicsCollider& iRefCollider, 
-  const DMatrix4x4& iTransformMatrix)
+  const DMat4& iTransformMatrix)
 {
   this->mDebugColliderDrawingList.emplace_back(std::make_pair(&iRefCollider, iTransformMatrix));
 }
@@ -439,7 +443,7 @@ inline EDySuccess MRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalShadow)(CLi
   else { return DY_FAILURE; }
 }
 
-inline const DMatrix4x4& MRendering::Impl::GetGeneralUiProjectionMatrix() const noexcept
+inline const DMat4& MRendering::Impl::GetGeneralUiProjectionMatrix() const noexcept
 {
   return this->mUiGeneralProjectionMatrix;
 }

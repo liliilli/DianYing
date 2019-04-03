@@ -62,6 +62,9 @@ public:
   /// @brief Get start pointer of matrix sequence.
   const TValueType* Data() const noexcept;
 
+  /// @brief Convert to vector that has values.
+  std::vector<DVector2<TValueType>> ToVector() const noexcept;
+
   /// @brief Get identity matrix.
   static DMatrix2 Identity() noexcept;
   

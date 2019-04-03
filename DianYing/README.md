@@ -36,6 +36,10 @@ https://github.com/liliilli/DianYing/tree/trunk/DianYing
 | 19-03-23 | R        | Apply initialtransfrom to model resource.        | ❌      |
 | 19-03-23 | R        | Fix model skinned animation.        | ❌      |
 
+## Log
+
+2019-04-02 : Fixed intermittent live-lock bug of IO Resource Loading.
+
 
 ## Copyright
 

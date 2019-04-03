@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Core/Resource/Internal/ETextureEnums.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 
@@ -36,7 +36,7 @@ struct PDyGLTextureBase
   const TTextureParameterList* mPtrParameterList = MDY_INITIALIZE_NULL;
   TU32                mOutputTextureId = MDY_INITIALIZE_DEFUINT;
 
-  using TPtrBuffer = const std::vector<TU08>*;
+  using TPtrBuffer = const std::vector<TU8>*;
 };
 inline PDyGLTextureBase::~PDyGLTextureBase() = default;
 
@@ -45,7 +45,7 @@ inline PDyGLTextureBase::~PDyGLTextureBase() = default;
 struct PDyGLTextureDescriptor final : public PDyGLTextureBase
 {
   TPtrBuffer    mPtrBuffer    = MDY_INITIALIZE_NULL;
-  DVectorInt2 mTextureSize  = {};
+  DIVec2 mTextureSize  = {};
 };
 
 /// @struct PDyGLTextureCubemapDescriptor
@@ -59,12 +59,12 @@ struct PDyGLTextureCubemapDescriptor final : public PDyGLTextureBase
   TPtrBuffer    mFrontBuffer  = MDY_INITIALIZE_NULL;
   TPtrBuffer    mBackBuffer   = MDY_INITIALIZE_NULL;
 
-  DVectorInt2 mTopSize    = {};
-  DVectorInt2 mBottomSize = {};
-  DVectorInt2 mLeftSize   = {};
-  DVectorInt2 mRightSize  = {};
-  DVectorInt2 mFrontSize  = {};
-  DVectorInt2 mBackSize   = {};
+  DIVec2 mTopSize    = {};
+  DIVec2 mBottomSize = {};
+  DIVec2 mLeftSize   = {};
+  DIVec2 mRightSize  = {};
+  DIVec2 mFrontSize  = {};
+  DIVec2 mBackSize   = {};
 };
 
 } /// ::dy namespace

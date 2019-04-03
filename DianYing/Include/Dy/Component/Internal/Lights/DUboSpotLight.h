@@ -29,9 +29,9 @@ struct DUboSpotLight final
   REGISTER_UNIFORM_STRUCT(DUboSpotLight)
 
   /// @brief Light's position.
-  mutable DVector3 mPosition = DVector3{};
+  mutable DVec3 mPosition = DVec3{};
   /// @brief Light direction.
-  DVector3  mDirection = DVector3{};
+  DVec3  mDirection = DVec3{};
   /// @brief Light color
   DColorRGB mColor = DColorRGB::Black;
   /// @brief Light intensity for spot light component.

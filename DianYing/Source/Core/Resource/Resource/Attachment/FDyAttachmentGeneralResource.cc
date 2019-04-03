@@ -12,13 +12,13 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Core/Resource/Resource/Attachment/FDyAttachmentGeneralResource.h>
+#include <Dy/Core/Resource/Resource/Attachment/FResourceAttachmentGeneral.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PGLAttachmentDescriptor.h>
 
 namespace dy
 {
-FDyAttachmentGeneralResource::FDyAttachmentGeneralResource(const FDyAttachmentInformation& iInformation)
+FResourceAttachmentGeneral::FResourceAttachmentGeneral(const FInformationAttachment& iInformation)
 {
   this->mSpecifierName = iInformation.GetSpecifierName();
   this->mInformationBinder.TryRequireResource(this->mSpecifierName);
@@ -43,7 +43,7 @@ FDyAttachmentGeneralResource::FDyAttachmentGeneralResource(const FDyAttachmentIn
   }
 }
 
-FDyAttachmentGeneralResource::~FDyAttachmentGeneralResource()
+FResourceAttachmentGeneral::~FResourceAttachmentGeneral()
 {
   MDY_GRAPHIC_SET_CRITICALSECITON();
   MDY_CALL_ASSERT_SUCCESS(
@@ -51,12 +51,12 @@ FDyAttachmentGeneralResource::~FDyAttachmentGeneralResource()
   );
 }
 
-TU32 FDyAttachmentGeneralResource::GetSourceAttachmentId() const noexcept
+TU32 FResourceAttachmentGeneral::GetSourceAttachmentId() const noexcept
 {
   return this->mAttachmentId;
 }
 
-TU32 FDyAttachmentGeneralResource::GetTargetAttachmentId() const noexcept
+TU32 FResourceAttachmentGeneral::GetTargetAttachmentId() const noexcept
 {
   return this->GetSourceAttachmentId();
 }

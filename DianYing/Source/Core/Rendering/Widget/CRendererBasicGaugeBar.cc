@@ -17,10 +17,10 @@
 
 #include <Dy/Builtin/ShaderGl/UI/RenderUIBasicGaugeBar.h>
 #include <Dy/Builtin/Mesh/Widget/FDyBtMsUiBarQuad.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Element/Widget/FWidgetBasicGaugeBar.h>
 #include <Dy/Management/MSetting.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 #include <Dy/Core/Rendering/Wrapper/PGLBufferDescriptor.h>
 #include <Dy/Management/Rendering/MRendering.h>
@@ -37,16 +37,16 @@ namespace
 /// @return Character glyph render vertices information.
 /// @see https://www.freetype.org/freetype2/docs/tutorial/step2.html
 ///
-MDY_NODISCARD std::array<dy::DVector2, 4>
+MDY_NODISCARD std::array<dy::DVec2, 4>
 GetVertexPosition(
-    _MIN_ const dy::DVector2& position, _MIN_ const dy::DVectorInt2& size,
+    _MIN_ const dy::DVec2& position, _MIN_ const dy::DIVec2& size,
     _MIN_ const TI32 padding = 0, _MIN_ const TF32 percentage = 1.0f)
 {
-  const auto lb = dy::DyGetPositionWithOrigin(position, size, dy::EDyOrigin::Left_Bottom) + dy::DVector2( padding );
-  auto       ru = dy::DyGetPositionWithOrigin(position, size, dy::EDyOrigin::Right_Top) - dy::DVector2( padding );
+  const auto lb = dy::DyGetPositionWithOrigin(position, size, dy::EDyOrigin::Left_Bottom) + dy::DVec2( padding );
+  auto       ru = dy::DyGetPositionWithOrigin(position, size, dy::EDyOrigin::Right_Top) - dy::DVec2( padding );
   ru.X          = (ru.X - lb.X) * percentage + lb.X;
 
-  return { dy::DVector2{ru.X, lb.Y}, ru, dy::DVector2{lb.X, ru.Y}, lb };
+  return { dy::DVec2{ru.X, lb.Y}, ru, dy::DVec2{lb.X, ru.Y}, lb };
 }
 
 } /// ::unnamed namespace
@@ -78,8 +78,8 @@ void CRendererBasicGaugeBar::Render()
   ||  this->mBinderBarMesh.IsResourceExist() == false) { return; }
 
   this->mBinderShader->TryUpdateUniform<EUniformType::Matrix4>("uUiProjMatrix", MRendering::GetInstance().GetGeneralUiProjectionMatrix());
-  const DVector2 pos     = this->mPtrBarObject->GetRenderPosition();
-  const DVectorInt2 size = this->mPtrBarObject->GetFrameSize();
+  const DVec2 pos     = this->mPtrBarObject->GetRenderPosition();
+  const DIVec2 size = this->mPtrBarObject->GetFrameSize();
   const auto vboId = this->mBinderBarMesh->GetVertexBufferId();
 
   this->mBinderShader->UseShader();

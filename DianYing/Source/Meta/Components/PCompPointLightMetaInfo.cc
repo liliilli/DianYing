@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Meta/Components/PCompPointLightMetaInfo.h>
 #include <Dy/Helper/Type/DColorRGB.h>
+#include <Dy/Helper/Library/HelperJson.h>
 
 //!
 //! Forward declaration

@@ -53,16 +53,16 @@ namespace dy
 /// @brief Rendering maanger
 class MRendering final : public ISingleton<MRendering>
 {
-  MDY_SINGLETON_PROPERTIES(MRendering);
-  MDY_SINGLETON_DERIVED(MRendering);
 public:
+  MDY_SINGLETON_PROPERTIES(MRendering);
+  DY_PIMPL_SINGELTON_DERIVED(MRendering);
   using TMeshDrawCallItem = std::tuple<
       NotNull<DDyModelHandler::DActorInfo*>,
-      NotNull<const FDyMeshResource*>, 
-      NotNull<const FDyMaterialResource*>
+      NotNull<const FResourceMesh*>, 
+      NotNull<const FResourceMaterial*>
   >;
 
-  using TDrawColliderItem = std::pair<NotNull<CBasePhysicsCollider*>, DMatrix4x4>; 
+  using TDrawColliderItem = std::pair<NotNull<CBasePhysicsCollider*>, DMat4>; 
   using TUiDrawCallItem = NotNull<AWidgetObject*>;
   using TPointLightHandleList = std::vector<CLightPoint*>; 
   using TSpotLightHandleList  = std::vector<CLightSpot*>; 
@@ -106,7 +106,7 @@ public:
   TSpotLightHandleList& MDY_PRIVATE(GetActivatedSpotLights)() noexcept;
 
   /// @brief Get General (Default) ui projection matrix.
-  const DMatrix4x4& GetGeneralUiProjectionMatrix() const noexcept;
+  const DMat4& GetGeneralUiProjectionMatrix() const noexcept;
   /// @brief Swap buffer.
   void SwapBuffers();
 
@@ -140,15 +140,13 @@ private:
   /// @brief Enqueue static draw call to mesh with material.
   void EnqueueDrawMesh(
       DDyModelHandler::DActorInfo& iRefModelRenderer,
-      const FDyMeshResource& iRefValidMesh, 
-      const FDyMaterialResource& iRefValidMat);
+      const FResourceMesh& iRefValidMesh, 
+      const FResourceMaterial& iRefValidMat);
 
   /// @brief Enqueue debug collider draw call.
   void EnqueueDebugDrawCollider(
       CBasePhysicsCollider& iRefCollider, 
-      const DMatrix4x4& iTransformMatrix);
-
-  class Impl; Impl* mInternal = nullptr;
+      const DMat4& iTransformMatrix);
 
   friend class MPhysics;
 };

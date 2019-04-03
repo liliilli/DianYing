@@ -26,10 +26,15 @@
     <ClInclude Include="Include\Math\Type\Math\DQuat.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DArea2D.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DArea3D.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DBounds2D.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DBounds3D.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DClamp.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix2.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix3.h" />
     <ClInclude Include="Include\Math\Type\Math\DMatrix4.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\EGraphics.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\EProjection.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\ERandomPolicy.h" />
     <ClInclude Include="Include\Math\Type\Shape\DPlane.h" />
     <ClInclude Include="Include\Math\Type\Math\DVector2.h" />
     <ClInclude Include="Include\Math\Type\Math\DVector3.h" />
@@ -37,9 +42,11 @@
     <ClInclude Include="Include\Math\Type\Math\EAxis.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DTristateBool.h" />
     <ClInclude Include="Include\Math\Type\Shape\DSphere.h" />
+    <ClInclude Include="Include\Math\Utility\XGraphicsMath.h" />
     <ClInclude Include="Include\Math\Utility\XLinearMath.h" />
     <ClInclude Include="Include\Math\Utility\XMath.h" />
     <ClInclude Include="Include\Math\Utility\XMathTrigonometry.h" />
+    <ClInclude Include="Include\Math\Utility\XRandom.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Math\Common\Inline\TGlobalTypes.inl" />
@@ -53,6 +60,12 @@
     <None Include="Include\Math\Type\Inline\DArea2D\DArea2DReal.inl" />
     <None Include="Include\Math\Type\Inline\DArea3D\DArea3DInt.inl" />
     <None Include="Include\Math\Type\Inline\DArea3D\DArea3DReal.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds2D\DBounds2DCommon.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds2D\DBounds2DInt.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds2D\DBounds2DReal.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DCommon.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DInt.inl" />
+    <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DReal.inl" />
     <None Include="Include\Math\Type\Inline\DClamp\DClamp.inl" />
     <None Include="Include\Math\Type\Inline\DClamp\DClampOperator.inl" />
     <None Include="Include\Math\Type\Inline\DMatrix2\DMatrix2.inl" />
@@ -63,9 +76,18 @@
     <None Include="Include\Math\Type\Inline\DMatrix4\DMatrix4Operator.inl" />
     <None Include="Include\Math\Type\Inline\DQuat\DQuat.inl" />
     <None Include="Include\Math\Type\Inline\DSphere\DSphere.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TF32Common.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TI32.inl" />
+    <None Include="Include\Math\Type\Inline\DVector4\Simd\DVector4TI32Common.inl" />
     <None Include="Include\Math\Type\Inline\Micellanous\DTristateBool.inl" />
+    <None Include="Include\Math\Utility\Inline\XGraphicsMath.inl" />
     <None Include="Include\Math\Utility\Inline\XMathTrigonometry.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\Lerp.inl" />
     <None Include="Include\Math\Utility\Inline\XMath\MapValue.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\MinMax.inl" />
+    <None Include="Include\Math\Utility\Inline\XMath\ToNormalized.inl" />
+    <None Include="Include\Math\Utility\Inline\XRandom.inl" />
     <None Include="README.md" />
     <None Include="Include\Math\Type\Inline\DPlane\DPlane.inl" />
     <None Include="Include\Math\Type\Inline\DVector2\DVector2Common.inl" />
@@ -104,13 +126,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>

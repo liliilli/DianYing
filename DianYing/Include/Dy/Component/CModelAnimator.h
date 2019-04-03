@@ -25,7 +25,7 @@
 
 namespace dy
 {
-class FDyModelAnimScrapInformation;
+class FInformationModelAnimScrap;
 } /// ::dy namespace
 
 //!
@@ -61,7 +61,7 @@ public:
   std::string ToString() override final;
 
   /// @brief Get final transform list.
-  MDY_NODISCARD const std::vector<DMatrix4x4>& GetFinalTransformList() const noexcept;
+  MDY_NODISCARD const std::vector<DMat4>& GetFinalTransformList() const noexcept;
 
 private:
   /// @brief
@@ -70,7 +70,7 @@ private:
   void TryDeactivateInstance() override final;
 
   /// @brief Update final transform of given animation. This function must be called when `Play`.
-  void TryUpdateFinalTransform(TI32 iIdSkelNode, const DMatrix4x4& iParentTransform, bool iIsLooped);
+  void TryUpdateFinalTransform(TI32 iIdSkelNode, const DMat4& iParentTransform, bool iIsLooped);
 
   /// @enum EAnimatorStatus
   /// @brief Blending is not implemented yet.
@@ -97,10 +97,10 @@ private:
     EAnimatorStatus     mStatus = EAnimatorStatus::Init;
     EAnimationScrapMode mScrapMode = EAnimationScrapMode::PlayOnce;
     TF32                mElapsedTime = 0.0f;
-    const FDyModelAnimScrapInformation* mPtrPresentAnimatorInfo = nullptr; 
+    const FInformationModelAnimScrap* mPtrPresentAnimatorInfo = nullptr; 
     
     /// @brief
-    std::vector<DMatrix4x4> mFinalTransformList;
+    std::vector<DMat4> mFinalTransformList;
   };
 
   /// @brief Status instance.

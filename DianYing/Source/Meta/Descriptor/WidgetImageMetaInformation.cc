@@ -30,8 +30,8 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
         "WidgetSize": { "X": 128, "Y": 128 },
         "Origin": "Right_Bottom",
         "ImageRegion": {
-          "LeftDown": { "X": 0.0, "Y": 0.0 },
-          "RightUp" : { "X": 1.0, "Y": 1.0 }
+          "Start": { "X": 0.0, "Y": 0.0 },
+          "Length" : { "X": 1.0, "Y": 1.0 }
         },
         "ImageSpecifierName": "dyBtTextureChecker",
         "TintColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
@@ -55,11 +55,11 @@ PDyMetaWidgetImageDescriptor::CreateMetaInformation(const nlohmann::json& itemAt
   json::GetValueFromTo(itemAtlas, "ZOrder", resultInstance->mZOrder);
 
   const auto& detailAtlas           = itemAtlas[(TPDyMWCBD::sHeader_Details)];
-  resultInstance->mInitialPosition  = json::GetValueFrom<DVectorInt2>(detailAtlas, "InitialPosition");
+  resultInstance->mInitialPosition  = json::GetValueFrom<DIVec2>(detailAtlas, "InitialPosition");
   resultInstance->mOrigin           = json::GetValueFrom<EDyOrigin>(detailAtlas, "Origin");
-  resultInstance->mWidgetSize       = json::GetValueFrom<DVectorInt2>(detailAtlas, "WidgetSize");
+  resultInstance->mWidgetSize       = json::GetValueFrom<DIVec2>(detailAtlas, "WidgetSize");
 
-  resultInstance->mImageRegion        = json::GetValueFrom<DArea2D>(detailAtlas, "ImageRegion");
+  resultInstance->mImageRegion      = json::GetValueFrom<DArea2D>(detailAtlas, "ImageRegion");
   resultInstance->mImageSpecifierName = json::GetValueFrom<std::string>(detailAtlas, "ImageSpecifierName");
   resultInstance->mIsSizeToContent  = json::GetValueFrom<bool>(detailAtlas, "IsSizeToContent");
   resultInstance->mTintColor        = json::GetValueFrom<DColorRGBA>(detailAtlas, "TintColor");;

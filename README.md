@@ -19,9 +19,13 @@ Core framework project.
 
 SDF (Signed Distance Field) Font Atlas generator tool that uses Qt5.
 
-### ./DyModelGenerator
+### ./DyModelGenerator 
 
-Model Exporter tool.
+Model Exporter tool. This tool will be deprecated soon and replaced with `DyModelExporter` GUI tool.
+
+## Log
+
+2019-04-03 Replace platform build tool settings v141 with v142. (Visual Studio 2019)
 
 ## Copyright
 
@@ -45,5 +49,6 @@ Projects except for DyFontAtlasGenerator uses MIT License.
 ### LPGL v3
 
 DyFontAtlasGenerator uses Qt open-source edition library as dynamic library.
+DyModelExporter uses Qt open-source edition library as dynamic library.
 
 https://doc.qt.io/qt-5/lgpl.html

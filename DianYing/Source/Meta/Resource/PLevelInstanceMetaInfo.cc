@@ -46,12 +46,12 @@ void from_json(const nlohmann::json& iJson, PLevelInstanceMetaInfo& oMeta)
   oMeta.mSourceType = EDyResourceSource::External;
 
   const auto loadingType = json::GetValueFrom<std::string>(iJson, "LoadingType");
-  switch (SwitchStrInput(loadingType))
+  switch (string::Input(loadingType))
   {
-  case CaseStr("Internal"):
+  case string::Case("Internal"):
     oMeta.mInternalInfo = iJson["Internal"].dump(0);
     break;
-  case CaseStr("External"):
+  case string::Case("External"):
     oMeta.mExternalFilePath = json::GetValueFrom<std::string>(iJson, "ExternalPath");
     MDY_ASSERT_FORCE(std::filesystem::exists(oMeta.mExternalFilePath) == true);
     break;

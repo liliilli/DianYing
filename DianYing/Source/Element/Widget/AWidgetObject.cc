@@ -37,19 +37,19 @@ const AWidgetUiObjectChildrenable* AWidgetObject::GetPtrParentUiObject() const n
   return this->mPtrParentUiObject;  
 }
 
-void AWidgetObject::SetRelativePosition(const DVector2& position) noexcept
+void AWidgetObject::SetRelativePosition(const DVec2& position) noexcept
 {
   this->mCentralRelativePosition = position;
   this->UpdateFinalPosition();
 }
 
-void AWidgetObject::SetFrameSize(const DVectorInt2& size) noexcept
+void AWidgetObject::SetFrameSize(const DIVec2& size) noexcept
 {
   if (size.X > 0 && size.Y > 0) { this->mFrameSize = size; }
   this->UpdateFinalPosition();
 }
 
-const DVectorInt2& AWidgetObject::GetFrameSize() const noexcept
+const DIVec2& AWidgetObject::GetFrameSize() const noexcept
 {
   return this->mFrameSize;
 }
@@ -78,7 +78,7 @@ EDyOrigin AWidgetObject::GetFibot() const noexcept
 
 void AWidgetObject::UpdateFinalPosition()
 {
-  DVector2 mParentFinalPosition = {};
+  DVec2 mParentFinalPosition = {};
   if (this->CheckIsParentExist() == true)
   { // If parent is exist, retrieve values.
     const auto* ptrParent = this->GetPtrParentUiObject();
@@ -95,12 +95,12 @@ const std::string& AWidgetObject::GetUiObjectName() const noexcept
   return this->pGetObjectName();
 }
 
-DVector2 AWidgetObject::GetRelativePosition(const EDyOrigin& origin) const noexcept
+DVec2 AWidgetObject::GetRelativePosition(const EDyOrigin& origin) const noexcept
 {
   return DyGetPositionWithOrigin(this->mCentralRelativePosition, this->mFrameSize, origin);
 }
 
-DVector2 AWidgetObject::GetFinalPosition(const EDyOrigin& origin) const noexcept
+DVec2 AWidgetObject::GetFinalPosition(const EDyOrigin& origin) const noexcept
 {
   return DyGetPositionWithOrigin(this->mCentralFinalPosition, this->mFrameSize, origin);
 }

@@ -21,7 +21,9 @@ template <typename TType>
 DPlane<TType>::DPlane(TValueType a, TValueType b, TValueType c, TValueType d)
   : mNormal{a, b, c}, mD{d}
 {
+  const auto len = this->mNormal.GetLength();
   this->mNormal = this->mNormal.Normalize();
+  this->mD /= len;
 }
 
 template <typename TType>

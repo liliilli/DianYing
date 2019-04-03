@@ -71,8 +71,8 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
         "WidgetSize": { "X": 128, "Y": 128 },
         "Origin": "Right_Bottom",
         "ImageRegion": {
-          "LeftDown": { "X": 0.0, "Y": 0.0 },
-          "RightUp" : { "X": 1.0, "Y": 1.0 }
+          "Start": { "X": 0.0, "Y": 0.0 },
+          "Length" : { "X": 1.0, "Y": 1.0 }
         },
         "ImageSpecifierName": "dyBtTextureChecker",
         "TintColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },

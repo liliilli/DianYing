@@ -38,7 +38,7 @@ struct DAnimationSequence final
     struct DTranslate final
     {
       float       mStartSecond  = 0.0f;
-      DVector3  mTranslate    = {};
+      DVec3  mTranslate    = {};
     };
     struct DRotation final
     {
@@ -51,7 +51,7 @@ struct DAnimationSequence final
     struct DScale final
     {
       float mStartSecond  = 0.0f;  
-      DVector3 mScale   = {1, 1, 1};
+      DVec3 mScale   = {1, 1, 1};
     };
 
     TI32 mSkeletonNodeIndex = 0;

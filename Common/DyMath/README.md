@@ -16,11 +16,14 @@ This math library suports below things.
 * Fixed squared matrix `DMatrix` types `DVector2` `DVector3` `DVector4`,
   that only support real type (`TF32` as float, `TF64` as double.)
   * Matrix types are column-major type for compatibility `glsl` and `SPIR-V`.
+  * DVector4<TI32> and DVector4<TF32> can use SIMD when enabling MATH_ENABLE_SIMD macro. This needs ~SSE4.1 support.
 * 2D 3D Area type that has start point and width `x`, height `y` (and depth as `z` when using 3D area),
   `DArea2D` and `DArea3D`, with value types as template parameter.
 * Plane type that has normal and d value, as $$ ax + by + cz + d = 0 $$ and $$ |(a, b, c)| == 1 $$, `DPlane`.
   That only support real type `TF32 ` and `TF64`.
 * Clamping type that has compile time range `TStart` and `TEnd`, and supporting compile type. `DClamp`
+* Quaternion
+* Random value creation functions.
 * and, miscellaneous helper math functions...
 
 Implemented container type's arithmethic operators and functions are automatically proceeded by converting to more coverable type following value category description.
@@ -54,7 +57,9 @@ Dy(DianYing) Common Math (a.k.a `DyMath`) has value category to support automati
 
 ## Log
 
-
+2019-03-30 Add Quaternion. Move Random function into DyMath	
+2019-03-31 Add DBounds (AABB) 2D & 3D Type. Add `ExtractMin` `ExtractMax` math api for DVectors.
+2019-04-02 Add SIMD version of DVector4<TI32> and DVector4<TF32>.
 
 ## Copyright
 

@@ -22,7 +22,7 @@
 
 namespace dy
 {
-struct DVectorInt2;
+using DIVec2 = math::DVector2<math::TI32>;
 }
 
 //!
@@ -105,7 +105,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyOrigin& p);
 /// @param
 /// @return
 ///
-MDY_NODISCARD DVector2 DyGetPositionWithOrigin(const DVector2& position, const DVectorInt2& frameSize, EDyOrigin origin);
+MDY_NODISCARD DVec2 DyGetPositionWithOrigin(const DVec2& position, const DIVec2& frameSize, EDyOrigin origin);
 
 } /// ::dy namespace
 

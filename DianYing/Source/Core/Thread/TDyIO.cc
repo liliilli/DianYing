@@ -13,14 +13,14 @@
 ///
 
 /// Header file
-#include <Dy/Core/Thread/TDyIO.h>
+#include <Dy/Core/Thread/TRescIO.h>
 
 #include <assimp/Importer.hpp>
 
-#include <Dy/Core/Thread/SDyIOConnectionHelper.h>
-#include <Dy/Core/Resource/Resource/FDyModelResource.h>
-#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferGeneralResource.h>
-#include <Dy/Core/Resource/Resource/FrameBuffer/FDyFrameBufferPingPongResource.h>
+#include <Dy/Core/Thread/SIOConnectionHelper.h>
+#include <Dy/Core/Resource/Resource/FResourceModel.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FResourceFrameBufferGeneral.h>
+#include <Dy/Core/Resource/Resource/FrameBuffer/FResourceFrameBufferPingPong.h>
 #include <Dy/Core/Resource/Internal/FMeshVBOIntermediate.h>
 
 #include <Dy/Meta/Information/MetaInfoMaterial.h>
@@ -33,134 +33,138 @@
 #include <Dy/Management/MWindow.h>
 #include <Dy/Builtin/Constant/GeneralValue.h>
 
-constexpr TU08 kDefaultPriority = 128;
+constexpr TU8 kDefaultPriority = 128;
 
 namespace dy
 {
 
-TDyIO::TDyIO()
+TRescIO::TRescIO()
 {
-  this->MIOMetaManager    = &MIOMeta::GetInstance();
-  this->mIODataManager      = &MIORescInfo::GetInstance();
-  this->mIOResourceManager  = &MIOResource::GetInstance();
+  this->MIOMetaManager = &MIOMeta::GetInstance();
+  this->mIODataManager = &MIORescInfo::GetInstance();
+  this->mIOResourceManager = &MIOResource::GetInstance();
 }
 
-TDyIO::~TDyIO()
+TRescIO::~TRescIO()
 {
-  this->mIOResourceManager  = nullptr;
-  this->mIODataManager      = nullptr;
-  this->MIOMetaManager    = nullptr;
+  this->mIOResourceManager = nullptr;
+  this->mIODataManager = nullptr;
+  this->MIOMetaManager = nullptr;
 }
 
-EDySuccess TDyIO::Initialize()
+EDySuccess TRescIO::Initialize()
 {
   // Initialize IOWorkers with context.
   const auto& windowManager = MWindow::GetInstance();
   const auto& workerWndList = windowManager.GetGLWorkerWindowList();
-  MDY_ASSERT_MSG(workerWndList.size() == this->mWorkerList.size(), "WndList and I/O Worker list size must be same.");
+  MDY_ASSERT_MSG(
+    workerWndList.size() == this->mWorkerList.size(), 
+    "WndList and I/O Worker list size must be same.");
 
-  for (auto i = 0u; i < this->mWorkerList.size(); ++i)
+  // Make worker instance list.
+  for (TIndex i = 0, size = this->mWorkerList.size(); i < size; ++i)
   {
     auto& [instance, thread] = this->mWorkerList[i];
-    instance  = std::make_unique<TDyIOWorker>(MIOMeta::GetInstance());
-    thread    = std::thread(&TDyIOWorker::operator(), std::ref(*instance), DyMakeNotNull(workerWndList[i]));
+    instance = std::make_unique<TRescIOWorker>(MIOMeta::GetInstance());
+    thread = std::thread(&TRescIOWorker::operator(), std::ref(*instance), std::ref(*workerWndList[i]));
   }
 
   return DY_SUCCESS;
 }
 
-void TDyIO::Release()
-{ }
+void TRescIO::Release()
+{ 
+  
+}
 
-void TDyIO::operator()()
+void TRescIO::operator()()
 {
-  /// @brief Waiting callback for condition variable for task queueing processing routine.
-  static auto CbTaskQueueWaiting = [this]
-  {
-    return this->mIsThreadStopped == true || this->mIOTaskQueue.empty() == false;
-  };
-
-  /// @brief Assign picked to workers.
-  static auto inAssignTaskToWorkers = [](_MIN_ const DDyIOTask& task, _MIO_ TDyIO::TWorkerList& workerList)
-  {
-    for (auto& [instance, thread] : workerList)
-    {
-      const auto isSuccessful = instance->outTryAssign(task);
-      if (isSuccessful == DY_SUCCESS) { return; }
-    }
-    MDY_UNEXPECTED_BRANCH();
-  };
-
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //! FUNCTION BODY
-  //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   MDY_CALL_ASSERT_SUCCESS(this->Initialize());
   while (true)
   {
-    DDyIOTask task;
-    { // Wait task in the queue, and try pop task when not empty.
-      MDY_SYNC_WAIT_CONDITION(this->mQueueMutex, this->mConditionVariable, CbTaskQueueWaiting);
-      if (this->mIsThreadStopped == true && this->mIOTaskQueue.empty() == true) 
-      { 
+    DRescIOTask task;
+    { 
+      // Wait task in the queue, and try pop task when not empty.
+      // Wait for condition variable for task queueing processing routine.
+      MDY_SYNC_WAIT_CONDITION(
+        this->mMutexTaskQueue, this->mConditionVariable, 
+        [this] { return this->mIsThreadStopped == true || this->mIOTaskQueue.empty() == false; }
+      );
+
+      // If IO thread must be stopped, reset all task queue.
+      if (this->mIsThreadStopped == false)
+      {
+        task = this->mIOTaskQueue.top();
+        this->mIOTaskQueue.pop();
+      }
+      else
+      {
+        while (this->mIOTaskQueue.empty() == false) { this->mIOTaskQueue.pop(); }
+
         for (auto& [workerInstance, workerThread] : this->mWorkerList)
-        { // Wait all worker thread is terminated.
-          workerInstance->outTryStop();
+        { 
+          // Wait all worker thread are terminated.
+          // Wait worker instance to be ended and return `mMutexTask` signal.
+          workerInstance->SyncTryStop();
           workerThread.join();
           workerInstance = nullptr;
         }
         break; 
       }
-      task = this->mIOTaskQueue.top();
-      this->mIOTaskQueue.pop();
     }
 
-    { // Wait any worker is idle, if there is idle worker assign task to worker.
-      this->mWorkerSemaphore.Wait();
-      this->mIdleWorkerCounter.fetch_sub(1);
-      inAssignTaskToWorkers(task, this->mWorkerList);
-      MDY_SLEEP_FOR_ATOMIC_TIME();
+    // Wait any worker is idle, if there is idle worker assign task to worker.  
+    // We used spinlock, for avoiding complexity of control semaphore and counter.
+    while (true)
+    {
+      for (auto& [instance, thread] : this->mWorkerList)
+      {
+        const auto isSucceeded = instance->outTryAssign(task);
+        if (isSucceeded == DY_SUCCESS) 
+        { 
+          // We use goto statement intentionally.
+          goto LABEL_DY_AFTER_INSERT_TASK; 
+        } 
+      }
     }
+LABEL_DY_AFTER_INSERT_TASK:
+    MDY_SLEEP_FOR_ATOMIC_TIME();
   }
 
   this->Release();
 }
 
-void TDyIO::outInsertResult(_MIN_ const DDyIOWorkerResult& result) noexcept
+void TRescIO::SyncInsertResult(const DRescIOWorkerResult& result) noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
   this->mWorkerResultList.emplace_back(result);
 }
 
-void TDyIO::outTryNotifyWorkerIsIdle()
+void TRescIO::SyncTryForwardTaskToMainList(const DRescIOTask& forwardedMainTask) noexcept
 {
-  this->mWorkerSemaphore.Notify();
-  this->mIdleWorkerCounter.fetch_add(1);
+  MDY_SYNC_LOCK_GUARD(this->mMutexMainProcessTask);
+  this->mIOProcessMainTaskList.emplace_back(forwardedMainTask);
 }
 
-void TDyIO::outTryForwardToMainTaskList(_MIN_ const DDyIOTask& task) noexcept
-{
-  MDY_SYNC_LOCK_GUARD(this->mProcessTaskFromMainMutex);
-  this->mIOProcessMainTaskList.emplace_back(task);
-}
-
-void TDyIO::outTryStop()
+void TRescIO::SyncTryStop()
 {
   MDY_ASSERT_MSG(this->outIsIOThreadSlept() == true, "To stop io thread, IO Thread must be slept.");
   {
-    MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+    MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
     this->mIsThreadStopped = true;
   }
   this->mConditionVariable.notify_one();
   MDY_SLEEP_FOR_ATOMIC_TIME();
 }
 
-EDySuccess TDyIO::outTryEnqueueTask(
-    const std::string& iSpecifier,
-    EResourceType iResourceType, EDyResourceStyle iResourceStyle,
-    EResourceScope iScope, bool iIsDerivedFromResource)
+EDySuccess TRescIO::outTryEnqueueTask(
+  const std::string& iSpecifier, 
+  EResourceType iResourceType, 
+  EResourceStyle iResourceStyle,
+  EResourceScope iScope, 
+  bool iIsDerivedFromResource)
 {
-  if (iResourceStyle == EDyResourceStyle::Information)
+  if (iResourceStyle == EResourceStyle::Information)
   {
     const auto specifier = TryRemovePostfix(iSpecifier, kInstancingPostfix);
     MDY_ASSERT_MSG_FORCE(
@@ -168,16 +172,16 @@ EDySuccess TDyIO::outTryEnqueueTask(
       "Meta information must be exist.");
   }
 
-  { // Query there is Reference Instance for myself. If found, just return do nothing.
+  // Query there is Reference Instance for myself. If found, just return do nothing.
+  { 
     std::vector<PRIVerificationItem> itselfRIItem{};
     itselfRIItem.emplace_back(iSpecifier, iResourceType, iResourceStyle, iScope);
     const auto result = this->pCheckAndUpdateReferenceInstance(itselfRIItem);
-    if (result.empty() == true 
-    ||  result.begin()->second != EDyRIStatus::NotValid) { return DY_SUCCESS; }
+    if (result.empty() == true || result.begin()->second != ERIState::NotExist) { return DY_SUCCESS; }
   }
 
   // Make dependency list.
-  DDyIOTaskDeferred::TConditionList conditionList = {};
+  DRescIODeferredTask::TConditionList conditionList = {};
   const auto checkList = this->pMakeDependenciesCheckList(iSpecifier, iResourceType, iResourceStyle, iScope);
   if (checkList.empty() == false)
   { 
@@ -189,7 +193,7 @@ EDySuccess TDyIO::outTryEnqueueTask(
       for (const auto& [instance, status] : notFoundRIList)
       { // Require depende resource tasks only if NotValid but RI is exist.
         const auto& [specifier, type, style, scope] = instance;
-        if (status == EDyRIStatus::NotValid) 
+        if (status == ERIState::NotExist) 
         { 
           outTryEnqueueTask(specifier, type, style, scope, true); 
         }
@@ -201,11 +205,11 @@ EDySuccess TDyIO::outTryEnqueueTask(
 
   // Require itself own resource task.
   MDY_CALL_ASSERT_SUCCESS(
-    this->outCreateReferenceInstance(iSpecifier, iResourceType, iResourceStyle, iScope)
+    this->CreateReferenceInstance(iSpecifier, iResourceType, iResourceStyle, iScope)
   );
 
   // Construct IO Tasks.
-  DDyIOTask task;
+  DRescIOTask task;
   {
     task.mSpecifierName       = iSpecifier;
     task.mResourceType        = iResourceType;
@@ -219,8 +223,7 @@ EDySuccess TDyIO::outTryEnqueueTask(
 
   // If this is model & resource task, change `mResourceType` to `__ModelVBO` as intermediate task.
   // Because VAO can not be created and shared from other thread not main thread.
-  if (task.mResourceType == EResourceType::Mesh 
-  &&  task.mResourcecStyle == EDyResourceStyle::Resource) 
+  if (task.mResourceType == EResourceType::Mesh && task.mResourcecStyle == EResourceStyle::Resource) 
   { 
     task.mResourceType = EResourceType::__MeshVBO;
   }
@@ -228,12 +231,12 @@ EDySuccess TDyIO::outTryEnqueueTask(
   // Make deferred task and forward deferred task to list (atomic)
   if (conditionList.empty() == false) 
   { 
-    this->outInsertDeferredTaskList({task, conditionList}); 
+    this->SyncInsertTaskToDeferredList({task, conditionList}); 
   }
   else
   {   // Just insert task to queue, if anything does not happen.
     { // Critical section.
-      MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+      MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
       if (this->mIsThreadStopped == true) { return DY_FAILURE; }
       this->mIOTaskQueue.emplace(task);
     }
@@ -243,21 +246,25 @@ EDySuccess TDyIO::outTryEnqueueTask(
   return DY_SUCCESS;
 }
 
-EDySuccess TDyIO::outCreateReferenceInstance(const std::string& specifier, 
-  EResourceType type, EDyResourceStyle style, EResourceScope scope)
+EDySuccess TRescIO::CreateReferenceInstance(
+  const std::string& specifier, 
+  EResourceType type, 
+  EResourceStyle style, 
+  EResourceScope scope)
 {
   switch (style)
   {
-  case EDyResourceStyle::Information: 
+  case EResourceStyle::Information: 
     return this->mRIInformationMap.CreateReferenceInstance(specifier, type, style, scope);
-  case EDyResourceStyle::Resource:    
+  case EResourceStyle::Resource:    
     return this->mRIResourceMap.CreateReferenceInstance(specifier, type, style, scope);
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  default: MDY_UNEXPECTED_BRANCH(); throw 0;
   }
 }
 
-std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(const std::string& iSpecifier,
-  EResourceType iResourceType, EDyResourceStyle iResourceStyle, EResourceScope iScope) const
+std::vector<TRescIO::PRIVerificationItem> TRescIO::pMakeDependenciesCheckList(
+  const std::string& iSpecifier,
+  EResourceType iResourceType, EResourceStyle iResourceStyle, EResourceScope iScope) const
 {
   std::vector<PRIVerificationItem> checkList = {};
 
@@ -317,7 +324,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(const 
       if (isInstanced == true)
       {
         // And mesh does not be a separated name if info.
-        if (iResourceStyle == EDyResourceStyle::Resource)
+        if (iResourceStyle == EResourceStyle::Resource)
         {
           requiredMeshSpecifier += kInstancingPostfix;
         }
@@ -336,7 +343,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(const 
     {
       checkList.emplace_back(
         metaInfo.mSkeleton.mSkeletonSpecifier, 
-        EResourceType::Skeleton, EDyResourceStyle::Information, iScope);
+        EResourceType::Skeleton, EResourceStyle::Information, iScope);
     }
   }
   else if (iResourceType == EResourceType::AnimationScrap)
@@ -353,14 +360,14 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(const 
   }
 
   // Resource common dependencies.
-  if (iResourceStyle == EDyResourceStyle::Resource)
+  if (iResourceStyle == EResourceStyle::Resource)
   {
     switch (iResourceType)
     {
     case EResourceType::Mesh: 
     {
       auto specifier = TryRemovePostfix(iSpecifier, kInstancingPostfix);
-      checkList.emplace_back(specifier, iResourceType, EDyResourceStyle::Information, iScope);
+      checkList.emplace_back(specifier, iResourceType, EResourceStyle::Information, iScope);
     } break;
     case EResourceType::Material:
     case EResourceType::Model: 
@@ -369,7 +376,7 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(const 
     case EResourceType::GLAttachment: 
     case EResourceType::GLFrameBuffer:
     {
-      checkList.emplace_back(iSpecifier, iResourceType, EDyResourceStyle::Information, iScope);
+      checkList.emplace_back(iSpecifier, iResourceType, EResourceStyle::Information, iScope);
     } break;
     default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(checkList);
     }
@@ -378,14 +385,14 @@ std::vector<TDyIO::PRIVerificationItem> TDyIO::pMakeDependenciesCheckList(const 
   return checkList;
 }
 
-EDySuccess TDyIO::InstantPopulateMaterialResource(
-    _MIN_ const PDyMaterialInstanceMetaInfo& iDesc,
-    _MIN_ TResourceBinder<EResourceType::Material>& refMat, 
-    _MIN_ EResourceScope iScope, 
-    _MIN_ bool(*callback)())
+EDySuccess TRescIO::InstantPopulateMaterialResource(
+  const PDyMaterialInstanceMetaInfo& iDesc,
+  TResourceBinder<EResourceType::Material>& refMat, EResourceScope iScope, bool(*callback)())
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNULL(callback),  "Callback material resource population is not supported yet.");
-  MDY_ASSERT_MSG(iScope == EResourceScope::Temporal, "Temporary material resource population must be inputted.");
+  MDY_ASSERT_MSG(callback == nullptr,
+    "Callback material resource population is not supported yet.");
+  MDY_ASSERT_MSG(iScope == EResourceScope::Temporal, 
+    "Temporary material resource population must be inputted.");
 
   // If resource type is `Material`, bind all dependencies of `Material` to checkList.
   std::vector<PRIVerificationItem> checkList = {};
@@ -395,16 +402,16 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
       if (bindingTextureItem.mTextureSpecifier.empty() == true) { break; }
       checkList.emplace_back(
         bindingTextureItem.mTextureSpecifier, EResourceType::Texture, 
-        EDyResourceStyle::Resource, iScope);
+        EResourceStyle::Resource, iScope);
     }
 
     checkList.emplace_back(
       iDesc.mShaderSpecifier, EResourceType::GLShader, 
-      EDyResourceStyle::Resource, iScope);
+      EResourceStyle::Resource, iScope);
   }
 
   // If `checkList` is not empty, check dependencies.
-  DDyIOTaskDeferred::TConditionList conditionList = {};
+  DRescIODeferredTask::TConditionList conditionList = {};
   if (checkList.empty() == false)
   { // And get not-found list from dependency list.
     const auto notFoundRIList = this->pCheckAndUpdateReferenceInstance(checkList);
@@ -413,7 +420,7 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
       for (const auto& [instance, status] : notFoundRIList)
       { // Require depende resource tasks only if NotValid but RI is exist.
         const auto& [specifier, type, style, scope] = instance;
-        if (status == EDyRIStatus::NotValid) 
+        if (status == ERIState::NotExist) 
         {
           MDY_CALL_BUT_NOUSE_RESULT(outTryEnqueueTask(specifier, type, style, scope, true)); 
         }
@@ -424,16 +431,16 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
   }
 
   // Require itself own resource task.
-  MDY_CALL_ASSERT_SUCCESS(this->outCreateReferenceInstance(
+  MDY_CALL_ASSERT_SUCCESS(this->CreateReferenceInstance(
       iDesc.mSpecifierName, 
-      EResourceType::Material, EDyResourceStyle::Resource, iScope));
+      EResourceType::Material, EResourceStyle::Resource, iScope));
 
   // Construct IO Tasks.
-  DDyIOTask task;
+  DRescIOTask task;
   {
     task.mSpecifierName       = iDesc.mSpecifierName;
     task.mResourceType        = EResourceType::Material;
-    task.mResourcecStyle      = EDyResourceStyle::Resource;
+    task.mResourcecStyle      = EResourceStyle::Resource;
     task.mScope               = EResourceScope::Temporal;
     task.mTaskPriority        = 192;
     task.mIsResourceDeferred  = false;
@@ -443,22 +450,26 @@ EDySuccess TDyIO::InstantPopulateMaterialResource(
   }
 
   // Make deferred task and forward deferred task to list (atomic)
-  if (conditionList.empty() == false) { this->outInsertDeferredTaskList({task, conditionList}); }
-  else
-  {   // Just insert task to queue, if anything does not happen.
-    { // Critical section.
-      MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
-      if (this->mIsThreadStopped == true) { return DY_FAILURE; }
-      this->mIOTaskQueue.emplace(task);
-    }
-    this->mConditionVariable.notify_one();
+  if (conditionList.empty() == false) 
+  { 
+    this->SyncInsertTaskToDeferredList({task, conditionList}); 
+    return DY_SUCCESS;
   }
+
+  // Just insert task to queue, if anything does not happen.
+  // Critical section.
+  { 
+    MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
+    if (this->mIsThreadStopped == true) { return DY_FAILURE; }
+    this->mIOTaskQueue.emplace(task);
+  }
+  this->mConditionVariable.notify_one();
 
   return DY_SUCCESS;
 }
 
-TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(
-  _MIN_ const std::vector<PRIVerificationItem>& dependencies) noexcept
+TRescIO::TDependencyList 
+TRescIO::pCheckAndUpdateReferenceInstance(const std::vector<PRIVerificationItem>& dependencies) noexcept
 {
   TDependencyList resultNotFoundList = {};
 
@@ -472,111 +483,122 @@ TDyIO::TDependencyList TDyIO::pCheckAndUpdateReferenceInstance(
     }
 
     // Find dependencies is on memory (not GCed, and avoid duplicated task queing)
+      // Thread safety with RI container is okay, RI GC phase is held on Main thread.
     if (this->pIsReferenceInstanceExist(specifier, type, style) == true)
     {
       // Try enlarge scope of RI. RI scope is large following by Global > Level > Temporal.
-      this->pTryEnlargeResourceScope(scope, specifier, type, style);
+      // Thread safety with RI container is okay, RI GC phase is held on Main thread.
+      this->TryEnlargeResourceScope(scope, specifier, type, style);
       // Check if RI is bound by actual resource.
       if (this->pIsReferenceInstanceBound(specifier, type, style) == false)
       {
         resultNotFoundList.emplace_back(
           PRIVerificationItem{specifier, type, style, scope}, 
-          EDyRIStatus::NotBoundYet);
+          ERIState::NotBoundYet);
       }
       continue;
     }
 
     resultNotFoundList.emplace_back(
       PRIVerificationItem{specifier, type, style, scope}, 
-      EDyRIStatus::NotValid);
+      ERIState::NotExist);
   }
 
   return resultNotFoundList;
 }
 
-void TDyIO::pTryEnlargeResourceScope(
+void TRescIO::TryEnlargeResourceScope(
   EResourceScope scope, const std::string& specifier, 
-  EResourceType type, EDyResourceStyle style)
+  EResourceType type, EResourceStyle style)
 {
   switch (style)
   {
-  case EDyResourceStyle::Information: this->mRIInformationMap.TryEnlargeResourceScope(scope, specifier, type);  break;
-  case EDyResourceStyle::Resource:    this->mRIResourceMap.TryEnlargeResourceScope(scope, specifier, type);     break;
+  case EResourceStyle::Information: 
+    this->mRIInformationMap.TryEnlargeResourceScope(scope, specifier, type);  
+    break;
+  case EResourceStyle::Resource:    
+    this->mRIResourceMap.TryEnlargeResourceScope(scope, specifier, type);     
+    break;
   default: MDY_UNEXPECTED_BRANCH();
   }
 }
 
-EDySuccess TDyIO::outTryRetrieveReferenceInstanceFromGC(
-  const std::string& specifier, EResourceType type, EDyResourceStyle style)
+void TRescIO::SyncInsertTaskToDeferredList(const DRescIODeferredTask& deferredTask)
+{
+  MDY_SYNC_LOCK_GUARD(this->mMutexDeferredTask);
+  this->mIODeferredTaskList.emplace_back(deferredTask);
+}
+
+EDySuccess TRescIO::outTryRetrieveReferenceInstanceFromGC(
+  const std::string& specifier, EResourceType type, EResourceStyle style)
 {
   // Get RI from gc list.
-  auto optRI = this->mGarbageCollector.MoveInstanceFromGC(specifier, type, style);
-  if (optRI.has_value() == false) { return DY_FAILURE; }
+  auto smtReferenceInstance = this->mGarbageCollector.MoveInstanceFromGC(specifier, type, style);
+  if (smtReferenceInstance == nullptr) 
+  { 
+    DyPushLogError("Failed to get instance from IO GC, {}.", specifier);
+    return DY_FAILURE; 
+  }
 
   // Reinsert RI to appropriate position.
   switch (style)
   {
-  case EDyResourceStyle::Information: return this->mRIInformationMap.MoveReferenceInstance(std::move(*optRI));
-  case EDyResourceStyle::Resource:    return this->mRIResourceMap.MoveReferenceInstance(std::move(*optRI));
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  case EResourceStyle::Information: 
+    return this->mRIInformationMap.MoveReferenceInstance(std::move(smtReferenceInstance));
+  case EResourceStyle::Resource:    
+    return this->mRIResourceMap.MoveReferenceInstance(std::move(smtReferenceInstance));
+  default: MDY_UNEXPECTED_BRANCH(); throw;
   }
 }
 
-void TDyIO::outInsertDeferredTaskList(const DDyIOTaskDeferred& task)
-{
-  MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
-  this->mIODeferredTaskList.emplace_back(task);
-}
-
-void TDyIO::outForceProcessIOInsertPhase() noexcept
+void TRescIO::outForceProcessIOInsertPhase() noexcept
 {
   // CRITICAL PERFORMANCE DOWN! MUST BE CALLED IN SYNCHRONIZATION PHASE.
   MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
   for (auto& resultItem : this->mWorkerResultList)
   {
-    MDY_ASSERT_MSG(resultItem.mResourceType != EResourceType::NoneError
-            && resultItem.mResourceType != EResourceType::Script
-            && resultItem.mResourceType != EResourceType::WidgetMeta, "Unexpected error occurred.");
-    if (resultItem.mSmtPtrResultInstance == nullptr) { continue; }
+    if (resultItem.mRawResultInstance == nullptr) { continue; }
 
-    if (resultItem.mResourceStyle == EDyResourceStyle::Information)
+    if (resultItem.mResourceStyle == EResourceStyle::Information)
     {
-      this->mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
+      this->mIODataManager->InsertResult(resultItem.mResourceType, resultItem.mRawResultInstance);
       MDY_CALL_ASSERT_SUCCESS(this->mRIInformationMap.TryUpdateValidity(
-          resultItem.mResourceType, 
-          resultItem.mSpecifierName, 
-          true,
-          resultItem.mSmtPtrResultInstance));
+        resultItem.mResourceType, 
+        resultItem.mSpecifierName, 
+        true,
+        resultItem.mRawResultInstance));
     }
     else
     {
-      this->mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mSmtPtrResultInstance);
+      this->mIOResourceManager->InsertResult(resultItem.mResourceType, resultItem.mRawResultInstance);
       MDY_CALL_ASSERT_SUCCESS(this->mRIResourceMap.TryUpdateValidity(
-          resultItem.mResourceType, 
-          resultItem.mSpecifierName, 
-          true,
-          resultItem.mSmtPtrResultInstance));
+        resultItem.mResourceType, 
+        resultItem.mSpecifierName, 
+        true,
+        resultItem.mRawResultInstance));
     }
 
     // If need to insert resource task of deferred list into queue, do this.
-    this->pTryUpdateDeferredTaskList(resultItem.mSpecifierName, resultItem.mResourceType, resultItem.mResourceStyle);
+    this->pTryUpdateDeferredTaskList(
+      resultItem.mSpecifierName, resultItem.mResourceType, resultItem.mResourceStyle);
   }
 
   this->mWorkerResultList.clear();
 }
 
-void TDyIO::pTryUpdateDeferredTaskList(
-  const std::string& iSpecifier, EResourceType iType, EDyResourceStyle iStyle)
+void TRescIO::pTryUpdateDeferredTaskList(
+  const std::string& iSpecifier, EResourceType iType, EResourceStyle iStyle)
 {
-  std::vector<DDyIOTask> reinsertionTasklist = {};
+  std::vector<DRescIOTask> reinsertionTasklist = {};
 
-  { // Critical Section
-    MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
+  // Critical Section
+  { 
+    MDY_SYNC_LOCK_GUARD(this->mMutexDeferredTask);
     for (auto it = this->mIODeferredTaskList.begin(); it != this->mIODeferredTaskList.end();)
     {
       auto& deferredTask = *it;
       // Try remove condition item. If removed something, try it'is satisfied with reinsertion condition.
-      if (deferredTask.TryRemoveDependenciesItem(iSpecifier, iType, iStyle) == DY_SUCCESS
+      if (deferredTask.TryRemoveDependentItem(iSpecifier, iType, iStyle) == DY_SUCCESS
       &&  deferredTask.IsSatisfiedReinsertCondition() == true)
       {
         reinsertionTasklist.emplace_back(deferredTask.mTask);
@@ -585,11 +607,13 @@ void TDyIO::pTryUpdateDeferredTaskList(
       else { ++it; }
     }
   }
+ 
+  // Reinserted deferred task will have more high priority.
+  for (auto& task : reinsertionTasklist) { task.mTaskPriority = task.mTaskPriority + 1; }
 
-  for (auto& task : reinsertionTasklist) { task.mTaskPriority = 0xFF; }
-
-  { // Critical Section
-    MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
+  // Critical Section
+  { 
+    MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
     for (const auto& task : reinsertionTasklist)
     {
       if (this->mIsThreadStopped == true) { return; }
@@ -603,19 +627,19 @@ void TDyIO::pTryUpdateDeferredTaskList(
 //! Task resource population from main thread.
 //!
 
-void TDyIO::outMainForceProcessDeferredMainTaskList()
+void TRescIO::outMainForceProcessDeferredMainTaskList()
 {
-  MDY_SYNC_LOCK_GUARD(this->mProcessTaskFromMainMutex);
+  MDY_SYNC_LOCK_GUARD(this->mMutexMainProcessTask);
   for (const auto& task : this->mIOProcessMainTaskList)
   {
-    SDyIOConnectionHelper::InsertResult(outMainProcessTask(task));
+    SIOConnectionHelper::InsertWorkerResult(outMainProcessTask(task));
   }
   this->mIOProcessMainTaskList.clear();
 }
 
-DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
+DRescIOWorkerResult TRescIO::outMainProcessTask(_MIN_ const DRescIOTask& task)
 {
-  DDyIOWorkerResult result{};
+  DRescIOWorkerResult result{};
   { // Copy properties to result instance.
     result.mResourceType        = task.mResourceType;
     result.mResourceStyle       = task.mResourcecStyle;
@@ -624,7 +648,7 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   }
 
   MDY_ASSERT_MSG(
-    task.mResourcecStyle == EDyResourceStyle::Resource, 
+    task.mResourcecStyle == EResourceStyle::Resource, 
     "Main deferred task must be resource style.");
   const auto& infoManager = MIORescInfo::GetInstance();
 
@@ -633,10 +657,10 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
   case EResourceType::GLShader:
   { 
     // Need to move it as independent function.
-    const auto instance = new FDyShaderResource(
+    const auto instance = new FResourceShader(
       *infoManager.GetPtrInformation<EResourceType::GLShader>(result.mSpecifierName));
 
-    result.mSmtPtrResultInstance = instance;
+    result.mRawResultInstance = instance;
   } break;
   case EResourceType::Mesh:
   { 
@@ -644,10 +668,10 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
     Owner<FMeshVBOIntermediate*> ptrrawIntermediateInstance = 
       std::any_cast<FMeshVBOIntermediate*>(task.mRawInstanceForUsingLater);
 
-    const auto instance = new FDyMeshResource(*ptrrawIntermediateInstance);
+    const auto instance = new FResourceMesh(*ptrrawIntermediateInstance);
     MDY_DELETE_RAWHEAP_SAFELY(ptrrawIntermediateInstance);
 
-    result.mSmtPtrResultInstance = instance;
+    result.mRawResultInstance = instance;
   } break;
   case EResourceType::GLFrameBuffer:
   { 
@@ -656,13 +680,13 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
       *infoManager.GetPtrInformation<EResourceType::GLFrameBuffer>(result.mSpecifierName);
     if (refInfo.IsPingPong() == true)
     {
-      const auto instance = new FDyFrameBufferPingPongResource(refInfo);
-      result.mSmtPtrResultInstance = instance;
+      const auto instance = new FResourceFrameBufferPingPong(refInfo);
+      result.mRawResultInstance = instance;
     }
     else
     {
-      const auto instance = new FDyFrameBufferGeneralResource(refInfo);
-      result.mSmtPtrResultInstance = instance;
+      const auto instance = new FResourceFrameBufferGeneral(refInfo);
+      result.mRawResultInstance = instance;
     }
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
@@ -675,51 +699,51 @@ DDyIOWorkerResult TDyIO::outMainProcessTask(_MIN_ const DDyIOTask& task)
 //! Condition
 //!
 
-bool TDyIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style)
+bool TRescIO::pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style)
 {
   switch (style)
   {
-  case EDyResourceStyle::Information: return this->mRIInformationMap.IsReferenceInstanceExist(specifier, type);
-  case EDyResourceStyle::Resource:    return this->mRIResourceMap.IsReferenceInstanceExist(specifier, type);
+  case EResourceStyle::Information: return this->mRIInformationMap.IsReferenceInstanceExist(specifier, type);
+  case EResourceStyle::Resource:    return this->mRIResourceMap.IsReferenceInstanceExist(specifier, type);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
 
-EDySuccess TDyIO::TryBindBinderToResourceRI
+EDySuccess TRescIO::TryBindBinderToResourceRI
 (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIResourceMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
-EDySuccess TDyIO::TryBindBinderToInformationRI
+EDySuccess TRescIO::TryBindBinderToInformationRI
 (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIInformationMap.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
-EDySuccess TDyIO::TryDetachBinderFromResourceRI
+EDySuccess TRescIO::TryDetachBinderFromResourceRI
 (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIResourceMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
-EDySuccess TDyIO::TryDetachBinderFromInformationRI
+EDySuccess TRescIO::TryDetachBinderFromInformationRI
 (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   return this->mRIInformationMap.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder);
 }
 
-bool TDyIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EDyResourceStyle style)
+bool TRescIO::pIsReferenceInstanceBound(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style)
 {
   switch (style)
   {
-  case EDyResourceStyle::Information: return this->mRIInformationMap.IsReferenceInstanceBound(specifier, type);
-  case EDyResourceStyle::Resource:    return this->mRIResourceMap.IsReferenceInstanceBound(specifier, type);
+  case EResourceStyle::Information: return this->mRIInformationMap.IsReferenceInstanceBound(specifier, type);
+  case EResourceStyle::Resource:    return this->mRIResourceMap.IsReferenceInstanceBound(specifier, type);
   default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(false);
   }
 }
 
-bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type)
+bool TRescIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type)
 {
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(this->MIOMetaManager), "MetaInformation manager must not be null.");
   switch (type)
@@ -740,7 +764,7 @@ bool TDyIO::outIsMetaInformationExist(_MIN_ const std::string& specifier, _MIN_ 
   }
 }
 
-void TDyIO::BindSleepCallbackFunction(_MIN_ std::function<void()> iCbFunc)
+void TRescIO::BindSleepCallbackFunction(_MIN_ std::function<void()> iCbFunc)
 {
   if (this->mCbSleepFunction == nullptr)
   {
@@ -754,16 +778,25 @@ void TDyIO::BindSleepCallbackFunction(_MIN_ std::function<void()> iCbFunc)
   }
 }
 
-bool TDyIO::outIsIOThreadSlept() noexcept
+bool TRescIO::outIsIOThreadSlept() noexcept
 {
   bool sleptFlag;
   {
-    MDY_SYNC_LOCK_GUARD(this->mQueueMutex);
-    MDY_SYNC_LOCK_GUARD(this->mDeferredTaskMutex);
+    MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
+    MDY_SYNC_LOCK_GUARD(this->mMutexDeferredTask);
     MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
 
+    // Check all worker are idle.
+    for (const auto& [instance, thread] : this->mWorkerList)
+    {
+      if (instance->SyncIsIdle() == false) 
+      { 
+        sleptFlag = false; break; 
+      };
+    }
+    
+    // Check queue and list are empty.
     sleptFlag = this->mIOTaskQueue.empty()
-        && this->mIdleWorkerCounter.load() == dy::TDyIO::kWorkerThreadCount
         && this->mIODeferredTaskList.empty()
         && this->mWorkerResultList.empty();
   }
@@ -772,7 +805,7 @@ bool TDyIO::outIsIOThreadSlept() noexcept
   return sleptFlag;
 }
 
-EDySuccess TDyIO::outTryCallSleptCallbackFunction()
+EDySuccess TRescIO::outTryCallSleptCallbackFunction()
 {
   if (this->outIsIOThreadSlept() == false)  { return DY_FAILURE; }
   if (this->mCbSleepFunction == nullptr)    { return DY_FAILURE; }
@@ -787,39 +820,49 @@ EDySuccess TDyIO::outTryCallSleptCallbackFunction()
   return DY_SUCCESS;
 }
 
-void TDyIO::outInsertGcCandidate(std::unique_ptr<DDyIOReferenceInstance>& iRefRI)
+void TRescIO::outInsertGcCandidate(std::unique_ptr<DIOReferenceInstance>& iRefRI)
 {
   this->mGarbageCollector.InsertGcCandidate(iRefRI);
 }
 
-void TDyIO::outTryForwardCandidateRIToGCList(_MIN_ EResourceScope iScope, _MIN_ EDyResourceStyle iStyle)
+void TRescIO::outTryForwardCandidateRIToGCList(EResourceScope iScope, EResourceStyle iStyle)
 {
   switch (iStyle)
   {
-  case EDyResourceStyle::Information: 
+  case EResourceStyle::Information: 
   { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
     // and reinsert it to gc list.
     auto gcCandidateList = this->mRIInformationMap.GetForwardCandidateRIAsList(iScope);
     this->mGarbageCollector.InsertGcCandidateList(std::move(gcCandidateList));
-    this->mGarbageCollector.TryGarbageCollectCandidateList();
   } break;
-  case EDyResourceStyle::Resource:    
+  case EResourceStyle::Resource:    
   { // Get GC-Candidate RI instance from list (condition is `mIsResourceValid == true` && `mReferenceCount == 0`.
     // and reinsert it to gc list.
     auto gcCandidateList = this->mRIResourceMap.GetForwardCandidateRIAsList(iScope);
     this->mGarbageCollector.InsertGcCandidateList(std::move(gcCandidateList));
-    this->mGarbageCollector.TryGarbageCollectCandidateList();
   } break;
   default: MDY_UNEXPECTED_BRANCH();
   }
+
+  this->mGarbageCollector.TryGarbageCollectCandidateList();
 }
 
-bool TDyIO::isoutIsMainTaskListIsEmpty() const noexcept
+bool TRescIO::IsGcCandidateExist() const noexcept
+{
+  return this->mGarbageCollector.IsGcCandidateExist();
+}
+
+void TRescIO::TryGC()
+{
+  this->mGarbageCollector.TryGarbageCollectCandidateList();
+}
+
+bool TRescIO::isoutIsMainTaskListIsEmpty() const noexcept
 {
   return this->mIOProcessMainTaskList.empty();
 }
 
-bool TDyIO::outCheckIOResultInCondition() noexcept
+bool TRescIO::SyncIsWorkerResultExist() noexcept
 {
   MDY_SYNC_LOCK_GUARD(this->mResultListMutex);
   return this->mWorkerResultList.empty() == false;

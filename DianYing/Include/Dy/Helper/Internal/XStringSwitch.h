@@ -14,21 +14,13 @@
 ///
 
 #include <Dy/Helper/System/HashCompileCrc32.h>
+#include <Expr/XStringSwitch.h>
 
-namespace dy
+namespace dy::string
 {
 
-/// @brief Get runtime string to crc-32 hash value for using switch-case statements.
-inline TU32 SwitchStrInput(const std::string& iInput)
-{
-  return hash::DyToCrc32Hash(iInput.c_str());
-}
-
-/// @brief Do compile time or runtime conversion of literal string to hash value.
-constexpr TU32 CaseStr(const char* iLiteral)
-{
-  return hash::DyToCrc32Hash(iLiteral);
-}
+using ::dy::expr::string::Input;
+using ::dy::expr::string::Case;
 
 } /// ::dy namespace
 

@@ -16,6 +16,7 @@
 #include <Dy/Helper/MCS/GLShaderParser.h>
 
 #include <algorithm>
+#include <functional>
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <Dy/Helper/Internal/XStringSwitch.h>
 
@@ -344,17 +345,17 @@ std::string ParseGLShader(const DParsingArgs& iArgs)
   // If found any module, just replace `#import phrase` with given string to buffer.
   for (auto& keyword : optMatchedKeywordList.value())
   {
-    switch (SwitchStrInput(keyword))
+    switch (string::Input(keyword))
     {
-    case CaseStr("Input_DefaultVao"):       exportShaderBuffer += Buffer_Input_DefaultVao; break;
-    case CaseStr("Input_UboCamera"):        exportShaderBuffer += Buffer_Input_UboCamera; break;
-    case CaseStr("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
-    case CaseStr("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
-    case CaseStr("Input_UboDirLight"):      exportShaderBuffer += Buffer_Input_UboDirLight; break;
-    case CaseStr("Input_UStrPointLight"):   exportShaderBuffer += Buffer_Input_UStrPointLight; break;
-    case CaseStr("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
-    case CaseStr("Etc_Miscellaneous"):      exportShaderBuffer += Buffer_Etc_Miscellaneous; break;
-    case CaseStr("Input_ModelTransform"):  
+    case string::Case("Input_DefaultVao"):       exportShaderBuffer += Buffer_Input_DefaultVao; break;
+    case string::Case("Input_UboCamera"):        exportShaderBuffer += Buffer_Input_UboCamera; break;
+    case string::Case("Input_SkinAnimation"):    exportShaderBuffer += Buffer_Input_SkinAnimation; break;
+    case string::Case("Input_DefaultTexture2D"): exportShaderBuffer += Buffer_Input_DefaultTexture2D; break;
+    case string::Case("Input_UboDirLight"):      exportShaderBuffer += Buffer_Input_UboDirLight; break;
+    case string::Case("Input_UStrPointLight"):   exportShaderBuffer += Buffer_Input_UStrPointLight; break;
+    case string::Case("Output_OpaqueStream"):    exportShaderBuffer += Buffer_Output_OpaqueStream; break;
+    case string::Case("Etc_Miscellaneous"):      exportShaderBuffer += Buffer_Etc_Miscellaneous; break;
+    case string::Case("Input_ModelTransform"):  
     {
       if (iArgs.mIsInstantiable == true)
       {
@@ -365,10 +366,10 @@ std::string ParseGLShader(const DParsingArgs& iArgs)
         exportShaderBuffer += Buffer_Input_ModelTransform_Single; 
       }
     } break;
-    case CaseStr("Input_ModelTransformInstancing"):
+    case string::Case("Input_ModelTransformInstancing"):
       exportShaderBuffer += Buffer_Input_ModelTransform_Multi;
       break;
-    case CaseStr("Output_OITStream"):
+    case string::Case("Output_OITStream"):
       exportShaderBuffer += Buffer_Output_OITStream;
       break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;

@@ -23,7 +23,7 @@ namespace dy
 /// @brief Manages logging.
 class MLog final : public ISingleton<MLog>
 {
-  MDY_SINGLETON_DERIVED(MLog);
+  DY_PIMPL_SINGELTON_DERIVED(MLog);
   MDY_SINGLETON_PROPERTIES(MLog);
 public:
   /// @enum ELevel
@@ -45,9 +45,6 @@ private:
   /// @brief Release logger resource. (Disable)
   /// This function must be called when only MSetting::mIsEnabledLogging value is being off.
   EDySuccess pfTurnOff();
-
-  class Impl;
-  Impl* mPimpl = nullptr;
 
   friend class MSetting;
 };

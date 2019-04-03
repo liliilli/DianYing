@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Element/Type/Timer/ETimerState.h>
+#include <functional>
 
 //!
 //! Forward declaration

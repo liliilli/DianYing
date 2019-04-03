@@ -21,7 +21,7 @@
 #include <Dy/Core/Resource/Internal/ETextureEnums.h>
 #include <Dy/Core/Resource/Internal/Uniform/IUniformValueBase.h>
 #include <Dy/Element/Interface/IToString.h>
-#include <Dy/Helper/Type/DVectorInt2.h>
+#include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <Dy/Core/Resource/Type/Shader/XTemplateUniformType.h>
 

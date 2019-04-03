@@ -16,6 +16,7 @@
 #include <Dy/Helper/Type/DColorRGB.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Type/DColorRGB24.h>
+#include <nlohmann/json.hpp>
 
 namespace dy
 {

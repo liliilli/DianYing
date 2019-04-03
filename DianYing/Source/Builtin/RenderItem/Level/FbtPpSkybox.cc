@@ -14,13 +14,13 @@
 
 #include <Dy/Builtin/RenderItem/Level/FBtPpSkybox.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/AResourceFrameBufferBase.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Management/Rendering/MRendering.h>
-#include <Dy/Core/Resource/Resource/FDyTextureResource.h>
+#include <Dy/Core/Resource/Resource/AResourceTextureBase.h>
 #include <Dy/Component/CSkybox.h>
 
 namespace dy
@@ -92,7 +92,7 @@ void FBtRenderItemSkybox::OnRender()
     ptrSkyboxTexture->GetRotationDegree());
   this->mBinderShdSkybox->TryUpdateUniform<EUniform::Vector3>(
     "uTintColor",    
-    static_cast<DVector3>(ptrSkyboxTexture->GetTintColor()));
+    static_cast<DVec3>(ptrSkyboxTexture->GetTintColor()));
   this->mBinderShdSkybox->TryInsertTextureRequisition(0, refBinderTexture->GetTextureId());
   //this->mBinderShdSkybox->TryInsertTextureRequisition(1, this->mBinderAttUnlit->GetSourceAttachmentId());
 

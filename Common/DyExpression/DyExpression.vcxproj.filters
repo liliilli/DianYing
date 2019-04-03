@@ -9,6 +9,9 @@
     <None Include="Include\Expr\Inline\TZipConstIterator.inl" />
     <None Include="Include\Expr\Inline\TZipIteratorType.inl" />
     <None Include="Include\Expr\Inline\TZip.inl" />
+    <None Include="Include\Expr\Inline\TCrc32Pre.inl" />
+    <None Include="Include\Expr\Inline\TCrc32Post.inl" />
+    <None Include="Include\Expr\Inline\XStringSwitch.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Expr\TTypeList.h" />
@@ -17,5 +20,8 @@
     <ClInclude Include="Include\Expr\TExtendedTraits.h" />
     <ClInclude Include="Include\Expr\TZipIterator.h" />
     <ClInclude Include="Include\Expr\TZipConstIterator.h" />
+    <ClInclude Include="Include\Expr\TCrc32.h" />
+    <ClInclude Include="Include\Expr\XStringSwitch.h" />
+    <ClInclude Include="Include\Expr\XMacroes.h" />
   </ItemGroup>
 </Project>

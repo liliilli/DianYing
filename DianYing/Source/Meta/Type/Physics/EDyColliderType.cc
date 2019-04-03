@@ -23,11 +23,11 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyColliderType& p)
 {
   const auto stringValue = j.get<std::string>();
   
-  switch (SwitchStrInput(stringValue))
+  switch (string::Input(stringValue))
   {
-  case CaseStr("Sphere"):   p = EDyColliderType::Sphere; break;
-  case CaseStr("Capsule"):  p = EDyColliderType::Capsule; break;
-  case CaseStr("Box"):      p = EDyColliderType::Box; break;
+  case string::Case("Sphere"):   p = EDyColliderType::Sphere; break;
+  case string::Case("Capsule"):  p = EDyColliderType::Capsule; break;
+  case string::Case("Box"):      p = EDyColliderType::Box; break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 }

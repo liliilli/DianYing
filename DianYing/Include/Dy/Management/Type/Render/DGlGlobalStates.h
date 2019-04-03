@@ -14,7 +14,7 @@
 ///
 
 #include <optional>
-#include <Dy/Helper/Type/DArea2D.h>
+#include <Dy/Helper/Type/DArea.h>
 #include <Dy/Management/Type/AttachmentInformation.h>
 
 namespace dy
@@ -75,7 +75,7 @@ struct DGlGlobalStates final
     /// @struct DItem
     struct DItem final
     {
-      TI32      mIndex;
+      TI32 mIndex;
       DArea2D mArea;
 
       DItem(TI32 iIndex, DArea2D iArea) : mIndex{iIndex}, mArea{iArea} {};

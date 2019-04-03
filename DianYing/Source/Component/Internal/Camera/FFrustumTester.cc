@@ -14,64 +14,89 @@
 
 /// Header file
 #include <Dy/Component/Internal/Camera/FFrustumTester.h>
-#include "Dy/Helper/Type/DMatrix4x4.h"
+#include <Dy/Helper/Type/DMatrix4x4.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {
 
-void FFrustumTester::UpdateFrustum(const DMatrix4x4& mProjection, const DMatrix4x4& mView)
+void FFrustumTester::UpdateFrustum(const DMat4& mProjection, const DMat4& mView)
 {
-  const auto clipMatrix = mProjection.Multiply(mView);
+  const auto clipMatrix = mProjection * mView;
 
   // Setup right plane and normalize.
-  mFrustum[DirRight].A = clipMatrix[0][3] - clipMatrix[0][0];
-  mFrustum[DirRight].B = clipMatrix[1][3] - clipMatrix[1][0];
-  mFrustum[DirRight].C = clipMatrix[2][3] - clipMatrix[2][0];
-  mFrustum[DirRight].D = clipMatrix[3][3] - clipMatrix[3][0];
-  mFrustum[DirRight].Normalize();
+  {
+    const DPlane plane = {
+      clipMatrix[0][3] - clipMatrix[0][0],
+      clipMatrix[1][3] - clipMatrix[1][0],
+      clipMatrix[2][3] - clipMatrix[2][0],
+      clipMatrix[3][3] - clipMatrix[3][0]
+    };
+    mFrustum[DirRight] = plane;
+  }
 
   // Setup left plane and normalize.
-  mFrustum[DirLeft].A = clipMatrix[0][3] + clipMatrix[0][0];
-  mFrustum[DirLeft].B = clipMatrix[1][3] + clipMatrix[1][0];
-  mFrustum[DirLeft].C = clipMatrix[2][3] + clipMatrix[2][0];
-  mFrustum[DirLeft].D = clipMatrix[3][3] + clipMatrix[3][0];
-  mFrustum[DirLeft].Normalize();
+  {
+    const DPlane plane = {
+      clipMatrix[0][3] + clipMatrix[0][0],
+      clipMatrix[1][3] + clipMatrix[1][0],
+      clipMatrix[2][3] + clipMatrix[2][0],
+      clipMatrix[3][3] + clipMatrix[3][0]
+    };
+    mFrustum[DirLeft] = plane;
+  }
  
   // Setup top plane and normalize.
-  mFrustum[DirTop].A = clipMatrix[0][3] - clipMatrix[0][1];
-  mFrustum[DirTop].B = clipMatrix[1][3] - clipMatrix[1][1];
-  mFrustum[DirTop].C = clipMatrix[2][3] - clipMatrix[2][1];
-  mFrustum[DirTop].D = clipMatrix[3][3] - clipMatrix[3][1];
-  mFrustum[DirTop].Normalize();
-  
+  {
+    const DPlane plane = {
+      clipMatrix[0][3] - clipMatrix[0][1],
+      clipMatrix[1][3] - clipMatrix[1][1],
+      clipMatrix[2][3] - clipMatrix[2][1],
+      clipMatrix[3][3] - clipMatrix[3][1]
+    };
+    mFrustum[DirTop] = plane;
+  }
+
   // Setup bottom plane and normalize.
-  mFrustum[DirBottom].A = clipMatrix[0][3] + clipMatrix[0][1];
-  mFrustum[DirBottom].B = clipMatrix[1][3] + clipMatrix[1][1];
-  mFrustum[DirBottom].C = clipMatrix[2][3] + clipMatrix[2][1];
-  mFrustum[DirBottom].D = clipMatrix[3][3] + clipMatrix[3][1];
-  mFrustum[DirBottom].Normalize();
+  {
+    const DPlane plane = {
+      clipMatrix[0][3] + clipMatrix[0][1],
+      clipMatrix[1][3] + clipMatrix[1][1],
+      clipMatrix[2][3] + clipMatrix[2][1],
+      clipMatrix[3][3] + clipMatrix[3][1]
+    };
+    mFrustum[DirBottom] = plane;
+  }
  
   // Setup back plane and normalize.
-  mFrustum[DirBack].A = clipMatrix[0][3] - clipMatrix[0][2];
-  mFrustum[DirBack].B = clipMatrix[1][3] - clipMatrix[1][2];
-  mFrustum[DirBack].C = clipMatrix[2][3] - clipMatrix[2][2];
-  mFrustum[DirBack].D = clipMatrix[3][3] - clipMatrix[3][2];
-  mFrustum[DirBack].Normalize();
+  {
+    const DPlane plane = {
+      clipMatrix[0][3] - clipMatrix[0][2],
+      clipMatrix[1][3] - clipMatrix[1][2],
+      clipMatrix[2][3] - clipMatrix[2][2],
+      clipMatrix[3][3] - clipMatrix[3][2]
+    };
+    mFrustum[DirBack] = plane;
+  }
    
   // Setup front plane and normalize.
-  mFrustum[DirFront].A = clipMatrix[0][3] + clipMatrix[0][2];
-  mFrustum[DirFront].B = clipMatrix[1][3] + clipMatrix[1][2];
-  mFrustum[DirFront].C = clipMatrix[2][3] + clipMatrix[2][2];
-  mFrustum[DirFront].D = clipMatrix[3][3] + clipMatrix[3][2];
-  mFrustum[DirFront].Normalize();
+  {
+    const DPlane plane = {
+      clipMatrix[0][3] + clipMatrix[0][2],
+      clipMatrix[1][3] + clipMatrix[1][2],
+      clipMatrix[2][3] + clipMatrix[2][2],
+      clipMatrix[3][3] + clipMatrix[3][2]
+    };
+    mFrustum[DirFront] = plane;
+  }
 }
 
-bool FFrustumTester::IsPointInFrustum(const DVector3& mPoint) const noexcept
+bool FFrustumTester::IsPointInFrustum(const DVec3& mPoint) const noexcept
 {
   for (auto i = 0; i < 6; ++i)
   { 
     // Calculate the plane equation and check if the point is behind a side of the frustum.
-    if (mFrustum[i].CheckPointStatusOnPlane(mPoint) == DPlane::EStatus::Behind) 
+    if (mFrustum[i].CheckPointStatusOnPlane(mPoint) == math::EPosPlaneState::BehindNormal) 
     { 
       return false; 
     }
@@ -79,7 +104,7 @@ bool FFrustumTester::IsPointInFrustum(const DVector3& mPoint) const noexcept
   return true;
 }
 
-bool FFrustumTester::IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) const noexcept
+bool FFrustumTester::IsSphereInFrustum(const DVec3& iPoint, TF32 iRadius) const noexcept
 {
   if (iRadius < 0)
   {
@@ -92,9 +117,9 @@ bool FFrustumTester::IsSphereInFrustum(const DVector3& iPoint, TF32 iRadius) con
   for (auto i = 0; i < 6; ++i)
   {
     // Calculate the plane equation and check if the point is behind a side of the frustum.
-    if (mFrustum[i].CheckPointStatusOnPlane(iPoint) == DPlane::EStatus::Behind) 
+    if (mFrustum[i].CheckPointStatusOnPlane(iPoint) == math::EPosPlaneState::BehindNormal) 
     { 
-      const auto distance = mFrustum[i].GetDistanceFrom(iPoint, true);
+      const auto distance = mFrustum[i].GetUnsignedDistanceFrom(iPoint);
       if (distance > iRadius) 
       { 
         return false; 

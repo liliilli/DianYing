@@ -15,15 +15,15 @@
 #include <Dy/Builtin/RenderItem/Level/FBtPpCsmShadow.h>
 #include <Dy/Management/MWorld.h>
 #include <Dy/Management/Rendering/MUniformBufferObject.h>
-#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
+#include <Dy/Core/Resource/Resource/AResourceFrameBufferBase.h>
 #include <Dy/Component/CCamera.h>
 #include <Dy/Component/CModelRenderer.h>
 #include <Dy/Element/FActor.h>
-#include <Dy/Core/Resource/Resource/FDyMaterialResource.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMaterial.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Component/CModelAnimator.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Management/Helper/SProfilingHelper.h>
@@ -93,7 +93,7 @@ void FBtRenderItemCsmShadow::OnSetupRenderingSetting()
     this->mAddrMainDirectionalShadow = reinterpret_cast<ptrdiff_t>(ptrLight);
     if (this->mAddrMainDirectionalShadow == 0) 
     {
-      this->mViewMatrix = DMatrix4x4{};
+      this->mViewMatrix = DMat4{};
     }
     else
     { 
@@ -164,7 +164,7 @@ void FBtRenderItemCsmShadow::OnRender()
   auto& drawList = MRendering::GetInstance().GetOpaqueMeshQueueList();
 
   // Make instancing list.
-  std::unordered_map<const FDyMeshResource*, std::vector<MRendering::TMeshDrawCallItem*>> instancingList;
+  std::unordered_map<const FResourceMesh*, std::vector<MRendering::TMeshDrawCallItem*>> instancingList;
 
   for (auto& item : drawList)
   {
@@ -179,8 +179,8 @@ void FBtRenderItemCsmShadow::OnRender()
       // Render without instancing.
       this->RenderObject(
         *iPtrModel,
-        const_cast<FDyMeshResource&>(*iPtrValidMesh),
-        const_cast<FDyMaterialResource&>(*iPtrValidMat)
+        const_cast<FResourceMesh&>(*iPtrValidMesh),
+        const_cast<FResourceMaterial&>(*iPtrValidMat)
       );
     }
   }
@@ -191,7 +191,7 @@ void FBtRenderItemCsmShadow::OnRender()
     auto& [__, iMainValidMesh, iMainValidMaterial] = *itemList.front();
     const auto instancingId = *iMainValidMesh->GetInstancingBufferId();
 
-    std::vector<DMatrix4x4> instancingMatrixes;
+    std::vector<DMat4> instancingMatrixes;
     instancingMatrixes.reserve(itemList.size());
 
     for (auto& item : itemList)
@@ -204,15 +204,15 @@ void FBtRenderItemCsmShadow::OnRender()
 
     // We need to construct vertex binding and attribute binding connection 
     // whenever instancing buffer is renewed. (maybe)
-    auto& ptr = const_cast<FDyMeshResource&>(*iMainValidMesh);
+    auto& ptr = const_cast<FResourceMesh&>(*iMainValidMesh);
     ptr.BindVertexArray();
     glBindVertexArray(iMainValidMesh->GetVertexArrayId());
     glBindBuffer(GL_ARRAY_BUFFER, instancingId);
     glBufferData(GL_ARRAY_BUFFER, 
-      itemList.size() * sizeof(DMatrix4x4), 
+      itemList.size() * sizeof(DMat4), 
       instancingMatrixes.data(), 
       GL_DYNAMIC_DRAW);
-    glBindVertexBuffer(1, instancingId, 0, sizeof(DMatrix4x4));
+    glBindVertexBuffer(1, instancingId, 0, sizeof(DMat4));
 
     glEnableVertexAttribArray(10);
     glEnableVertexAttribArray(11);
@@ -233,15 +233,15 @@ void FBtRenderItemCsmShadow::OnRender()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     this->RenderStaticInstancingObjects(
-      const_cast<FDyMeshResource&>(*iMainValidMesh),
-      const_cast<FDyMaterialResource&>(*iMainValidMaterial), itemList.size());
+      const_cast<FResourceMesh&>(*iMainValidMesh),
+      const_cast<FResourceMaterial&>(*iMainValidMaterial), itemList.size());
   }
 }
 
 void FBtRenderItemCsmShadow::RenderObject(
   DDyModelHandler::DActorInfo& iRefRenderer, 
-  FDyMeshResource& iRefMesh,
-  FDyMaterialResource& iRefMaterial)
+  FResourceMesh& iRefMesh,
+  FResourceMaterial& iRefMaterial)
 {
   // Validation test
   const auto* ptrModelBinder = iRefRenderer.mPtrModelRenderer->GetModelResourceBinder();
@@ -266,8 +266,8 @@ void FBtRenderItemCsmShadow::RenderObject(
 }
 
 void FBtRenderItemCsmShadow::RenderStaticInstancingObjects(
-  FDyMeshResource& iRefMesh,
-  FDyMaterialResource& iRefMaterial, 
+  FResourceMesh& iRefMesh,
+  FResourceMaterial& iRefMaterial, 
   TU32 iCount)
 {
   this->mInstancingShaderResource->UseShader();

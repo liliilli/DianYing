@@ -23,15 +23,15 @@ void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) no
   property.mSpecifierName = sName;
 
   // Position
-  const auto a = DVector3{ 0, 1, 0 };
-  const auto b = DVector3{ 0, 0, 1 };
-  const auto c = DVector3{ 1, 0, 0 };
-  const auto d = DVector3{ -1, -1, -1 }.Normalize();
+  const auto a = DVec3{ 0, 1, 0 };
+  const auto b = DVec3{ 0, 0, 1 };
+  const auto c = DVec3{ 1, 0, 0 };
+  const auto d = DVec3{ -1, -1, -1 }.Normalize();
   // Texture Coordination
-  const auto ta = DVector2{ 1, 1 };
-  const auto tb = DVector2{ 0, 1 };
-  const auto tc = DVector2{ 1, 0 };
-  const auto td = DVector2{ -1, -1 };
+  const auto ta = DVec2{ 1, 1 };
+  const auto tb = DVec2{ 0, 1 };
+  const auto tc = DVec2{ 1, 0 };
+  const auto td = DVec2{ -1, -1 };
 
   // Make vertex information
   const TI32 level = 4;
@@ -43,7 +43,7 @@ void FDyBtMsSphere::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property) no
 }
 
 void FDyBtMsSphere::pEmplaceVertex(
-    _MIN_ const DVector3& position, _MIN_ const DVector2& texcoord,
+    _MIN_ const DVec3& position, _MIN_ const DVec2& texcoord,
     _MOUT_ PDyDefaultMeshInformation& container)
 {
   DDefaultVertexInfo vertex;
@@ -54,8 +54,8 @@ void FDyBtMsSphere::pEmplaceVertex(
 }
 
 void FDyBtMsSphere::pCreateVertexRecursively(
-    _MIN_ const DVector3& a, _MIN_ const DVector3& b, _MIN_ const DVector3& c,
-    _MIN_ const DVector2& ta, _MIN_ const DVector2& tb, _MIN_ const DVector2& tc,
+    _MIN_ const DVec3& a, _MIN_ const DVec3& b, _MIN_ const DVec3& c,
+    _MIN_ const DVec2& ta, _MIN_ const DVec2& tb, _MIN_ const DVec2& tc,
     _MIN_ const TI32 level,
     _MIO_ PDyDefaultMeshInformation& container)
 {

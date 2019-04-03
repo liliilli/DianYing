@@ -41,13 +41,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -130,11 +130,15 @@
     <ClCompile Include="Source\DArea2D\TestDArea2DInt.cc" />
     <ClCompile Include="Source\DArea2D\TestDArea2DReal.cc" />
     <ClCompile Include="Source\DArea3D\TestDArea3DInt.cc" />
+    <ClCompile Include="Source\DBounds\TestDBounds2D.cc" />
+    <ClCompile Include="Source\DBounds\TestDBounds3D.cc" />
     <ClCompile Include="Source\DClamp\TestDClamp.cc" />
     <ClCompile Include="Source\DMatrix\TestDMatrix2.cc" />
     <ClCompile Include="Source\DMatrix\TestDMatrix3.cc" />
     <ClCompile Include="Source\DMatrix\TestDMatrix4.cc" />
+    <ClCompile Include="Source\DQuat\TestDQuat.cc" />
     <ClCompile Include="Source\DVector2\TestDVector2.cc" />
+    <ClCompile Include="Source\DVector2\TestDVectorSimd.cc" />
     <ClCompile Include="Source\TestXGlobalUtilities.cc" />
     <ClCompile Include="Source\XLinearMath\TestCross.cc" />
     <ClCompile Include="Source\XLinearMath\TestDot.cc" />

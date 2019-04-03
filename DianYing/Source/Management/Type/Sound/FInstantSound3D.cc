@@ -15,10 +15,11 @@
 /// Header file
 #include <Dy/Management/Type/Sound/FInstantSound3D.h>
 
-#include <Dy/Core/Resource/Information/FDySoundInformation.h>
+#include <Dy/Core/Resource/Information/FInformationSound.h>
 #include <Dy/Management/MSound.h>
 #include <Dy/Management/Internal/Sound/XCallbackChannel.h>
 #include <Dy/Management/Type/Sound/FSoundChannel.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy
 {
@@ -26,7 +27,7 @@ namespace dy
 FInstantSound3D::FInstantSound3D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
-  const DVector3& iPosition,
+  const DVec3& iPosition,
   TF32 iVolumeMultiplier, TF32 iPitchMultiplier, TF32 iDelay,
   TF32 iMinDistance, TF32 iMaxDistance,
   bool iIsLooped) 

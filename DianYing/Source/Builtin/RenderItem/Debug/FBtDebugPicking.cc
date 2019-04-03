@@ -14,11 +14,11 @@
 
 #include <Dy/Builtin/RenderItem/Debug/FBtDebugPicking.h>
 #include <Dy/Management/MWorld.h>
-#include <Dy/Core/Resource/Resource/FDyFrameBufferResource.h>
-#include <Dy/Core/Resource/Resource/FDyShaderResource.h>
+#include <Dy/Core/Resource/Resource/AResourceFrameBufferBase.h>
+#include <Dy/Core/Resource/Resource/FResourceShader.h>
 #include <Dy/Core/Rendering/Type/EDrawType.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
-#include <Dy/Core/Resource/Resource/FDyMeshResource.h>
+#include <Dy/Core/Resource/Resource/FResourceMesh.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Component/Internal/Physics/CBasePhysicsCollider.h>
 #include <Dy/Management/MSetting.h>
@@ -69,10 +69,10 @@ void FBtRenderDebugPicking::OnRender()
 
 void FBtRenderDebugPicking::RenderObject(
   CBasePhysicsCollider& iRefCollider,
-  const DMatrix4x4& iTransformMatrix)
+  const DMat4& iTransformMatrix)
 {
   // Update uniform.
-  this->mBinderShader->TryUpdateUniform<EUniformVariableType::Matrix4>("uModelTransform", DMatrix4x4{});
+  this->mBinderShader->TryUpdateUniform<EUniformVariableType::Matrix4>("uModelTransform", DMat4{});
   this->mBinderShader->TryUpdateUniform<EUniformVariableType::Integer>("uColorIndex", 2); // Magenta
   this->mBinderShader->UseShader();
   this->mBinderShader->TryUpdateUniformList();

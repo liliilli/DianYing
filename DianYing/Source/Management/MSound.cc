@@ -145,18 +145,16 @@ FMOD_RESULT F_CALLBACK DyFmodInternalSystemCallback(
 
 namespace dy
 {
-  
-class MSound::Impl final : public IUpdatable
+
+struct MSound::Impl final
 {
-public:
+  DY_DEFAULT_PIMPL_CTOR(MSound);
+
   /// @brief Initialize sound system. If already initialized, (without release) just do nothing and return DY_FAILURE.
   EDySuccess InitializeSoundSystem();
   /// @brief Release sound system. If already released, (without initialization) just do nothing and return DY_FAILURE.
   /// This function is only called in release phase of Dy engine.
   EDySuccess ReleaseSoundSystem();
-
-  /// @brief Sound system should be ticked once per game update. 
-  void Update(TF32 iDt) override final;
 
   /// @brief Check sound clip is exist on Dy resource system.
   MDY_NODISCARD bool IsSoundClipExist(const std::string& iSoundSpecifier) const noexcept
@@ -198,7 +196,7 @@ public:
   void PlaySound3D(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
-      const DVector3& iWorldPosition,
+      const DVec3& iWorldPosition,
       const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
       const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       TF32 iDelay = 0.0f,
@@ -210,7 +208,7 @@ public:
   MDY_NODISCARD std::optional<FSound3DBinder> PlaySound3DLooped(
       const std::string& iSoundSpecifier, 
       const std::string& iSoundChannel,
-      const DVector3& iWorldPosition,
+      const DVec3& iWorldPosition,
       const DClamp<TF32, 0, 5>& iVolumeMultiplier = 1.0f,
       const DClamp<TF32, 0, 5>& iPitchMultiplier = 1.0f,
       TF32 iMinDistance = s3DMinDistance,
@@ -231,7 +229,6 @@ public:
   /// @brief Check sound system is available.
   bool mIsSoundSystemAvailable = true;
 
-private:
   /// @brief Set setting of 3D listener.
   void Set3DListenerSetting(bool iActivated);
   /// @brief Set actor setting.
@@ -267,8 +264,8 @@ namespace dy
 
 EDySuccess MSound::pfInitialize()
 {
-  this->mPimpl = new (std::nothrow) Impl();
-  const auto flag = this->mPimpl->InitializeSoundSystem();
+  DY_INITIALIZE_PIMPL();
+  const auto flag = DY_PIMPL->InitializeSoundSystem();
   if (flag == DY_FAILURE)
   {
     DyPushLogError("Failed to initialize sound system. Could not create sound instance.");
@@ -284,7 +281,7 @@ std::unique_ptr<FInstantSound2D> MSound::CreateSound2D(
   const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   const TF32 iDelay)
 {
-  return this->mPimpl->CreateSound2D(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay);
+  return DY_PIMPL->CreateSound2D(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay);
 } 
 
 void MSound::PlaySound2D(
@@ -294,7 +291,7 @@ void MSound::PlaySound2D(
   const DClamp<TF32, 0, 5>& iPitchMultiplier, 
   const TF32 iDelay)
 {
-  this->mPimpl->PlaySound2D(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay);
+  DY_PIMPL->PlaySound2D(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier, iDelay);
 }
 
 std::optional<FSound2DBinder> MSound::PlaySound2DLooped(
@@ -303,20 +300,20 @@ std::optional<FSound2DBinder> MSound::PlaySound2DLooped(
   const DClamp<TF32, 0, 5>& iVolumeMultiplier, 
   const DClamp<TF32, 0, 5>& iPitchMultiplier)
 {
-  return this->mPimpl->PlaySound2DLooped(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier);
+  return DY_PIMPL->PlaySound2DLooped(iSoundSpecifier, iSoundChannel, iVolumeMultiplier, iPitchMultiplier);
 }
 
 void MSound::PlaySound3D(
   const std::string& iSoundSpecifier, 
   const std::string& iSoundChannel,
-  const DVector3& iWorldPosition,
+  const DVec3& iWorldPosition,
   const DClamp<TF32, 0, 5>& iVolumeMultiplier,
   const DClamp<TF32, 0, 5>& iPitchMultiplier,
   const TF32 iDelay,
   const TF32 iMinDistance,
   const TF32 iMaxDistance)
 {
-  return this->mPimpl->PlaySound3D(
+  return DY_PIMPL->PlaySound3D(
     iSoundSpecifier, 
     iSoundChannel, 
     iWorldPosition, 
@@ -330,13 +327,13 @@ void MSound::PlaySound3D(
 std::optional<FSound3DBinder> MSound::PlaySound3DLooped(
      const std::string& iSoundSpecifier, 
      const std::string& iSoundChannel,
-     const DVector3& iWorldPosition,
+     const DVec3& iWorldPosition,
      const DClamp<TF32, 0, 5>& iVolumeMultiplier,
      const DClamp<TF32, 0, 5>& iPitchMultiplier,
      const TF32 iMinDistance,
      const TF32 iMaxDistance)
 {
-  return this->mPimpl->PlaySound3DLooped(
+  return DY_PIMPL->PlaySound3DLooped(
     iSoundSpecifier, iSoundChannel, 
     iWorldPosition, 
     iVolumeMultiplier, iPitchMultiplier,
@@ -345,43 +342,120 @@ std::optional<FSound3DBinder> MSound::PlaySound3DLooped(
 
 bool MSound::IsSoundClipExist(const std::string& iSoundSpecifier) const noexcept
 {
-  return this->mPimpl->IsSoundClipExist(iSoundSpecifier);
+  return DY_PIMPL->IsSoundClipExist(iSoundSpecifier);
 }
 
 FSoundChannel* MSound::GetPtrChannel(const std::string& iSpecifier)
 {
-  return this->mPimpl->GetPtrChannel(iSpecifier);
+  return DY_PIMPL->GetPtrChannel(iSpecifier);
 }
 
 EDySuccess MSound::pfRelease()
 {
-  this->mPimpl->ReleaseSoundSystem();
-  delete this->mPimpl;
+  DY_PIMPL->ReleaseSoundSystem();
+  DY_RESET_PIMPL();
   return DY_SUCCESS;
 }
 
-void MSound::Update(TF32 iDt) { this->mPimpl->Update(iDt); }
+void MSound::Update(TF32 iDt) 
+{ 
+  // When using FMOD Studio, 
+  // call Studio::System::update, which internally will also update the Low Level system. 
+  // If using Low Level directly, instead call System::update.
+  if (DY_PIMPL->mSoundSystem == nullptr) { return; }
+
+  // If any `new` `focused camera` is exist on system, 
+  // and DY_PIMPL camera is using 3D Listener, activate or deactivate.
+  // @TODO CODE SMELL, NEED TO REFACTOR CODE.
+  auto& worldManager = MWorld::GetInstance();
+  if (worldManager.GetFocusedCameraCount() > 0)
+  {
+    auto ptrCamera  = worldManager.GetFocusedCameraValidReference(0);
+    if (ptrCamera.value()->IsUsing3DListener() == true)
+    {
+      if (DY_PIMPL->mIsUsing3DListener == false) { DY_PIMPL->Set3DListenerSetting(true); }
+      DY_PIMPL->Set3DListenerActorSetting(0, *ptrCamera.value());
+    }
+    else
+    {
+      if (DY_PIMPL->mIsUsing3DListener == true) { DY_PIMPL->Set3DListenerSetting(false); }
+    }
+  }
+  else 
+  { 
+    if (DY_PIMPL->mIsUsing3DListener == true) { DY_PIMPL->Set3DListenerSetting(false); } 
+  }
+
+  //
+  // Check intant 2D sound instance is valid.
+  for (auto& ptrsmtInstance : DY_PIMPL->mInstantSound2DList)
+  {
+    // If instance is not valid, we have to check sound is valid so able to initialize.
+    if (const auto status = ptrsmtInstance->GetStatus(); status == ESoundState::NotValid) 
+    { 
+      ptrsmtInstance->TryInitialize(); 
+    }
+    // Otherwise, we have to check instance is stopped so have to release.
+    else if (status == ESoundState::Stop) { ptrsmtInstance = nullptr; }
+  }
+  // Remove empty 2d instant sound instance item.
+  DY_PIMPL->mInstantSound2DList.remove_if([](const auto& ptrsmtInstance) { return ptrsmtInstance == nullptr; });
+
+  //
+  // Check intant 3D sound instance is valid.
+  for (auto& ptrsmtInstance : DY_PIMPL->mInstantSound3DList)
+  {
+    // If instance is not valid, we have to check sound is valid so able to initialize.
+    if (const auto status = ptrsmtInstance->GetStatus(); status == ESoundState::NotValid) 
+    { 
+      ptrsmtInstance->TryInitialize(); 
+    }
+    // Otherwise, we have to check instance is stopped so have to release.
+    else if (status == ESoundState::Stop) { ptrsmtInstance = nullptr; }
+  }
+  // Remove empty 3d instant sound instance item.
+  DY_PIMPL->mInstantSound3DList.remove_if([](const auto& ptrsmtInstance) { return ptrsmtInstance == nullptr; });
+
+  //
+  // Check sound instance is valid.
+  for (auto& ptrsmtInstance : DY_PIMPL->mGeneralSoundInstanceList)
+  {
+    // If instance is not valid, we have to check given sound is valid so able to initialize.
+    if (ptrsmtInstance == nullptr) { continue; }
+
+    ptrsmtInstance->Update(iDt);
+    // If instance must be removed, remove.
+    if (ptrsmtInstance->GetStatus() == ESoundState::Component_Vanished) { ptrsmtInstance = nullptr; }
+  }
+  EraseRemove(DY_PIMPL->mGeneralSoundInstanceList, nullptr);
+
+  // Update system to make sound.
+  DY_PIMPL->mSoundSystem->update(); 
+}
 
 FSoundGroup& MSound::MDY_PRIVATE(GetGroupChannel)(const std::string& iSpecifier)
 {
-  return this->mPimpl->__GetGroupChannel(iSpecifier);
+  return DY_PIMPL->__GetGroupChannel(iSpecifier);
 }
 
 FMOD::System& MSound::MDY_PRIVATE(GetSystem)()
 {
-  return this->mPimpl->__GetSystem();
+  return DY_PIMPL->__GetSystem();
 }
 
 FSoundInstance* MSound::MDY_PRIVATE(CreateSoundInstance)(
      const PDySoundSourceComponentMetaInfo& iMetaInfo,
      FActor& iRefActor)
 {
-  return this->mPimpl->__CreateSoundInstance(iMetaInfo, iRefActor);
+  return DY_PIMPL->__CreateSoundInstance(iMetaInfo, iRefActor);
 }
 
 bool MSound::IsSoundSystemAvailable() const noexcept
 {
-  return this->mPimpl->mIsSoundSystemAvailable;
+  return DY_PIMPL->mIsSoundSystemAvailable;
 }
+
+DY_DEFINE_PIMPL(MSound);
+DY_DEFINE_DEFAULT_DESTRUCTOR(MSound);
 
 } /// ::dy namespace

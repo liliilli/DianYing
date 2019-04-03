@@ -133,13 +133,13 @@ void to_json(nlohmann::json& j, const PDyTransformComponentMetaInfo::DDetails& p
 
 void from_json(const nlohmann::json& j, PDyTransformComponentMetaInfo::DDetails& p)
 {
-  json::GetValueFromTo<DVector3>(j, sHeaderLocalPosition, p.mLocalPosition);
-  json::GetValueFromTo<DVector3>(j, sHeaderLocalAngle, p.mLocalRotation);
-  json::GetValueFromTo<DVector3>(j, sHeaderLocalScale, p.mLocalScale);
+  json::GetValueFromTo<DVec3>(j, sHeaderLocalPosition, p.mLocalPosition);
+  json::GetValueFromTo<DVec3>(j, sHeaderLocalAngle, p.mLocalRotation);
+  json::GetValueFromTo<DVec3>(j, sHeaderLocalScale, p.mLocalScale);
 
-  json::GetValueFromTo<DVector3>(j, sHeaderWorldPosition, p.mWorldPosition);
-  json::GetValueFromTo<DVector3>(j, sHeaderWorldAngle, p.mWorldRotation);
-  json::GetValueFromTo<DVector3>(j, sHeaderWorldScale, p.mWorldScale);
+  json::GetValueFromTo<DVec3>(j, sHeaderWorldPosition, p.mWorldPosition);
+  json::GetValueFromTo<DVec3>(j, sHeaderWorldAngle, p.mWorldRotation);
+  json::GetValueFromTo<DVec3>(j, sHeaderWorldScale, p.mWorldScale);
 }
 
 //!

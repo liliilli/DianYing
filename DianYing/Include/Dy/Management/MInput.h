@@ -61,9 +61,9 @@ public:
   MDY_NODISCARD TF32 GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept;
 
   /// @brief Return present-frame mouse position.
-  MDY_NODISCARD const DVector2& GetPresentMousePosition() const noexcept;
+  MDY_NODISCARD const DVec2& GetPresentMousePosition() const noexcept;
   /// @brief Return old-frame mouse position.
-  MDY_NODISCARD const DVector2& GetPresentLastMousePosition() const noexcept;
+  MDY_NODISCARD const DVec2& GetPresentLastMousePosition() const noexcept;
 
   /// @brief Return original value which is not calculated and calibrated at all.
   MDY_NODISCARD TF32 GetJoystickStickValue(_MIN_ DClamp<TU32, 0, 5> index) const noexcept;
@@ -161,7 +161,7 @@ public:
   template <typename TType>
   using TCPickingCallbackFunction = void(TType::*)(FActor*);
   /// @brief Try pick actor object and bind to input system.
-  EDySuccess TryPickObject(_MIN_ const DVector2& iScreenPosition);
+  EDySuccess TryPickObject(_MIN_ const DVec2& iScreenPosition);
   /// @brief Set picking target normal callback function.
   void SetPickingTargetCallbackFunction(_MIN_ TPickingCallbackFunction iPtrGlobalFunction);
   /// @brief Set picking target normal member callback function.
@@ -209,8 +209,8 @@ private:
   TAxisMap    mBindedAxisMap        = {};
   TActionMap  mBindedActionMap      = {};
 
-  DVector2  mMouseLastPosition    = {};
-  DVector2  mMousePresentPosition = {};
+  DVec2  mMouseLastPosition    = {};
+  DVec2  mMousePresentPosition = {};
 
   MInputDelegates mDelegateManger = {};
 
@@ -223,7 +223,7 @@ private:
   /// @brief Functor for actor picking in normal mode.
   std::function<void(FActor*)>  mActorPickingCallback = nullptr;
 
-  friend class GDyEngine;
+  friend class GEngine;
 };
 
 ///

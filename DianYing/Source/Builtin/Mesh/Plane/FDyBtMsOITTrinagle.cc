@@ -23,9 +23,9 @@ void FDyBtMsScrOITTriangle::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& prop
   property.mSpecifierName = sName;
 
   // Make position,      RECT UV,          SCREEN texcoord vertex 
-  // DVector2{-1, -1}, DVector2{0, 0}, DVector2{0, 0} 
-  // DVector2{ 3, -1}, DVector2{1280 * 2, 0}, DVector2{2, 0} 
-  // DVector2{-1,  3}, DVector2{0, 720 * 2},  DVector2{0, 2} 
+  // DVec2{-1, -1}, DVec2{0, 0}, DVec2{0, 0} 
+  // DVec2{ 3, -1}, DVec2{1280 * 2, 0}, DVec2{2, 0} 
+  // DVec2{-1,  3}, DVec2{0, 720 * 2},  DVec2{0, 2} 
 
   property.mCustomMeshBuffer.emplace_back(-1);
   property.mCustomMeshBuffer.emplace_back(-1);
@@ -68,7 +68,7 @@ void FDyBtMsScrOITTriangle::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& prop
 
   property.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel = false;
   property.mVAOBindingInfo.mOffsetByteSize = 0;
-  property.mVAOBindingInfo.mStrideByteSize = sizeof(DVector2) * 3;
+  property.mVAOBindingInfo.mStrideByteSize = sizeof(DVec2) * 3;
   property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 0);
   property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 8);
   property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 16);

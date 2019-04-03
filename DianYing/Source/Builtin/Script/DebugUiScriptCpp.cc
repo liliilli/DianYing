@@ -23,14 +23,16 @@
 #include <Dy/Element/Widget/FWidgetBasicGaugeBar.h>
 #include <Dy/Management/MInput.h>
 #include <Dy/Management/Internal/MProfiling.h>
-#include <Dy/Helper/Math/Math.h>
-#include <Dy/Helper/Math/Random.h>
+
+
 #include <Dy/Management/MGameTimer.h>
 #include "Dy/Element/Widget/FWidgetImage.h"
-#include "Dy/Core/Resource/Resource/FDyMaterialResource.h"
-#include "Dy/Core/Resource/Resource/FDyShaderResource.h"
+#include "Dy/Core/Resource/Resource/FResourceMaterial.h"
+#include "Dy/Core/Resource/Resource/FResourceShader.h"
 #include "Dy/Management/MWorld.h"
 #include "Dy/Component/CCamera.h"
+#include <Math/Utility/XMath.h>
+#include <Math/Utility/XRandom.h>
 
 namespace dy
 {
@@ -60,7 +62,7 @@ void FDyBuiltinDebugUiScript::Initiate()
   testDescriptor.mFontName    = "Arial";
   testDescriptor.mIsActivated = true;
   testDescriptor.mOrigin = EDyOrigin::Left_Bottom;
-  testDescriptor.mInitialPosition = DVectorInt2{16, 80};
+  testDescriptor.mInitialPosition = DIVec2{16, 80};
   widgetRef.CreateWidget<FWidgetText>(testDescriptor);
 }
 
@@ -114,7 +116,7 @@ Camera0 : 2
       this->mProfilingManger->GetScreenRenderedActorCount(),
       static_cast<TF32>(usageRam) / (1024 * 1024)
   ));
-  //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DVector2{0, -dt * 16.0f});
+  //bar->SetRelativePosition(bar->GetRelativePosition(EDyOrigin::Center_Center) + DVec2{0, -dt * 16.0f});
   bar->SetPresentValue(usageCpu);
 
   const auto& inputManager = MInput::GetInstance();
@@ -146,7 +148,7 @@ Camera0 : 2
     if (auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
         ptrCamera != nullptr)
     {
-      text->SetText(MakeStringU8("Camera 0 : {}", ptrCamera->GetPosition().ToString()));
+      text->SetText(MakeStringU8("Camera 0 : {}", FVec3::ToString(ptrCamera->GetPosition())));
     }
     else
     {
@@ -175,7 +177,7 @@ void FDyBuiltinDebugUiScript::CbMoveBar()
 {
   auto& widgetRef = this->GetWidgetReference();
   FWidgetBasicGaugeBar* bar = widgetRef.GetWidget<FWidgetBasicGaugeBar>("BasicBarTest");
-  bar->SetRelativePosition(random::RandomVector2Range(random::EDyRandomPolicy::Uniform, 0, 320) - DVector2{0, 360});
+  bar->SetRelativePosition(math::RandomVector2Range<TReal>(math::ERandomPolicy::Uniform, 0, 320) - DVec2{0, 360});
 }
 
 void FDyBuiltinDebugUiScript::CbChangeImageTexture()

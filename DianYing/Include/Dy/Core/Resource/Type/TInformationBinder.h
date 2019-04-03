@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Meta/Type/EResourceType.h>
-#include <Dy/Core/Thread/SDyIOBindingHelper.h>
+#include <Dy/Core/Thread/SIOBindingHelper.h>
 #include <Dy/Core/Resource/Type/IBinderBase.h>
 #include <Dy/Core/Resource/Type/XTemplateRescInfoType.h>
 
@@ -70,7 +70,7 @@ protected:
       iNewSpecifier.empty() == false, 
       "Resource specifier name must be valid to require resource.");
 
-    auto ptrResult = SDyIOBindingHelper::TryRequireInformation<TType>(iNewSpecifier, *this);
+    auto ptrResult = SIOBindingHelper::TryRequireInformation<TType>(iNewSpecifier, *this);
     if (ptrResult.has_value() == false) 
     { 
       this->mDelayedSpecifierName = iNewSpecifier;
@@ -91,7 +91,7 @@ protected:
   {
     if (this->mPtrResource == nullptr) { return DY_FAILURE; }
 
-    MDY_CALL_ASSERT_SUCCESS(SDyIOBindingHelper::TryDetachInformation<TType>(this->mSpecifierName, *this));
+    MDY_CALL_ASSERT_SUCCESS(SIOBindingHelper::TryDetachInformation<TType>(this->mSpecifierName, *this));
     this->mSpecifierName.clear();
     this->mPtrResource = nullptr;
     return DY_SUCCESS;
