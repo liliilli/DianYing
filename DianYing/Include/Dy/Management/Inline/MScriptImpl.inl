@@ -112,7 +112,7 @@ inline void MScript::Impl::UpdateWidgetScript(TF32 dt)
 {
   for (auto& ptrsmtScript : this->mWidgetScriptList)
   {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript == nullptr) { continue; }
     ptrsmtScript->CallScriptFunction(dt);
     // If engine must be stopped and end application, return instantly.
     if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
@@ -123,7 +123,7 @@ inline void MScript::Impl::UpdateWidgetScript(TF32 dt, EScriptState type)
 {
   for (auto& ptrsmtScript : this->mInsertWidgetScriptList)
   {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript == nullptr) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
     if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
@@ -131,7 +131,7 @@ inline void MScript::Impl::UpdateWidgetScript(TF32 dt, EScriptState type)
 
   for (auto& ptrsmtScript : this->mWidgetScriptList)
   {
-    if (MDY_CHECK_ISEMPTY(ptrsmtScript)) { continue; }
+    if (ptrsmtScript == nullptr) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
     if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
