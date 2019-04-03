@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2047
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyCore", "DianYing\DianYing.vcxproj", "{B2B6E771-0680-4E19-AB53-78F5AA9FEB7A}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyModelGenerator_App", "DyModelGenerator\Builds\VisualStudio2017\DyModelGenerator_App.vcxproj", "{61C059F4-61C6-5884-FEFD-9230EE1971E5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestDyExpr", "Common\TestDyExpr\TestDyExpr.vcxproj", "{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyModelExporter", "DyModelExporter\DyModelExporter.vcxproj", "{A537E3AB-009A-4ECB-9279-5347719F7388}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,12 @@ Global
 		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Release|x64.Build.0 = Release|x64
 		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Release|x86.ActiveCfg = Release|Win32
 		{865E3443-E745-4026-AEE0-1FBCEF8CDDA4}.Release|x86.Build.0 = Release|Win32
+		{A537E3AB-009A-4ECB-9279-5347719F7388}.Debug|x64.ActiveCfg = Debug|x64
+		{A537E3AB-009A-4ECB-9279-5347719F7388}.Debug|x64.Build.0 = Debug|x64
+		{A537E3AB-009A-4ECB-9279-5347719F7388}.Debug|x86.ActiveCfg = Debug|x64
+		{A537E3AB-009A-4ECB-9279-5347719F7388}.Release|x64.ActiveCfg = Release|x64
+		{A537E3AB-009A-4ECB-9279-5347719F7388}.Release|x64.Build.0 = Release|x64
+		{A537E3AB-009A-4ECB-9279-5347719F7388}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

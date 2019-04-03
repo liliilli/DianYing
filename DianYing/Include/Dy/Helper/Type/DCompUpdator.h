@@ -1,4 +1,3 @@
-#include <utility>
 #ifndef GUARD_DY_Helper_Type_DCompUpdator_H
 #define GUARD_DY_Helper_Type_DCompUpdator_H
 ///
@@ -13,6 +12,9 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 ///
+
+#include <functional>
+#include <utility>
 
 namespace dy
 {
