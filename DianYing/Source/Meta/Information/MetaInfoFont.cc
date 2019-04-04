@@ -18,40 +18,27 @@
 #include <Dy/Helper/Library/HelperFilesystem.h>
 #include <Dy/Helper/Internal/XStringSwitch.h>
 
-//!
-//! Local translation unit code
-//!
-
-namespace 
-{
-
-MDY_SET_IMMUTABLE_STRING(header_SpecifierName, "SpecifierName");
-MDY_SET_IMMUTABLE_STRING(header_FontType, "FontType");
-MDY_SET_IMMUTABLE_STRING(header_FontInformationPath, "FontInfoPath");
-MDY_SET_IMMUTABLE_STRING(header_FontTexturePathList, "FontTexturePath");
-MDY_SET_IMMUTABLE_STRING(header_FontAlternativeFilePath, "FontFilePath");
-MDY_SET_IMMUTABLE_STRING(header_IsEnableRuntimeCreation, "IsUsingRuntimeCreationWhenNotExist");
-
-MDY_SET_IMMUTABLE_STRING(fonttype_SDF,    "SDF");
-MDY_SET_IMMUTABLE_STRING(fonttype_Plain,  "Plain");
-
-MDY_SET_IMMUTABLE_STRING(kExternalPlain, "ExternalPlain");
-MDY_SET_IMMUTABLE_STRING(kExternalCompressed, "ExternalCompressed");
-MDY_SET_IMMUTABLE_STRING(kRuntime, "Runtime");
-MDY_SET_IMMUTABLE_STRING(kBuiltin, "Builtin");
-
-} /// unnamed namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 
 void to_json(nlohmann::json& oJson, const PDyMetaFontInformation& iFont)
 {
-  MDY_NOT_IMPLEMENTED_ASSERT();
+  oJson = nlohmann::json
+  {
+    {"SpecifierName", iFont.mSpecifierName},
+    {"Type", iFont.mLoadingType},
+    {"Uuid", iFont.mUuid},
+  };
+
+  using EEnum = PDyMetaFontInformation::EXPR_E(ELoadingType);
+  switch (iFont.mLoadingType)
+  {
+  case EEnum::Builtin: /* Do nothing */
+  case EEnum::ExternalCompressed:
+  case EEnum::ExternalPlain:
+  case EEnum::Runtime:
+    break;
+  };
 }
 
 void from_json(const nlohmann::json& iJson, PDyMetaFontInformation& oFont)
@@ -60,45 +47,91 @@ void from_json(const nlohmann::json& iJson, PDyMetaFontInformation& oFont)
   json::GetValueFromTo(iJson, "Type", oFont.mLoadingType);
   json::GetValueFromTo(iJson, "Uuid", oFont.mUuid);
 
-  MDY_NOT_IMPLEMENTED_ASSERT();
-}
-
-void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::ELoadingType& iVar)
-{
-#ifdef false
-  using EType = PDyMetaFontInformation::ELoadingType;
-  switch (iVar)
+  using EEnum = PDyMetaFontInformation::EXPR_E(ELoadingType);
+  using EType = PDyMetaFontInformation;
+  switch (oFont.mLoadingType)
   {
-  case EType::ExternalPlain: 
-    //oJson = kExternalPlain
+  case EEnum::Builtin: /* Do nothing */ break;
+  case EEnum::ExternalCompressed:
+    oFont.mDetails = json::GetValueFrom<EType::DExternalCompressed>(iJson, "Details");
     break;
-  case EType::ExternalCompressed: break;
-  case EType::Runtime: break;
-  case EType::Builtin: break;
-  default: MDY_UNEXPECTED_BRANCH(); break;
-  }
-#endif
-}
-
-void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::ELoadingType& oVar)
-{
-  using EType = PDyMetaFontInformation::ELoadingType;
-  switch (string::Input(json::GetValue<std::string>(iJson)))
-  {
-  case string::Case("ExternalPlain"):
-    oVar = EType::ExternalPlain;
+  case EEnum::ExternalPlain:
+    oFont.mDetails = json::GetValueFrom<EType::DExternalPlain>(iJson, "Details");
     break;
-  case string::Case("ExternalCompressed"):
-    oVar = EType::ExternalCompressed;
-    break;
-  case string::Case("Runtime"):
-    oVar = EType::Runtime;
-    break;
-  case string::Case("Builtin"):
-    oVar = EType::Builtin;
+  case EEnum::Runtime:
+    oFont.mDetails = json::GetValueFrom<EType::DRuntime>(iJson, "Details");
     break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
+}
+
+void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::EXPR_E(ELoadingType)& iVar)
+{
+  oJson = PDyMetaFontInformation::ELoadingType::ToString(iVar);
+}
+
+void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::EXPR_E(ELoadingType)& oVar)
+{
+  using EType = PDyMetaFontInformation::ELoadingType;
+  oVar = EType::ToEnum(json::GetValue<std::string>(iJson));
+
+  MDY_ASSERT_FORCE(oVar != EType::__Error);
+}
+
+void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::EXPR_E(EFontType)& iVar)
+{
+  oJson = PDyMetaFontInformation::EFontType::ToString(iVar);
+}
+
+void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::EXPR_E(EFontType)& oVar)
+{
+  using EType = PDyMetaFontInformation::EFontType;
+  oVar = EType::ToEnum(json::GetValue<std::string>(iJson));
+}
+
+void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::DExternalPlain& iDetail)
+{
+  oJson = nlohmann::json
+  {
+    {"FontType", iDetail.mFontType},
+    {"FontInfoPath", iDetail.mFontInformationPath},
+    {"FontTexturePath", iDetail.mFontTexturePathList},
+  };
+}
+
+void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DExternalPlain& oDetail)
+{
+  json::GetValueFromTo(iJson, "FontType", oDetail.mFontType);
+  json::GetValueFromTo(iJson, "FontInfoPath", oDetail.mFontInformationPath);
+  json::GetValueFromTo(iJson, "FontTexutrePath", oDetail.mFontTexturePathList);
+}
+
+void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::DExternalCompressed& iDetail)
+{
+  oJson = nlohmann::json
+  {
+    { "FontType", iDetail.mFontType },
+    { "FilePath", iDetail.mFilePath }
+  };
+}
+
+void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DExternalCompressed& oDetail)
+{
+  json::GetValueFromTo(iJson, "FontType", oDetail.mFontType);
+  json::GetValueFromTo(iJson, "FilePath", oDetail.mFilePath);
+}
+
+void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::DRuntime& iDetail)
+{
+  oJson = nlohmann::json
+  {
+    {"FilePath", iDetail.mFontFilePath},
+  };
+}
+
+void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DRuntime& oDetail)
+{
+  json::GetValueFromTo(iJson, "FilePath", oDetail.mFontFilePath);
 }
 
 #ifdef false
@@ -172,4 +205,4 @@ PDyMetaFontInformation PDyMetaFontInformation::CreateWithJson(const nlohmann::js
 }
 #endif
 
-} /// ::dy namespace
+} /// ::dy namespaceb

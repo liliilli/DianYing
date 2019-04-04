@@ -16,6 +16,8 @@
 #include <variant>
 #include <filesystem>
 #include <nlohmann/json_fwd.hpp>
+
+#include <Expr/TEnumString.h>
 #include <Dy/Helper/Type/DUuid.h>
 #include <Dy/Helper/Library/HelperFilesystem.h>
 
@@ -34,46 +36,39 @@ struct PDyMetaFontInformation final
 
   using TDetails = std::variant<DExternalPlain, DExternalCompressed, DBuiltin, DRuntime>;
 
-  /// @brief 
-  enum class ELoadingType 
-  {
-    ExternalPlain,
-    ExternalCompressed,
-    Runtime,
-    Builtin,
-
-    __Error, // ERROR TYPE. MUST NOT BE SEEN ON PLAY RUNTIME.
-  };
+  /// @enum  ELoadingType
+  /// @brief Loading type.
+  EXPR_DEFINE_ENUM(ELoadingType, 
+    ExternalPlain, 
+    ExternalCompressed, 
+    Runtime, 
+    Builtin);
 
   /// @enum   EFontType
   /// @brief  Font type for rendering.
-  enum class EFontType
-  { 
-    SDF,     // Use Signed-distance field version (smooth, good but use more memory and performance).
-    Plain,   // Use just plain bitmaped font texture. (fast but not good quality)
-
-    __Error, // ERROR TYPE. MUST NOT BE SEEN ON PLAY RUNTIME.
-  };
+  EXPR_DEFINE_ENUM(EFontType,
+    SDF,    // Use Signed-distance field version (smooth, good but use more memory and performance).
+    Plain); // Use just plain bitmaped font texture. (fast but not good quality)
   
   /// @struct DExternalPlain
   /// @brief When `mLoadingType` is `ELoadingType::ExternalPlain`.
   struct DExternalPlain final
   {
     /// @brief Font type, This must not be __Error.
-    EFontType mFontType = EFontType::__Error;
+    EXPR_E(EFontType) mFontType = EFontType::__Error;
     /// @brief Font information path. 
-    TFilePath mFontInformationPath;
+    DFilePath mFontInformationPath;
     /// @brief Font texture path list.
-    std::vector<TFilePath> mFontTexturePathList = {};
+    std::vector<DFilePath> mFontTexturePathList = {};
   };
 
   /// @struct DExternalCompressed
   struct DExternalCompressed final
   {
     /// @brief Font type, This must not be __Error.
-    EFontType mFontType = EFontType::__Error;
+    EXPR_E(EFontType) mFontType = EFontType::__Error;
     /// @brief Compressed font file path. 
-    TFilePath mFilePath;
+    DFilePath mFilePath;
   };
 
   /// @struct DBuiltin
@@ -81,7 +76,7 @@ struct PDyMetaFontInformation final
   struct DBuiltin final
   {
     /// @brief Font type, This must not be __Error.
-    EFontType mFontType = EFontType::__Error;
+    EXPR_E(EFontType) mFontType = EFontType::__Error;
     /// @brief Font information json string literal.
     const char* mFontInformation = nullptr;
     /// @brief Font builtin texture list.
@@ -94,10 +89,7 @@ struct PDyMetaFontInformation final
   struct DRuntime final
   {
     /// @brief Font file to create runtime plain glyph texture.
-    TFilePath mFontFilePath;
-    /// @brief If no font texture is specified, this must be enabled.
-    /// and `mAlternativeFontFilePath` also be specified valid font path for runtime creation.
-    bool mIsEnableRuntimeCreation = false;
+    DFilePath mFontFilePath;
   };
 
   /// @brief Font specifier name.
@@ -105,7 +97,7 @@ struct PDyMetaFontInformation final
   /// @brief Uuid.
   DUuid         mUuid;
   /// @brief Loading type for handling variant font meta resource templates.
-  ELoadingType  mLoadingType = ELoadingType::__Error;
+  EXPR_E(ELoadingType) mLoadingType = ELoadingType::__Error;
   /// @brief 
   TDetails      mDetails;
 };
@@ -113,20 +105,17 @@ struct PDyMetaFontInformation final
 void to_json(nlohmann::json& oJson, const PDyMetaFontInformation& iFont);
 void from_json(const nlohmann::json& iJson, PDyMetaFontInformation& oFont);
 
-void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::ELoadingType& iVar);
-void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::ELoadingType& oVar);
+void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::EXPR_E(ELoadingType)& iVar);
+void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::EXPR_E(ELoadingType)& oVar);
 
-void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::EFontType& iVar);
-void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::EFontType& oVar);
+void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::EXPR_E(EFontType)& iVar);
+void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::EXPR_E(EFontType)& oVar);
 
 void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::DExternalPlain& iDetail);
 void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DExternalPlain& oDetail);
 
 void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::DExternalCompressed& iDetail);
 void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DExternalCompressed& oDetail);
-
-void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::DBuiltin& iDetail);
-void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DBuiltin& oDetail);
 
 void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::DRuntime& iDetail);
 void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DRuntime& oDetail);
