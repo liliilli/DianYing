@@ -15,8 +15,8 @@
 /// Header file
 #include <Dy/Meta/Information/MetaInfoFont.h>
 #include <Dy/Helper/Library/HelperJson.h>
-
-#include <filesystem>
+#include <Dy/Helper/Library/HelperFilesystem.h>
+#include <Dy/Helper/Internal/XStringSwitch.h>
 
 //!
 //! Local translation unit code
@@ -35,6 +35,11 @@ MDY_SET_IMMUTABLE_STRING(header_IsEnableRuntimeCreation, "IsUsingRuntimeCreation
 MDY_SET_IMMUTABLE_STRING(fonttype_SDF,    "SDF");
 MDY_SET_IMMUTABLE_STRING(fonttype_Plain,  "Plain");
 
+MDY_SET_IMMUTABLE_STRING(kExternalPlain, "ExternalPlain");
+MDY_SET_IMMUTABLE_STRING(kExternalCompressed, "ExternalCompressed");
+MDY_SET_IMMUTABLE_STRING(kRuntime, "Runtime");
+MDY_SET_IMMUTABLE_STRING(kBuiltin, "Builtin");
+
 } /// unnamed namespace
 
 //!
@@ -43,6 +48,58 @@ MDY_SET_IMMUTABLE_STRING(fonttype_Plain,  "Plain");
 
 namespace dy
 {
+
+void to_json(nlohmann::json& oJson, const PDyMetaFontInformation& iFont)
+{
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void from_json(const nlohmann::json& iJson, PDyMetaFontInformation& oFont)
+{
+  json::GetValueFromTo(iJson, "SpecifierName", oFont.mSpecifierName);
+  json::GetValueFromTo(iJson, "Type", oFont.mLoadingType);
+  json::GetValueFromTo(iJson, "Uuid", oFont.mUuid);
+
+  MDY_NOT_IMPLEMENTED_ASSERT();
+}
+
+void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::ELoadingType& iVar)
+{
+#ifdef false
+  using EType = PDyMetaFontInformation::ELoadingType;
+  switch (iVar)
+  {
+  case EType::ExternalPlain: 
+    //oJson = kExternalPlain
+    break;
+  case EType::ExternalCompressed: break;
+  case EType::Runtime: break;
+  case EType::Builtin: break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+#endif
+}
+
+void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::ELoadingType& oVar)
+{
+  using EType = PDyMetaFontInformation::ELoadingType;
+  switch (string::Input(json::GetValue<std::string>(iJson)))
+  {
+  case string::Case("ExternalPlain"):
+    oVar = EType::ExternalPlain;
+    break;
+  case string::Case("ExternalCompressed"):
+    oVar = EType::ExternalCompressed;
+    break;
+  case string::Case("Runtime"):
+    oVar = EType::Runtime;
+    break;
+  case string::Case("Builtin"):
+    oVar = EType::Builtin;
+    break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
+  }
+}
 
 #ifdef false
 PDyMetaFontInformation PDyMetaFontInformation::CreateWithJson(const nlohmann::json& fontAtlas)

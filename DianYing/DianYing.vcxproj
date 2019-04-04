@@ -510,7 +510,7 @@
     <ClCompile Include="Source\Meta\Components\PCompDirLightMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Information\ComponentMetaInformation.cc" />
     <ClCompile Include="Source\Meta\Information\ElementObjectMetaInfo.cc" />
-    <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoFont.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoAttachment.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoFrameBuffer.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoGLShader.cc" />
@@ -545,6 +545,7 @@
     <ClInclude Include="data\Script\DebugActor\BtScCollisionTest1.h" />
     <ClInclude Include="data\Script\GlobalTestScript.h" />
     <ClInclude Include="Include\Dy\Binding\FLuaScriptFrame.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\AFontResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ALoadingWidgetMetaResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AGLAttachmentResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AGLFrameBufferResource.h" />
@@ -587,6 +588,7 @@
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralLevel.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\SSAO.h" />
+    <ClInclude Include="Include\Dy\Builtin\Font\Gothic.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\CSM\FDyBtFbCSM.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Debug\FDyBtFbDebug.h" />
@@ -1011,7 +1013,7 @@
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetLayoutMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetTextMetaInformation.h" />
-    <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFont.h" />
     <ClInclude Include="Include\Dy\Meta\Information\ScriptMetaInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyComponentTypes.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />

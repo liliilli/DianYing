@@ -13,12 +13,23 @@
 /// SOFTWARE.
 ///
 
+#include <filesystem>
+#include <nlohmann/json_fwd.hpp>
+
 namespace dy
 {
+
+using TFilePath = std::filesystem::path;
+void to_json(nlohmann::json& oJson, const TFilePath& iFont);
+void from_json(const nlohmann::json& iJson, TFilePath& oFont);
 
 /// @brief Check file path is valid and file is exist on present filesystem. \n
 /// This function supports relative path.
 MDY_NODISCARD bool IsFileExist(const std::string& iFilePath);
+
+/// @brief Check file path is valid and file is exist on present filesystem. \n
+/// This function is just wrapping function of std::filesysstem::exists(iFilePath).
+MDY_NODISCARD bool IsFileExist(const TFilePath& iFilePath);
 
 } /// ::dy namespace
 

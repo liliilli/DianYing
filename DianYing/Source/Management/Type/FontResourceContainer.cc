@@ -37,9 +37,9 @@ dy::DDyFontCharacterInfo sDefaultFontCharacterInfo = {};
 namespace dy
 {
 
-FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInformation& fontInformation)
+FDyFontResourceContainer::FDyFontResourceContainer(const PDyMetaFontInformation& fontInformation)
 {
-  static auto GetPlainInformationString = [](_MIN_ const std::string& filePath) -> std::string
+  static auto GetPlainInformationString = [](const std::string& filePath) -> std::string
   {
     FILE* fpRes = std::fopen(filePath.c_str(), "rb");
     MDY_ASSERT_MSG(fpRes != nullptr, "fpRes must not be nullptr.");
@@ -56,7 +56,9 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
   };
 
   //! FUNCTIONBODY ∨
+  MDY_NOT_IMPLEMENTED_ASSERT();
 
+#ifdef false
   // (1) Open file and get plain information buffer.
   const auto plainInformationString = GetPlainInformationString(fontInformation.mFontInformationPath);
   const nlohmann::json jsonAtlas    = nlohmann::json::parse(plainInformationString);
@@ -97,6 +99,7 @@ FDyFontResourceContainer::FDyFontResourceContainer(_MIN_ const PDyMetaFontInform
   glBindTexture (GL_TEXTURE_2D_ARRAY, 0);
 
   // (4) Set parameters
+#endif
 }
 
 FDyFontResourceContainer::~FDyFontResourceContainer()

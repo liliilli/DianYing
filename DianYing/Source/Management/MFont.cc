@@ -55,8 +55,10 @@ EDySuccess MFont::CreateFontResourceContainer(const std::string& fontSpecifierNa
     return DY_FAILURE;
   }
 
+  MDY_NOT_IMPLEMENTED_ASSERT();
+#ifdef false
   const auto& fontMetaInformation = metaManager.GetFontMetaInformation(fontSpecifierName);
-  if (fontMetaInformation.mIsUsingRuntimeCreateionWhenGlyphNotExist == false)
+  if (fontMetaInformation.mIsEnableRuntimeCreation == false)
   { // Make space
     auto [it, isSucceeded] = this->mFontResourceContainerMap.try_emplace(fontSpecifierName, nullptr);
     MDY_ASSERT_MSG(isSucceeded == true, "Font resource creation must be succeeded.");
@@ -68,14 +70,13 @@ EDySuccess MFont::CreateFontResourceContainer(const std::string& fontSpecifierNa
       it->second.swap(tempSwap);
       MDY_ASSERT_MSG(it->second.get() != nullptr, "Unexpected error occurred");
     }
-
     //
-
   }
   else
   {
     MDY_NOT_IMPLEMENTED_ASSERT();
   }
+#endif
 
   return DY_SUCCESS;
 }

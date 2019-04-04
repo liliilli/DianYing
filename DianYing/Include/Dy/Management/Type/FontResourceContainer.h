@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Meta/Information/FontMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoFont.h>
 #include <Dy/Management/Interface/IFontContainer.h>
 
 namespace dy
@@ -30,7 +30,7 @@ public:
   /// @brief This constructor must success.
   /// @param fontInformation
   ///
-  FDyFontResourceContainer(_MIN_ const PDyMetaFontInformation& fontInformation);
+  FDyFontResourceContainer(const PDyMetaFontInformation& fontInformation);
 
   /// @brief Release font container resources.
   virtual ~FDyFontResourceContainer();
@@ -43,7 +43,7 @@ public:
 
   MDY_NODISCARD TI32 GetLinefeedHeight(const TI32 fontSize) const noexcept override;
 
-  MDY_NODISCARD const DDyFontCharacterInfo& operator[](_MIN_ const TChr16 fontCode) override ;
+  MDY_NODISCARD const DDyFontCharacterInfo& operator[](const TChr16 fontCode) override ;
 
   MDY_NODISCARD TI32 GetFontTextureArrayId() const noexcept override
   {
