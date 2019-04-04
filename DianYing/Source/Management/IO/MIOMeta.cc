@@ -49,7 +49,7 @@
 #include <Dy/Meta/Information/MetaInfoModelAnim.h>
 #include <Dy/Meta/Information/MetaInfoSound.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
-#include <Dy/Meta/Information/FontMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoFont.h>
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>

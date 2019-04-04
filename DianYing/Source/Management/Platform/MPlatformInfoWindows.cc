@@ -90,7 +90,7 @@ EDySuccess MPlatformInfoWindows::CreateConsoleWindow()
     MessageBox(nullptr, L"The console window was not created.", nullptr, MB_ICONEXCLAMATION);
     return DY_FAILURE;
   }
-  freopen_s(&this->mFp, "CONOUT$", "w", stdout);
+  [[maybe_unused]] const auto _ = freopen_s(&this->mFp, "CONOUT$", "w", stdout);
 
   bool before = false;
   while (this->mIsConsoleWindowInitialized.compare_exchange_strong(

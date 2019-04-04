@@ -30,6 +30,12 @@ MDY_NODISCARD TReturnType GetValueFrom(const TParam1& jsonAtlas, const std::stri
   return json::GetValueFrom<TParam1>(jsonAtlas, (name));
 }
 
+template <typename TReturnType, typename TJsonParam>
+TReturnType GetValue(const TJsonParam& jsonAtlas)
+{
+  return jsonAtlas.template get<TReturnType>();
+}
+
 template <typename TReturnType, typename TJsonAtlas>
 void GetValueFromTo(
     const TJsonAtlas& jsonAtlas, 

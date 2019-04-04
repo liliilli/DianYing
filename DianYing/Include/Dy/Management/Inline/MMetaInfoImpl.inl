@@ -425,12 +425,11 @@ inline EDySuccess MIOMeta::Impl::pReadWidgetMetaAtlas(const nlohmann::json& iJso
 
 inline EDySuccess MIOMeta::Impl::pReadFontMetaAtlas(const nlohmann::json& iJson)
 {
-  for (auto it = iJson.cbegin(); it != iJson.cend(); ++it)
-  { // Create font meta information instance from each json atlas.
-    auto [_, isSucceeded] = this->mFontMetaInfo.try_emplace(
-        it.key(),
-        PDyMetaFontInformation::CreateWithJson(it.value())
-    );
+  for (const auto& fontItem : iJson)
+  { 
+    // Create font meta information instance from each json atlas.
+    const auto fontInfo = json::GetValue<PDyMetaFontInformation>(fontItem);
+    auto [_, isSucceeded] = this->mFontMetaInfo.try_emplace(fontInfo.mSpecifierName, fontInfo);
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Font meta information creation must be succeeded.");
   }
   return DY_SUCCESS;

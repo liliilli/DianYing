@@ -225,7 +225,32 @@ SECTION("TZip initialization")
 DyExpr provides helper macroes that used on Dy~ Projects.
 To see what macroes are implemented, see `XMacroes.h` file.
 
-### Log
+### String converable Enumeration Type
+
+Enumeration type that can be convertable to string and vice versa.
+To use enumration type, just use `EXPR_DEFINE_ENUM` with Type name as first parameter and values as variadic arguments.
+
+Enumeration value count limit is 32.
+
+* Conversion from Enumration value to string literal.
+* Conversion from string literal or runtime `std::string` to Enumation value when matched. If not matched, just return with `__Error` value.
+
+#### Example
+
+``` c++
+struct DTest final
+{
+  EXPR_DEFINE_ENUM(ETest, A, B, C, D, E, F, G, H, I, J, K, L, M, N);
+};
+
+static_assert(DTest::ETest::ToEnum("A") == DTest::ETest::A);
+static_assert(DTest::ETest::ToEnum("C") == DTest::ETest::C);
+static_assert(DTest::ETest::ToEnum("D") == DTest::ETest::D);
+static_assert(DTest::ETest::ToEnum("E") == DTest::ETest::E);
+static_assert(DTest::ETest::ToEnum("N") == DTest::ETest::N);
+```
+
+## Log
 
 19-03-19 Make Project, Add TypeList.
 19-03-25 Add TZip, Extended type_traits.
