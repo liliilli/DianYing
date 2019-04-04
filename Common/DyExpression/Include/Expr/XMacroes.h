@@ -45,3 +45,41 @@
 /// @brief Help forward iteratable type to bind .begin() and .end() to function.
 #define EXPR_BIND_CBEGIN_CEND(__MAIteratorableType__) \
   __MAIteratorableType__.cbegin(), __MAIteratorableType__.cend()
+
+/// @def EXPAND
+/// @brief EXPAND macro for helping covering of __VA_ARGS__
+#define EXPAND(x) x
+
+/// @def EXPR_COMMA
+/// @brief Just comma macro for handling of __VA_ARGS__
+#define EXPR_COMMA() ,
+
+#define __EXPR_NUMBER_ARGS(                     \
+  _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15,             \
+  _16, _17, _18, _19, _20, _21, _22, _23, _24, _25, _26, _27, _28, _29, _30, _31, _32, N, ...) N
+
+#define __EXPR_REVERSE_SEQN           \
+  32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, \
+  16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,          \
+  0
+
+#define __EXPR_COMMA_SEQN \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0
+
+#define PP_NARG_01(N) 0 // Branch 01
+#define PP_NARG_00(N) 1 // Branch 00
+#define PP_NARG_11(N) N // Branch 11
+#define PP_NARG_(...)     EXPAND(__EXPR_NUMBER_ARGS(__VA_ARGS__))
+#define PP_HAS_COMMA(...) EXPAND(PP_NARG_(__VA_ARGS__, __EXPR_COMMA_SEQN))
+#define PP_NARG_BRANCH(a, b, N)                 PP_NARG_##a##b(N)
+#define PP_NARG_EXPAND_MACRO_ARGUMENTS(a, b, N) PP_NARG_BRANCH(a, b, N)
+
+/// @def EXPR_GET_COUNT_ARGS
+/// @brief Get the number of given variadic arguments of macro.
+#define EXPR_GET_COUNT_ARGS(...)                      \
+PP_NARG_EXPAND_MACRO_ARGUMENTS(                       \
+  EXPAND(PP_HAS_COMMA(__VA_ARGS__)),                  \
+  EXPAND(PP_HAS_COMMA(EXPR_COMMA __VA_ARGS__ ())),    \
+  EXPAND(PP_NARG_(__VA_ARGS__, __EXPR_REVERSE_SEQN()))\
+)

@@ -14,53 +14,13 @@
 
 #include <array>
 #include <string_view>
+#include <Expr/XMacroes.h>
 
 /// https://stackoverflow.com/questions/11317474/macro-to-count-number-of-arguments
 /// https://stackoverflow.com/questions/48045470/portably-detect-va-opt-support
 /// https://stackoverflow.com/questions/12447557/can-we-have-recursive-macros
 namespace dy::expr
 {
-
-/// @def EXPAND
-#define EXPAND(x) x
-#define EXPR_COMMA() ,
-
-#define __EXPR_NUMBER_ARGS(                     \
-  _1, _2, _3, _4, _5, _6, _7, _8,               \
-  _9, _10, _11, _12, _13, _14, _15,             \
-  _16, _17, _18, _19, _20, _21, _22, _23, _24,  \
-  _25, _26, _27, _28, _29, _30, _31, _32, N, ...) N
-
-#define __EXPR_REVERSE_SEQN           \
-  32, 31, 30, 29, 28, 27, 26, 25,     \
-  24, 23, 22, 21, 20, 19, 18, 17,     \
-  16, 15, 14, 13, 12, 11, 10, 9,      \
-  8, 7, 6, 5, 4, 3, 2, 1,             \
-  0
-
-#define __EXPR_COMMA_SEQN \
-  1, 1, 1, 1, 1, 1, 1, 1, \
-  1, 1, 1, 1, 1, 1, 1, 1, \
-  1, 1, 1, 1, 1, 1, 1, 1, \
-  1, 1, 1, 1, 1, 1, 1, 0, 0
-
-#define PP_NARG_01(N) 0
-#define PP_NARG_00(N) 1
-#define PP_NARG_11(N) N
-#define PP_NARG_(...)     EXPAND(__EXPR_NUMBER_ARGS(__VA_ARGS__))
-#define PP_HAS_COMMA(...) EXPAND(PP_NARG_(__VA_ARGS__, __EXPR_COMMA_SEQN))
-#define PP_NARG_BRANCH(a, b, N) PP_NARG_##a##b(N)
-#define PP_NARG_EXPAND_MACRO_ARGUMENTS(a, b, N) PP_NARG_BRANCH(a, b, N)
-  
-#define EXPR_GET_COUNT_ARGS(...)                      \
-PP_NARG_EXPAND_MACRO_ARGUMENTS(                       \
-  EXPAND(PP_HAS_COMMA(__VA_ARGS__)),                  \
-  EXPAND(PP_HAS_COMMA(EXPR_COMMA __VA_ARGS__ ())),    \
-  EXPAND(PP_NARG_(__VA_ARGS__, __EXPR_REVERSE_SEQN()))\
-)
-
-#define __EXPR_BRANCH_ENUM_ENTRY(a, b, ...) EXPAND(__EXPR_BRANCH_ENUM_##a##b(__VA_ARGS__))
-#define __EXPR_EXPAND_ENUM_ARGUMENTS(a, b, ...) EXPAND(__EXPR_BRANCH_ENUM_ENTRY(a, b, __VA_ARGS__))
 
 #define __EXPR_ENUM_ERROR()         __Error = INT_MAX
 #define __EXPR_ENUM_1(Value)        Value, __EXPR_ENUM_ERROR()
@@ -132,7 +92,12 @@ PP_NARG_EXPAND_MACRO_ARGUMENTS(                       \
 #define __EXPR_ENUM_ENTRY(Prefix, N) __EXPR_ENUM ## Prefix ## N
 #define __EXPR_INITIALIZE_ENUM(Prefix, N, ...) EXPAND(__EXPR_ENUM_ENTRY(Prefix, N)(__VA_ARGS__))
 
-// https://m.blog.naver.com/PostView.nhn?blogId=hyw793&logNo=220746053203&proxyReferer=https%3A%2F%2Fwww.google.com%2F
+/// @def EXPR_DEFINE_ENUM
+/// @brief Define extended enumration.
+/// @reference https://m.blog.naver.com/PostView.nhn?blogId=hyw793&logNo=220746053203&proxyReferer=https%3A%2F%2Fwww.google.com%2F
+///
+/// @brief __EnumTypeName__ The name of enumeration type.
+/// @brief ... Enumration value list.
 #define EXPR_DEFINE_ENUM(__EnumTypeName__, ...) \
 struct __EnumTypeName__ final                   \
 {                                               \
@@ -144,6 +109,7 @@ public:                                         \
     , EXPAND(EXPR_GET_COUNT_ARGS(__VA_ARGS__))  \
     , __VA_ARGS__))                             \
   };                                            \
+  using _ = EEnum;                              \
                                                 \
 private:                                        \
   static constexpr                              \
@@ -158,7 +124,7 @@ private:                                        \
   };                                            \
                                                 \
 public:                                         \
-  static constexpr EEnum ToEnum(std::string_view string) noexcept\
+  static constexpr EEnum ToEnum(const char* string) noexcept    \
   {                                                             \
     for (size_t i = 0, size = kNames.size(); i < size; ++i)     \
     {                                                           \
@@ -167,14 +133,25 @@ public:                                         \
     return EEnum::__Error;                                      \
   }                                                             \
                                                                 \
-  static constexpr const char* ToString(EEnum value) noexcept   \
+  static const char* ToString(EEnum value) noexcept             \
   {                                                             \
     if (value == EEnum::__Error) { return ""; }                 \
-                                                                \
     return kNames[value].data();                                \
+  }                                                             \
+                                                                \
+  static EEnum ToEnum(const std::string& string) noexcept       \
+  {                                                             \
+    for (size_t i = 0, size = kNames.size(); i < size; ++i)     \
+    {                                                           \
+      if (string == kNames[i].data()) { return EEnum(i); }      \
+    }                                                           \
+    return EEnum::__Error;                                      \
   }                                                             \
 }
 
+#define EXPR_E(Value) Value::_
+
+#ifdef false
 struct DTest final
 {
   EXPR_DEFINE_ENUM(ETest, A, B, C, D, E, F, G, H, I, J, K, L, M, N);
@@ -190,5 +167,6 @@ static_assert(EXPR_GET_COUNT_ARGS('A', 'B', 'C', 'D') == 4);
 static_assert(EXPR_GET_COUNT_ARGS('A', 'B') == 2); 
 static_assert(EXPR_GET_COUNT_ARGS('A') == 1); 
 static_assert(EXPR_GET_COUNT_ARGS() == 0); 
+#endif
 
 } /// ::dy::expr namespace
