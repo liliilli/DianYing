@@ -22,12 +22,12 @@
 namespace dy
 {
 
-void to_json(nlohmann::json& oJson, const TFilePath& iFont)
+void to_json(nlohmann::json& oJson, const DFilePath& iFont)
 {
-  oJson = iFont.string();
+  oJson = iFont->string();
 }
 
-void from_json(const nlohmann::json& iJson, TFilePath& oFont)
+void from_json(const nlohmann::json& iJson, DFilePath& oFont)
 {
   oFont = json::GetValue<std::string>(iJson);
   MDY_ASSERT(IsFileExist(oFont) == true);
@@ -43,6 +43,12 @@ bool IsFileExist(const TFilePath& iFilePath)
 {
   namespace fs = std::filesystem;
   return exists(iFilePath);
+}
+
+MDY_NODISCARD bool IsFileExist(const DFilePath& iFilePath)
+{
+  namespace fs = std::filesystem;
+  return fs::exists(iFilePath);
 }
 
 } /// ::dy namespace
