@@ -103,7 +103,7 @@ void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DExternalPla
 {
   json::GetValueFromTo(iJson, "FontType", oDetail.mFontType);
   json::GetValueFromTo(iJson, "FontInfoPath", oDetail.mFontInformationPath);
-  json::GetValueFromTo(iJson, "FontTexutrePath", oDetail.mFontTexturePathList);
+  json::GetValueFromTo(iJson, "FontTexturePath", oDetail.mFontTexturePathList);
 }
 
 void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::DExternalCompressed& iDetail)
