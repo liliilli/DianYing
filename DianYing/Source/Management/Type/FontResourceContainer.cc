@@ -56,11 +56,12 @@ FDyFontResourceContainer::FDyFontResourceContainer(const PDyMetaFontInformation&
   };
 
   //! FUNCTIONBODY ∨
-  MDY_NOT_IMPLEMENTED_ASSERT();
 
-#ifdef false
   // (1) Open file and get plain information buffer.
-  const auto plainInformationString = GetPlainInformationString(fontInformation.mFontInformationPath);
+  using ELoadingType = PDyMetaFontInformation::ELoadingType;
+  const auto& details = std::get<PDyMetaFontInformation::ToDetailType<ELoadingType::ExternalPlain>>(fontInformation.mDetails);
+
+  const auto plainInformationString = GetPlainInformationString(details.mFontInformationPath->string());
   const nlohmann::json jsonAtlas    = nlohmann::json::parse(plainInformationString);
 
   // (2) Make character information.
@@ -81,14 +82,14 @@ FDyFontResourceContainer::FDyFontResourceContainer(const PDyMetaFontInformation&
   // * 2. Get resource from TextureResource.
   // ** 지금은 그냥 무식하게 여기에다가 하는 것으로 하자.
 
-  const auto texturePackSize = static_cast<TI32>(fontInformation.mFontTexturePathList.size());
+  const auto texturePackSize = static_cast<TI32>(details.mFontTexturePathList.size());
 
   glGenTextures (1, &this->mTexImageResId);
   glBindTexture (GL_TEXTURE_2D_ARRAY, this->mTexImageResId);
   glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 1024, 1024, texturePackSize);
   for (TI32 i = 0; i < texturePackSize; ++i)
   {
-    auto dataBuffer = std::make_unique<DImageBinaryBuffer>(fontInformation.mFontTexturePathList[i]);
+    auto dataBuffer = std::make_unique<DImageBinaryBuffer>(details.mFontTexturePathList[i]->string());
     MDY_ASSERT_MSG(dataBuffer->IsBufferCreatedProperly() == true, "Unexpected error occurred.");
     glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, 1024, 1024, 1, GL_RGBA, GL_UNSIGNED_BYTE, dataBuffer->GetBufferStartPoint());
   }
@@ -99,7 +100,6 @@ FDyFontResourceContainer::FDyFontResourceContainer(const PDyMetaFontInformation&
   glBindTexture (GL_TEXTURE_2D_ARRAY, 0);
 
   // (4) Set parameters
-#endif
 }
 
 FDyFontResourceContainer::~FDyFontResourceContainer()

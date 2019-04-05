@@ -19,17 +19,13 @@
 namespace dy
 {
 
-///
 /// @class FDyFontResourceContainer
 /// @brief
-///
 class FDyFontResourceContainer : public IFontContainer
 {
 public:
-  ///
   /// @brief This constructor must success.
   /// @param fontInformation
-  ///
   FDyFontResourceContainer(const PDyMetaFontInformation& fontInformation);
 
   /// @brief Release font container resources.

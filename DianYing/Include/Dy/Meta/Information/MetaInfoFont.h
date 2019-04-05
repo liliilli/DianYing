@@ -44,6 +44,21 @@ struct PDyMetaFontInformation final
     Runtime, 
     Builtin);
 
+  template <typename T> struct ToLoadingType_T;
+  template <> struct ToLoadingType_T<DExternalPlain> { static constexpr auto value = ELoadingType::ExternalPlain; };
+  template <> struct ToLoadingType_T<DExternalCompressed> { static constexpr auto value = ELoadingType::ExternalCompressed; };
+  template <> struct ToLoadingType_T<DRuntime> { static constexpr auto value = ELoadingType::Runtime; };
+  template <> struct ToLoadingType_T<DBuiltin> { static constexpr auto value = ELoadingType::Builtin; };
+
+  template <EXPR_E(ELoadingType) E> struct ToDetailType_T;
+  template <> struct ToDetailType_T<EXPR_E(ELoadingType)::ExternalPlain> { using Type = DExternalPlain; };
+  template <> struct ToDetailType_T<EXPR_E(ELoadingType)::ExternalCompressed> { using Type = DExternalCompressed; };
+  template <> struct ToDetailType_T<EXPR_E(ELoadingType)::Runtime> { using Type = DRuntime; };
+  template <> struct ToDetailType_T<EXPR_E(ELoadingType)::Builtin> { using Type = DBuiltin; };
+
+  template <typename T> static constexpr auto ToLoadingType = ToLoadingType_T<T>::value;
+  template <EXPR_E(ELoadingType) E> using ToDetailType = typename ToDetailType_T<E>::Type;
+
   /// @enum   EFontType
   /// @brief  Font type for rendering.
   EXPR_DEFINE_ENUM(EFontType,

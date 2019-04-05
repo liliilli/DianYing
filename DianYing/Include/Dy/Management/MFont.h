@@ -57,7 +57,7 @@ private:
   using TFontContainerMap = std::unordered_map<std::string, std::unique_ptr<IFontContainer>>;
 
   ///
-  TFontContainerMap   mFontResourceContainerMap = {};
+  TFontContainerMap mFontResourceContainerMap = {};
 };
 
 } /// ::dy namespace
