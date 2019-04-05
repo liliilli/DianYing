@@ -55,6 +55,22 @@ namespace dy::expr
 #define __EXPR_ENUM_30(Value, ...)  Value, EXPAND(__EXPR_ENUM_29(__VA_ARGS__)) 
 #define __EXPR_ENUM_31(Value, ...)  Value, EXPAND(__EXPR_ENUM_30(__VA_ARGS__)) 
 #define __EXPR_ENUM_32(Value, ...)  Value, EXPAND(__EXPR_ENUM_31(__VA_ARGS__)) 
+#define __EXPR_ENUM_33(Value, ...)  Value, EXPAND(__EXPR_ENUM_32(__VA_ARGS__)) 
+#define __EXPR_ENUM_34(Value, ...)  Value, EXPAND(__EXPR_ENUM_33(__VA_ARGS__)) 
+#define __EXPR_ENUM_35(Value, ...)  Value, EXPAND(__EXPR_ENUM_34(__VA_ARGS__)) 
+#define __EXPR_ENUM_36(Value, ...)  Value, EXPAND(__EXPR_ENUM_35(__VA_ARGS__)) 
+#define __EXPR_ENUM_37(Value, ...)  Value, EXPAND(__EXPR_ENUM_36(__VA_ARGS__)) 
+#define __EXPR_ENUM_38(Value, ...)  Value, EXPAND(__EXPR_ENUM_37(__VA_ARGS__)) 
+#define __EXPR_ENUM_39(Value, ...)  Value, EXPAND(__EXPR_ENUM_38(__VA_ARGS__)) 
+#define __EXPR_ENUM_40(Value, ...)  Value, EXPAND(__EXPR_ENUM_39(__VA_ARGS__)) 
+#define __EXPR_ENUM_41(Value, ...)  Value, EXPAND(__EXPR_ENUM_40(__VA_ARGS__)) 
+#define __EXPR_ENUM_42(Value, ...)  Value, EXPAND(__EXPR_ENUM_41(__VA_ARGS__)) 
+#define __EXPR_ENUM_43(Value, ...)  Value, EXPAND(__EXPR_ENUM_42(__VA_ARGS__)) 
+#define __EXPR_ENUM_44(Value, ...)  Value, EXPAND(__EXPR_ENUM_43(__VA_ARGS__)) 
+#define __EXPR_ENUM_45(Value, ...)  Value, EXPAND(__EXPR_ENUM_44(__VA_ARGS__)) 
+#define __EXPR_ENUM_46(Value, ...)  Value, EXPAND(__EXPR_ENUM_45(__VA_ARGS__)) 
+#define __EXPR_ENUM_47(Value, ...)  Value, EXPAND(__EXPR_ENUM_46(__VA_ARGS__)) 
+#define __EXPR_ENUM_48(Value, ...)  Value, EXPAND(__EXPR_ENUM_47(__VA_ARGS__)) 
 
 #define __EXPR_ENUM_STR_1(Value)        #Value 
 #define __EXPR_ENUM_STR_2(Value, ...)   #Value, EXPAND(__EXPR_ENUM_STR_1(__VA_ARGS__)) 
@@ -88,6 +104,22 @@ namespace dy::expr
 #define __EXPR_ENUM_STR_30(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_29(__VA_ARGS__)) 
 #define __EXPR_ENUM_STR_31(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_30(__VA_ARGS__)) 
 #define __EXPR_ENUM_STR_32(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_31(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_33(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_32(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_34(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_33(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_35(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_34(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_36(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_35(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_37(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_36(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_38(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_37(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_39(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_38(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_40(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_39(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_41(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_40(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_42(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_41(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_43(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_42(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_44(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_43(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_45(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_44(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_46(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_45(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_47(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_46(__VA_ARGS__)) 
+#define __EXPR_ENUM_STR_48(Value, ...)  #Value, EXPAND(__EXPR_ENUM_STR_47(__VA_ARGS__)) 
 
 #define __EXPR_ENUM_ENTRY(Prefix, N) __EXPR_ENUM ## Prefix ## N
 #define __EXPR_INITIALIZE_ENUM(Prefix, N, ...) EXPAND(__EXPR_ENUM_ENTRY(Prefix, N)(__VA_ARGS__))
@@ -149,6 +181,8 @@ public:                                         \
   }                                                             \
 }
 
+/// @def EXPR_E
+/// @brief Helper macor for specifying Enumration type's actual enumration type.
 #define EXPR_E(Value) Value::_
 
 #ifdef false
