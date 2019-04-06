@@ -24,5 +24,6 @@
     <ClInclude Include="Include\Expr\XStringSwitch.h" />
     <ClInclude Include="Include\Expr\XMacroes.h" />
     <ClInclude Include="Include\Expr\TEnumString.h" />
+    <ClInclude Include="Include\Expr\TEnumTypeBinding.h" />
   </ItemGroup>
 </Project>

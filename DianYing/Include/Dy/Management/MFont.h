@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Management/Type/FontResourceContainer.h>
+#include <Dy/Management/Interface/IFontContainer.h>
 #include <Dy/Helper/System/Pointer.h>
 
 namespace dy
@@ -22,41 +22,34 @@ namespace dy
 
 class MFont final : public ISingleton<MFont>
 {
+public:
   MDY_SINGLETON_PROPERTIES(MFont);
   MDY_SINGLETON_DERIVED(MFont);
-public:
-  ///
   /// @brief  Create font resource container from meta container.
-  /// @param  fontSpecifierName
+  /// @param  identifier
   /// @return If succeeded return DY_SUCCESS or DY_FAILURE.
-  ///
-  EDySuccess CreateFontResourceContainer(_MIN_ const std::string& fontSpecifierName);
+  EDySuccess CreateFontResourceContainer(const std::string& identifier);
 
-  ///
   /// @brief  Check there is valid font container with name is fontSpecifierName.
-  /// @param  specifierName Font container specifier name.
+  /// @param  identifier Font container specifier name.
   /// @return If found just return true or false.
-  ///
-  MDY_NODISCARD bool IsFontResourceContainerExist(_MIN_ const std::string& specifierName);
+  MDY_NODISCARD bool IsFontResourceContainerExist(const std::string& identifier);
 
-  ///
   /// @brief  Remove and release resource of valid font container.
-  /// @param  fontSpecifierName
+  /// @param  identifier
   /// @return If succeeded to remove valid font container, return DY_SUCCESS or DY_FAILURE.
-  ///
-  MDY_NODISCARD EDySuccess RemoveFontContainer(_MIN_ const std::string& fontSpecifierName);
+  EDySuccess RemoveFontContainer(const std::string& identifier);
 
-  ///
   /// @brief  Get font resource container.
-  /// @param  specifierName Font container speicfier name.
+  /// @param  identifier Font container speicfier name.
   /// @return Return default font container reference.
-  ///
-  MDY_NODISCARD IFontContainer* GetFontResourceContainer(_MIN_ const std::string& specifierName);
+  IFontContainer* GetFontResourceContainer(const std::string& identifier);
 
 private:
+  /// @brief Container type for supporting polymorphic font containers.
   using TFontContainerMap = std::unordered_map<std::string, std::unique_ptr<IFontContainer>>;
 
-  ///
+  /// @brief Container
   TFontContainerMap mFontResourceContainerMap = {};
 };
 

@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Management/Type/FontCharacterInfo.h>
+#include <Dy/Meta/Information/MetaInfoFont.h>
 
 //!
 //! Implementation
@@ -27,31 +28,36 @@ namespace dy
 MDY_INTERFACE MDY_NO_VTABLE IFontContainer
 {
 public:
+  IFontContainer(EXPR_E(PDyMetaFontInformation::ELoadingType) fontType)
+    : mFontType{fontType} {};
   virtual ~IFontContainer() = default;
 
   /// @brief  Check character glyph information is exist or not.
   /// @param  fontCode UCS-2 fontCode to verify.
   /// @return If found, return true or false.
-  MDY_NODISCARD virtual bool IsCharacterGlyphExist(_MIN_ const TChr16 fontCode) = 0;
+  MDY_NODISCARD virtual bool IsCharacterGlyphExist(TChr16 fontCode) = 0;
 
   /// @brief  Get character glyph information instance from container. This function defered with derived type.
   /// @param  fontCode UCS-2 fontCode to verify.
   /// @return Valid font character instance.
-  MDY_NODISCARD virtual const DDyFontCharacterInfo& GetGlyphCharacter(_MIN_ const TChr16 fontCode) = 0;
+  virtual const DDyFontCharacterInfo& GetGlyphCharacter(TChr16 fontCode) = 0;
 
   /// @brief  Helper operator function of glyph information.
   /// @param  fontCode UCS-2 font code to verify.
   /// @return Valid font character instance.
-  MDY_NODISCARD virtual const DDyFontCharacterInfo& operator[](_MIN_ const TChr16 fontCode) = 0;
+  virtual const DDyFontCharacterInfo& operator[](TChr16 fontCode) = 0;
 
   /// @brief  Get horizontal line feed height with font size.
   /// @param  fontSize
   /// @return Scaled line feed height.
-  MDY_NODISCARD virtual TI32 GetLinefeedHeight(_MIN_ const TI32 fontSize) const noexcept = 0;
+  virtual TI32 GetLinefeedHeight(TI32 fontSize) const noexcept = 0;
 
   /// @brief
   /// @return Texture array 2d id.
   virtual TI32 GetFontTextureArrayId() const noexcept = 0;
+
+private:
+  EXPR_E(PDyMetaFontInformation::ELoadingType) mFontType = decltype(mFontType)::__Error;
 };
 
 } /// ::dy namespace

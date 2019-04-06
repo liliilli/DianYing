@@ -38,7 +38,6 @@
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
-    <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
     <ClCompile Include="Source\Management\Type\SettingContainer.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
@@ -367,6 +366,7 @@
     <ClCompile Include="Source\Core\Resource\Resource\Texture\FResourceTextureGeneral.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\Texture\FResourceTextureCubemap.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoFont.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerPlain.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -439,7 +439,6 @@
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
@@ -893,6 +892,7 @@
     <ClInclude Include="Include\Dy\Builtin\Font\Gothic.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AFontResource.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFont.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerPlain.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
