@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DyHexToUChar.cpp">
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\DyHexToUChar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
