@@ -60,17 +60,17 @@ struct DDyFontCharacterInfo final
   ///
   DDyTextureCoordBox mTexCoordInfo = {};
 
-  ///
   /// @brief  Create and return font character instance.
   /// @param  j Valid json atlas.
   /// @param  charCode character code UCS-2.
   /// @return Created character information instance.
-  ///
-  static MDY_NODISCARD DDyFontCharacterInfo CreateInstance(_MIN_ const nlohmann::json& j, _MIN_ const TChr16 charCode);
+  MDY_NODISCARD static DDyFontCharacterInfo CreateInstance(const nlohmann::json& j, TChr16 charCode);
 };
 
 void to_json  (_MOUT_ nlohmann::json& j,      _MIN_ const DDyFontCharacterInfo& p);
 void from_json(_MIN_ const nlohmann::json& j, _MOUT_ DDyFontCharacterInfo& p);
+
+extern DDyFontCharacterInfo sDefaultFontCharacterInfo;
 
 } /// ::dy namespace
 

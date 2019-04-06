@@ -435,6 +435,8 @@
     <ClCompile Include="Source\Helper\Type\DUuid.cc" />
     <ClCompile Include="Source\Management\Interface\AFontContainer.cc" />
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerBuiltin.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerCompressed.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerRuntime.cc" />
     <ClCompile Include="Source\Management\MGameTimer.cc" />
     <ClCompile Include="Source\Management\Helper\SProfilingHelper.cc" />
     <ClCompile Include="Source\Management\Internal\Input\MInputDelegates.cc" />
@@ -816,6 +818,8 @@
     <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SProfilingHelper.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerBuiltin.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerCompressed.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerRuntime.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Input\MInputDelegates.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDebug.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MProfiling.h" />

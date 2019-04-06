@@ -19,21 +19,6 @@
 
 #include <Dy/Helper/Internal/DImageBinaryBuffer.h>
 
-//!
-//! Local translation unit files
-//!
-
-namespace
-{
-
-dy::DDyFontCharacterInfo sDefaultFontCharacterInfo = {};
-
-} /// ::unnamed namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 
@@ -42,22 +27,6 @@ FFontContainerBuiltin::FFontContainerBuiltin(const PDyMetaFontInformation::DBuil
     PDyMetaFontInformation::ELoadingType::Builtin,
     details.mFontType}
 {
-  static auto GetBuiltinInformationString = [](const std::string& filePath) -> std::string
-  {
-    FILE* fpRes = std::fopen(filePath.c_str(), "rb");
-    MDY_ASSERT_MSG(fpRes != nullptr, "fpRes must not be nullptr.");
-
-    std::fseek(fpRes, 0, SEEK_END);
-    const auto fileSize = std::ftell(fpRes);
-    std::fseek(fpRes, 0, SEEK_SET);
-
-    std::vector<TU8> buffer(fileSize);
-    std::fread(buffer.data(), sizeof(TU8), buffer.size(), fpRes);
-    std::fclose(fpRes);
-
-    return zlib::DecompressString({buffer.begin(), buffer.end()});
-  };
-
   // (1) Open file and get plain information buffer.
   using DBuiltin  = PDyMetaFontInformation::DBuiltin;
   using EBuffer   = PDyMetaFontInformation::DBuiltin::EBuffer;

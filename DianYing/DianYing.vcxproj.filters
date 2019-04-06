@@ -371,6 +371,8 @@
     <ClCompile Include="Source\Builtin\Font\Gothic.cc" />
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerBuiltin.cc" />
     <ClCompile Include="Source\Management\Interface\AFontContainer.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerRuntime.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerCompressed.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -899,6 +901,8 @@
     <ClInclude Include="Include\Dy\Resource\resource.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerBuiltin.h" />
     <ClInclude Include="Include\Dy\Management\Interface\AFontContainer.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerRuntime.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerCompressed.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />

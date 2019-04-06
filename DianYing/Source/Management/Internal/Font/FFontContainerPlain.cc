@@ -19,21 +19,6 @@
 
 #include <Dy/Helper/Internal/DImageBinaryBuffer.h>
 
-//!
-//! Local translation unit files
-//!
-
-namespace
-{
-
-dy::DDyFontCharacterInfo sDefaultFontCharacterInfo = {};
-
-} /// ::unnamed namespace
-
-//!
-//! Implementation
-//!
-
 namespace dy
 {
 
