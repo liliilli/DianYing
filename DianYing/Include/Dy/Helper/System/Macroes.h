@@ -436,11 +436,11 @@ public:
 /// @brief Specify that this parameter will be read from function body and altered some properties.
 #define _MINOUT_
 
-#define MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(__MAType__)\
-  __MAType__(const __MAType__&)             = delete;   \
-  __MAType__& operator=(const __MAType__&)  = delete;   \
-  __MAType__(__MAType__&&)                  = default;  \
-  __MAType__& operator=(__MAType__&&)       = default;
+#define MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(__MAType__)    \
+  __MAType__(const __MAType__&)                 = delete;   \
+  __MAType__& operator=(const __MAType__&)      = delete;   \
+  __MAType__(__MAType__&&)  noexcept            = default;  \
+  __MAType__& operator=(__MAType__&&) noexcept  = default;
 
 #define MDY_ONLY_MOVEABLE_PROPERTIES_CUSTOM(__MAType__) \
   __MAType__(const __MAType__&)             = delete;   \
@@ -448,11 +448,11 @@ public:
   __MAType__(__MAType__&&) noexcept;                    \
   __MAType__& operator=(__MAType__&&) noexcept;
 
-#define MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__MAType__)\
-  __MAType__(const __MAType__&)             = delete;   \
-  __MAType__& operator=(const __MAType__&)  = delete;   \
-  __MAType__(__MAType__&&)                  = delete;   \
-  __MAType__& operator=(__MAType__&&)       = delete;
+#define MDY_NOT_COPYABLE_MOVEABLE_PROPERTIES(__MAType__)    \
+  __MAType__(const __MAType__&)                 = delete;   \
+  __MAType__& operator=(const __MAType__&)      = delete;   \
+  __MAType__(__MAType__&&) noexcept             = delete;   \
+  __MAType__& operator=(__MAType__&&) noexcept  = delete;
 
 ///
 /// @macro  MDY_REFLECT_GETINSTANCE_AS

@@ -20,31 +20,26 @@ namespace dy
 {
 
 /// @class FFontContainerPlain
-/// @brief
+/// @brief `ELoadingType` is `::ExternalPlain`.
 class FFontContainerPlain : public IFontContainer
 {
 public:
-  /// @brief This constructor must success.
-  /// @param fontInformation
-  FFontContainerPlain(const PDyMetaFontInformation& fontInformation);
+  FFontContainerPlain(const PDyMetaFontInformation::DExternalPlain& details);
 
   /// @brief Release font container resources.
   virtual ~FFontContainerPlain();
 
   MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FFontContainerPlain);
 
-  MDY_NODISCARD bool IsCharacterGlyphExist(const TChr16 fontCode) override;
+  MDY_NODISCARD bool IsCharacterGlyphExist(TChr16 fontCode) override;
 
-  MDY_NODISCARD const DDyFontCharacterInfo& GetGlyphCharacter(const TChr16 fontCode) override;
+  const DDyFontCharacterInfo& GetGlyphCharacter(TChr16 fontCode) override;
 
-  MDY_NODISCARD TI32 GetLinefeedHeight(const TI32 fontSize) const noexcept override;
+  TI32 GetLinefeedHeight(TI32 fontSize) const noexcept override;
 
-  MDY_NODISCARD const DDyFontCharacterInfo& operator[](const TChr16 fontCode) override ;
+  const DDyFontCharacterInfo& operator[](TChr16 fontCode) override;
 
-  MDY_NODISCARD TI32 GetFontTextureArrayId() const noexcept override
-  {
-    return this->mTexImageResId;
-  }
+  TI32 GetFontTextureArrayId() const noexcept override;
 
 private:
   ///

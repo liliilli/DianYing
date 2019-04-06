@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include <Dy/Management/Type/FontResourceContainer.h>
+#include <Dy/Management/Internal/Font/FFontContainerPlain.h>
 #include <Dy/Helper/Library/HelperZlib.h>
 #include <nlohmann/json.hpp>
 
@@ -37,7 +37,8 @@ dy::DDyFontCharacterInfo sDefaultFontCharacterInfo = {};
 namespace dy
 {
 
-FDyFontResourceContainer::FDyFontResourceContainer(const PDyMetaFontInformation& fontInformation)
+FFontContainerPlain::FFontContainerPlain(const PDyMetaFontInformation::DExternalPlain& details)
+  : IFontContainer{PDyMetaFontInformation::ELoadingType::ExternalPlain}
 {
   static auto GetPlainInformationString = [](const std::string& filePath) -> std::string
   {
@@ -45,7 +46,7 @@ FDyFontResourceContainer::FDyFontResourceContainer(const PDyMetaFontInformation&
     MDY_ASSERT_MSG(fpRes != nullptr, "fpRes must not be nullptr.");
 
     std::fseek(fpRes, 0, SEEK_END);
-    auto fileSize = std::ftell(fpRes);
+    const auto fileSize = std::ftell(fpRes);
     std::fseek(fpRes, 0, SEEK_SET);
 
     std::vector<TU8> buffer(fileSize);
@@ -59,7 +60,6 @@ FDyFontResourceContainer::FDyFontResourceContainer(const PDyMetaFontInformation&
 
   // (1) Open file and get plain information buffer.
   using ELoadingType = PDyMetaFontInformation::ELoadingType;
-  const auto& details = std::get<PDyMetaFontInformation::ToDetailType<ELoadingType::ExternalPlain>>(fontInformation.mDetails);
 
   const auto plainInformationString = GetPlainInformationString(details.mFontInformationPath->string());
   const nlohmann::json jsonAtlas    = nlohmann::json::parse(plainInformationString);
@@ -89,9 +89,12 @@ FDyFontResourceContainer::FDyFontResourceContainer(const PDyMetaFontInformation&
   glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 1024, 1024, texturePackSize);
   for (TI32 i = 0; i < texturePackSize; ++i)
   {
-    auto dataBuffer = std::make_unique<DImageBinaryBuffer>(details.mFontTexturePathList[i]->string());
+    const auto dataBuffer = std::make_unique<DImageBinaryBuffer>(details.mFontTexturePathList[i]->string());
     MDY_ASSERT_MSG(dataBuffer->IsBufferCreatedProperly() == true, "Unexpected error occurred.");
-    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, 1024, 1024, 1, GL_RGBA, GL_UNSIGNED_BYTE, dataBuffer->GetBufferStartPoint());
+    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 
+      0, 0, 0, i, 1024, 1024, 1, 
+      GL_RGBA, GL_UNSIGNED_BYTE, 
+      dataBuffer->GetBufferStartPoint());
   }
   glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -102,31 +105,36 @@ FDyFontResourceContainer::FDyFontResourceContainer(const PDyMetaFontInformation&
   // (4) Set parameters
 }
 
-FDyFontResourceContainer::~FDyFontResourceContainer()
+FFontContainerPlain::~FFontContainerPlain()
 {
   glDeleteTextures(1, &this->mTexImageResId);
 }
 
-bool FDyFontResourceContainer::IsCharacterGlyphExist(const TChr16 fontCode)
+bool FFontContainerPlain::IsCharacterGlyphExist(TChr16 fontCode)
 {
   return this->mCharContainer.find(fontCode) != this->mCharContainer.end();
 }
 
-const DDyFontCharacterInfo& FDyFontResourceContainer::GetGlyphCharacter(const TChr16 fontCode)
+const DDyFontCharacterInfo& FFontContainerPlain::GetGlyphCharacter(TChr16 fontCode)
 {
   if (this->IsCharacterGlyphExist(fontCode) == true)  { return this->mCharContainer[fontCode]; }
   else                                                { return sDefaultFontCharacterInfo; }
 }
 
-TI32 FDyFontResourceContainer::GetLinefeedHeight(const TI32 fontSize) const noexcept
+TI32 FFontContainerPlain::GetLinefeedHeight(TI32 fontSize) const noexcept
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
   return 0;
 }
 
-const DDyFontCharacterInfo& FDyFontResourceContainer::operator[](const TChr16 fontCode)
+const DDyFontCharacterInfo& FFontContainerPlain::operator[](TChr16 fontCode)
 {
   return this->mCharContainer[fontCode];
+}
+
+TI32 FFontContainerPlain::GetFontTextureArrayId() const noexcept
+{
+  return this->mTexImageResId;
 }
 
 } /// ::dy namespace
