@@ -41,6 +41,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyModelExporter", "Tool\DyM
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyModelGenerator_App", "Tool\DyModelGenerator\Builds\VisualStudio2017\DyModelGenerator_App.vcxproj", "{61C059F4-61C6-5884-FEFD-9230EE1971E5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DyHexToUChar", "Tool\DyHexToUChar\DyHexToUChar.vcxproj", "{62233349-A2F3-49F3-A778-2AF2333D5D43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -91,6 +93,10 @@ Global
 		{61C059F4-61C6-5884-FEFD-9230EE1971E5}.Debug|x64.Build.0 = Debug|x64
 		{61C059F4-61C6-5884-FEFD-9230EE1971E5}.Release|x64.ActiveCfg = Release|x64
 		{61C059F4-61C6-5884-FEFD-9230EE1971E5}.Release|x64.Build.0 = Release|x64
+		{62233349-A2F3-49F3-A778-2AF2333D5D43}.Debug|x64.ActiveCfg = Debug|x64
+		{62233349-A2F3-49F3-A778-2AF2333D5D43}.Debug|x64.Build.0 = Debug|x64
+		{62233349-A2F3-49F3-A778-2AF2333D5D43}.Release|x64.ActiveCfg = Release|x64
+		{62233349-A2F3-49F3-A778-2AF2333D5D43}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +113,7 @@ Global
 		{B12702AD-ABFB-343A-A199-8E24837244A3} = {D4DEFBB5-6EEC-4429-851A-5EAF6C778892}
 		{A537E3AB-009A-4ECB-9279-5347719F7388} = {D4DEFBB5-6EEC-4429-851A-5EAF6C778892}
 		{61C059F4-61C6-5884-FEFD-9230EE1971E5} = {D4DEFBB5-6EEC-4429-851A-5EAF6C778892}
+		{62233349-A2F3-49F3-A778-2AF2333D5D43} = {D4DEFBB5-6EEC-4429-851A-5EAF6C778892}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1CEEEADE-2169-43BA-B962-6C04C6395653}
