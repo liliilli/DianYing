@@ -68,6 +68,7 @@ FInformationMesh::FInformationMesh(_MIN_ const PDyMeshInstanceMetaInfo& metaInfo
           fread(&vi.mWeights[0], sizeof(TF32), 4, fd);    // Weights
         }
       }
+      fclose(fd);
     }
   }
   else

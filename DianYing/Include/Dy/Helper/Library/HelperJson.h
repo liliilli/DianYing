@@ -48,6 +48,9 @@ MDY_NODISCARD TReturnType GetValueFrom(const TParam1& jsonAtlas, const char* nam
 template <typename TReturnType, typename TParam1>
 MDY_NODISCARD TReturnType GetValueFrom(const TParam1& jsonAtlas, const std::string_view& name);
 
+template <typename TReturnType, typename TJsonParam>
+MDY_NODISCARD TReturnType GetValue(const TJsonParam& jsonAtlas);
+
 /// @brief  Get value from json and bind value to oDestination automatically.
 /// Destination type must implement copy assignment operator or default behavior.
 /// @param  jsonAtlas Immutable valid json atlas like-a types.

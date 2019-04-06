@@ -14,12 +14,38 @@
 
 /// Header file
 #include <Dy/Helper/Library/HelperFilesystem.h>
+
 #include <filesystem>
+#include <nlohmann/json.hpp>
+#include <Dy/Helper/Library/HelperJson.h>
 
 namespace dy
 {
 
+void to_json(nlohmann::json& oJson, const DFilePath& iFont)
+{
+  oJson = iFont->string();
+}
+
+void from_json(const nlohmann::json& iJson, DFilePath& oFont)
+{
+  oFont = json::GetValue<std::string>(iJson);
+  MDY_ASSERT(IsFileExist(oFont) == true);
+}
+
 bool IsFileExist(const std::string& iFilePath)
+{
+  namespace fs = std::filesystem;
+  return fs::exists(iFilePath);
+}
+
+bool IsFileExist(const TFilePath& iFilePath)
+{
+  namespace fs = std::filesystem;
+  return exists(iFilePath);
+}
+
+MDY_NODISCARD bool IsFileExist(const DFilePath& iFilePath)
 {
   namespace fs = std::filesystem;
   return fs::exists(iFilePath);

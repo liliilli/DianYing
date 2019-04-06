@@ -140,7 +140,7 @@ std::optional<TU32> FResourceShader::pInitializeShaderProgram(_MIN_ const TFragm
   MDY_ASSERT_MSG(optProgramId.has_value() == true, "Unexpected error occurred.");
 
   // Check shader program linking status only in debug mode.
-#if defined(NDEBUG) == false
+#if defined(NDEBUG) == true
   {
     TI32 isLinked = 0;
     glGetProgramiv(optProgramId.value(), GL_LINK_STATUS, &isLinked);

@@ -13,29 +13,25 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Meta/Information/FontMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoFont.h>
 #include <Dy/Management/Interface/IFontContainer.h>
 
 namespace dy
 {
 
-///
-/// @class FDyFontResourceContainer
+/// @class FFontContainerPlain
 /// @brief
-///
-class FDyFontResourceContainer : public IFontContainer
+class FFontContainerPlain : public IFontContainer
 {
 public:
-  ///
   /// @brief This constructor must success.
   /// @param fontInformation
-  ///
-  FDyFontResourceContainer(_MIN_ const PDyMetaFontInformation& fontInformation);
+  FFontContainerPlain(const PDyMetaFontInformation& fontInformation);
 
   /// @brief Release font container resources.
-  virtual ~FDyFontResourceContainer();
+  virtual ~FFontContainerPlain();
 
-  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FDyFontResourceContainer);
+  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FFontContainerPlain);
 
   MDY_NODISCARD bool IsCharacterGlyphExist(const TChr16 fontCode) override;
 
@@ -43,7 +39,7 @@ public:
 
   MDY_NODISCARD TI32 GetLinefeedHeight(const TI32 fontSize) const noexcept override;
 
-  MDY_NODISCARD const DDyFontCharacterInfo& operator[](_MIN_ const TChr16 fontCode) override ;
+  MDY_NODISCARD const DDyFontCharacterInfo& operator[](const TChr16 fontCode) override ;
 
   MDY_NODISCARD TI32 GetFontTextureArrayId() const noexcept override
   {

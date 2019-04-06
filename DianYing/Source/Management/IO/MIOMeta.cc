@@ -49,7 +49,7 @@
 #include <Dy/Meta/Information/MetaInfoModelAnim.h>
 #include <Dy/Meta/Information/MetaInfoSound.h>
 #include <Dy/Meta/Descriptor/WidgetCommonDescriptor.h>
-#include <Dy/Meta/Information/FontMetaInformation.h>
+#include <Dy/Meta/Information/MetaInfoFont.h>
 #include <Dy/Meta/Information/PrefabMetaInformation.h>
 #include <Dy/Meta/Information/ElementLevelMetaInfo.h>
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
@@ -820,6 +820,15 @@ EDySuccess MIOMeta::pfAddPrefabMetaInfo(const std::string_view& iMetaInfo)
   const auto name = prefabMetaInfo->mSpecifierName;
   auto [_, isSucceeded] = this->mInternal->mPrefabMetaInfo.try_emplace(name, std::move(prefabMetaInfo));
   if (isSucceeded == false) { return DY_FAILURE; }
+
+  return DY_SUCCESS;
+}
+
+EDySuccess MIOMeta::pfAddFontMetaInfo(const PBuiltinMetaFontInfo& iMetaInfo)
+{
+  this->mInternal->mFontMetaInfo.try_emplace(
+    iMetaInfo.mIdentifier, 
+    static_cast<PDyMetaFontInformation>(iMetaInfo));
 
   return DY_SUCCESS;
 }

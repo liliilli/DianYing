@@ -31,7 +31,7 @@ EDySuccess FWidgetText::Initialize(const PDyMetaWidgetTextDescriptor& objectMeta
 {
   /// @brief Bind font container resource instance pointer to this.
   /// @TODO IMPLEMENT CHECKING DEFAULT FONT CASE.
-  static auto GetFontResource = [](const std::string& fontSpecifierName) -> IFontContainer*
+  static auto GetFontResource = [](const std::string& fontSpecifierName) -> AFontContainer*
   {
     auto& fontManager = MFont::GetInstance();
     if (fontManager.IsFontResourceContainerExist(fontSpecifierName) == false)
@@ -60,7 +60,15 @@ EDySuccess FWidgetText::Initialize(const PDyMetaWidgetTextDescriptor& objectMeta
   this->mIsUsingBackgroundColor = objectMetaDesc.mIsUsingBackground;
   this->mFontSize               = objectMetaDesc.mFontSize;
   this->mAlignment              = objectMetaDesc.mAlignment;
-  this->mPtrFontContainer       = GetFontResource(objectMetaDesc.mFontName);
+
+  if (objectMetaDesc.mFontName.empty() == true)
+  {
+    this->mPtrFontContainer = GetFontResource("dyBtFtDefaultGothic");
+  }
+  else
+  {
+    this->mPtrFontContainer = GetFontResource(objectMetaDesc.mFontName);
+  }
 
   // Activate when flag is true.
   if (objectMetaDesc.mIsActivated == true)

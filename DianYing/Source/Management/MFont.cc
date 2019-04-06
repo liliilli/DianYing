@@ -17,7 +17,8 @@
 
 #include <string>
 #include <Dy/Management/IO/MIOMeta.h>
-#include <Dy/Management/Type/FontResourceContainer.h>
+#include <Dy/Management/Internal/Font/FFontContainerPlain.h>
+#include <Dy/Management/Internal/Font/FFontContainerBuiltin.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Management/MLog.h>
 
@@ -35,61 +36,66 @@ EDySuccess MFont::pfRelease()
   return DY_SUCCESS;
 }
 
-EDySuccess MFont::CreateFontResourceContainer(const std::string& fontSpecifierName)
+EDySuccess MFont::CreateFontResourceContainer(const std::string& identifier)
 {
-  if (this->IsFontResourceContainerExist(fontSpecifierName) == true)
+  if (this->IsFontResourceContainerExist(identifier) == true)
   {
     DyPushLogError(
       "Failed to create font resource, {}. This font is already created in container.", 
-      fontSpecifierName);
+      identifier);
     return DY_SUCCESS;
   }
 
   // Create font information and move it.
   auto& metaManager = MIOMeta::GetInstance();
-  if (metaManager.IsFontMetaInformationExist(fontSpecifierName) == false)
+  MDY_ASSERT_FORCE(metaManager.IsFontMetaInformationExist(identifier) == true);
+
+  const auto& fontInfo = metaManager.GetFontMetaInformation(identifier);
+  using ELoadingType = PDyMetaFontInformation::ELoadingType;
+  switch (fontInfo.mLoadingType)
   {
-    DyPushLogCritical(
-      "Failed to create font resource, {}. This font information is not exist on meta system.", 
-      fontSpecifierName);
-    return DY_FAILURE;
-  }
-
-  const auto& fontMetaInformation = metaManager.GetFontMetaInformation(fontSpecifierName);
-  if (fontMetaInformation.mIsUsingRuntimeCreateionWhenGlyphNotExist == false)
-  { // Make space
-    auto [it, isSucceeded] = this->mFontResourceContainerMap.try_emplace(fontSpecifierName, nullptr);
-    MDY_ASSERT_MSG(isSucceeded == true, "Font resource creation must be succeeded.");
-
+  case ELoadingType::ExternalPlain: 
+  { 
+    const auto& details = std::get<
+      PDyMetaFontInformation::ToDetailType<ELoadingType::ExternalPlain>>(fontInfo.mDetails);
     // Create font resource.
-    auto instance = std::make_unique<FDyFontResourceContainer>(fontMetaInformation);
-    { // Swapping
-      std::unique_ptr<IFontContainer> tempSwap{static_cast<IFontContainer*>(instance.release())};
-      it->second.swap(tempSwap);
-      MDY_ASSERT_MSG(it->second.get() != nullptr, "Unexpected error occurred");
-    }
-
-    //
-
-  }
-  else
+    this->mFontResourceContainerMap.try_emplace(
+      fontInfo.mSpecifierName, 
+      std::make_unique<FFontContainerPlain>(details));
+  } break;
+  case ELoadingType::ExternalCompressed: 
+  case ELoadingType::Runtime: 
+    MDY_NOT_IMPLEMENTED_ASSERT(); break;
+  case ELoadingType::Builtin:
   {
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    const auto& details = std::get<
+      PDyMetaFontInformation::ToDetailType<ELoadingType::Builtin>>(fontInfo.mDetails);
+    // Create font resource.
+    this->mFontResourceContainerMap.try_emplace(
+      fontInfo.mSpecifierName, 
+      std::make_unique<FFontContainerBuiltin>(details));
+  } break;
+  default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
   return DY_SUCCESS;
 }
 
-bool MFont::IsFontResourceContainerExist(const std::string& specifierName)
+bool MFont::IsFontResourceContainerExist(const std::string& identifier)
 {
-  return Contains(this->mFontResourceContainerMap, specifierName);
+  return Contains(this->mFontResourceContainerMap, identifier);
 }
 
-  IFontContainer* MFont::GetFontResourceContainer(_MIN_ const std::string& specifierName)
+EDySuccess MFont::RemoveFontContainer(const std::string& identifier)
 {
-  if (this->IsFontResourceContainerExist(specifierName) == false) { return nullptr; }
+  return DY_SUCCESS;
+}
 
-  return this->mFontResourceContainerMap[specifierName].get();
+AFontContainer* MFont::GetFontResourceContainer(const std::string& identifier)
+{
+  if (this->IsFontResourceContainerExist(identifier) == false) { return nullptr; }
+
+  return this->mFontResourceContainerMap[identifier].get();
 }
 
 } /// ::dy namespace

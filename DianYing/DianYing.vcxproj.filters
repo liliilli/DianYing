@@ -38,8 +38,6 @@
     <ClCompile Include="Source\Management\BindingLua\BindingComponentType.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetCommponDescriptor.cc" />
     <ClCompile Include="Source\Builtin\Model\ScreenProjectionTriangle.cc" />
-    <ClCompile Include="Source\Meta\Information\FontMetaInformation.cc" />
-    <ClCompile Include="Source\Management\Type\FontResourceContainer.cc" />
     <ClCompile Include="Source\Management\Type\FontCharacterInfo.cc" />
     <ClCompile Include="Source\Management\Type\SettingContainer.cc" />
     <ClCompile Include="Source\Core\Thread\TDyIO.cc" />
@@ -367,6 +365,14 @@
     <ClCompile Include="Source\Core\Resource\Resource\AResourceAttachmentBase.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\Texture\FResourceTextureGeneral.cc" />
     <ClCompile Include="Source\Core\Resource\Resource\Texture\FResourceTextureCubemap.cc" />
+    <ClCompile Include="Source\Meta\Information\MetaInfoFont.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerPlain.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\AFontResource.cc" />
+    <ClCompile Include="Source\Builtin\Font\Gothic.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerBuiltin.cc" />
+    <ClCompile Include="Source\Management\Interface\AFontContainer.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerRuntime.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerCompressed.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -439,8 +445,6 @@
     <ClInclude Include="Include\Dy\Meta\Descriptor\WidgetCommonDescriptor.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\RenderScreenOutput.h" />
-    <ClInclude Include="Include\Dy\Meta\Information\FontMetaInformation.h" />
-    <ClInclude Include="Include\Dy\Management\Type\FontResourceContainer.h" />
     <ClInclude Include="Include\Dy\Management\Type\FontCharacterInfo.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EDyRenderingApi.h" />
     <ClInclude Include="Include\Dy\Management\Type\SettingContainer.h" />
@@ -694,7 +698,6 @@
     <ClInclude Include="Include\Dy\Management\Internal\Sound\XCallbackChannel.h" />
     <ClInclude Include="Include\Dy\Management\Internal\World\MWorldUIContainers.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IPlatformDependent.h" />
-    <ClInclude Include="Include\Dy\Management\Interface\IFontContainer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EResourceType.h" />
     <ClInclude Include="Include\Dy\Binding\FLuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AGLAttachmentResource.h" />
@@ -890,7 +893,16 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FResourceShader.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureCubemap.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureGeneral.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="Include\Dy\Builtin\Font\Gothic.h" />
+    <ClInclude Include="Include\Dy\Builtin\Abstract\AFontResource.h" />
+    <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFont.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerPlain.h" />
+    <ClInclude Include="Include\Dy\Resource\resource1.h" />
+    <ClInclude Include="Include\Dy\Resource\resource.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerBuiltin.h" />
+    <ClInclude Include="Include\Dy\Management\Interface\AFontContainer.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerRuntime.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerCompressed.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -925,9 +937,11 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Icon.ico" />
+    <Image Include="Resource\icon.ico" />
+    <Image Include="Resource\Gothic.png" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DyCore.rc" />
+    <ResourceCompile Include="Include\Dy\Resource\MainApp.rc" />
+    <ResourceCompile Include="Builtin.rc" />
   </ItemGroup>
 </Project>

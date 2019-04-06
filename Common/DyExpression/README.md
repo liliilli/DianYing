@@ -225,7 +225,71 @@ SECTION("TZip initialization")
 DyExpr provides helper macroes that used on Dy~ Projects.
 To see what macroes are implemented, see `XMacroes.h` file.
 
-### Log
+### String converable Enumeration Type
+
+Enumeration type that can be convertable to string and vice versa.
+To use enumration type, just use `EXPR_DEFINE_ENUM` with Type name as first parameter and values as variadic arguments.
+
+Enumeration value count limit is 32.
+
+* Conversion from Enumration value to string literal.
+* Conversion from string literal or runtime `std::string` to Enumation value when matched. If not matched, just return with `__Error` value.
+
+#### Example
+
+``` c++
+struct DTest final
+{
+  EXPR_DEFINE_ENUM(ETest, A, B, C, D, E, F, G, H, I, J, K, L, M, N);
+};
+
+static_assert(DTest::ETest::ToEnum("A") == DTest::ETest::A);
+static_assert(DTest::ETest::ToEnum("C") == DTest::ETest::C);
+static_assert(DTest::ETest::ToEnum("D") == DTest::ETest::D);
+static_assert(DTest::ETest::ToEnum("E") == DTest::ETest::E);
+static_assert(DTest::ETest::ToEnum("N") == DTest::ETest::N);
+```
+
+### a pair of Type and Enumration value pre-process time binding macro.
+
+A pair of type and enumartion value can be binded and generated as code for conversion between each other.
+To use this feature, just use `EXPR_DEFINE_ENUMTYPE_BINDING` with, (Enumeration type name, Is it created with `EXPR_DEFINE_ENUM`, pairs of {Type, Enum value}...).
+
+
+
+Binding cound limit is 24. (48 items except for initial parameters)
+
+#### Example
+
+``` c++
+// Declaration
+
+struct DExternalPlain;
+struct DExternalCompressed;
+struct DBuiltin;
+struct DRuntime;
+
+using TDetails = std::variant<DExternalPlain, DExternalCompressed, DBuiltin, DRuntime>;
+
+/// @enum  ELoadingType
+/// @brief Loading type.
+EXPR_DEFINE_ENUM(ELoadingType, ExternalPlain, ExternalCompressed, Runtime, Builtin);
+
+EXPR_DEFINE_ENUMTYPE_BINDING(ELoadingType, false, 
+  DExternalPlain, ExternalPlain,
+  DExternalCompressed, ExternalCompressed,
+  DRuntime, Runtime,
+  DBuiltin, Builtin);
+```
+
+``` c++
+// Using
+
+const auto& details = std::get<PDyMetaFontInformation::ToDetailType<ELoadingType::ExternalPlain>>(fontInfo.mDetails);
+
+```
+
+## Log
 
 19-03-19 Make Project, Add TypeList.
 19-03-25 Add TZip, Extended type_traits.

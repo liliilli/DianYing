@@ -69,7 +69,7 @@ GetCharacterVertices(
 
 MDY_NODISCARD std::vector<std::array<dy::DVec2, 12>> 
 GetCharacterVertices(
-    dy::IFontContainer& container, 
+    dy::AFontContainer& container, 
     const std::vector<std::pair<TChr16, dy::DVec2>>& lineList, 
     TI32 fontSize)
 {
@@ -131,7 +131,7 @@ void CRendererFont::Render()
   this->mBinderShader->TryUpdateUniform<EUniformType::Bool>("uIsUsingEdge", this->mPtrWidget->CheckIsUsingEdgeRendering());
   this->mBinderShader->TryUpdateUniform<EUniformType::Bool>("uIsUsingBackground", this->mPtrWidget->CheckIsUsingBackgroundColor());
   
-  IFontContainer& container = this->mPtrWidget->GetFontContainer();
+  AFontContainer& container = this->mPtrWidget->GetFontContainer();
   const TI32 fontSize         = this->mPtrWidget->GetFontSize();
   const DVec2 initPos    = this->mPtrWidget->GetRenderPosition();
   DVec2 renderPosition   = initPos;

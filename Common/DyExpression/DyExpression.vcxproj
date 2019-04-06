@@ -33,7 +33,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Expr\TCrc32.h" />
+    <ClInclude Include="Include\Expr\TEnumTypeBinding.h" />
     <ClInclude Include="Include\Expr\TNull.h" />
+    <ClInclude Include="Include\Expr\TEnumString.h" />
     <ClInclude Include="Include\Expr\TTypeList.h" />
     <ClInclude Include="Include\Expr\TZip.h" />
     <ClInclude Include="Include\Expr\TExtendedTraits.h" />

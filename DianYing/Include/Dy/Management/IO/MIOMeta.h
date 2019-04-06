@@ -18,6 +18,7 @@
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
+#include <Dy/Meta/Information/MetaInfoFont.h>
 
 //!
 //! Forward declaration
@@ -242,6 +243,7 @@ private:
   MDY_NODISCARD EDySuccess pReadModelMetaAtlas    (const nlohmann::json& iJson);
 
   MDY_NODISCARD EDySuccess pfAddPrefabMetaInfo        (const std::string_view& iMetaInfo);
+  MDY_NODISCARD EDySuccess pfAddFontMetaInfo          (const PBuiltinMetaFontInfo& iMetaInfo);
   MDY_NODISCARD EDySuccess pfAddWidgetMetaInformation (const std::string& metaInformationString);
   MDY_NODISCARD EDySuccess pfAddScriptMetaInformation (const PDyScriptInstanceMetaInfo& metaInfo);
   MDY_NODISCARD EDySuccess pfAddGLShaderMetaInfo      (const PDyGLShaderInstanceMetaInfo& metaInfo);

@@ -56,7 +56,7 @@ void BtScrGlobalDefaultUniformBuffer::OnStart()
     MDY_CALL_ASSERT_SUCCESS(uboManager.CreateUboContainer(desc))
   }
 
-  MFont::GetInstance().CreateFontResourceContainer("Arial");
+  MFont::GetInstance().CreateFontResourceContainer("dyBtFtDefaultGothic");
 }
 
 void BtScrGlobalDefaultUniformBuffer::OnEnd()

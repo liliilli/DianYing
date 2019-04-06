@@ -24,10 +24,10 @@ namespace dy
 /// This macro must not be attached to whichever class does not inherits ISingleton<>.
 #define MDY_SINGLETON_PROPERTIES(__MASingletonType__) \
 public: \
-    __MASingletonType__(const __MASingletonType__##&) = delete; \
-    __MASingletonType__(__MASingletonType__##&&) noexcept = delete; \
-    __MASingletonType__##& operator=(const __MASingletonType__##&) = delete; \
-    __MASingletonType__##& operator=(__MASingletonType__##&&) noexcept = delete
+    __MASingletonType__(const MDY_MAKENAME(__MASingletonType__,&)) = delete; \
+    __MASingletonType__(MDY_MAKENAME(__MASingletonType__,&&)) noexcept = delete; \
+    MDY_MAKENAME(__MASingletonType__,&) operator=(const MDY_MAKENAME(__MASingletonType__,&)) = delete; \
+    MDY_MAKENAME(__MASingletonType__,&) operator=(MDY_MAKENAME(__MASingletonType__,&&)) noexcept = delete
 
 /// @macro MDY_SINGLETON_DERIVED
 /// This macro must not be attached to whichever class does not inherits ISingleton<>.
