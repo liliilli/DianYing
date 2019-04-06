@@ -12,17 +12,22 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/AFontResource.h>
+/// Header file
+#include <Dy/Management/Interface/AFontContainer.h>
 
 namespace dy
 {
 
-std::any AFontResource::GetMetaInfo()
+EXPR_E(PDyMetaFontInformation::ELoadingType) 
+AFontContainer::GetLoadingType() const noexcept
 {
-  PBuiltinMetaFontInfo buffer;
-  this->ConstructBuffer(buffer);
+  return this->mLoadingType;
+}
 
-  return buffer;
+EXPR_E(PDyMetaFontInformation::EFontType) 
+AFontContainer::GetFontType() const noexcept
+{
+  return this->mFontType;
 }
 
 } /// ::dy namespace

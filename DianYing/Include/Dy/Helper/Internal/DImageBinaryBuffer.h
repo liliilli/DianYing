@@ -63,6 +63,7 @@ class DImageBinaryBuffer final
 {
 public:
   DImageBinaryBuffer(const std::string& imagePath);
+  DImageBinaryBuffer(std::size_t size, void* ptrEntry);
   ~DImageBinaryBuffer();
 
   DImageBinaryBuffer(const DImageBinaryBuffer&)                 = delete;

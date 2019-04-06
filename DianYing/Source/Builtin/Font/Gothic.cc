@@ -13,21 +13,26 @@
 ///
 
 #include <Dy/Builtin/Font/Gothic.h>
+#include <Dy/Resource/resource1.h>
 
 namespace dy::builtin
 {
 
-void FBtFtDefaultGothic::ConstructBuffer(PDyMetaFontInformation::DBuiltin& oInfo) noexcept
+void FBtFtDefaultGothic::ConstructBuffer(PBuiltinMetaFontInfo& oInfo) noexcept
 {
-  oInfo.mFontType = decltype(oInfo.mFontType)::SDF;
-  oInfo.mFontInformation = 
+  oInfo.mIdentifier = this->sName;
+  oInfo.mUuid       = DUuid("204c0ab2-b0ab-422e-9b69-43a716ce802d");
+
+  auto& details = oInfo.mDetails;
+
+  details.mFontType = decltype(details.mFontType)::SDF;
+  details.mFontInfoType = PDyMetaFontInformation::DBuiltin::EBuffer::Plain;
+  details.mFontInfoBuffer = 
 #include "Gothic.info"
     ;
 
-  oInfo.mFontTextureBuffers.resize(1);
-  oInfo.mFontTextureBuffers.front() = {
-//#include "Gothic.buffer"
-  };
+  details.mTextureType = PDyMetaFontInformation::DBuiltin::EBuffer::Index;
+  details.mTexureBuffers = PDyMetaFontInformation::DBuiltin::TTexIndexes{IDB_PNG2};
 }
 
 } /// ::dy::builtin namespace

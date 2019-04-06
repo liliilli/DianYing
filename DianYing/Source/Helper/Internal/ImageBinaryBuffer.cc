@@ -125,8 +125,36 @@ DImageBinaryBuffer::DImageBinaryBuffer(const std::string& imagePath)
 {
   stbi_set_flip_vertically_on_load(true);
 
-  this->mBufferStartPoint = stbi_load(imagePath.c_str(), &this->mWidth, &this->mHeight, &this->mImageChannel, 0);
-  this->mImageFormat      = GetColorFormat(this->mImageChannel);
+  this->mBufferStartPoint = stbi_load(
+    imagePath.c_str(), 
+    &this->mWidth, &this->mHeight, &this->mImageChannel, 0);
+
+  this->mImageFormat = GetColorFormat(this->mImageChannel);
+  if (this->mImageFormat == EDyImageColorFormatStyle::NoneError)
+  {
+    stbi_image_free(this->mBufferStartPoint);
+    DyPushLogError("{}", stbi_failure_reason());
+    this->mIsBufferCreatedProperly = false;
+  }
+  else if (this->mBufferStartPoint == nullptr)
+  {
+    this->mIsBufferCreatedProperly = false;
+  }
+  else
+  {
+    this->mIsBufferCreatedProperly = true;
+  }
+}
+
+DImageBinaryBuffer::DImageBinaryBuffer(std::size_t size, void* ptrEntry)
+{
+  stbi_set_flip_vertically_on_load(true);
+
+  this->mBufferStartPoint = stbi_load_from_memory(
+    reinterpret_cast<stbi_uc*>(ptrEntry), size, 
+    &this->mWidth, &this->mHeight, &this->mImageChannel, 0);
+
+  this->mImageFormat = GetColorFormat(this->mImageChannel);
   if (this->mImageFormat == EDyImageColorFormatStyle::NoneError)
   {
     stbi_image_free(this->mBufferStartPoint);

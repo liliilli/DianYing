@@ -824,6 +824,15 @@ EDySuccess MIOMeta::pfAddPrefabMetaInfo(const std::string_view& iMetaInfo)
   return DY_SUCCESS;
 }
 
+EDySuccess MIOMeta::pfAddFontMetaInfo(const PBuiltinMetaFontInfo& iMetaInfo)
+{
+  this->mInternal->mFontMetaInfo.try_emplace(
+    iMetaInfo.mIdentifier, 
+    static_cast<PDyMetaFontInformation>(iMetaInfo));
+
+  return DY_SUCCESS;
+}
+
 EDySuccess MIOMeta::pfAddWidgetMetaInformation(const std::string& metaInformationString)
 {
   return this->mInternal->pfAddWidgetMetaInformation(metaInformationString);

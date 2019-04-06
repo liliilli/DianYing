@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_MANAGEMENT_TYPE_FONTRESOURCECONTAINER_H
-#define GUARD_DY_MANAGEMENT_TYPE_FONTRESOURCECONTAINER_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -19,17 +18,17 @@
 namespace dy
 {
 
-/// @class FFontContainerPlain
-/// @brief `ELoadingType` is `::ExternalPlain`.
-class FFontContainerPlain : public AFontContainer
+/// @class FFontContainerBuiltin
+/// @brief `ELoadingType` is `::Builtin`.
+class FFontContainerBuiltin : public AFontContainer
 {
 public:
-  FFontContainerPlain(const PDyMetaFontInformation::DExternalPlain& details);
+  FFontContainerBuiltin(const PDyMetaFontInformation::DBuiltin& details);
 
   /// @brief Release font container resources.
-  virtual ~FFontContainerPlain();
+  virtual ~FFontContainerBuiltin();
 
-  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FFontContainerPlain);
+  MDY_ONLY_MOVEABLE_PROPERTIES_DEFAULT(FFontContainerBuiltin);
 
   MDY_NODISCARD bool IsCharacterGlyphExist(TChr16 fontCode) override;
 
@@ -48,9 +47,7 @@ private:
   ///
   TCharContainer  mCharContainer = {};
   ///
-  TU32            mTexImageResId = MDY_INITIALIZE_DEFUINT;
+  TU32            mTexImageResId = 0;
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_MANAGEMENT_TYPE_FONTRESOURCECONTAINER_H

@@ -39,7 +39,7 @@ MDY_SET_IMMUTABLE_STRING(sBuffer, R"dy(
         "InitialColor": { "R": 1.0, "G": 1.0, "B": 1.0, "A": 1.0 },
         "EdgeColor": { "R": 0.0, "G": 0.0, "B": 0.0 },
         "FontSize": 9, "Alignment": "Left",
-        "FontSpecifierName": "Arial", "IsUsingEdge": true
+        "FontSpecifierName": "dyBtFtDefaultGothic", "IsUsingEdge": true
       }
     },
     { "Name": "JoystickTest", "Type": "Text", "Parent": "", "ZOrder": 0, "IsActivated": true,

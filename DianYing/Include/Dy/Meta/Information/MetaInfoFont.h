@@ -84,10 +84,47 @@ struct PDyMetaFontInformation final
   {
     /// @brief Font type, This must not be __Error.
     EXPR_E(EFontType) mFontType = EFontType::__Error;
-    /// @brief Font information json string literal.
-    const char* mFontInformation = nullptr;
-    /// @brief Font builtin texture list.
-    std::vector<std::vector<TChr8>> mFontTextureBuffers;
+
+    /// @enum EBuffer
+    /// @brief Buffer type
+    enum class EBuffer
+    {
+      Plain,
+      Index,
+      __Error
+    };
+
+    /// @brief Font information json string literal. (optional)
+    using TInfoBuffer = const char*;
+    /// @brief Font information string buffer index. (optional)
+    using TInfoIndex = TIndex;
+    /// @struct XInfo
+    /// @brief Internal structure.
+    struct XInfo final
+    {
+      EXPR_DEFINE_ENUMTYPE_BINDING(EBuffer, true, TInfoBuffer, Plain, TInfoIndex, Index);
+    };
+
+    /// @brief
+    EBuffer mFontInfoType = EBuffer::__Error;
+    /// @brief
+    std::variant<TInfoBuffer, TInfoIndex> mFontInfoBuffer;
+
+    /// @brief Font builtin texture list. (optional)
+    using TTexBuffers = std::vector<std::vector<TChr8>>;
+    /// @brief Font builtin image index index list. (optional)
+    using TTexIndexes = std::vector<TIndex>;
+    /// @struct XTexture
+    /// @brief Internal structrue.
+    struct XTexture final
+    {
+      EXPR_DEFINE_ENUMTYPE_BINDING(EBuffer, true, TTexBuffers, Plain, TTexIndexes, Index);
+    };
+
+    /// @brief
+    EBuffer mTextureType = EBuffer::__Error;
+    /// @brief 
+    std::variant<TTexBuffers, TTexIndexes> mTexureBuffers;
   };
 
   /// @struct DRuntime
@@ -126,6 +163,29 @@ void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DExternalCom
 
 void to_json(nlohmann::json& oJson, const PDyMetaFontInformation::DRuntime& iDetail);
 void from_json(const nlohmann::json& iJson, PDyMetaFontInformation::DRuntime& oDetail);
+
+/// @struct PBuiltinMetaFontInfo
+/// @brief Buitlin meta information of font.
+struct PBuiltinMetaFontInfo final
+{
+  /// @brief Font specifier name.
+  std::string mIdentifier;
+  /// @brief Uuid.
+  DUuid       mUuid;
+  /// @brief Details;
+  PDyMetaFontInformation::DBuiltin mDetails;
+
+  explicit operator PDyMetaFontInformation() const noexcept
+  {
+    PDyMetaFontInformation result;
+    result.mLoadingType = decltype(result.mLoadingType)::Builtin;
+    result.mSpecifierName = this->mIdentifier;
+    result.mUuid    = this->mUuid;
+    result.mDetails = this->mDetails;
+
+    return result;
+  }
+};
 
 } /// ::dy namespace
 

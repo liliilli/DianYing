@@ -433,6 +433,8 @@
     <ClCompile Include="Source\Helper\Type\DBounds.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\DUuid.cc" />
+    <ClCompile Include="Source\Management\Interface\AFontContainer.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerBuiltin.cc" />
     <ClCompile Include="Source\Management\MGameTimer.cc" />
     <ClCompile Include="Source\Management\Helper\SProfilingHelper.cc" />
     <ClCompile Include="Source\Management\Internal\Input\MInputDelegates.cc" />
@@ -813,6 +815,7 @@
     <ClInclude Include="Include\Dy\Helper\Wrapper\DMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SProfilingHelper.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerBuiltin.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Input\MInputDelegates.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MDebug.h" />
     <ClInclude Include="Include\Dy\Management\Internal\MProfiling.h" />
@@ -969,7 +972,7 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperZlib.h" />
     <ClInclude Include="Include\Dy\Management\Helper\XLuaBindingEntry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\FPhysxSimulationCallback.h" />
-    <ClInclude Include="Include\Dy\Management\Interface\IFontContainer.h" />
+    <ClInclude Include="Include\Dy\Management\Interface\AFontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IPlatformDependent.h" />
     <ClInclude Include="Include\Dy\Management\Rendering\FramebufferManager.h" />
     <ClInclude Include="Include\Dy\Management\Rendering\MUniformBufferObject.h" />
@@ -1065,7 +1068,8 @@
     <ClInclude Include="Libraries\stb\stb_image.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAO.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="Include\Dy\Resource\resource.h" />
+    <ClInclude Include="Include\Dy\Resource\resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="data\Level\Test_Astronaut.json" />
@@ -1102,10 +1106,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Icon.ico" />
+    <Image Include="Resource\Gothic.png" />
+    <Image Include="Resource\icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DyCore.rc" />
+    <ResourceCompile Include="Builtin.rc" />
+    <ResourceCompile Include="Include\Dy\Resource\MainApp.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -23,14 +23,17 @@
 namespace dy
 {
 
-/// @interface IFontContainer
+/// @interface AFontContainer
 /// @brief Interface type of font container.
-MDY_INTERFACE MDY_NO_VTABLE IFontContainer
+class AFontContainer
 {
 public:
-  IFontContainer(EXPR_E(PDyMetaFontInformation::ELoadingType) fontType)
-    : mFontType{fontType} {};
-  virtual ~IFontContainer() = default;
+  AFontContainer(
+    EXPR_E(PDyMetaFontInformation::ELoadingType) loadingType,
+    EXPR_E(PDyMetaFontInformation::EFontType) fontType)
+    : mLoadingType{loadingType},
+      mFontType{fontType} {};
+  virtual ~AFontContainer() = default;
 
   /// @brief  Check character glyph information is exist or not.
   /// @param  fontCode UCS-2 fontCode to verify.
@@ -56,8 +59,15 @@ public:
   /// @return Texture array 2d id.
   virtual TI32 GetFontTextureArrayId() const noexcept = 0;
 
+  /// @brief Get font loading type of this instance.
+  EXPR_E(PDyMetaFontInformation::ELoadingType) GetLoadingType() const noexcept;
+
+  /// @brief Get font type of this font container instance.
+  EXPR_E(PDyMetaFontInformation::EFontType) GetFontType() const noexcept;
+
 private:
-  EXPR_E(PDyMetaFontInformation::ELoadingType) mFontType = decltype(mFontType)::__Error;
+  EXPR_E(PDyMetaFontInformation::ELoadingType) mLoadingType = decltype(mLoadingType)::__Error;
+  EXPR_E(PDyMetaFontInformation::EFontType) mFontType = decltype(mFontType)::__Error;
 };
 
 } /// ::dy namespace

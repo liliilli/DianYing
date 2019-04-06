@@ -369,6 +369,8 @@
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerPlain.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AFontResource.cc" />
     <ClCompile Include="Source\Builtin\Font\Gothic.cc" />
+    <ClCompile Include="Source\Management\Internal\Font\FFontContainerBuiltin.cc" />
+    <ClCompile Include="Source\Management\Interface\AFontContainer.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -694,7 +696,6 @@
     <ClInclude Include="Include\Dy\Management\Internal\Sound\XCallbackChannel.h" />
     <ClInclude Include="Include\Dy\Management\Internal\World\MWorldUIContainers.h" />
     <ClInclude Include="Include\Dy\Management\Interface\IPlatformDependent.h" />
-    <ClInclude Include="Include\Dy\Management\Interface\IFontContainer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EResourceType.h" />
     <ClInclude Include="Include\Dy\Binding\FLuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AGLAttachmentResource.h" />
@@ -890,11 +891,14 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FResourceShader.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureCubemap.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureGeneral.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Include\Dy\Builtin\Font\Gothic.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AFontResource.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFont.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerPlain.h" />
+    <ClInclude Include="Include\Dy\Resource\resource1.h" />
+    <ClInclude Include="Include\Dy\Resource\resource.h" />
+    <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerBuiltin.h" />
+    <ClInclude Include="Include\Dy\Management\Interface\AFontContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="TestResource\Lua\variables.lua" />
@@ -929,9 +933,11 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Icon.ico" />
+    <Image Include="Resource\icon.ico" />
+    <Image Include="Resource\Gothic.png" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DyCore.rc" />
+    <ResourceCompile Include="Include\Dy\Resource\MainApp.rc" />
+    <ResourceCompile Include="Builtin.rc" />
   </ItemGroup>
 </Project>

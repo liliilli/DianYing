@@ -18,6 +18,7 @@
 #include <string>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/Internal/Font/FFontContainerPlain.h>
+#include <Dy/Management/Internal/Font/FFontContainerBuiltin.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Management/MLog.h>
 
@@ -67,6 +68,12 @@ EDySuccess MFont::CreateFontResourceContainer(const std::string& identifier)
     MDY_NOT_IMPLEMENTED_ASSERT(); break;
   case ELoadingType::Builtin:
   {
+    const auto& details = std::get<
+      PDyMetaFontInformation::ToDetailType<ELoadingType::Builtin>>(fontInfo.mDetails);
+    // Create font resource.
+    this->mFontResourceContainerMap.try_emplace(
+      fontInfo.mSpecifierName, 
+      std::make_unique<FFontContainerBuiltin>(details));
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
@@ -84,7 +91,7 @@ EDySuccess MFont::RemoveFontContainer(const std::string& identifier)
   return DY_SUCCESS;
 }
 
-IFontContainer* MFont::GetFontResourceContainer(const std::string& identifier)
+AFontContainer* MFont::GetFontResourceContainer(const std::string& identifier)
 {
   if (this->IsFontResourceContainerExist(identifier) == false) { return nullptr; }
 

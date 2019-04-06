@@ -25,6 +25,7 @@
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
+#include <Dy/Meta/Information/MetaInfoFont.h>
 #include <Dy/Helper/System/Pointer.h>
 
 namespace dy::reflect
@@ -99,6 +100,11 @@ void RBuiltinResources::BindBuiltinResourcesToMetaManager()
     { // Prefab
       auto metainfo = std::any_cast<std::string_view>(function()->GetMetaInfo());
       MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddPrefabMetaInfo(metainfo));
+    } break;
+    case EResourceType::Font:
+    { // Font
+      auto metaInfo = std::any_cast<PBuiltinMetaFontInfo>(function()->GetMetaInfo());
+      MDY_CALL_ASSERT_SUCCESS(metaManager.pfAddFontMetaInfo(metaInfo));
     } break;
     default: MDY_NOT_IMPLEMENTED_ASSERT(); break;
     }

@@ -17,7 +17,7 @@
 #include <Dy/Component/Interface/IInitializeHelper.h>
 #include <Dy/Component/Internal/WidgetRenderer/CRendererFont.h>
 #include <Dy/Helper/Type/DString.h>
-#include <Dy/Management/Interface/IFontContainer.h>
+#include <Dy/Management/Interface/AFontContainer.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Meta/Descriptor/WidgetTextMetaInformation.h>
 
@@ -65,7 +65,7 @@ public:
 
   /// @brief  Return reference of valid font container.
   /// @return Valid font container reference.
-  MDY_NODISCARD IFontContainer& GetFontContainer() const noexcept
+  MDY_NODISCARD AFontContainer& GetFontContainer() const noexcept
   {
     return *this->mPtrFontContainer;
   }
@@ -139,7 +139,7 @@ private:
   /// Text to display on screen. String must be following UTF-8 encoding.
   DString         mTextString       = {""};
   /// Text container instance to display font.
-  IFontContainer* mPtrFontContainer = nullptr;
+  AFontContainer* mPtrFontContainer = nullptr;
   /// Font color
 	DColorRGBA      mForegroundColor  = DColorRGBA::White;
   /// Font background color

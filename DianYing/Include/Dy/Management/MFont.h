@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Management/Interface/ISingletonCrtp.h>
-#include <Dy/Management/Interface/IFontContainer.h>
+#include <Dy/Management/Interface/AFontContainer.h>
 #include <Dy/Helper/System/Pointer.h>
 
 namespace dy
@@ -43,11 +43,11 @@ public:
   /// @brief  Get font resource container.
   /// @param  identifier Font container speicfier name.
   /// @return Return default font container reference.
-  IFontContainer* GetFontResourceContainer(const std::string& identifier);
+  AFontContainer* GetFontResourceContainer(const std::string& identifier);
 
 private:
   /// @brief Container type for supporting polymorphic font containers.
-  using TFontContainerMap = std::unordered_map<std::string, std::unique_ptr<IFontContainer>>;
+  using TFontContainerMap = std::unordered_map<std::string, std::unique_ptr<AFontContainer>>;
 
   /// @brief Container
   TFontContainerMap mFontResourceContainerMap = {};

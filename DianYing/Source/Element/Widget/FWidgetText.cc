@@ -31,7 +31,7 @@ EDySuccess FWidgetText::Initialize(const PDyMetaWidgetTextDescriptor& objectMeta
 {
   /// @brief Bind font container resource instance pointer to this.
   /// @TODO IMPLEMENT CHECKING DEFAULT FONT CASE.
-  static auto GetFontResource = [](const std::string& fontSpecifierName) -> IFontContainer*
+  static auto GetFontResource = [](const std::string& fontSpecifierName) -> AFontContainer*
   {
     auto& fontManager = MFont::GetInstance();
     if (fontManager.IsFontResourceContainerExist(fontSpecifierName) == false)
