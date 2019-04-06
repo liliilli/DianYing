@@ -14,14 +14,23 @@
 
 #include <Dy/Builtin/Interface/IResource.h>
 #include <Dy/Core/Reflection/RBuiltinResources.h>
+#include <Dy/Meta/Information/MetaInfoFont.h>
 
 namespace dy
 {
 
+#define MDY_REGISTER_RESOURCE_FONT(__MAType__, __MAIdentifier__) \
+  MDY_REGISTER_RESOURCE_WITH_SPECIFIER(__MAType__, __MAIdentifier__); \
+  private: \
+    void ConstructBuffer(PDyMetaFontInformation::DBuiltin& oInfo) noexcept override final; \
+  public: 
+  
 struct AFontResource : public IResource
 {
   virtual ~AFontResource() = default;
   static constexpr auto value = EResourceType::Font;
+
+  virtual void ConstructBuffer(PDyMetaFontInformation::DBuiltin& oInfo) noexcept = 0;
 
   /// @brief Return meta info, that has buffer pointer of shader fragment.
   std::any GetMetaInfo() override final;

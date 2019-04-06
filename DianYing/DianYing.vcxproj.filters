@@ -367,6 +367,8 @@
     <ClCompile Include="Source\Core\Resource\Resource\Texture\FResourceTextureCubemap.cc" />
     <ClCompile Include="Source\Meta\Information\MetaInfoFont.cc" />
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerPlain.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\AFontResource.cc" />
+    <ClCompile Include="Source\Builtin\Font\Gothic.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

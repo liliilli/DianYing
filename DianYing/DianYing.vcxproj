@@ -169,6 +169,7 @@
     <ClCompile Include="data\Script\Astronaut\PlanetScript.cc" />
     <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
     <ClCompile Include="data\Script\GlobalTestScript.cc" />
+    <ClCompile Include="Source\Builtin\Abstract\AFontResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AGLAttachmentResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AGLFrameBufferResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\ADyGLShaderResources.cc" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAtUiId.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.cc" />
+    <ClCompile Include="Source\Builtin\Font\Gothic.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\CSM\FDyBtFbCSM.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\Debug\FDyBtFbDebug.cc" />

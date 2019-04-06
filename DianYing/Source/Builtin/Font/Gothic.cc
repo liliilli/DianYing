@@ -1,4 +1,4 @@
-#pragma once
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,17 +12,22 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Abstract/AFontResource.h>
-#include <Dy/Core/Reflection/RBuiltinResources.h>
+#include <Dy/Builtin/Font/Gothic.h>
 
 namespace dy::builtin
 {
 
-/// @class FBtFtDefaultGothic
-/// @brief 
-class FBtFtDefaultGothic final : public AFontResource
+void FBtFtDefaultGothic::ConstructBuffer(PDyMetaFontInformation::DBuiltin& oInfo) noexcept
 {
-  MDY_REGISTER_RESOURCE_FONT(FBtFtDefaultGothic, "dyBtFtDefaultGothic")
-};
+  oInfo.mFontType = decltype(oInfo.mFontType)::SDF;
+  oInfo.mFontInformation = 
+#include "Gothic.info"
+    ;
+
+  oInfo.mFontTextureBuffers.resize(1);
+  oInfo.mFontTextureBuffers.front() = {
+//#include "Gothic.buffer"
+  };
+}
 
 } /// ::dy::builtin namespace
