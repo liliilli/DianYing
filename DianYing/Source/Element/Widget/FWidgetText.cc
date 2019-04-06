@@ -60,7 +60,15 @@ EDySuccess FWidgetText::Initialize(const PDyMetaWidgetTextDescriptor& objectMeta
   this->mIsUsingBackgroundColor = objectMetaDesc.mIsUsingBackground;
   this->mFontSize               = objectMetaDesc.mFontSize;
   this->mAlignment              = objectMetaDesc.mAlignment;
-  this->mPtrFontContainer       = GetFontResource(objectMetaDesc.mFontName);
+
+  if (objectMetaDesc.mFontName.empty() == true)
+  {
+    this->mPtrFontContainer = GetFontResource("dyBtFtDefaultGothic");
+  }
+  else
+  {
+    this->mPtrFontContainer = GetFontResource(objectMetaDesc.mFontName);
+  }
 
   // Activate when flag is true.
   if (objectMetaDesc.mIsActivated == true)
