@@ -55,7 +55,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CONCURRENT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\ThirdParty\zlib;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\freetype\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\ThirdParty\zlib\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\freetype\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -68,14 +68,14 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)Common\Thirdparty\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\msdfgen\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)Common\Thirdparty\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\msdfgen\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Msdfgen.lib;qtmaind.lib;freetype.lib;zlibstaticd.lib;Qt5Widgetsd.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Guid.lib;Qt5Concurrentd.lib;Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Msdfgen.lib;zlib.lib;qtmaind.lib;freetype.lib;Qt5Widgetsd.lib;Qt5OpenGLd.lib;opengl32.lib;glu32.lib;Qt5Guid.lib;Qt5Concurrentd.lib;Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\ThirdParty\zlib\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\freetype\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;WIN64;QT_WIDGETS_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CONCURRENT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
       <ForceInclude>precompiled.h;../../%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
@@ -92,7 +92,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;WIN64;QT_NO_DEBUG;NDEBUG;QT_WIDGETS_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CONCURRENT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\ThirdParty\zlib;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\freetype\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\ThirdParty\zlib\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\freetype\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -104,14 +104,14 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)Common\Thirdparty\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\msdfgen\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)Common\Thirdparty\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\msdfgen\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>Msdfgen.lib;qtmain.lib;freetype.lib;zlibstatic.lib;Qt5Widgets.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Gui.lib;Qt5Concurrent.lib;Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Msdfgen.lib;zlib.lib;qtmain.lib;freetype.lib;Qt5Widgets.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Gui.lib;Qt5Concurrent.lib;Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(ProjectDir)Libraries\spdlog\include;$(ProjectDir)Libraries\freetype\include;$(ProjectDir)Libraries\msdfgen;$(ProjectDir)Libraries\nlohmann;$(ProjectDir)Libraries\zlib;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\ThirdParty\zlib\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\freetype\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtConcurrent;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;WIN64;QT_NO_DEBUG;NDEBUG;QT_WIDGETS_LIB;QT_OPENGL_LIB;QT_GUI_LIB;QT_CONCURRENT_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</Define>
       <ForceInclude>stdafx.h;../../%(Filename)%(Extension)</ForceInclude>
     </QtMoc>
