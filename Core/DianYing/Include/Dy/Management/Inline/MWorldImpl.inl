@@ -230,7 +230,7 @@ inline EDySuccess MWorld::Impl::DestoryUiObject(DWidgetBinder& ioRefUi)
   if (ioRefUi.IsUiObjectValid() == false) 
   { 
     DyPushLogError("Failed to destroy Ui object. Ui binder does not bind anything.");
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
   return this->mUiInstanceContainer.RemoveUiObject((*ioRefUi).GetUiObjectName());
@@ -277,11 +277,11 @@ inline EDySuccess MWorld::Impl::OpenLevel(const std::string& levelName)
   if (MIOMeta::GetInstance().GetLevelMetaInformation(levelName) == nullptr)
   {
     DyPushLogError("{} | Failed to find and travel next level. Level name is not found. | Level name : {}", levelName);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   this->SetLevelTransition(levelName);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline bool MWorld::Impl::IsNeedTransitNextLevel() const noexcept
@@ -297,14 +297,14 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(OpenFirstLevel)()
   // Game Status Sequence 12-13.
   this->MDY_PRIVATE(RemoveLevel)();
   this->MDY_PRIVATE(PopulateNextLevelResources)();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MWorld::Impl::MDY_PRIVATE(RemoveLevel)()
 {
   // Let present level do release sequence
   // And level must be nullptr. and... Remove RI and Resource & Informations with Scope is `Level`.
-  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return DY_FAILURE; }
+  if (MDY_CHECK_ISEMPTY(this->mLevel)) { return EDySuccess::DY_FAILURE; }
   
   // Release physx components which are dependent on physx::PxScene, FLevel.
   this->mLevel = nullptr;
@@ -335,13 +335,13 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(RemoveLevel)()
 
   // Must reset depedent manager on this.
   MPhysics::GetInstance().ReleaseScene();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MWorld::Impl::MDY_PRIVATE(PopulateNextLevelResources)()
 {
-  if (this->mNextLevelName.empty() == true) { return DY_FAILURE; }
-  if (MIOMeta::GetInstance().IsLevelMetaInformation(this->mNextLevelName) == false) { return DY_FAILURE; }
+  if (this->mNextLevelName.empty() == true) { return EDySuccess::DY_FAILURE; }
+  if (MIOMeta::GetInstance().IsLevelMetaInformation(this->mNextLevelName) == false) { return EDySuccess::DY_FAILURE; }
 
   // Get level meta information, and construct resource list.
   const auto& levMetaInfo = *(MIOMeta::GetInstance().GetLevelMetaInformation(this->mNextLevelName));
@@ -360,7 +360,7 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(PopulateNextLevelResources)()
     mWorld.MDY_PRIVATE(TransitionToNextLevel)();
     GEngine::GetInstance().SetNextGameStatus(EGlobalGameState::GameRuntime);
   });
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline void MWorld::Impl::MDY_PRIVATE(BuildNextLevel)()
@@ -398,7 +398,7 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(TransitionToNextLevel)()
   DyPushLogDebugDebug("Align Position of Actors on level : {}", this->mPresentLevelName);
   this->mLevel->MDY_PRIVATE(AlignActorsPosition)();
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline bool MWorld::Impl::IsLevelPresentValid() const noexcept
@@ -519,10 +519,10 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(TryDetachActiveModelRenderer)(CModel
   auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mActivatedModelRenderers), 
       [iPtrRenderer](_MIN_ const CModelRenderer* ptrRenderer) { return iPtrRenderer == ptrRenderer; });
-  if (it == this->mActivatedModelRenderers.end()) { return DY_SUCCESS; }
+  if (it == this->mActivatedModelRenderers.end()) { return EDySuccess::DY_SUCCESS; }
 
   FaseErase(this->mActivatedModelRenderers, std::distance(this->mActivatedModelRenderers.begin(), it));
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline void MWorld::Impl::MDY_PRIVATE(BindActiveModelAnimator)(CModelAnimator& iRefComponent)
@@ -540,11 +540,11 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(UnbindActiveModelAnimator)(CModelAni
       return ptrValidComponent.Get() == ptr;
     });
 
-  if (it == this->mActivatedModelAnimatorPtrs.end()) { return DY_FAILURE; }
+  if (it == this->mActivatedModelAnimatorPtrs.end()) { return EDySuccess::DY_FAILURE; }
 
   // Erase pointer of found component.
   this->mActivatedModelAnimatorPtrs.erase(it);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline std::optional<NotNull<CSkybox*>> MWorld::Impl::GetPtrMainLevelSkybox() const noexcept
@@ -571,11 +571,11 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(UnbindActiveSkybox)(CSkybox& iRefCom
       return ptrValidComponent.Get() == ptr;
     });
 
-  if (it == this->mActivatedSkyboxPtrList.end()) { return DY_FAILURE; }
+  if (it == this->mActivatedSkyboxPtrList.end()) { return EDySuccess::DY_FAILURE; }
 
   // Erase pointer of found component.
   this->mActivatedSkyboxPtrList.erase(it);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline MWorldUIContainers& MWorld::Impl::MDY_PRIVATE(GetUiContainer)() noexcept

@@ -24,12 +24,12 @@ namespace dy
 EDySuccess MTime::IsGameFrameTicked() const noexcept
 {
   if (this->__mIsEnabledVsync == true
-  &&  this->mGameElapsedDtFromLastTick < this->mGameTickFragment) { return DY_FAILURE; }
+  &&  this->mGameElapsedDtFromLastTick < this->mGameTickFragment) { return EDySuccess::DY_FAILURE; }
 
   this->mGameElapsedDtThisFrame = this->mGameElapsedDtFromLastTick;
   this->mGameElapsedDtFromLastTick = 0;
   this->mGameTickedFpsCount += 1;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 TI32 MTime::GetPresentFpsCountValue() const noexcept
@@ -69,13 +69,13 @@ EDySuccess MTime::SetGameTimeScale(_MIN_ const TF32 timeScale) noexcept
   {
     this->mGameTimeScale = 0.0001f;
     DyPushLogDebugWarning("{} | Time scaling failed because of zero value or negative. Input timeScale : {}", "MTime::SetGameTimeScale", timeScale);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
   else
   {
     this->mGameTimeScale = timeScale;
     DyPushLogDebugInfo("{} | MTime::mGameTimeScale : {}.", "MTime::SetGameTimeScale", this->mGameTimeScale);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 }
 
@@ -136,13 +136,13 @@ EDySuccess MTime::pfInitialize()
   DyPushLogDebugInfo("MTime::mGameGoalFps : {}."      , this->mGameGoalFps);
   DyPushLogDebugInfo("MTime::mGameTickFragment : {}." , this->mGameTickFragment);
   DyPushLogDebugInfo("MTime::mGameTimeScale : {}."    , this->mGameTimeScale);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MTime::pfRelease()
 {
   DyPushLogDebugInfo("{} | MTime::pfRelease().", "FunctionCall");
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

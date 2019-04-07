@@ -63,10 +63,10 @@ EDySuccess FBtRenderItemSsao::OnPreRenderCheckCondition()
   const auto& information = MSetting::GetInstance().GetGameplaySettingInformation();
   if (information.mGraphics.mIsEnabledDefaultSsao == false)
   {
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
-  return this->AreResourcesValid() ? DY_SUCCESS : DY_FAILURE;
+  return this->AreResourcesValid() ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
 }
 
 bool FBtRenderItemSsao::AreResourcesValid()

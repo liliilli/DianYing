@@ -31,7 +31,7 @@ inline MWindow::Impl::Impl(MWindow& parent) : mImplParent{parent}
     dy::DyVkRenderLoop();
     dy::DyVkCleanupResources();
     #endif
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   };
 
   /// @brief This function is not implemented yet.
@@ -50,11 +50,11 @@ inline MWindow::Impl::Impl(MWindow& parent) : mImplParent{parent}
     DyD11CreateVertexBuffer();
     DyD11RenderLoop();
     #endif
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   };
 
   /// @brief Initialize OpenGL Context.
-  /// This function must be returned `DY_SUCCESS`.
+  /// This function must be returned `EDySuccess::DY_SUCCESS`.
   static auto InitializeOpenGL = [this]()
   {
     glfwInit();
@@ -82,7 +82,7 @@ inline MWindow::Impl::Impl(MWindow& parent) : mImplParent{parent}
     for (auto& ptrWindow : this->mGlfwWorkerWnds) { ptrWindow = XGLWrapper::CreateGLWindow(descriptor); }
 
     // Check validity
-    if (this->mGlfwWindow == nullptr) { glfwTerminate(); return DY_FAILURE; }
+    if (this->mGlfwWindow == nullptr) { glfwTerminate(); return EDySuccess::DY_FAILURE; }
     XGLWrapper::CreateGLContext(this->mGlfwWindow);
 
     gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -110,7 +110,7 @@ inline MWindow::Impl::Impl(MWindow& parent) : mImplParent{parent}
       glfwSwapBuffers(this->mGlfwWindow);
       glfwPollEvents();
     }
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   };
 
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,7 +178,7 @@ inline bool MWindow::Impl::IsWindowShouldClose() const noexcept
 inline EDySuccess MWindow::Impl::MDY_PRIVATE(TerminateWindow)() noexcept
 {
   glfwSetWindowShouldClose(this->GetGLMainWindow(), GLFW_TRUE);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline GLFWwindow* MWindow::Impl::GetGLMainWindow() const noexcept

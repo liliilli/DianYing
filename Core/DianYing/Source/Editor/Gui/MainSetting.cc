@@ -23,12 +23,12 @@ namespace dy::editor
 
 EDySuccess FDyMainSetting::pfInitialize(const PDyGuiComponentEmptyDescriptor& desc)
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FDyMainSetting::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FDyMainSetting::DrawWindow(float dt) noexcept

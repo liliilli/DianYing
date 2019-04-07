@@ -78,7 +78,7 @@ void FRescIOGC::InsertGcCandidateList(std::vector<std::unique_ptr<DIOReferenceIn
 
 EDySuccess FRescIOGC::TryGarbageCollectCandidateList() 
 {
-  if (this->mRIGarbageCandidateList.empty() == true) { return DY_FAILURE; }
+  if (this->mRIGarbageCandidateList.empty() == true) { return EDySuccess::DY_FAILURE; }
 
   // We use while statement intentionally because resource deletion of GC candidate
   // cause the insertion of dependent resource GC candidate into list.
@@ -109,7 +109,7 @@ EDySuccess FRescIOGC::TryGarbageCollectCandidateList()
     }
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

@@ -114,12 +114,12 @@ enum EDyIntegrityTestFlag
   if (std::filesystem::exists(directoryPath) && std::filesystem::exists(solutionPath))
   {
     delete[] solutionPath;
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
   else
   {
     delete[] solutionPath;
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 }
 
@@ -137,7 +137,7 @@ EDySuccess FDyProjectCreator::pfInitialize(const PDyGuiDialogDescriptor& desc)
   this->mParentRawPtr       = desc.mParentRawPtr;
   this->mParentBoolFlagPtr  = desc.mParentBoolFlag;
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FDyProjectCreator::pfRelease()
@@ -145,7 +145,7 @@ EDySuccess FDyProjectCreator::pfRelease()
   if (this->mParentBoolFlagPtr) { *(this->mParentBoolFlagPtr) = false; }
 
   DyPushLogInfo("Released");
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FDyProjectCreator::DrawWindow(float dt) noexcept
@@ -223,7 +223,7 @@ void FDyProjectCreator::DrawWindow(float dt) noexcept
         // Check if there is already dy project checking .dsol file.
         // If not exist anything but just vacant, create .dsol file with multithreading.
         // representing loading message.
-        if (CheckNotDuplicatedSolutionOnDirectory(directoryPath, projectName) == DY_FAILURE)
+        if (CheckNotDuplicatedSolutionOnDirectory(directoryPath, projectName) == EDySuccess::DY_FAILURE)
         {
           // Output error dialogue.
         }

@@ -188,45 +188,45 @@ EDySuccess DyCheckTextureParameter(_MIN_ const PDyGlTexParameterInformation& par
   {
     return DyIsHaveValueIn(
         parameter.mParameterValue, 
-        TTexParamList<TName::TextureMinFilter>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+        TTexParamList<TName::TextureMinFilter>::mList) == true ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
   }
   case TName::TextureMagFilter:
   {
     return DyIsHaveValueIn(
         parameter.mParameterValue, 
-        TTexParamList<TName::TextureMagFilter>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+        TTexParamList<TName::TextureMagFilter>::mList) == true ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
   }
   case TName::TextureWrappingS:
   case TName::TextureWrappingT:
   {
     return DyIsHaveValueIn(
         parameter.mParameterValue, 
-        TTexParamList<TName::TextureWrappingS>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+        TTexParamList<TName::TextureWrappingS>::mList) == true ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
   }
   case TName::TextureCompareMode:
   {
     return DyIsHaveValueIn(
         parameter.mParameterValue, 
-        TTexParamList<TName::TextureCompareMode>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+        TTexParamList<TName::TextureCompareMode>::mList) == true ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
   }
   case TName::TextureCompareFunc:
   {
     return DyIsHaveValueIn(
         parameter.mParameterValue, 
-        TTexParamList<TName::TextureCompareFunc>::mList) == true ? DY_SUCCESS : DY_FAILURE;
+        TTexParamList<TName::TextureCompareFunc>::mList) == true ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
   }
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 EDySuccess DyCheckTextureParameterList(_MIN_ const std::vector<PDyGlTexParameterInformation>& parameterList)
 {
   for (const auto& parameterItem : parameterList)
   {
-    if (DyCheckTextureParameter(parameterItem) == DY_FAILURE) { return DY_FAILURE; }
+    if (DyCheckTextureParameter(parameterItem) == EDySuccess::DY_FAILURE) { return EDySuccess::DY_FAILURE; }
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

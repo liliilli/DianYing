@@ -27,7 +27,7 @@ EDySuccess FDyLogWindow::pfInitialize(const PDyGuiComponentEmptyDescriptor& desc
 {
   bool isFalse = false;
   while (!TGuiLogStreamSinkMt::sLogGuiActivated.compare_exchange_strong(isFalse, true));
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FDyLogWindow::pfRelease()
@@ -40,7 +40,7 @@ EDySuccess FDyLogWindow::pfRelease()
   }
 
   DyPushLogInfo("FDyLogWindow::pfRelease");
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FDyLogWindow::DrawWindow(float dt) noexcept

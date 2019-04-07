@@ -34,7 +34,7 @@ public:
 
   /// @brief Update global (debug, outside world from in-game) input polling on present frame with delta time.
   /// This function must be called update phrase.
-  /// If any key is pressed, return DY_SUCCESS or DY_FAILURE.
+  /// If any key is pressed, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   EDySuccess CheckInput(_MIN_ TF32 dt) noexcept;
 
   /// @brief Update with dt (from MTime) and render ui object.

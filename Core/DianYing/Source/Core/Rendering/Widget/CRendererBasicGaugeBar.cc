@@ -67,7 +67,7 @@ EDySuccess CRendererBasicGaugeBar::Initialize(const PCtorBasicGaugeBarRendererIn
   this->mBinderShader .TryRequireResource((builtin::FDyBuiltinShaderGLRenderUiBasicGaugeBar::sName));
   this->mBinderBarMesh.TryRequireResource((builtin::FDyBtMsUiBarQuad::sName));
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CRendererBasicGaugeBar::Release() { }

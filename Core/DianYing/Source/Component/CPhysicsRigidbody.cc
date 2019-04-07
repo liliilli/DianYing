@@ -49,10 +49,10 @@ CPhysicsRigidbody::CPhysicsRigidbody(FActor& actorReference) : AGeneralBaseCompo
 EDySuccess CPhysicsRigidbody::SetRigidbodyType(EDyRigidbodyType type) noexcept
 {
   // Check this component is activated.
-  if (this->IsComponentActivated() == true) { return DY_FAILURE; }
+  if (this->IsComponentActivated() == true) { return EDySuccess::DY_FAILURE; }
 
   if (this->mType != type) { this->mType = type; }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDyRigidbodyType CPhysicsRigidbody::GetRigidbodyType() const noexcept
@@ -111,7 +111,7 @@ EDySuccess CPhysicsRigidbody::Initialize(const PDyRigidbodyComponentMetaInfo& de
     this->Activate(); 
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CPhysicsRigidbody::Release()
@@ -324,8 +324,8 @@ void CPhysicsRigidbody::UnregisterCollider(CBasePhysicsCollider& iRefCollider)
 
 EDySuccess CPhysicsRigidbody::BindShapeToRigidbody(CBasePhysicsCollider& iRefShape)
 {
-  if (this->IsComponentActivated() == false)      { return DY_FAILURE; }
-  if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return DY_FAILURE; }
+  if (this->IsComponentActivated() == false)      { return EDySuccess::DY_FAILURE; }
+  if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return EDySuccess::DY_FAILURE; }
 
   const auto& mat = MPhysics::GetInstance().GetDefaultPhysicsMaterial();
 
@@ -338,16 +338,16 @@ EDySuccess CPhysicsRigidbody::BindShapeToRigidbody(CBasePhysicsCollider& iRefSha
   // Set user data for handling collision callback, and etc.
   newShape->userData = &iRefShape;
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess CPhysicsRigidbody::UnbindShapeFromRigidbody(physx::PxShape& iRefShape)
 {
-  if (this->IsComponentActivated() == false)      { return DY_FAILURE; }
-  if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return DY_FAILURE; }
+  if (this->IsComponentActivated() == false)      { return EDySuccess::DY_FAILURE; }
+  if (MDY_CHECK_ISNULL(this->mOwnerInternalActor)) { return EDySuccess::DY_FAILURE; }
 
   this->mOwnerInternalActor->detachShape(iRefShape);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess CPhysicsRigidbody::RemoveCollisionCallback(ECollisionCallbackType iType, const void* iId)
@@ -358,7 +358,7 @@ EDySuccess CPhysicsRigidbody::RemoveCollisionCallback(ECollisionCallbackType iTy
   case ECollisionCallbackType::OnOverlapBegin:  return this->mCallbackContainer.onOverlapBegin.RemoveCallback(iId);
   case ECollisionCallbackType::OnOverlapEnd:    return this->mCallbackContainer.onOverlapEnd.RemoveCallback(iId); 
   }
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 std::optional<TU32> CPhysicsRigidbody::MDY_PRIVATE(GetRigidbodySpecifier)() const noexcept

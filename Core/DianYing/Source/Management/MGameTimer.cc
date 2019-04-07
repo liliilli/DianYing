@@ -24,12 +24,12 @@ EDySuccess MGameTimer::pfInitialize()
 {
   mActorTimerList.reserve(32);
   mWidgetTimerList.reserve(32);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MGameTimer::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void MGameTimer::PauseActorTimer(FTimerHandle& iRefHandler)

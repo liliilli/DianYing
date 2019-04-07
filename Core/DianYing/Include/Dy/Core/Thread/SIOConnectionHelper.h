@@ -126,7 +126,7 @@ public:
   MDY_NODISCARD static bool IsIOThreadSleep();
 
   /// @brief Try call callback function when if only Thread I/O is slept.
-  /// If not slept or exist callback function, just return DY_FAILURE.
+  /// If not slept or exist callback function, just return EDySuccess::DY_FAILURE.
   static EDySuccess TryCallSleptCallbackFunction();
 };
 

@@ -106,7 +106,7 @@ public:
   {
     std::unique_lock lock{this->mSharedMutex};
     this->mContainer.erase(key);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 
 private:

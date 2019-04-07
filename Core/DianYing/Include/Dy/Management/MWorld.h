@@ -130,10 +130,10 @@ public:
   /// @brief Open first level. This function must be called in first-loading level.
   EDySuccess MDY_PRIVATE(OpenFirstLevel)();
 
-  /// @brief Try Remove level. If level is not exist, just return DY_FAILURE.
+  /// @brief Try Remove level. If level is not exist, just return EDySuccess::DY_FAILURE.
   EDySuccess MDY_PRIVATE(RemoveLevel)();
 
-  /// @brief Populate next level resource. If next level specifier is not exist, do nothing and return DY_FAILURE.
+  /// @brief Populate next level resource. If next level specifier is not exist, do nothing and return EDySuccess::DY_FAILURE.
   EDySuccess MDY_PRIVATE(PopulateNextLevelResources)();
 
   /// @brief 
@@ -151,21 +151,21 @@ public:
   MDY_NODISCARD FLevel& GetValidLevelReference() noexcept;
 
   /// @brief Try create debug ui layout to screen as highest priority. (10xx) \n
-  /// If debug ui is already spawned, just return DY_FAILURE, or DY_SUCCESS
+  /// If debug ui is already spawned, just return EDySuccess::DY_FAILURE, or EDySuccess::DY_SUCCESS
   MDY_NODISCARD EDySuccess TryCreateDebugUi();
   /// @brief Check debug Ui is now on exist.
   MDY_NODISCARD bool IsDebugUiExist() const noexcept;
   /// @brief Try remove debug ui layout from screen. \n
-  /// If already removed, just return DY_FAILURE
+  /// If already removed, just return EDySuccess::DY_FAILURE
   MDY_NODISCARD EDySuccess TryRemoveDebugUi();
 
   /// @brief Try create loading ui layout. \n
-  /// If Loading UI Widget meta information is not exist, just return DY_FAILURE doing nothing.
+  /// If Loading UI Widget meta information is not exist, just return EDySuccess::DY_FAILURE doing nothing.
   MDY_NODISCARD EDySuccess  TryCreateLoadingUi();
   /// @brief Check loading ui is now on exist.
   MDY_NODISCARD bool        IsLoadingUiExist() const noexcept;
   /// @brief Try remove debug ui layout from screen. \n
-  /// If already remove or not exist, return DY_FAILURE.
+  /// If already remove or not exist, return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
 
   /// @brief

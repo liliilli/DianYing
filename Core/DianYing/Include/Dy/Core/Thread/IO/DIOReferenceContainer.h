@@ -58,14 +58,14 @@ public:
   bool TryEnlargeResourceScope(_MIN_ EResourceScope scope, _MIN_ const std::string& specifier, _MIN_ EResourceType type);
 
   /// @brief Try to bind binder instance to valid resource Reference Instance.
-  /// If not exist, just do nothing and return DY_FAILURE.
+  /// If not exist, just do nothing and return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToResourceRI(
     const std::string& iSpecifier, 
     EResourceType iType, 
     IBinderBase& iPtrBinder);
 
   /// @brief Try detach binder instance from valid resource Reference Instance.
-  /// If not exist, just do nothing and return DY_FAILURE.
+  /// If not exist, just do nothing and return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI(
     const std::string& iSpecifier, 
     EResourceType iType, 

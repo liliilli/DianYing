@@ -101,17 +101,17 @@ private:
   void pfReleaseDependentManager();
   void pfReleaseIndependentManager();
 
-  MSynchronization* mSynchronization      = nullptr;
+  MSynchronization* mSynchronization = nullptr;
 
-  EGlobalGameState mNextStatus           = EGlobalGameState::Booted;
-  EGlobalGameState mStatus               = EGlobalGameState::None;
-  EGlobalGameState mPrevStatus           = EGlobalGameState::None;
-  bool                mIsStatusTransitionDone   = false;
-  bool                mIsGameEndCalled          = false;
+  EGlobalGameState mNextStatus = EGlobalGameState::Booted;
+  EGlobalGameState mStatus     = EGlobalGameState::None;
+  EGlobalGameState mPrevStatus = EGlobalGameState::None;
+  bool mIsStatusTransitionDone = false;
+  bool mIsGameEndCalled        = false;
   /// @brief If true, update (in-game input, physics, skinned animation etc) will be neglected,
   /// and in-game resource gc also will be passed.
   /// If resource manager has been changed, you need to call GC manually.
-  bool                mIsInGameUpdatePaused           = false;
+  bool mIsInGameUpdatePaused   = false;
 
   friend class SIOConnectionHelper;
   friend class SIOWorkerConnHelper;

@@ -47,7 +47,7 @@ public:
   virtual ~CLightPoint() = default;
 
   /// @brief  Initialize component
-  /// @return If successful just return DY_SUCCESS or DY_FAILURE.
+  /// @return If successful just return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess Initialize(const PCompPointLightMetaInfo& metaInfo) override final;
   /// @brief  Release component.
   void Release() override final;

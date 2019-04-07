@@ -39,7 +39,7 @@ EDySuccess CModelRenderer::Initialize(const PDyModelRendererComponentMetaInfo& d
     this->Activate(); 
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CModelRenderer::Release()

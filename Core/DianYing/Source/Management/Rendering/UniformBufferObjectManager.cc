@@ -38,7 +38,7 @@ namespace dy
 
 EDySuccess MUniformBufferObject::pfInitialize()
 { // Do nothing.
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MUniformBufferObject::pfRelease()
@@ -56,7 +56,7 @@ EDySuccess MUniformBufferObject::pfRelease()
   }
 
   // Make uniform buffer object buffer space
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstructionDescriptor& descriptor)
@@ -67,7 +67,7 @@ EDySuccess MUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstructi
     DyPushLogError("{} | Failed to create UBO container. Name is duplicated. | Name : {}",
                   (sFunc_CreateUboContainer),
                   descriptor.mUboSpecifierName);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Binding index duplication check
@@ -76,12 +76,12 @@ EDySuccess MUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstructi
     DyPushLogError("{} | Failed to create UBO container. Binding Index is duplicated. | Binding Index : {}",
                   (sFunc_CreateUboContainer),
                   descriptor.mBindingIndex);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Check array size and element byte size is not specified correctly.
-  if (descriptor.mUboArraySize <= 0)    { return DY_FAILURE; }
-  if (descriptor.mUboElementSize <= 0)  { return DY_FAILURE; }
+  if (descriptor.mUboArraySize <= 0)    { return EDySuccess::DY_FAILURE; }
+  if (descriptor.mUboElementSize <= 0)  { return EDySuccess::DY_FAILURE; }
 
   // GL INTERNAL SPECIFICATION COMPARISON INTEGRITY TEST
 
@@ -106,7 +106,7 @@ EDySuccess MUniformBufferObject::CreateUboContainer(_MIN_ const PDyUboConstructi
   // Insert container and enroll binding index number.
   this->mBeingUsedUboBufferIndexSet.emplace(uboInstance->mBindingIndex);
   it->second.swap(uboInstance);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 const DDyUboInstanceInformation* MUniformBufferObject::GetUboContainer(_MIN_ const std::string& specifier)
@@ -128,7 +128,7 @@ EDySuccess MUniformBufferObject::UpdateUboContainer(
     DyPushLogError(
       "{} | Failed to update UBO container. Given name is not exist. | Name : {}",
       (sFunc_CreateUboContainer), specifier);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Validation Test :: OOB Test
@@ -137,14 +137,14 @@ EDySuccess MUniformBufferObject::UpdateUboContainer(
     DyPushLogError(
       "{} | Failed to update UBO container. Buffer size out of bound detected. | {} + {} > {}",
       (sFunc_CreateUboContainer), bufferStartByte, bufferWrapSize, uboPtr->GetContainerSize());
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Copy buffer data with [bufferStartByte, bufferWrapSize + bufferStartByte).
   glBindBuffer    (GL_UNIFORM_BUFFER, uboPtr->GetBufferInternalIndex());
   glBufferSubData (GL_UNIFORM_BUFFER, bufferStartByte, bufferWrapSize, bufferCopyPtr);
   glBindBuffer    (GL_UNIFORM_BUFFER, 0);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MUniformBufferObject::ClearUboContainer(
@@ -159,7 +159,7 @@ EDySuccess MUniformBufferObject::ClearUboContainer(
     DyPushLogError(
       "{} | Failed to clear UBO container. Given name is not exist. | Name : {}", 
       (sFunc_CreateUboContainer), specifier);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Validation Test :: OOB Test
@@ -168,7 +168,7 @@ EDySuccess MUniformBufferObject::ClearUboContainer(
     DyPushLogError(
       "{} | Failed to clear UBO container. Buffer size out of bound detected. | {} + {} > {}",
       (sFunc_CreateUboContainer), bufferStartByte, bufferWrapSize, uboPtr->GetContainerSize());
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Clear buffer with 0.
@@ -176,7 +176,7 @@ EDySuccess MUniformBufferObject::ClearUboContainer(
   glBindBuffer(GL_UNIFORM_BUFFER, uboPtr->GetBufferInternalIndex());
   glClearBufferSubData(GL_UNIFORM_BUFFER, GL_RGBA, bufferStartByte, bufferWrapSize, GL_RED, GL_FLOAT, &nullValue);
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MUniformBufferObject::RemoveUboContainer(_MIN_ const std::string& specifier)
@@ -188,14 +188,14 @@ EDySuccess MUniformBufferObject::RemoveUboContainer(_MIN_ const std::string& spe
     DyPushLogError("{} | Failed to clear UBO container. Given name is not exist. | Name : {}",
         (sFunc_CreateUboContainer),
         specifier);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Delete logic
   glDeleteBuffers(1, &uboPtr->mBufferIndex);
   this->mBeingUsedUboBufferIndexSet.erase(uboPtr->mBindingIndex);
   this->mUboMap.erase(specifier);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

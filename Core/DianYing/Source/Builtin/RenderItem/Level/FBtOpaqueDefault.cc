@@ -69,7 +69,7 @@ EDySuccess FBtRenderItemOpaqueDefault::OnPreRenderCheckCondition()
 {
   // Whether camera is focused by main camera is true, by parent RenderPipeline
   // `FBtDefaultLevel`, we do not need to check more setting.
-  return this->mBinderFrameBuffer.IsResourceExist() == true ? DY_SUCCESS : DY_FAILURE;
+  return this->mBinderFrameBuffer.IsResourceExist() == true ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
 }
 
 void FBtRenderItemOpaqueDefault::OnFailedCheckCondition()
@@ -97,7 +97,7 @@ void FBtRenderItemOpaqueDefault::OnSetupRenderingSetting()
         offsetof(DUboCameraBlock, mViewMatrix),
         sizeof(DUboCameraBlock::mViewMatrix),
         &ptrValidCamera.GetViewMatrix()[0].X);
-    MDY_ASSERT_MSG(flag == DY_SUCCESS, "");
+    MDY_ASSERT_MSG(flag == EDySuccess::DY_SUCCESS, "");
   }
   {
     const auto flag = uboManager.UpdateUboContainer(
@@ -105,7 +105,7 @@ void FBtRenderItemOpaqueDefault::OnSetupRenderingSetting()
         offsetof(DUboCameraBlock, mProjMatrix),
         sizeof(DUboCameraBlock::mProjMatrix),
         &ptrValidCamera.GetProjectionMatrix()[0].X);
-    MDY_ASSERT_MSG(flag == DY_SUCCESS, "");
+    MDY_ASSERT_MSG(flag == EDySuccess::DY_SUCCESS, "");
   }
 }
 

@@ -53,7 +53,7 @@ EDySuccess FBtRenderItemCsmShadow::OnPreRenderCheckCondition()
   const auto& information = MSetting::GetInstance().GetGameplaySettingInformation();
   if (information.mGraphics.mIsEnabledDefaultShadow == false)
   {
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Whether camera is focused by main camera is true, by parent RenderPipeline
@@ -61,13 +61,13 @@ EDySuccess FBtRenderItemCsmShadow::OnPreRenderCheckCondition()
   auto* ptrLight = MRendering::GetInstance().GetPtrMainDirectionalShadow();
   if (ptrLight == nullptr) 
   { 
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
   return this->mBinderFrameBuffer.IsResourceExist() == true
       && this->mDirLightShaderResource.IsResourceExist() == true 
       && this->mInstancingShaderResource.IsResourceExist() == true
-      ? DY_SUCCESS : DY_FAILURE;
+      ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
 }
 
 void FBtRenderItemCsmShadow::OnFailedCheckCondition()

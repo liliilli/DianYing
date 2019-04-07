@@ -49,7 +49,7 @@ public:
   /// @param  bufferStartByte
   /// @param  bufferWrapSize
   /// @param  bufferCopyPtr
-  /// @return If succeeded return DY_SUCCESS or DY_FAILURE;
+  /// @return If succeeded return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE;
   EDySuccess UpdateUboContainer(
     const std::string& specifier,
     TU32 bufferStartByte,
@@ -69,7 +69,7 @@ public:
   ///
   /// @brief  Remove UBO resource buffer with valid specifier name.
   /// @param  specifier
-  /// @return If succeeded to remove UBO resource return DY_SUCCESS or DY_FAILURE.
+  /// @return If succeeded to remove UBO resource return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   ///
   MDY_NODISCARD EDySuccess RemoveUboContainer(_MIN_ const std::string& specifier);
 

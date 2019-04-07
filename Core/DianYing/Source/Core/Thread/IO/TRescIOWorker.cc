@@ -97,14 +97,14 @@ EDySuccess TRescIOWorker::outTryAssign(const DRescIOTask& inputTask)
     }
     else 
     { 
-      // If failed to assign task, just return with DY_FAILURE.
-      return DY_FAILURE; 
+      // If failed to assign task, just return with EDySuccess::DY_FAILURE.
+      return EDySuccess::DY_FAILURE; 
     }
   }
 
   this->mTaskCV.notify_one();
   MDY_SLEEP_FOR_ATOMIC_TIME();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 bool TRescIOWorker::SyncIsIdle() const noexcept

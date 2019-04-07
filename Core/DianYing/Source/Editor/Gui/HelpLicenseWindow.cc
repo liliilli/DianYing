@@ -24,12 +24,12 @@ namespace dy::editor
 
 EDySuccess FDyHelpLicenseWindow::pfInitialize(const PDyGuiComponentEmptyDescriptor& desc)
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FDyHelpLicenseWindow::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FDyHelpLicenseWindow::DrawWindow(float dt) noexcept

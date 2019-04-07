@@ -78,14 +78,14 @@ struct MRendering::Impl final : IInitializeHelper<void>
   void PreRender(TF32 dt);
 
   /// @brief Create render pipeline with specifier.
-  /// If not found, just return DY_FAILURE.
+  /// If not found, just return EDySuccess::DY_FAILURE.
   EDySuccess CreateRenderPipeline(const std::string& iPipelineSpecifier);
   /// @brief Create entry render pipeline handle into list.
   /// Created render pipeline will be rendered following order of child and local render item.
   void CreateHandleRenderPipeline(const PDyRenderPipelineInstanceMetaInfo& iEntryRenderPipeline);
 
   /// @brief Remove render pipeline with specifier.
-  /// If not found in list, just return DY_FAILURE.
+  /// If not found in list, just return EDySuccess::DY_FAILURE.
   EDySuccess RemoveRenderPipeline(const std::string& iPipelineSpecifier);
 
   /// @brief 
@@ -187,7 +187,7 @@ EDySuccess MRendering::Impl::ActivateEntryRenderPipeline(const std::string& iEnt
   if (this->HasEntryRenderPipeline(iEntryPipelineName) == false)
   {
     DyPushLogDebugError("Failed to find entry render pipeline, {}.", iEntryPipelineName);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   auto it = std::find_if(
@@ -195,7 +195,7 @@ EDySuccess MRendering::Impl::ActivateEntryRenderPipeline(const std::string& iEnt
     [iEntryPipelineName](const auto& pipeline) 
     { return pipeline.GetName() == iEntryPipelineName; });
   it->Activate(iIsActivated);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace
@@ -212,13 +212,13 @@ EDySuccess MRendering::pfInitialize()
 { 
   DY_INITIALIZE_PIMPL();
   DY_PIMPL->Initialize();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MRendering::pfRelease()
 {
   DY_RESET_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void MRendering::PreRender(TF32 iDt) 
@@ -295,12 +295,12 @@ EDySuccess MRendering::MDY_PRIVATE(UnbindPointLight)(CLightPoint& iRefLight)
   if (Contains(handleList, &iRefLight) == false)
   {
     DyPushLogCritical("Failed to unbind handle of point light.");
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   const auto it = std::find(MDY_BIND_BEGIN_END(handleList), &iRefLight);
   handleList.erase(it);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 MRendering::TPointLightHandleList&
@@ -327,12 +327,12 @@ EDySuccess MRendering::MDY_PRIVATE(UnbindSpotLight)(CLightSpot& iRefLight)
   if (Contains(handleList, &iRefLight) == false)
   {
     DyPushLogCritical("Failed to unbind handle of spot light.");
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   const auto it = std::find(MDY_BIND_BEGIN_END(handleList), &iRefLight);
   handleList.erase(it);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 MRendering::TSpotLightHandleList& 

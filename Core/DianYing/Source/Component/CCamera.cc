@@ -50,7 +50,7 @@ EDySuccess CCamera::Initialize(const PDyCameraComponentMetaInfo& descriptor)
   // Set first time flag to false to use second time flag logics.
   if (descriptor.mInitiallyActivated) { this->Activate(); }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CCamera::Release()
@@ -234,37 +234,37 @@ std::array<TI32, 4> CCamera::GetPixelizedViewportRectangle() const noexcept
 
 EDySuccess CCamera::SetNear(TF32 newNear) noexcept
 {
-  if (newNear > this->mFar || newNear < 0) { return DY_FAILURE; }
+  if (newNear > this->mFar || newNear < 0) { return EDySuccess::DY_FAILURE; }
   else
   {
     this->mNear = newNear;
     this->mIsProjectionMatrixDirty = true;
     this->pUpdateProjectionMatrix();
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 }
 
 EDySuccess CCamera::SetFar(TF32 newFar) noexcept
 {
-  if (newFar < this->mNear || newFar < 0) { return DY_FAILURE; }
+  if (newFar < this->mNear || newFar < 0) { return EDySuccess::DY_FAILURE; }
   else
   {
     this->mFar = newFar;
     this->mIsProjectionMatrixDirty = true;
     this->pUpdateProjectionMatrix();
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 }
 
 EDySuccess CCamera::SetFieldOfView(TF32 degreeValue) noexcept
 {
-  if (degreeValue < 0 || degreeValue > 180.f) { return DY_FAILURE; }
+  if (degreeValue < 0 || degreeValue > 180.f) { return EDySuccess::DY_FAILURE; }
   else
   {
     this->mFieldOfView = degreeValue;
     this->mIsProjectionMatrixDirty = true;
     this->pUpdateProjectionMatrix();
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 }
 
@@ -307,13 +307,13 @@ EDySuccess CCamera::Focus()
   { // FAILURE!
     DyPushLogWarning("{}::{} | From FActor : {} | This camera is already binded to main camera.",
                     "CCamera", "Focus()", this->GetBindedActor()->GetActorName());
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   this->mActivatedUpdateListId = MWorld::GetInstance().pfEnrollActiveCamera(*this);
   this->mIsFocused = true;
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess CCamera::Unfocus()
@@ -322,12 +322,12 @@ EDySuccess CCamera::Unfocus()
   { // FAILURE!
     DyPushLogWarning("{}::{} | From FActor : {} | This camera is not binded to main camera.",
                     "CCamera", "Unfocus()", this->GetBindedActor()->GetActorName());
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   MWorld::GetInstance().pfUnenrollActiveCamera(this->mActivatedUpdateListId);
   this->mIsFocused = false;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

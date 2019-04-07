@@ -21,12 +21,12 @@ namespace dy::editor
 
 EDySuccess FDyViewDetailView::pfInitialize(const PDyGuiComponentEmptyDescriptor& desc)
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FDyViewDetailView::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FDyViewDetailView::DrawWindow(float dt) noexcept

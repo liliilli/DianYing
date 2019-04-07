@@ -27,25 +27,25 @@ public:
   using TUiWidgetMap = std::unordered_map<std::string, std::unique_ptr<FWidget>>;
 
   /// @brief Try create debug ui layout to screen as highest priority. (10xx) \n
-  /// If debug ui is already spawned, just return DY_FAILURE, or DY_SUCCESS.
+  /// If debug ui is already spawned, just return EDySuccess::DY_FAILURE, or EDySuccess::DY_SUCCESS.
   MDY_NODISCARD EDySuccess  TryCreateDebugUi();
   /// @brief Try get debug UI. If not exist, just return nullptr.
   MDY_NODISCARD FWidget* GetPtrDebugUi() const noexcept;
   /// @brief Check debug Ui is now on exist.
   MDY_NODISCARD bool        IsDebugUiExist() const noexcept;
   /// @brief Try remove debug ui layout from screen. \n
-  /// If already removed, just return DY_FAILURE.
+  /// If already removed, just return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess  TryRemoveDebugUi();
 
   /// @brief Try create loading ui layout. \n
-  /// If Loading UI Widget meta information is not exist, just return DY_FAILURE doing nothing.
+  /// If Loading UI Widget meta information is not exist, just return EDySuccess::DY_FAILURE doing nothing.
   MDY_NODISCARD EDySuccess  TryCreateLoadingUi();
   /// @brief Try get loading UI. If not exist, just return nullptr.
   MDY_NODISCARD FWidget* GetPtrLoadingUi() const noexcept;
   /// @brief Check loading ui is now on exist.
   MDY_NODISCARD bool        IsLoadingUiExist() const noexcept;
   /// @brief Try remove debug ui layout from screen. \n
-  /// If already remove or not exist, return DY_FAILURE.
+  /// If already remove or not exist, return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess  TryRemoveLoadingUi();
 
   /// @brief IsUiObjectExist

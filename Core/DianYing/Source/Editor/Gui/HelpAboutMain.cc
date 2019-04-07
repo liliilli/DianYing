@@ -25,12 +25,12 @@ EDySuccess FDyHelpAboutMain::pfInitialize(const PDyGuiAboutMainDescriptor& desc)
   this->mParentRawPtr       = desc.mParentRawPtr;
   this->mParentBoolFlagPtr  = desc.mParentBoolFlag;
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FDyHelpAboutMain::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FDyHelpAboutMain::DrawWindow(float dt) noexcept

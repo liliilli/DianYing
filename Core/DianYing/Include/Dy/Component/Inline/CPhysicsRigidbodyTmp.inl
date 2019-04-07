@@ -25,33 +25,33 @@ EDySuccess CPhysicsRigidbody::AddCollisionCallback(TScriptType& iRefScript,
   {
     // Try insert 
     auto* ptrItem = this->mCallbackContainer.onHit.AddCallback(iRefScript, iRawFunction);
-    if (ptrItem == nullptr) { return DY_FAILURE; } 
+    if (ptrItem == nullptr) { return EDySuccess::DY_FAILURE; } 
     // Try bind item (unique-id specifically) into Script.
     iRefScript.MDY_PRIVATE(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
   else if constexpr (TCbType == ECollisionCallbackType::OnOverlapBegin) 
   {
     // Try insert 
     auto* ptrItem = this->mCallbackContainer.onOverlapBegin.AddCallback(iRefScript, iRawFunction);
-    if (ptrItem == nullptr) { return DY_FAILURE; } 
+    if (ptrItem == nullptr) { return EDySuccess::DY_FAILURE; } 
     // Try bind item (unique-id specifically) into Script.
     iRefScript.MDY_PRIVATE(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
   else if constexpr (TCbType == ECollisionCallbackType::OnOverlapEnd)
   {
     // Try insert 
     auto* ptrItem = this->mCallbackContainer.onOverlapEnd.AddCallback(iRefScript, iRawFunction);
-    if (ptrItem == nullptr) { return DY_FAILURE; } 
+    if (ptrItem == nullptr) { return EDySuccess::DY_FAILURE; } 
     // Try bind item (unique-id specifically) into Script.
     iRefScript.MDY_PRIVATE(BindCollisionCbHandle)(*this, TCbType, (void*&)iRawFunction);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
   else
   {
     MDY_UNEXPECTED_BRANCH();
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 }
 

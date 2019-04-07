@@ -84,7 +84,7 @@ namespace dy
 EDySuccess MLog::pfInitialize()
 {
   DY_INITIALIZE_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MLog::pfRelease()
@@ -92,7 +92,7 @@ EDySuccess MLog::pfRelease()
   spdlog::shutdown();
 
   DY_RESET_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MLog::pfTurnOn()
@@ -101,12 +101,12 @@ EDySuccess MLog::pfTurnOn()
   if (DY_PIMPL->mLogger != nullptr)
   {
     DyPushLogDebugInfo("MLog::mLogger already allocated.");
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 
   // Create sinks for logging.
   const auto& settingManager = MSetting::GetInstance();
-  if (settingManager.IsEnabledFeatureLogging() == false) { return DY_FAILURE; }
+  if (settingManager.IsEnabledFeatureLogging() == false) { return EDySuccess::DY_FAILURE; }
 
   if (settingManager.IsEnableSubFeatureLoggingToFile() == false
   &&  settingManager.IsEnabledSubFeatureLoggingToConsole() == false)
@@ -161,7 +161,7 @@ EDySuccess MLog::pfTurnOn()
   DyPushLogDebugDebug("MLog::mLogger resource registered.");
   spdlog::set_error_handler(DyCallbackLoggerError);
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MLog::pfTurnOff()
@@ -176,7 +176,7 @@ EDySuccess MLog::pfTurnOff()
   {
     MDY_CALL_ASSERT_SUCCESS(windowManager.RemoveConsoleWindow());
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void MLog::SetVisibleLevel(ELevel newLogLevel)

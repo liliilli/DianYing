@@ -39,17 +39,17 @@ EDySuccess FBtRenderPipelineDefaultLevel::OnPreRenderCheckCondition()
 {
   if (MWorld::GetInstance().IsLevelPresentValid() == false) 
   { 
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
   // If main camera is not exist, do not render level.
   const auto* ptrCamera = MWorld::GetInstance().GetPtrMainLevelCamera();
   if (ptrCamera == nullptr) 
   { 
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

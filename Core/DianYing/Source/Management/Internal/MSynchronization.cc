@@ -28,7 +28,7 @@ EDySuccess MSynchronization::pfInitialize()
   // Initialize threads.
   this->mIOThreadInstance = std::make_unique<TRescIO>();
   this->mIOThreadThread   = std::thread(&TRescIO::operator(), std::ref(*this->mIOThreadInstance));
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MSynchronization::pfRelease()
@@ -36,7 +36,7 @@ EDySuccess MSynchronization::pfRelease()
   SIOConnectionHelper::TryStop();
   this->mIOThreadThread.join();
   this->mIOThreadInstance = nullptr;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 NotNull<TRescIO*> MSynchronization::pfGetIOThread()

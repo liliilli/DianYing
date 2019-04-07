@@ -36,7 +36,7 @@ EDySuccess CLightSpot::Initialize(const PCompSpotLightMetaInfo& iMetaInfo)
   this->mIsCastingLight   = iMetaInfo.mDetails.mIsCastingLight;
 
   if (iMetaInfo.mInitiallyActivated == true) { this->Activate(); }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CLightSpot::Release()

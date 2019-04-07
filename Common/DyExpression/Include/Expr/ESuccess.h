@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_MANAGEMENT_TYPE_INPUT_EDYINPUTBUTTONSTATUS_H
-#define GUARD_DY_MANAGEMENT_TYPE_INPUT_EDYINPUTBUTTONSTATUS_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,18 +12,15 @@
 /// SOFTWARE.
 ///
 
-namespace dy
+namespace dy::expr
 {
 
-/// @enum EInputButtonStatus
-/// @brief Check key primary state only in this file.
-enum class EInputButtonStatus : unsigned char
+/// @enum EDySuccess
+/// @brief Success / Failure value type.
+enum EDySuccess : bool 
 {
-  Released  = 0,
-  Pressed   = 1,
-  Repeated  = 2
+  DY_FAILURE = false,
+  DY_SUCCESS = true
 };
 
-} /// ::dy namespace
-
-#endif /// GUARD_DY_MANAGEMENT_TYPE_INPUT_EDYINPUTBUTTONSTATUS_H
+} /// ::dy::expr namespace

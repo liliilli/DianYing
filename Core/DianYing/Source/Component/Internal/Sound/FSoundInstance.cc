@@ -144,10 +144,10 @@ void FSoundInstance::Set2DSound(bool i2DActivated)
 EDySuccess FSoundInstance::TryInitialize()
 {
   // Failure check.
-  if (this->mSoundSpecifier.empty() == true) { return DY_FAILURE; }
+  if (this->mSoundSpecifier.empty() == true) { return EDySuccess::DY_FAILURE; }
 
   if (this->GetStatus() != ESoundState::NotValid 
-  ||  this->mBinderClipResource.IsResourceExist() == false) { return DY_FAILURE; }
+  ||  this->mBinderClipResource.IsResourceExist() == false) { return EDySuccess::DY_FAILURE; }
 
   // Initiate (Initialize)
   auto& soundManager = MSound::GetInstance();
@@ -174,7 +174,7 @@ EDySuccess FSoundInstance::TryInitialize()
 
   this->__SetStatus(ESoundState::Stop);
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FSoundInstance::Update(TF32 dt)

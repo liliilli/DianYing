@@ -57,7 +57,7 @@ EDySuccess CPhysicsColliderSphere::Initialize(_MIN_ const PDyColliderComponentMe
 
   // Activation.
   if (desc.mInitiallyActivated == true) { this->Activate(); }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CPhysicsColliderSphere::Release()

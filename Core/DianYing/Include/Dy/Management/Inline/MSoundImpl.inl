@@ -253,7 +253,7 @@ inline EDySuccess MSound::Impl::InitializeSoundSystem()
   if (this->mIsSoundSystemAvailable == false)
   {
     DyPushLogCritical("Sound system is not available.");
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Before calling any FMOD functions it is important to ensure COM is initialized. 
@@ -265,7 +265,7 @@ inline EDySuccess MSound::Impl::InitializeSoundSystem()
   if (hr != S_OK)
   {
     CoUninitialize();
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
   #endif
 
@@ -282,7 +282,7 @@ inline EDySuccess MSound::Impl::InitializeSoundSystem()
     // Release.
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
     this->mIsSoundSystemAvailable = false;
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
   if (this->mVersion < FMOD_VERSION || this->mSoundDriverCount < 0)
   {
@@ -290,7 +290,7 @@ inline EDySuccess MSound::Impl::InitializeSoundSystem()
     // Release.
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
     this->mIsSoundSystemAvailable = false;
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   //!
@@ -304,7 +304,7 @@ inline EDySuccess MSound::Impl::InitializeSoundSystem()
     DyPushLogCritical(sErrorSystemCreationFailed);
     if (this->mSoundSystem != nullptr) { this->mSoundSystem->release(); this->mSoundSystem = nullptr; }
     this->mIsSoundSystemAvailable = false;
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
   
   const auto& settingManager = MSetting::GetInstance();
@@ -338,7 +338,7 @@ inline EDySuccess MSound::Impl::InitializeSoundSystem()
   }
 
   this->mIsSoundSystemAvailable = true;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MSound::Impl::ReleaseSoundSystem()
@@ -347,7 +347,7 @@ inline EDySuccess MSound::Impl::ReleaseSoundSystem()
   if (this->mIsSoundSystemAvailable == false)
   {
     DyPushLogCritical("Sound system is already not available, so does not have to release system.");
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Clear all list.
@@ -370,7 +370,7 @@ inline EDySuccess MSound::Impl::ReleaseSoundSystem()
     this->mSoundSystem = nullptr; 
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

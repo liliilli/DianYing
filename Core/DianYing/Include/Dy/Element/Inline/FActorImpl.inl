@@ -90,7 +90,7 @@ inline EDySuccess FActor::Impl::pInitilaize(
   }
 
   SProfilingHelper::IncreaseOnBindActorCount(1);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess FActor::Impl::pInitilaize(const PActorCreationDescriptor& iDesc, FActor* iPtrParent)
@@ -135,7 +135,7 @@ inline EDySuccess FActor::Impl::pInitilaize(const PActorCreationDescriptor& iDes
     "CTransform component must be created to all FActor.");
   SProfilingHelper::IncreaseOnBindActorCount(1);
   
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline void FActor::Impl::CreateComponentsWithList(const TComponentMetaList& iMetaComponentList)
@@ -294,17 +294,17 @@ inline void FActor::Impl::MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FA
 inline EDySuccess FActor::Impl::MDY_PRIVATE(DetachPickingTargetFromSystem)()
 {
   // Check 1 : flag
-  if (this->mIsAttachedToPickingTarget == false) { return DY_FAILURE; }
+  if (this->mIsAttachedToPickingTarget == false) { return EDySuccess::DY_FAILURE; }
 
   // Check 2 : address
   auto& refInput = MInput::GetInstance();
   auto** pptrPickingTarget = refInput.MDY_PRIVATE(GetPPtrPickingTarget)();
-  if (*pptrPickingTarget != &this->mRefActor) { return DY_FAILURE; }
+  if (*pptrPickingTarget != &this->mRefActor) { return EDySuccess::DY_FAILURE; }
   
   // Detach actually.
   *pptrPickingTarget = nullptr;
   this->mIsAttachedToPickingTarget = false;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline CActorScript* FActor::Impl::AddScriptComponent(const PDyScriptInstanceMetaInfo& iComponentInfo)
@@ -507,7 +507,7 @@ EDySuccess FActor::Impl::RemoveScriptComponent(_MIN_ const std::string& scriptNa
   if (it == this->mScriptList.end())
   {
     DyPushLogWarning("FActor::Impl::RemoveComponent | Can not find script to remove. | Name : {}", scriptName);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
   else
   {
@@ -516,7 +516,7 @@ EDySuccess FActor::Impl::RemoveScriptComponent(_MIN_ const std::string& scriptNa
     //(*it)->Destroy();
     (*it)->Release();
     this->mScriptList.erase(it);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 }
 #endif
@@ -568,7 +568,7 @@ inline CActorScript* FActor::Impl::GetScriptComponent(const std::string& scriptN
 inline EDySuccess FActor::Impl::RemoveScriptComponent(const std::string& scriptName) noexcept
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 } /// ::dy namespace

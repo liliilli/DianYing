@@ -232,13 +232,13 @@ namespace dy
 EDySuccess MScript::pfInitialize()
 {
   DY_INITIALIZE_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MScript::pfRelease()
 {
   DY_RESET_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 sol::state& MScript::GetLuaInstance() noexcept 

@@ -46,7 +46,7 @@ public:
 
   /// @brief  Initialize component
   /// @param  metaInfo
-  /// @return If successful just return DY_SUCCESS or DY_FAILURE.
+  /// @return If successful just return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess Initialize(const PDirLightComponentMetaInfo& metaInfo) override final;
 
   /// @brief  Release component.

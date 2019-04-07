@@ -47,7 +47,7 @@ public:
 
   /// @brief  Initialize with descriptor.
   /// @param  descriptor
-  /// @return If successful, return DY_SUCCESS or DY_FAILURE.
+  /// @return If successful, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDySkyboxComponentMetaInfo& descriptor) override final;
 
   /// Release component.

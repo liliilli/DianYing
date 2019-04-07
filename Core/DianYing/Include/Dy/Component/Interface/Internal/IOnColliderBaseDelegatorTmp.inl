@@ -85,20 +85,20 @@ EDySuccess IOnColliderBaseDelegator<TPredicate>::RemoveCallback(
 
   const void* addr = (void*&)iPredicate;
   auto lambda = [addr](const auto& item) { return item.mSpecificationId == addr; };
-  if (ContainsIf(this->mBoundCallbackList, lambda) == false) { return DY_FAILURE; }
+  if (ContainsIf(this->mBoundCallbackList, lambda) == false) { return EDySuccess::DY_FAILURE; }
 
   EraseRemoveIf(this->mBoundCallbackList, lambda);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 template <typename TPredicate>
 EDySuccess IOnColliderBaseDelegator<TPredicate>::RemoveCallback(const void* iId)
 {
   auto lambda = [iId](const auto& item) { return item.mSpecificationId == iId; };
-  if (ContainsIf(this->mBoundCallbackList, lambda) == false) { return DY_FAILURE; }
+  if (ContainsIf(this->mBoundCallbackList, lambda) == false) { return EDySuccess::DY_FAILURE; }
 
   EraseRemoveIf(this->mBoundCallbackList, lambda);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 template <typename TPredicate>
@@ -107,7 +107,7 @@ void IOnColliderBaseDelegator<TPredicate>::RemoveAll()
   for (auto& item : this->mBoundCallbackList)
   {
     const auto flag = item.mPtrController->MDY_PRIVATE(DetachCollisionCbHandle)(item.mSpecificationId);
-    MDY_ASSERT_MSG(flag == DY_SUCCESS, "Unexpected error occurred.");
+    MDY_ASSERT_MSG(flag == EDySuccess::DY_SUCCESS, "Unexpected error occurred.");
   }
   this->mBoundCallbackList.clear();
 }

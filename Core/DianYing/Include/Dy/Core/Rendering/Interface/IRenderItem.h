@@ -37,7 +37,7 @@ public:
   /// Returned value must be satisfy true when condition is satisfied.
   [[nodiscard]] virtual EDySuccess OnPreRenderCheckCondition() = 0;
 
-  /// @brief If `OnPreRenderCheckCondition` is returned with DY_FAILURE,
+  /// @brief If `OnPreRenderCheckCondition` is returned with EDySuccess::DY_FAILURE,
   /// This function will be executed.
   virtual void OnFailedCheckCondition() = 0;
 

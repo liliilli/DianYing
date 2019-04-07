@@ -37,7 +37,7 @@ EDySuccess CSkybox::Initialize(_MIN_ const PDySkyboxComponentMetaInfo& descripto
 
   // Activation
   if (descriptor.mInitiallyActivated == true) { this->Activate(); }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CSkybox::Release()
@@ -114,7 +114,7 @@ void CSkybox::TryDeactivateInstance()
   auto& worldManager = MWorld::GetInstance();
   const auto flag = worldManager.MDY_PRIVATE(UnbindActiveSkybox)(*this);
   // Procedure must be succeeded.
-  MDY_ASSERT_MSG_FORCE(flag == DY_SUCCESS, "Unexpected error occurred.");
+  MDY_ASSERT_MSG_FORCE(flag == EDySuccess::DY_SUCCESS, "Unexpected error occurred.");
 }
 
 } /// ::dy namespace

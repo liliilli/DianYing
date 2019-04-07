@@ -49,7 +49,7 @@ EDySuccess CPhysicsColliderBox::Initialize(_MIN_ const PDyColliderComponentMetaI
   this->mHalfExtent = refDetail.mHalfExtent;
 
   if (desc.mInitiallyActivated == true) { this->Activate(); }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CPhysicsColliderBox::Release()

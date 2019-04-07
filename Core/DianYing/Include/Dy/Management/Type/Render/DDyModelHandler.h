@@ -65,17 +65,17 @@ public:
   MDY_NODISCARD bool IsModelResourceValid() const noexcept;
 
   /// @brief Try create actor binding information instance to container.
-  /// If there is already existed one, just return DY_FAILURE.
+  /// If there is already existed one, just return EDySuccess::DY_FAILURE.
   /// This function can not be called independenty
   EDySuccess TryCreateActorBinding(_MIN_ FActor& iRefActor);
   /// @brief 
   EDySuccess TryRemoveActorBinding(_MIN_ FActor& iRefActor);
   
-  /// @brief Bind filter. If Actor information item is not exist yet, just return DY_FAILURE.
+  /// @brief Bind filter. If Actor information item is not exist yet, just return EDySuccess::DY_FAILURE.
   EDySuccess BindFilter(_MIN_ FActor& iRefActor, _MIN_ CModelFilter& iRefFilter);
-  /// @brief Bind renderer. If Actor information item is not exist yet, just return DY_FAILURE.
+  /// @brief Bind renderer. If Actor information item is not exist yet, just return EDySuccess::DY_FAILURE.
   EDySuccess BindRenderer(_MIN_ FActor& iRefActor, _MIN_ CModelRenderer& iRefComp);
-  /// @brief Bind animator. If Actor information item is not exist yet, just return DY_FAILURE.
+  /// @brief Bind animator. If Actor information item is not exist yet, just return EDySuccess::DY_FAILURE.
   EDySuccess BindAnimator(_MIN_ FActor& iRefActor, _MIN_ CModelAnimator& iRefComp);
   /// @brief Unbind filter.
   EDySuccess UnbindFilter(_MIN_ FActor& iRefActor);

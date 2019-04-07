@@ -236,13 +236,13 @@ namespace dy
 EDySuccess MPhysics::pfInitialize()
 {
   DY_INITIALIZE_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 EDySuccess MPhysics::pfRelease()
 {
 
   DY_RESET_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void MPhysics::Update(TF32 dt) 

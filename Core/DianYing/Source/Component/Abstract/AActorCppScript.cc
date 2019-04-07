@@ -73,14 +73,14 @@ EDySuccess AActorCppScript::MDY_PRIVATE(DetachCollisionCbHandle)(_MIN_ const voi
   auto lambda = [iSpecificationId](const auto& handle) { auto& [_1, _2, id] = handle; return id == iSpecificationId; };
   
   // Contains.
-  if (ContainsIf(this->mCollisionCbHandleList, lambda) == false) { return DY_FAILURE; }
+  if (ContainsIf(this->mCollisionCbHandleList, lambda) == false) { return EDySuccess::DY_FAILURE; }
 
   // Find and remove.
   const auto it = std::find_if(MDY_BIND_BEGIN_END(this->mCollisionCbHandleList), lambda);
   MDY_ASSERT_MSG(it != this->mCollisionCbHandleList.end(), "Unexpected error occurred.");
 
   FaseErase(this->mCollisionCbHandleList, it);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void AActorCppScript::MDY_PRIVATE(AbortAllCollisionCallback)()
@@ -91,7 +91,7 @@ void AActorCppScript::MDY_PRIVATE(AbortAllCollisionCallback)()
     auto& [rigidbody, type, id] = this->mCollisionCbHandleList.back();
     // 
     const auto flag = rigidbody->RemoveCollisionCallback(type, id);
-    MDY_ASSERT_MSG_FORCE(flag == DY_SUCCESS, "");
+    MDY_ASSERT_MSG_FORCE(flag == EDySuccess::DY_SUCCESS, "");
 
     this->mCollisionCbHandleList.erase(this->mCollisionCbHandleList.cbegin() + (this->mCollisionCbHandleList.size() - 1));
   }

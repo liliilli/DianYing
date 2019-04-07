@@ -43,7 +43,7 @@ EDySuccess CModelFilter::Initialize(const PDyModelFilterComponentMetaInfo& metaI
   handleManager.BindToHandler(this->mModelSpecifier, *this->GetBindedActor(), *this);
 
   this->Activate();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CModelFilter::Release()

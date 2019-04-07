@@ -101,8 +101,8 @@ public:
   /// @return Pixelized (reflect present game resolution size) (x, y, w, h) integer container for representing viewport rectangle.
   MDY_NODISCARD std::array<TI32, 4> GetPixelizedViewportRectangle() const noexcept;
 
-  /// @brief  Set near value. If successful, return DY_SUCCESS.
-  /// But when newNear value is bigger than mFar value, do nothing just return DY_FAILURE.
+  /// @brief  Set near value. If successful, return EDySuccess::DY_SUCCESS.
+  /// But when newNear value is bigger than mFar value, do nothing just return EDySuccess::DY_FAILURE.
   /// When update near value, projection matrix will be updated also immediately.
   /// This will cause performance down.
   ///
@@ -110,8 +110,8 @@ public:
   /// @return Success flag.
   MDY_NODISCARD EDySuccess SetNear(TF32 newNear) noexcept;
 
-  /// @brief  Set far value. If successful, return DY_SUCCESS.
-  /// But when newFar svalue is smaller than mNear value, do nothing just return DY_FAILURE.
+  /// @brief  Set far value. If successful, return EDySuccess::DY_SUCCESS.
+  /// But when newFar svalue is smaller than mNear value, do nothing just return EDySuccess::DY_FAILURE.
   /// When update near value, projection matrix will be updated also immediately.
   /// This will cause performance down.
   ///
@@ -119,8 +119,8 @@ public:
   /// @return Success flag.
   MDY_NODISCARD EDySuccess SetFar(TF32 newFar) noexcept;
 
-  /// @brief  Set field of view value. If successful, return DY_SUCCESS.
-  /// When degreeValue is smaller or equal to 0.f, or bigger than 180.f, do nothing and just return DY_FAILURE.
+  /// @brief  Set field of view value. If successful, return EDySuccess::DY_SUCCESS.
+  /// When degreeValue is smaller or equal to 0.f, or bigger than 180.f, do nothing and just return EDySuccess::DY_FAILURE.
   /// When update field of view value, projection matrix will be updated also immediately.
   /// This will cause performance down.
   ///

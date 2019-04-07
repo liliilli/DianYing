@@ -74,27 +74,27 @@ protected:
     if (ptrResult.has_value() == false) 
     { 
       this->mDelayedSpecifierName = iNewSpecifier;
-      return DY_FAILURE; 
+      return EDySuccess::DY_FAILURE; 
     }
     else
     {
       const auto noError = this->pTryDetachResource();
       this->mPtrResource = ptrResult.value();
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
   }
 
   /// @brief Try detach resource. \n
-  /// If pointer of resource is null (so, not bound to anything), just return DY_FAILURE.
-  /// If detach is succeeded, return DY_SUCCESS. and `mPtrResource` will be nullptr agian.
+  /// If pointer of resource is null (so, not bound to anything), just return EDySuccess::DY_FAILURE.
+  /// If detach is succeeded, return EDySuccess::DY_SUCCESS. and `mPtrResource` will be nullptr agian.
   EDySuccess pTryDetachResource() noexcept
   {
-    if (this->mPtrResource == nullptr) { return DY_FAILURE; }
+    if (this->mPtrResource == nullptr) { return EDySuccess::DY_FAILURE; }
 
     MDY_CALL_ASSERT_SUCCESS(SIOBindingHelper::TryDetachInformation<TType>(this->mSpecifierName, *this));
     this->mSpecifierName.clear();
     this->mPtrResource = nullptr;
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 
   /// @brief Set new specifier name. this function must be called in lazy resource type.
@@ -152,8 +152,8 @@ public:
   {
     // If resource is already exist and bound by something. 
     // Let it be until new resource is bounded soon.
-    // If flag == DY_FAILURE, iNewSpecifier will be stored as deferred resource specifier.
-    if (const auto flag = TSuper::pTryRequireResource(iNewSpecifier); flag == DY_SUCCESS) 
+    // If flag == EDySuccess::DY_FAILURE, iNewSpecifier will be stored as deferred resource specifier.
+    if (const auto flag = TSuper::pTryRequireResource(iNewSpecifier); flag == EDySuccess::DY_SUCCESS) 
     { 
       this->mSpecifierName = iNewSpecifier;
       this->Process(); 

@@ -57,7 +57,7 @@ EDySuccess GEngine::pfInitialize()
   } break;
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess GEngine::pfRelease()
@@ -70,7 +70,7 @@ EDySuccess GEngine::pfRelease()
     this->pfReleaseIndependentManager();
   } break;
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void GEngine::operator()()
@@ -91,7 +91,7 @@ void GEngine::operator()()
     if (this->mIsGameEndCalled == false)
     { 
       timeManager.pUpdate();
-      if (timeManager.IsGameFrameTicked() == DY_FAILURE) { continue; }
+      if (timeManager.IsGameFrameTicked() == EDySuccess::DY_FAILURE) { continue; }
     }
 
     // one frame sync, update, render.
@@ -298,10 +298,10 @@ void GEngine::MDY_PRIVATE(Update)(EGlobalGameState iEngineStatus, TF32 dt)
   case EGlobalGameState::GameRuntime: 
   {
     // Check mode is debug mode, if true, poll input of debug first.
-    // and, if return value is DY_FAILURE, try to global update.
+    // and, if return value is EDySuccess::DY_FAILURE, try to global update.
     if (MSetting::GetInstance().IsDebugMode() == true)
     {
-      if (MDebug::GetInstance().CheckInput(dt) == DY_FAILURE)
+      if (MDebug::GetInstance().CheckInput(dt) == EDySuccess::DY_FAILURE)
       {
         MInput::GetInstance().pfGlobalUpdate(dt);
       }
@@ -567,11 +567,11 @@ EDySuccess GEngine::TryEndGame() noexcept
   if (this->MDY_PRIVATE(IsGameEndCalled)() == true) 
   { 
     DyPushLogCritical("Quering game ending is already done.");
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
   this->mIsGameEndCalled = true;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 bool GEngine::MDY_PRIVATE(IsGameEndCalled)() const noexcept

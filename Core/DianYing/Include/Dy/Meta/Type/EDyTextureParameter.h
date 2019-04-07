@@ -119,11 +119,11 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const TTextureParameterList& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ TTextureParameterList& p);
 
 /// @brief Check texture parameter item is specified correctly.
-/// @return If succeeded, return DY_SUCCESS otherwise DY_FAILURE.
+/// @return If succeeded, return EDySuccess::DY_SUCCESS otherwise EDySuccess::DY_FAILURE.
 MDY_NODISCARD EDySuccess DyCheckTextureParameter(_MIN_ const PDyGlTexParameterInformation& parameter);
 
 /// @brief Check Texture parameter list is specified correctly.
-/// @return If succeeded, return DY_SUCCESS otherwise DY_FAILURE.
+/// @return If succeeded, return EDySuccess::DY_SUCCESS otherwise EDySuccess::DY_FAILURE.
 MDY_NODISCARD EDySuccess DyCheckTextureParameterList(_MIN_ const std::vector<PDyGlTexParameterInformation>& parameterList);
 
 } /// ::dy namespace

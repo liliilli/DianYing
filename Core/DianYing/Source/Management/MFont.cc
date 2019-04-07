@@ -27,13 +27,13 @@ namespace dy
 
 EDySuccess MFont::pfInitialize()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MFont::pfRelease()
 {
   this->mFontResourceContainerMap.clear();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MFont::CreateFontResourceContainer(const std::string& identifier)
@@ -43,7 +43,7 @@ EDySuccess MFont::CreateFontResourceContainer(const std::string& identifier)
     DyPushLogError(
       "Failed to create font resource, {}. This font is already created in container.", 
       identifier);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 
   // Create font information and move it.
@@ -78,7 +78,7 @@ EDySuccess MFont::CreateFontResourceContainer(const std::string& identifier)
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 bool MFont::IsFontResourceContainerExist(const std::string& identifier)
@@ -88,7 +88,7 @@ bool MFont::IsFontResourceContainerExist(const std::string& identifier)
 
 EDySuccess MFont::RemoveFontContainer(const std::string& identifier)
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 AFontContainer* MFont::GetFontResourceContainer(const std::string& identifier)

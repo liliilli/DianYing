@@ -69,7 +69,7 @@ EDySuccess TRescIO::Initialize()
     thread = std::thread(&TRescIOWorker::operator(), std::ref(*instance), std::ref(*workerWndList[i]));
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void TRescIO::Release()
@@ -120,7 +120,7 @@ void TRescIO::operator()()
       for (auto& [instance, thread] : this->mWorkerList)
       {
         const auto isSucceeded = instance->outTryAssign(task);
-        if (isSucceeded == DY_SUCCESS) 
+        if (isSucceeded == EDySuccess::DY_SUCCESS) 
         { 
           // We use goto statement intentionally.
           goto LABEL_DY_AFTER_INSERT_TASK; 
@@ -177,7 +177,7 @@ EDySuccess TRescIO::outTryEnqueueTask(
     std::vector<PRIVerificationItem> itselfRIItem{};
     itselfRIItem.emplace_back(iSpecifier, iResourceType, iResourceStyle, iScope);
     const auto result = this->pCheckAndUpdateReferenceInstance(itselfRIItem);
-    if (result.empty() == true || result.begin()->second != ERIState::NotExist) { return DY_SUCCESS; }
+    if (result.empty() == true || result.begin()->second != ERIState::NotExist) { return EDySuccess::DY_SUCCESS; }
   }
 
   // Make dependency list.
@@ -237,13 +237,13 @@ EDySuccess TRescIO::outTryEnqueueTask(
   {   // Just insert task to queue, if anything does not happen.
     { // Critical section.
       MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
-      if (this->mIsThreadStopped == true) { return DY_FAILURE; }
+      if (this->mIsThreadStopped == true) { return EDySuccess::DY_FAILURE; }
       this->mIOTaskQueue.emplace(task);
     }
     this->mConditionVariable.notify_one();
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess TRescIO::CreateReferenceInstance(
@@ -453,19 +453,19 @@ EDySuccess TRescIO::InstantPopulateMaterialResource(
   if (conditionList.empty() == false) 
   { 
     this->SyncInsertTaskToDeferredList({task, conditionList}); 
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 
   // Just insert task to queue, if anything does not happen.
   // Critical section.
   { 
     MDY_SYNC_LOCK_GUARD(this->mMutexTaskQueue);
-    if (this->mIsThreadStopped == true) { return DY_FAILURE; }
+    if (this->mIsThreadStopped == true) { return EDySuccess::DY_FAILURE; }
     this->mIOTaskQueue.emplace(task);
   }
   this->mConditionVariable.notify_one();
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 TRescIO::TDependencyList 
@@ -537,7 +537,7 @@ EDySuccess TRescIO::outTryRetrieveReferenceInstanceFromGC(
   if (smtReferenceInstance == nullptr) 
   { 
     DyPushLogError("Failed to get instance from IO GC, {}.", specifier);
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
   // Reinsert RI to appropriate position.
@@ -598,7 +598,7 @@ void TRescIO::pTryUpdateDeferredTaskList(
     {
       auto& deferredTask = *it;
       // Try remove condition item. If removed something, try it'is satisfied with reinsertion condition.
-      if (deferredTask.TryRemoveDependentItem(iSpecifier, iType, iStyle) == DY_SUCCESS
+      if (deferredTask.TryRemoveDependentItem(iSpecifier, iType, iStyle) == EDySuccess::DY_SUCCESS
       &&  deferredTask.IsSatisfiedReinsertCondition() == true)
       {
         reinsertionTasklist.emplace_back(deferredTask.mTask);
@@ -807,8 +807,8 @@ bool TRescIO::outIsIOThreadSlept() noexcept
 
 EDySuccess TRescIO::outTryCallSleptCallbackFunction()
 {
-  if (this->outIsIOThreadSlept() == false)  { return DY_FAILURE; }
-  if (this->mCbSleepFunction == nullptr)    { return DY_FAILURE; }
+  if (this->outIsIOThreadSlept() == false)  { return EDySuccess::DY_FAILURE; }
+  if (this->mCbSleepFunction == nullptr)    { return EDySuccess::DY_FAILURE; }
 
   this->mCbSleepFunction();
   this->mCbSleepFunction = nullptr;
@@ -817,7 +817,7 @@ EDySuccess TRescIO::outTryCallSleptCallbackFunction()
     this->mCbSleepFunction = this->mCbNextSleepFunction;
     this->mCbNextSleepFunction = nullptr;
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void TRescIO::outInsertGcCandidate(std::unique_ptr<DIOReferenceInstance>& iRefRI)

@@ -27,7 +27,7 @@ public:
   MDY_SINGLETON_DERIVED(MFont);
   /// @brief  Create font resource container from meta container.
   /// @param  identifier
-  /// @return If succeeded return DY_SUCCESS or DY_FAILURE.
+  /// @return If succeeded return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   EDySuccess CreateFontResourceContainer(const std::string& identifier);
 
   /// @brief  Check there is valid font container with name is fontSpecifierName.
@@ -37,7 +37,7 @@ public:
 
   /// @brief  Remove and release resource of valid font container.
   /// @param  identifier
-  /// @return If succeeded to remove valid font container, return DY_SUCCESS or DY_FAILURE.
+  /// @return If succeeded to remove valid font container, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   EDySuccess RemoveFontContainer(const std::string& identifier);
 
   /// @brief  Get font resource container.

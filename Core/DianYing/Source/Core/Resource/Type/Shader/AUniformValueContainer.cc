@@ -247,7 +247,7 @@ EDySuccess AUniformValueContainer::TryInsertTextureRequisition(TU32 insertId, TU
       if (ref.mValue == TI32(insertId))
       {
         this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
-        return DY_SUCCESS;
+        return EDySuccess::DY_SUCCESS;
       }
     } break;
     case EUniformVariableType::Texture2D:
@@ -255,7 +255,7 @@ EDySuccess AUniformValueContainer::TryInsertTextureRequisition(TU32 insertId, TU
       if (ref.mValue == TI32(insertId))
       {
         this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
-        return DY_SUCCESS;
+        return EDySuccess::DY_SUCCESS;
       }
     } break;
     case EUniformVariableType::Texture2DArray:
@@ -263,7 +263,7 @@ EDySuccess AUniformValueContainer::TryInsertTextureRequisition(TU32 insertId, TU
       if (ref.mValue == TI32(insertId))
       {
         this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
-        return DY_SUCCESS;
+        return EDySuccess::DY_SUCCESS;
       }
     } break;
     case EUniformVariableType::Texture2DShadowArray:
@@ -271,7 +271,7 @@ EDySuccess AUniformValueContainer::TryInsertTextureRequisition(TU32 insertId, TU
       if (ref.mValue == TI32(insertId))
       {
         this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
-        return DY_SUCCESS;
+        return EDySuccess::DY_SUCCESS;
       }
     } break;
     case EUniformVariableType::Texture2DRectangle:
@@ -279,7 +279,7 @@ EDySuccess AUniformValueContainer::TryInsertTextureRequisition(TU32 insertId, TU
       if (ref.mValue == TI32(insertId))
       {
         this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
-        return DY_SUCCESS;
+        return EDySuccess::DY_SUCCESS;
       }
     } break;
     case EUniformVariableType::Texture2DCubemap: 
@@ -287,14 +287,14 @@ EDySuccess AUniformValueContainer::TryInsertTextureRequisition(TU32 insertId, TU
       if (ref.mValue == TI32(insertId))
       {
         this->mUpdatedTextureList.emplace_back(insertId, item->mType, textureId);
-        return DY_SUCCESS;
+        return EDySuccess::DY_SUCCESS;
       }
     } break;
     default: MDY_UNEXPECTED_BRANCH(); break;
     }
   }
 
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 EUniformVariableType AUniformValueContainer::GetTypeOfUniform(const std::string& iSpecifier) const noexcept
@@ -309,7 +309,7 @@ EUniformVariableType AUniformValueContainer::GetTypeOfUniform(const std::string&
 
 EDySuccess AUniformValueContainer::TryUpdateUniformList()
 {
-  if (this->mIsShaderSetuped == false) { return DY_FAILURE; }
+  if (this->mIsShaderSetuped == false) { return EDySuccess::DY_FAILURE; }
   
   // We have to insert all variables into shader when updated, 
   // because shader is shared by any objects which want to render with it,
@@ -335,7 +335,7 @@ EDySuccess AUniformValueContainer::TryUpdateUniformList()
     this->mUpdatedStructList.clear();
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void AUniformValueContainer::pTryUpdateUniformVariables()

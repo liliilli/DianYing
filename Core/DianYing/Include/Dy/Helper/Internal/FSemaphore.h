@@ -51,10 +51,10 @@ public:
     if (this->mCount > 0)
     {
       --this->mCount;
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
 
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
 private:

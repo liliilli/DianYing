@@ -42,7 +42,7 @@ EDySuccess MDY_PRIVATE(DyInitializeWin32Debug)()
 
   typedef void (*SignalHandlerPointer)(int);  
   signal(SIGABRT, __SignalHandler); 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// unname namespace
@@ -56,7 +56,7 @@ EDySuccess MDY_PRIVATE(DyInitializeWin32Debug)()
 #endif
 
 /// @brief Main function of win32 / win64 platform.
-int APIENTRY WinMain(_MIN_ HINSTANCE hInstance, _MIN_ HINSTANCE hPrevInstance, _MIN_ LPSTR pCmdLine, _MIN_ int nCmdShow)
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
   ghInstance      = hInstance;
   ghPrevInstance  = hPrevInstance;

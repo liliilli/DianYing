@@ -37,7 +37,7 @@ void FBtRenderPipelineDefaultLoading::__ConstructionHelper
 
 EDySuccess FBtRenderPipelineDefaultLoading::OnPreRenderCheckCondition()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

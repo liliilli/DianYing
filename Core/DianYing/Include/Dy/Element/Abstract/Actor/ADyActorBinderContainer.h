@@ -41,16 +41,16 @@ public:
     {
       if (this->mPtrBinderList[id] == &iRefBinder) { break; }
     }
-    if (id == size) { return DY_FAILURE; }
+    if (id == size) { return EDySuccess::DY_FAILURE; }
 
     FaseErase(this->mPtrBinderList, id);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 
   EDySuccess MDY_PRIVATE(AttachBinderFromList)(DActorBinder& iRefBinder) noexcept
   {
     this->mPtrBinderList.emplace_back(&iRefBinder);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 
   /// @brief

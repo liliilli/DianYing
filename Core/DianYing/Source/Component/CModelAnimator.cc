@@ -35,7 +35,7 @@ EDySuccess CModelAnimator::Initialize(const PDyModelAnimatorComponentMetaInfo& d
 
   // Component activation check.
   if (descriptor.mInitiallyActivated == true) { this->Activate(); }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CModelAnimator::Release()

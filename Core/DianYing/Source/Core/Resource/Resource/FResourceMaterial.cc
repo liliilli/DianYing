@@ -134,7 +134,7 @@ EDySuccess FResourceMaterial::TryUpdateTextureList() noexcept
           }
       ) == false)
   {
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   const auto& textureResources = this->GetBindedTextureResourcePtrList();
@@ -144,7 +144,7 @@ EDySuccess FResourceMaterial::TryUpdateTextureList() noexcept
     const auto& textureBinder = (*textureResources[j]);
     XGLWrapper::BindTexture(j, textureBinder->GetTextureType(), textureBinder->GetTextureId());
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FResourceMaterial::TryDetachTextureListFromShader() noexcept
@@ -158,7 +158,7 @@ EDySuccess FResourceMaterial::TryDetachTextureListFromShader() noexcept
           }
       ) == false)
   {
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   const auto& textureResources = this->GetBindedTextureResourcePtrList();
@@ -168,7 +168,7 @@ EDySuccess FResourceMaterial::TryDetachTextureListFromShader() noexcept
     const auto& textureBinder = (*textureResources[j]);
     XGLWrapper::UnbindTexture(j, textureBinder->GetTextureType());
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

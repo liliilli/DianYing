@@ -96,7 +96,7 @@ EDySuccess DIOReferenceContainer::TryBindBinderToResourceRI(
   // Check RI is exist, if not found just return failure.
   if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) 
   { 
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
   // Attach binder to RI container.
@@ -114,7 +114,7 @@ EDySuccess DIOReferenceContainer::TryBindBinderToResourceRI(
   case EResourceType::Sound:          this->mMapSoundReference[iSpecifier]->AttachBinder(iPtrBinder);   break;
   default: MDY_UNEXPECTED_BRANCH(); throw;
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DIOReferenceContainer::TryDetachBinderFromResourceRI(
@@ -123,7 +123,7 @@ EDySuccess DIOReferenceContainer::TryDetachBinderFromResourceRI(
   IBinderBase& iPtrBinder)
 {
   // Check RI is exist, if not found just return failure.
-  if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return DY_FAILURE; }
+  if (this->IsReferenceInstanceExist(iSpecifier, iType) == false) { return EDySuccess::DY_FAILURE; }
 
   // Get Reference instance map from `iType`.
   decltype(mMapModelReference)* ptrRiMap;
@@ -153,7 +153,7 @@ EDySuccess DIOReferenceContainer::TryDetachBinderFromResourceRI(
     ptrRiMap->erase(iSpecifier);
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 std::vector<std::unique_ptr<DIOReferenceInstance>>
@@ -220,7 +220,7 @@ EDySuccess DIOReferenceContainer::CreateReferenceInstance(
   auto [it, isSuccessful] = ptrRIHashMap->try_emplace(specifier, std::move(instanceRI));
   MDY_ASSERT_MSG(isSuccessful == true, "RI Container creation must be successful.");
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DIOReferenceContainer::MoveReferenceInstance(std::unique_ptr<DIOReferenceInstance>&& ioRi)
@@ -243,7 +243,7 @@ EDySuccess DIOReferenceContainer::MoveReferenceInstance(std::unique_ptr<DIORefer
 
   auto [it, isSuccessful] = ptrRIHashMap->try_emplace(ioRi->mSpecifierName, std::move(ioRi));
   MDY_ASSERT_MSG(isSuccessful == true, "RI Container creation must be successful.");
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DIOReferenceContainer::TryUpdateValidity(
@@ -278,10 +278,10 @@ EDySuccess DIOReferenceContainer::TryUpdateValidity(
     { // If resource is not valid, so must detach instance pointer from binders...
       instance->SetNotValid();
     }
-    return DY_SUCCESS; 
+    return EDySuccess::DY_SUCCESS; 
   }
 
-  return DY_FAILURE; 
+  return EDySuccess::DY_FAILURE; 
 }
 
 } /// ::dy namespace

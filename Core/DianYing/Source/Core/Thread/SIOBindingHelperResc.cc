@@ -36,10 +36,10 @@ SIOBindingHelper::pTryRequireResource
   MDY_CALL_ASSERT_SUCCESS(ioThread.TryBindBinderToResourceRI(iSpecifier, iType, iPtrBinder));
   if (ioThread.pIsReferenceInstanceBound(iSpecifier, iType, EResourceStyle::Resource) == false)
   {
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 std::optional<const __TResourceType<EResourceType::GLShader>::type*>
@@ -47,7 +47,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireResource_GLShader)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   const auto checkFlag = pTryRequireResource(iSpecifier, EResourceType::GLShader, iPtrBinder);
-  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+  if (checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto& ioResourceManager = MIOResource::GetInstance();
@@ -61,7 +61,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Mesh)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   const auto checkFlag = pTryRequireResource(iSpecifier, EResourceType::Mesh, iPtrBinder);
-  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+  if (checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto& ioResourceManager = MIOResource::GetInstance();
@@ -75,7 +75,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Model)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   const auto checkFlag = pTryRequireResource(iSpecifier, EResourceType::Model, iPtrBinder);
-  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+  if (checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto& ioResourceManager = MIOResource::GetInstance();
@@ -89,7 +89,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Texture)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   const auto checkFlag = pTryRequireResource(iSpecifier, EResourceType::Texture, iPtrBinder);
-  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+  if (checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto& ioResourceManager = MIOResource::GetInstance();
@@ -103,7 +103,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Material)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   const auto checkFlag = pTryRequireResource(iSpecifier, EResourceType::Material, iPtrBinder);
-  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+  if (checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto& ioResourceManager = MIOResource::GetInstance();
@@ -117,7 +117,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireResource_Attachment)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   const auto checkFlag = pTryRequireResource(iSpecifier, EResourceType::GLAttachment, iPtrBinder);
-  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+  if (checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto& ioResourceManager = MIOResource::GetInstance();
@@ -131,7 +131,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireResource_FrameBuffer)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   const auto checkFlag = pTryRequireResource(iSpecifier, EResourceType::GLFrameBuffer, iPtrBinder);
-  if (checkFlag == DY_FAILURE) { return std::nullopt; }
+  if (checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto& ioResourceManager = MIOResource::GetInstance();
@@ -151,11 +151,11 @@ EDySuccess SIOBindingHelper::MDY_PRIVATE(pTryDetachResource)
   // So we need populate task queue for resource as temporary.
   if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EResourceStyle::Resource) == false)
   { 
-    MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+    MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDySuccess::DY_FAILURE);
   }
 
   MDY_CALL_ASSERT_SUCCESS(ioThread.TryDetachBinderFromResourceRI(iSpecifier, iType, iPtrBinder));
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

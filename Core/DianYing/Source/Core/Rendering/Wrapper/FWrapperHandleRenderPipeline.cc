@@ -62,7 +62,7 @@ void FWrapperHandleRenderPipeline::Activate(bool iIsActivated) noexcept
 
 void FWrapperHandleRenderPipeline::TryRender()
 {
-  if (this->mHandleRenderPipeline->OnPreRenderCheckCondition() == DY_SUCCESS)
+  if (this->mHandleRenderPipeline->OnPreRenderCheckCondition() == EDySuccess::DY_SUCCESS)
   {
     this->mHandleRenderPipeline->OnSetupRenderingSetting();
 
@@ -75,7 +75,7 @@ void FWrapperHandleRenderPipeline::TryRender()
     // And render local render item.
     for (auto& localRenderItem : this->mHandleRenderItems)
     {
-      if (localRenderItem->OnPreRenderCheckCondition() == DY_SUCCESS)
+      if (localRenderItem->OnPreRenderCheckCondition() == EDySuccess::DY_SUCCESS)
       {
         localRenderItem->OnSetupRenderingSetting();
         localRenderItem->OnRender();

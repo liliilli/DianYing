@@ -41,7 +41,7 @@ public:
 
   /// @brief Try require controller exlusive right for Actor. \n
   /// If there is any actor which is using controller delegate, Actor delegate will be reset and overwritten by this. \n
-  /// And if there is same actor instance reference already, it just do nothing and return DY_FAILURE.
+  /// And if there is same actor instance reference already, it just do nothing and return EDySuccess::DY_FAILURE.
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT
   MDY_NODISCARD EDySuccess TryRequireControllerActor(_MIN_ AActorCppScript& iRefActor) noexcept;
 
@@ -51,7 +51,7 @@ public:
 
   /// @brief Try require controller exlusive right for UI Widget. \n
   /// If there is any actor which is using controller delegate, Actor delegate will be neglected. \n
-  /// And if there is same ui script instance reference already, it just do nothing and return DY_FAILURE.
+  /// And if there is same ui script instance reference already, it just do nothing and return EDySuccess::DY_FAILURE.
   /// @TODO IMPLEMENT FOR ADYWIDGETLUASCRIPT.
   MDY_NODISCARD EDySuccess TryRequireControllerUi(_MIN_ AWidgetCppScript& iRefUiScript) noexcept;
   

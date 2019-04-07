@@ -76,7 +76,7 @@ EDySuccess FWidgetText::Initialize(const PDyMetaWidgetTextDescriptor& objectMeta
     this->Activate();
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FWidgetText::Release() { }
@@ -142,7 +142,7 @@ void FWidgetText::SetFontSize(_MIN_ TU32 fontSize) noexcept
 EDySuccess FWidgetText::SetFontName(_MIN_ const std::string& fontName)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 void FWidgetText::SetColor(_MIN_ const DColorRGBA& color)

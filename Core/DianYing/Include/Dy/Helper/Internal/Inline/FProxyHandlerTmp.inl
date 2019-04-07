@@ -93,9 +93,9 @@ EDySuccess FProxyHandler<TType>::DetachHandle(FProxyHandle<TType>& iHandle)
   {
     iHandle.mHandlerAddress = nullptr;
     this->mBindHandleList.erase(&iHandle);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 template <typename TType>

@@ -32,7 +32,7 @@ EDySuccess CTransform::Initialize(const PDyTransformComponentMetaInfo& desc)
   this->SetWorldEulerAngle(desc.mDetails.mWorldRotation);
   this->SetWorldScale(desc.mDetails.mWorldScale);
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess CTransform::Initialize(const DTransform& desc)
@@ -44,7 +44,7 @@ EDySuccess CTransform::Initialize(const DTransform& desc)
   this->SetRelativeWorldPosition(desc.mWorldRelPosition);
   this->SetWorldEulerAngle(desc.mWorldEulerAngle);
   this->SetWorldScale(desc.mWorldScale);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CTransform::Release()

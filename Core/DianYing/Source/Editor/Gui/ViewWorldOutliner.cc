@@ -21,12 +21,12 @@ namespace dy::editor
 
 EDySuccess FDyViewWorldOutliner::pfInitialize(const PDyGuiComponentEmptyDescriptor& desc)
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FDyViewWorldOutliner::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FDyViewWorldOutliner::DrawWindow(float dt) noexcept

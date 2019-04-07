@@ -38,11 +38,11 @@ EDySuccess FBtRenderItemSkybox::OnPreRenderCheckCondition()
   auto optSkybox = MWorld::GetInstance().GetPtrMainLevelSkybox();
   if (optSkybox.has_value() == false)
   {
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Second.
-  return this->AreResourcesValid() ? DY_SUCCESS : DY_FAILURE;
+  return this->AreResourcesValid() ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
 }
 
 bool FBtRenderItemSkybox::AreResourcesValid()

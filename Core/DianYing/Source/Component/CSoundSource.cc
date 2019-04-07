@@ -42,7 +42,7 @@ EDySuccess CSoundSource::Initialize(_MIN_ const PDySoundSourceComponentMetaInfo&
   // We need reference of actor also, because sound instance with 3D option update position from `Transform`.
   this->mPtrInternalSoundInstance = soundManager.__CreateSoundInstance(descriptor, *this->GetBindedActor());
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CSoundSource::Release()

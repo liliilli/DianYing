@@ -21,12 +21,12 @@ namespace dy
 
 EDySuccess MIOResource::pfInitialize()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MIOResource::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void MIOResource::InsertResult(_MIN_ EResourceType type, _MIN_ void* ptrrawInstance)
@@ -83,7 +83,7 @@ EDySuccess MIOResource::MDY_PRIVATE(TryRemove)(_MIN_ const std::string& iSpecifi
   case EResourceType::Material:     { return this->__mMaterialContainer.Remove(iSpecifier); } 
   case EResourceType::GLAttachment: { return this->__mAttachmentContainer.Remove(iSpecifier); } 
   case EResourceType::GLFrameBuffer:{ return this->__mFrameBufferContainer.Remove(iSpecifier); } 
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDySuccess::DY_FAILURE);
   }
 }
 

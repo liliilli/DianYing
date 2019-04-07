@@ -92,14 +92,14 @@ public:
   EDySuccess UnbindShapeFromRigidbody(physx::PxShape& iRefShape);
 
   /// @brief Add collision callback. \n 
-  /// If given type, there is already collision callback of iRawFunction, do nothing just return DY_FAILURE.
+  /// If given type, there is already collision callback of iRawFunction, do nothing just return EDySuccess::DY_FAILURE.
   template <ECollisionCallbackType TCbType, typename TScriptType>
   EDySuccess AddCollisionCallback(
     TScriptType& iRefScript, 
     typename TCollisionCbTypeSignature<TCbType>::Type::template RawType<TScriptType> iRawFunction);
 
   /// @brief Remove collision callback. \n
-  /// If not found matched collision callback item given type, just return DY_FAILURE.
+  /// If not found matched collision callback item given type, just return EDySuccess::DY_FAILURE.
   EDySuccess RemoveCollisionCallback(ECollisionCallbackType iType, const void* iId);
 
   /// @brief Get binded (registered) activated collider instance list.

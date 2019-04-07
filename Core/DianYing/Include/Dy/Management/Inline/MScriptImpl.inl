@@ -44,7 +44,7 @@ inline EDySuccess MScript::Impl::TryForwardWidgetScriptToGCList(const FWidgetScr
     if (ptrsmtScript.get() == iPtrWidgetScriptState) 
     { // If exist, move script to gc list.
       this->mGCedWidgetScriptList.emplace_back(std::move(ptrsmtScript)); 
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
   }
 
@@ -54,11 +54,11 @@ inline EDySuccess MScript::Impl::TryForwardWidgetScriptToGCList(const FWidgetScr
     if (ptrsmtScript.get() == iPtrWidgetScriptState) 
     { // If exist, move script to gc list.
       this->mGCedWidgetScriptList.emplace_back(std::move(ptrsmtScript)); 
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
   }
 
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 inline void MScript::Impl::TryMoveInsertWidgetScriptToMainContainer()
@@ -80,7 +80,7 @@ inline EDySuccess MScript::Impl::TryForwardActorScriptToGCList(const FActorScrip
     if (ptrsmtScript.get() == iPtrActorScriptStatus) 
     { // If exist, move script to gc list.
       this->mGCedActorScriptList.emplace_back(std::move(ptrsmtScript)); 
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
   }
 
@@ -90,11 +90,11 @@ inline EDySuccess MScript::Impl::TryForwardActorScriptToGCList(const FActorScrip
     if (ptrsmtScript.get() == iPtrActorScriptStatus) 
     { // If exist, move script to gc list.
       this->mGCedActorScriptList.emplace_back(std::move(ptrsmtScript)); 
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
   }
 
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 inline void MScript::Impl::TryMoveInsertActorScriptToMainContainer()

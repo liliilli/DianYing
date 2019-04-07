@@ -28,12 +28,12 @@ EDySuccess FDyMainViewport::pfInitialize(const PDyGuiComponentEmptyDescriptor& d
   const auto& setting = MDyEditorSetting::GetInstance();
   this->mIsEnabledShowGrid = setting.GetmIsEnabledViewportRenderGrid();
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FDyMainViewport::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FDyMainViewport::DrawWindow(float dt) noexcept

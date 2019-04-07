@@ -16,6 +16,7 @@
 #include <string>
 #include <unordered_map>
 
+#include <Expr/ESuccess.h>
 //! If you want to use real type as double, remove comment "//" to activate macro option.
 //#define MATH_USE_REAL_AS_DOUBLE
 #include <Math/Common/TGlobalTypes.h>
@@ -28,11 +29,7 @@
 #undef min
 #endif
 
-enum EDySuccess : bool 
-{
-  DY_FAILURE = false,
-  DY_SUCCESS = true
-};
+typedef dy::expr::EDySuccess EDySuccess;
 
 //!
 //! Types in function.

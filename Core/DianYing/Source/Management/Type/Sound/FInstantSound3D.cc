@@ -61,7 +61,7 @@ EDySuccess FInstantSound3D::TryInitialize()
   if (this->mBinderClipResource.IsResourceExist() == false
   ||  this->GetStatus() != ESoundState::NotValid)
   {
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Initiate (Initialize)
@@ -129,7 +129,7 @@ EDySuccess FInstantSound3D::TryInitialize()
     this->mSoundStatus = ESoundState::Play;
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FInstantSound3D::TryStop()
@@ -138,12 +138,12 @@ EDySuccess FInstantSound3D::TryStop()
   {
     DyPushLogWarning("Failed to try stop instant sound 2d. Sound status is either NotValid or Stop.");
     this->mSoundStatus = ESoundState::Stop;
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   const auto flag = this->mPtrInternalChannel->stop();
   MDY_ASSERT_MSG(flag == FMOD_OK, "Failed to play sound instance.");
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

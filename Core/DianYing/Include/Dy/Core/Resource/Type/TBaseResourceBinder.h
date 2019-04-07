@@ -56,8 +56,8 @@ protected:
   MDY_NODISCARD EDySuccess pTryRequireResource(_MIN_ const std::string& iNewSpecifier) noexcept;
 
   /// @brief Try detach resource. \n
-  /// If pointer of resource is null (so, not bound to anything), just return DY_FAILURE.
-  /// If detach is succeeded, return DY_SUCCESS. and `mPtrResource` will be nullptr agian.
+  /// If pointer of resource is null (so, not bound to anything), just return EDySuccess::DY_FAILURE.
+  /// If detach is succeeded, return EDySuccess::DY_SUCCESS. and `mPtrResource` will be nullptr agian.
   MDY_NODISCARD EDySuccess pTryDetachResource() noexcept;
 
     /// @brief Try update resource pointer of this type with ptr when RI is being valid. \n
@@ -98,13 +98,13 @@ EDySuccess TResourceBinderBase<TType>::pTryRequireResource(const std::string& iN
   if (ptrResult.has_value() == false) 
   { 
     this->mDelayedSpecifierName = iNewSpecifier;
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
   else
   {
     const auto noError = this->pTryDetachResource();
     this->mPtrResource = const_cast<TPtrResource>(ptrResult.value());
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 }
 
@@ -112,13 +112,13 @@ template <EResourceType TType>
 EDySuccess TResourceBinderBase<TType>::pTryDetachResource() noexcept
 {
   // Checking 
-  if (this->mPtrResource == nullptr) { return DY_FAILURE; }
+  if (this->mPtrResource == nullptr) { return EDySuccess::DY_FAILURE; }
 
   // Detach
   MDY_CALL_ASSERT_SUCCESS(SIOBindingHelper::TryDetachResource<TType>(this->mSpecifierName, *this));
   this->mSpecifierName.clear();
   this->mPtrResource = nullptr;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 template <EResourceType TType>

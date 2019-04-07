@@ -59,7 +59,7 @@ public:
   /// @brief Get Indices count. If not exist, just return 0.
   TU32 GetIndicesCounts() const noexcept;
 
-  /// @brief Bind Vertex Array object. if vao id is 0, return DY_FAILURE with doing nothing. 
+  /// @brief Bind Vertex Array object. if vao id is 0, return EDySuccess::DY_FAILURE with doing nothing. 
   EDySuccess BindVertexArray() const noexcept;
 
   /// @brief Check this mesh is supporting instancing.

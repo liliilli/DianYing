@@ -25,7 +25,7 @@ MDY_INTERFACE MDY_NO_VTABLE IInitializeHelper
 
   /// @brief  Initialize derived class type manually.
   /// @param  descriptor  Descriptor instance which to initialize with.
-  /// @return If successful, return DY_SUCCESS but DY_FAILURE.
+  /// @return If successful, return EDySuccess::DY_SUCCESS but EDySuccess::DY_FAILURE.
   MDY_NODISCARD virtual EDySuccess Initialize(_MIN_ const TInitializeParam& descriptor) = 0;
 
   /// @brief Release instance manually.
@@ -40,7 +40,7 @@ MDY_INTERFACE MDY_NO_VTABLE IInitializeHelper<void>
   virtual ~IInitializeHelper() = default;
 
   /// @brief  Initialize derived class type manually.
-  /// @return If successful, return DY_SUCCESS but DY_FAILURE.
+  /// @return If successful, return EDySuccess::DY_SUCCESS but EDySuccess::DY_FAILURE.
   MDY_NODISCARD virtual EDySuccess Initialize() = 0;
 
   /// @brief Release instance manually.

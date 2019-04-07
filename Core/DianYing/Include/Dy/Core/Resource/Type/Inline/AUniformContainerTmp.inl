@@ -33,7 +33,7 @@ EDySuccess AUniformValueContainer::TryUpdateUniform(
       std::make_unique<TUniformValue<TType>>(-1, iValue)
     );
     DyPushLogError("Could not find uniform value but insert anyway as id -1. {}", iSpecifier);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
   else
   { // Check type but not matched, pass it.
@@ -41,15 +41,15 @@ EDySuccess AUniformValueContainer::TryUpdateUniform(
     if (smtptrInstance->mType != TType)
     {
       DyPushLogError("Could not insert uniform value becasue of different type. {}", iSpecifier);
-      return DY_FAILURE;
+      return EDySuccess::DY_FAILURE;
     }
     // In case of success.
     auto* ptrInstance = static_cast<TUniformValue<TType>*>(smtptrInstance.get());
-    if (ptrInstance->mValue == iValue) { return DY_SUCCESS; }
+    if (ptrInstance->mValue == iValue) { return EDySuccess::DY_SUCCESS; }
 
     ptrInstance->mValue = iValue;
     this->mUpdatedItemList.emplace_back(ptrInstance);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 }
 
@@ -66,7 +66,7 @@ template <typename TType>
 EDySuccess AUniformValueContainer::TryUpdateUniformStruct(TU32 iIndex, const TType& iContainer)
 {
   const auto& aliasName = reflect::RUniformReflection::GetFirstAliasOf(TType::__sTypeName);
-  if (Contains(this->mUniformStructListMap, aliasName) == false) { return DY_FAILURE; }
+  if (Contains(this->mUniformStructListMap, aliasName) == false) { return EDySuccess::DY_FAILURE; }
 
   const auto& reflData = reflect::RUniformReflection::GetData(TType::__sTypeName);
   auto& data = this->mUniformStructListMap.at(aliasName);
@@ -98,7 +98,7 @@ EDySuccess AUniformValueContainer::TryUpdateUniformStruct(TU32 iIndex, const TTy
     }
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 #define __MDY_UNIFORM_STRUCT_ITEM_COMPARE_AND_INSERT(__Type__, __ActualType__) \
@@ -114,7 +114,7 @@ template<typename TType>
 EDySuccess AUniformValueContainer::TryUpdateUniformStruct(const TType& iContainer)
 {
   const auto& aliasName = reflect::RUniformReflection::GetFirstAliasOf(TType::__sTypeName);
-  if (Contains(this->mUniformStructItemMap, aliasName) == false) { return DY_FAILURE; }
+  if (Contains(this->mUniformStructItemMap, aliasName) == false) { return EDySuccess::DY_FAILURE; }
 
   const auto& reflData = reflect::RUniformReflection::GetData(TType::__sTypeName);
   auto& data = this->mUniformStructItemMap.at(aliasName);
@@ -146,7 +146,7 @@ EDySuccess AUniformValueContainer::TryUpdateUniformStruct(const TType& iContaine
     }
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

@@ -303,7 +303,7 @@ std::optional<TU32> XGLWrapper::CreateTexture(const PDyGLTextureDescriptor& desc
   if (descriptor.mIsUsingCustomizedParameter == true)
   {
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
-    MDY_ASSERT_MSG(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
+    MDY_ASSERT_MSG(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == EDySuccess::DY_SUCCESS, "Texture Parameter validation failed.");
   }
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
@@ -371,7 +371,7 @@ std::optional<TU32> XGLWrapper::CreateTexture(const PDyGLTextureCubemapDescripto
   if (descriptor.mIsUsingCustomizedParameter == true)
   {
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(descriptor.mPtrParameterList), "Parameter list must not be null.");
-    MDY_ASSERT_MSG(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == DY_SUCCESS, "Texture Parameter validation failed.");
+    MDY_ASSERT_MSG(DyCheckTextureParameterList(*descriptor.mPtrParameterList) == EDySuccess::DY_SUCCESS, "Texture Parameter validation failed.");
   }
 
   TU32 mTextureResourceId = MDY_INITIALIZE_DEFUINT;
@@ -685,7 +685,7 @@ std::optional<TU32> XGLWrapper::CreateAttachment(const PGLAttachmentDescriptor& 
       "Attachment buffer format must be specified.");
   if (iDescriptor.mIsUsingCustomizedParameter == true)
   {
-    MDY_ASSERT_MSG(DyCheckTextureParameterList(iDescriptor.mParameterList) == DY_SUCCESS, 
+    MDY_ASSERT_MSG(DyCheckTextureParameterList(iDescriptor.mParameterList) == EDySuccess::DY_SUCCESS, 
         "Attachment Parameter validation failed.");
   }
 
@@ -754,7 +754,7 @@ EDySuccess XGLWrapper::DeleteAttachment(TU32 iAttachmentId, bool iIsRenderBuffer
   { 
     glDeleteTextures(1, &iAttachmentId); 
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 std::optional<TU32> XGLWrapper::CreateFrameBuffer(const PDyGLFrameBufferDescriptor& iDescriptor)
@@ -828,7 +828,7 @@ std::optional<TU32> XGLWrapper::CreateFrameBuffer(const PDyGLFrameBufferDescript
 EDySuccess XGLWrapper::DeleteFrameBuffer(const TU32 framebufferId)
 {
   glDeleteFramebuffers(1, &framebufferId);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void XGLWrapper::SetViewport(const DArea2D& iViewportRegion)

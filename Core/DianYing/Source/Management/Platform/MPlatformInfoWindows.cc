@@ -88,7 +88,7 @@ EDySuccess MPlatformInfoWindows::CreateConsoleWindow()
   if (AllocConsole() == false)
   {
     MessageBox(nullptr, L"The console window was not created.", nullptr, MB_ICONEXCLAMATION);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
   [[maybe_unused]] const auto _ = freopen_s(&this->mFp, "CONOUT$", "w", stdout);
 
@@ -96,7 +96,7 @@ EDySuccess MPlatformInfoWindows::CreateConsoleWindow()
   while (this->mIsConsoleWindowInitialized.compare_exchange_strong(
     before, true, std::memory_order_seq_cst) == false)
       ;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 bool MPlatformInfoWindows::IsCreatedConsoleWindow() const noexcept
@@ -113,13 +113,13 @@ EDySuccess MPlatformInfoWindows::RemoveConsoleWindow()
   if (FreeConsole() == false)
   {
     MessageBox(nullptr, L"Failed to free console resource.", nullptr, MB_ICONEXCLAMATION);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   bool before = true;
   while (this->mIsConsoleWindowInitialized.compare_exchange_strong(before, false, std::memory_order_seq_cst) == false)
       ;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 TF32 MPlatformInfoWindows::GetCpuUsage()

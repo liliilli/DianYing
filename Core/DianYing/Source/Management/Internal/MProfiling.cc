@@ -20,12 +20,12 @@ namespace dy
 
 EDySuccess MProfiling::pfInitialize()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MProfiling::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 TI32 MProfiling::GetOnBindTextureCount() const noexcept

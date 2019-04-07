@@ -83,36 +83,36 @@ DyCreateWidgetMetaInformation(_MIN_ const nlohmann::json& jsonAtlas)
   ///
   /// @brief  Check widget meta information list.
   /// @param  atlas Valid json atlas instance.
-  /// @return If succeeded, return DY_SUCCESS an
+  /// @return If succeeded, return EDySuccess::DY_SUCCESS an
   ///
   static auto CheckWidgetCategories = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
   {
     using namespace json;
-    if (json::HasJsonKey(atlas, sCategoryMeta) == false)       { return DY_FAILURE; }
-    if (json::HasJsonKey(atlas, sCategoryObjectList) == false) { return DY_FAILURE; }
-    return DY_SUCCESS;
+    if (json::HasJsonKey(atlas, sCategoryMeta) == false)       { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(atlas, sCategoryObjectList) == false) { return EDySuccess::DY_FAILURE; }
+    return EDySuccess::DY_SUCCESS;
   };
 
   ///
   /// @brief  Check meta widget component information header list.
   /// @param  atlas Valid json atlas instance.
-  /// @return If succeeded, return DY_SUCCESS flag for representing success.
+  /// @return If succeeded, return EDySuccess::DY_SUCCESS flag for representing success.
   ///
   static auto CheckComponentCommonHeaders = [](_MIN_ const nlohmann::json& atlas) -> EDySuccess
   {
     using namespace json;
-    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Name) == false) { return DY_FAILURE; }
-    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Type) == false) { return DY_FAILURE; }
-    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Parent) == false) { return DY_FAILURE; }
-    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Details) == false) { return DY_FAILURE; }
-    return DY_SUCCESS;
+    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Name) == false) { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Type) == false) { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Parent) == false) { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(atlas, PDyMetaWidgetCommonBaseDesc::sHeader_Details) == false) { return EDySuccess::DY_FAILURE; }
+    return EDySuccess::DY_SUCCESS;
   };
 
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //! FUNCTIONBODY ∨
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  if (const auto flag = CheckWidgetCategories(jsonAtlas); flag == DY_FAILURE)
+  if (const auto flag = CheckWidgetCategories(jsonAtlas); flag == EDySuccess::DY_FAILURE)
   {
     DyPushLogCritical("Json log : {}", jsonAtlas.dump(2));
     MDY_UNEXPECTED_BRANCH(); return nullptr;
@@ -124,7 +124,7 @@ DyCreateWidgetMetaInformation(_MIN_ const nlohmann::json& jsonAtlas)
 
   for (const auto& componentInfo : componentAtlas)
   { // Check Header list integrity
-    MDY_ASSERT_MSG(CheckComponentCommonHeaders(componentInfo) == DY_SUCCESS, "Failed to check common headers of item.");
+    MDY_ASSERT_MSG(CheckComponentCommonHeaders(componentInfo) == EDySuccess::DY_SUCCESS, "Failed to check common headers of item.");
 
     const auto componentType = json::GetValueFrom<EDyWidgetComponentType>(componentInfo, PDyMetaWidgetCommonBaseDesc::sHeader_Type);
     switch (componentType)
@@ -435,13 +435,13 @@ namespace dy
 EDySuccess MIOMeta::pfInitialize() 
 { 
   this->mInternal = new Impl();
-  return DY_SUCCESS; 
+  return EDySuccess::DY_SUCCESS; 
 }
 
 EDySuccess MIOMeta::pfRelease()
 {
   delete this->mInternal; this->mInternal = nullptr;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 const PLevelInstanceMetaInfo* 
@@ -819,9 +819,9 @@ EDySuccess MIOMeta::pfAddPrefabMetaInfo(const std::string_view& iMetaInfo)
 
   const auto name = prefabMetaInfo->mSpecifierName;
   auto [_, isSucceeded] = this->mInternal->mPrefabMetaInfo.try_emplace(name, std::move(prefabMetaInfo));
-  if (isSucceeded == false) { return DY_FAILURE; }
+  if (isSucceeded == false) { return EDySuccess::DY_FAILURE; }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MIOMeta::pfAddFontMetaInfo(const PBuiltinMetaFontInfo& iMetaInfo)
@@ -830,7 +830,7 @@ EDySuccess MIOMeta::pfAddFontMetaInfo(const PBuiltinMetaFontInfo& iMetaInfo)
     iMetaInfo.mIdentifier, 
     static_cast<PDyMetaFontInformation>(iMetaInfo));
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MIOMeta::pfAddWidgetMetaInformation(const std::string& metaInformationString)
@@ -892,7 +892,7 @@ EDySuccess MIOMeta::pfAddRenderPipelineMetaInfo(const PDyRenderPipelineInstanceM
   this->mInternal->mRenderPipelineMetaInfo.try_emplace(
     metaInfo.mSpecifierName, 
     metaInfo);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MIOMeta::pfAddRenderIteMIOMeta(const PDyRenderItemInstanceMetaInfo& metaInfo)
@@ -904,7 +904,7 @@ EDySuccess MIOMeta::pfAddRenderIteMIOMeta(const PDyRenderItemInstanceMetaInfo& m
   this->mInternal->mRenderIteMIOMeta.try_emplace(
     metaInfo.mSpecifierName, 
     metaInfo);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MIOMeta::MDY_PRIVATE(AddBootResourceSpecifierList)(const TResourceSpecifierList& list)

@@ -39,7 +39,7 @@ EDySuccess FBtRenderPipelineDefaultLevelPostProcess::OnPreRenderCheckCondition()
 {
   // Whether camera is focused by main camera is true, by parent RenderPipeline
   // `FBtDefaultLevel`, we do not need to check more setting.
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FBtRenderPipelineDefaultLevelPostProcess::OnFailedCheckCondition()

@@ -45,7 +45,7 @@ EDySuccess FBtRenderItemLevelIntegeration::OnPreRenderCheckCondition()
   return 
       this->mBinderFrameBuffer.IsResourceExist() == true
   &&  this->mBinderOpaqueShader.IsResourceExist() == true
-  &&  this->mBinderTriangle.IsResourceExist() == true ? DY_SUCCESS : DY_FAILURE;
+  &&  this->mBinderTriangle.IsResourceExist() == true ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
 }
 
 void FBtRenderItemLevelIntegeration::OnSetupRenderingSetting()

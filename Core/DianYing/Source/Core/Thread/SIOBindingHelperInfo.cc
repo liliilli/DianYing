@@ -37,10 +37,10 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation)
   MDY_CALL_ASSERT_SUCCESS(ioThread.TryBindBinderToInformationRI(iSpecifier, iType, iPtrBinder));
   if (ioThread.pIsReferenceInstanceBound(iSpecifier, iType, EResourceStyle::Information) == false)
   {
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 MDY_NODISCARD std::optional<const __TDyRscInfo_T<EResourceType::GLShader>*>
@@ -48,7 +48,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_GLShader)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::GLShader, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::GLShader>(iSpecifier);
@@ -61,7 +61,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Texture)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::Texture, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::Texture>(iSpecifier);
@@ -74,7 +74,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Attachment)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::GLAttachment, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::GLAttachment>(iSpecifier);
@@ -87,7 +87,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_GLFrameBuffer)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::GLFrameBuffer, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::GLFrameBuffer>(iSpecifier);
@@ -100,7 +100,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Material)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::Material, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::Material>(iSpecifier);
@@ -113,7 +113,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Mesh)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::Mesh, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::Mesh>(iSpecifier);
@@ -126,7 +126,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Model)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::Model, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::Model>(iSpecifier);
@@ -139,7 +139,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Skeleton)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::Skeleton, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::Skeleton>(iSpecifier);
@@ -152,7 +152,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_AnimationScrap)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::AnimationScrap, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::AnimationScrap>(iSpecifier);
@@ -165,7 +165,7 @@ SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation_Sound)
 (const std::string& iSpecifier, IBinderBase& iPtrBinder)
 {
   if (const auto checkFlag = MDY_PRIVATE(pTryRequireInformation)(iSpecifier, EResourceType::Sound, iPtrBinder);
-      checkFlag == DY_FAILURE) { return std::nullopt; }
+      checkFlag == EDySuccess::DY_FAILURE) { return std::nullopt; }
 
   // If RI has been bound, try get pointer of resource but if nullptr, just return null or valid pointer as optional.
   const auto* ptr = MIORescInfo::GetInstance().GetPtrInformation<EResourceType::Sound>(iSpecifier);
@@ -184,11 +184,11 @@ EDySuccess SIOBindingHelper::MDY_PRIVATE(pTryDetachInformation)
   // So we need populate task queue for resource as temporary.
   if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EResourceStyle::Information) == false)
   { 
-    MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+    MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDySuccess::DY_FAILURE);
   }
 
   MDY_CALL_ASSERT_SUCCESS(ioThread.TryDetachBinderFromInformationRI(iSpecifier, iType, iPtrBinder));
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

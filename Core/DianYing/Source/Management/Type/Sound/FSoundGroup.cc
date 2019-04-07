@@ -25,7 +25,7 @@ EDySuccess FSoundGroup::Initialize(FMOD::System& iPtrSystem, const std::string& 
   if (this->mIsInitilaized == true)
   {
     DyPushLogWarning("Initialized sound group can not be initialized twice.");
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // FMOD only supports one-level channel system (group system), 
@@ -37,7 +37,7 @@ EDySuccess FSoundGroup::Initialize(FMOD::System& iPtrSystem, const std::string& 
     // We must revert setting.
     this->mInternalSpecifier.clear();
     this->mIsInitilaized = false;
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
   else
   {
@@ -52,7 +52,7 @@ EDySuccess FSoundGroup::Initialize(FMOD::System& iPtrSystem, const std::string& 
     iPtrSystem.getMasterChannelGroup(&ptrMasterChannel);
     ptrMasterChannel->addGroup(this->mInternalGroup);
 
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
 }
 
@@ -61,7 +61,7 @@ EDySuccess FSoundGroup::Release()
   if (this->mIsInitilaized == false)
   {
     DyPushLogWarning("Initialized sound group can not be released twice.");
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Remove group from master channel 
@@ -70,7 +70,7 @@ EDySuccess FSoundGroup::Release()
   MDY_ASSERT_MSG_FORCE(flag == FMOD_OK, "FMOD release must be succceded, Unexpected error occurred.");
   this->mInternalGroup = nullptr;
   this->mIsInitilaized = false;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FSoundGroup::SetVolume(const DClamp<TF32, 0, 1>& iVolume)

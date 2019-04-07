@@ -27,7 +27,7 @@ namespace dy
 
 EDySuccess MWorldUIContainers::TryCreateDebugUi()
 {
-  if (MDY_CHECK_ISNOTEMPTY(this->mDebugUi)) { return DY_FAILURE; }
+  if (MDY_CHECK_ISNOTEMPTY(this->mDebugUi)) { return EDySuccess::DY_FAILURE; }
 
   this->mDebugUi = std::make_unique<FWidget>(MIOMeta::GetInstance().GetWidgetMetaInformation("DebugUi"));
 
@@ -38,7 +38,7 @@ EDySuccess MWorldUIContainers::TryCreateDebugUi()
   this->mDebugUi->SetPropagateMode(true, EDySearchMode::Recursive);
   this->mDebugUi->TryPropagatePositionToChildren();
   this->mDebugUi->SetupFlagAsParent(true);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 FWidget* MWorldUIContainers::GetPtrDebugUi() const noexcept
@@ -48,10 +48,10 @@ FWidget* MWorldUIContainers::GetPtrDebugUi() const noexcept
 
 EDySuccess MWorldUIContainers::TryRemoveDebugUi()
 {
-  if (MDY_CHECK_ISEMPTY(this->mDebugUi)) { return DY_FAILURE; }
+  if (MDY_CHECK_ISEMPTY(this->mDebugUi)) { return EDySuccess::DY_FAILURE; }
 
   this->mDebugUi = nullptr;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MWorldUIContainers::TryCreateLoadingUi()
@@ -60,7 +60,7 @@ EDySuccess MWorldUIContainers::TryCreateLoadingUi()
   if (metaManager.IsLoadingWidgetMetaInfoExist() == false)
   {
     DyPushLogWarning("Loading widget is not exist, loading screen will not be presented.");
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // CALL `Initiate()`
@@ -71,7 +71,7 @@ EDySuccess MWorldUIContainers::TryCreateLoadingUi()
   this->mLoadingUi->SetPropagateMode(true, EDySearchMode::Recursive);
   this->mLoadingUi->TryPropagatePositionToChildren();
   this->mLoadingUi->SetupFlagAsParent(true);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 FWidget* MWorldUIContainers::GetPtrLoadingUi() const noexcept
@@ -81,10 +81,10 @@ FWidget* MWorldUIContainers::GetPtrLoadingUi() const noexcept
 
 EDySuccess MWorldUIContainers::TryRemoveLoadingUi()
 {
-  if (MDY_CHECK_ISEMPTY(this->mLoadingUi)) { return DY_FAILURE; }
+  if (MDY_CHECK_ISEMPTY(this->mLoadingUi)) { return EDySuccess::DY_FAILURE; }
 
   this->mLoadingUi = nullptr;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 bool MWorldUIContainers::IsUiObjectExist(_MIN_ const std::string& iUiObjectName) const noexcept
@@ -133,11 +133,11 @@ EDySuccess MWorldUIContainers::RemoveUiObject(_MIN_ const std::string& iUiName)
   if (it == this->mGeneralUiWidgetMap.end())
   {
     DyPushLogError("Failed to remove {} Ui Object. Could not found matched UI Object.", iUiName);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   this->mGeneralUiWidgetMap.erase(it);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void MWorldUIContainers::ClearGeneralUiObjectList()
@@ -160,10 +160,10 @@ EDySuccess MWorldUIContainers::UnbindActiveUiObject(_MIN_ FWidget& iRefWidget)
   const auto it = std::find_if(
       MDY_BIND_BEGIN_END(this->mPtrActivatedGeneralUiWidgetList), 
       [ptr = &iRefWidget](const auto& ptrWidget) { return ptrWidget == ptr; });
-  if (it == this->mPtrActivatedGeneralUiWidgetList.end()) { return DY_FAILURE; }
+  if (it == this->mPtrActivatedGeneralUiWidgetList.end()) { return EDySuccess::DY_FAILURE; }
   
   FaseErase(this->mPtrActivatedGeneralUiWidgetList, it);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 bool MWorldUIContainers::IsDebugUiExist() const noexcept { return MDY_CHECK_ISNOTEMPTY(this->mDebugUi); }

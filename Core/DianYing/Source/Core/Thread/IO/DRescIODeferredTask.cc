@@ -31,11 +31,11 @@ EDySuccess DRescIODeferredTask::TryRemoveDependentItem(
     if (*it == item) 
     {
       FaseErase(this->mCondition, it);
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
   }
 
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 } /// ::dy namespace

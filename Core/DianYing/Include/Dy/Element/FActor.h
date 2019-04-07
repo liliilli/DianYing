@@ -180,7 +180,7 @@ public:
   /// @brief Attach this actor to picking target pointer variable of internal system.
   void MDY_PRIVATE(AttachPickingTargetFromSystem)(FActor** ioPPtrTarget);
   /// @brief Detach this actor from target pointer variable of internal system.
-  /// If already or not attached to pointer, just do nothing but return DY_FAILURE.
+  /// If already or not attached to pointer, just do nothing but return EDySuccess::DY_FAILURE.
   EDySuccess MDY_PRIVATE(DetachPickingTargetFromSystem)();
 
 private:

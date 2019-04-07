@@ -150,9 +150,9 @@ struct MSound::Impl final
 {
   DY_DEFAULT_PIMPL_CTOR(MSound);
 
-  /// @brief Initialize sound system. If already initialized, (without release) just do nothing and return DY_FAILURE.
+  /// @brief Initialize sound system. If already initialized, (without release) just do nothing and return EDySuccess::DY_FAILURE.
   EDySuccess InitializeSoundSystem();
-  /// @brief Release sound system. If already released, (without initialization) just do nothing and return DY_FAILURE.
+  /// @brief Release sound system. If already released, (without initialization) just do nothing and return EDySuccess::DY_FAILURE.
   /// This function is only called in release phase of Dy engine.
   EDySuccess ReleaseSoundSystem();
 
@@ -266,12 +266,12 @@ EDySuccess MSound::pfInitialize()
 {
   DY_INITIALIZE_PIMPL();
   const auto flag = DY_PIMPL->InitializeSoundSystem();
-  if (flag == DY_FAILURE)
+  if (flag == EDySuccess::DY_FAILURE)
   {
     DyPushLogError("Failed to initialize sound system. Could not create sound instance.");
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 std::unique_ptr<FInstantSound2D> MSound::CreateSound2D(
@@ -354,7 +354,7 @@ EDySuccess MSound::pfRelease()
 {
   DY_PIMPL->ReleaseSoundSystem();
   DY_RESET_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void MSound::Update(TF32 iDt) 

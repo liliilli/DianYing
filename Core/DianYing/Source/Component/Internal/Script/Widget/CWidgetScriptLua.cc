@@ -76,7 +76,7 @@ EDySuccess CWidgetScriptLua::Initialize(const PDyScriptComponentMetaInfo& metaIn
   this->mScriptState.Initialize(desc);
 #endif
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CWidgetScriptLua::Initiate()

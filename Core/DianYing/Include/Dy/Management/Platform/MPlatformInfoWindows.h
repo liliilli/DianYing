@@ -32,8 +32,8 @@ public:
   void ReleaseDep() override final;
 
   /// @brief  Create console window if OS supports. Even though OS does not support console window,
-  /// This function will return DY_SUCCESS because of conformity with remove function.
-  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE. \n
+  /// This function will return EDySuccess::DY_SUCCESS because of conformity with remove function.
+  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE. \n
   MDY_NODISCARD EDySuccess CreateConsoleWindow() override final;
 
   /// @brief  Check if console window is created or not.
@@ -41,7 +41,7 @@ public:
   MDY_NODISCARD bool IsCreatedConsoleWindow() const noexcept override final;
 
   /// @brief  Remove console window when console window is initiailzed before.
-  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE.
+  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess RemoveConsoleWindow() override final;
 
   /// @brief Get cpu usage as 0 ~ 100 percent.

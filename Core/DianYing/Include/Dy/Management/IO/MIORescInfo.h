@@ -90,7 +90,7 @@ private:
   void InsertResult(EResourceType type, void* ptrrawInstance);
 
   /// @brief Try remove information instance with iSpecifier name and iType. \n
-  /// If not exist, return DY_FAILURE.
+  /// If not exist, return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess __TryRemove(const std::string& iSpcifier, EResourceType iType);
 
   template <typename TType>

@@ -29,14 +29,14 @@ public:
   virtual void ReleaseDep() {};
 
   /// @brief  Create console window if OS supports. Even though OS does not support console window,
-  /// This function will return DY_SUCCESS because of conformity with remove function.
-  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE. \n
+  /// This function will return EDySuccess::DY_SUCCESS because of conformity with remove function.
+  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE. \n
   MDY_NODISCARD virtual EDySuccess CreateConsoleWindow() = 0;
   /// @brief  Check if console window is created or not.
   /// @return If created anyway, return true or false.
   MDY_NODISCARD virtual bool IsCreatedConsoleWindow() const noexcept = 0;
   /// @brief  Remove console window when console window is initiailzed before.
-  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE.
+  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   MDY_NODISCARD virtual EDySuccess RemoveConsoleWindow() = 0;
 
   /// @brief Get cpu usage overall percentage. (0 ~ 100%)

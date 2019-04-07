@@ -134,7 +134,7 @@ inline EDySuccess MRendering::Impl::Initialize()
     0.f, TF32(width), 0.f, TF32(height), -1.f, 100.0f
   );
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MRendering::Impl::CreateRenderPipeline(const std::string& iPipelineSpecifier)
@@ -146,7 +146,7 @@ inline EDySuccess MRendering::Impl::CreateRenderPipeline(const std::string& iPip
     }) == true)
   {
 
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   const auto& managerMeta = MIOMeta::GetInstance();
@@ -156,20 +156,20 @@ inline EDySuccess MRendering::Impl::CreateRenderPipeline(const std::string& iPip
     DyPushLogError(
       "Failed to create render pipeline, {}. Meta information is not exist.", 
       iPipelineSpecifier);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Second, check child render pipeline and local render item is exist on Dy system.
   auto& entryRenderPipeline = managerMeta.GetRenderPipeline(iPipelineSpecifier);
   if (PDyRenderPipelineInstanceMetaInfo::HasValidChildItems(entryRenderPipeline) == false)
   {
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Create each render pipeline and render item into list, with wrapping to control handlers.
   // First, try to create render pipeline.
   auto optPipelineList = PDyRenderPipelineInstanceMetaInfo::GetAllChildPipelineNames(entryRenderPipeline);
-  if (optPipelineList.has_value() == false) { return DY_FAILURE; }
+  if (optPipelineList.has_value() == false) { return EDySuccess::DY_FAILURE; }
 
   (*optPipelineList).emplace(iPipelineSpecifier);
   for (auto& renderPipelineName : (*optPipelineList))
@@ -187,7 +187,7 @@ inline EDySuccess MRendering::Impl::CreateRenderPipeline(const std::string& iPip
   
   // Second, try to create render item.
   auto optItemList = PDyRenderPipelineInstanceMetaInfo::GetAllRenderItemNames(entryRenderPipeline);
-  if (optItemList.has_value() == false) { return DY_FAILURE; }
+  if (optItemList.has_value() == false) { return EDySuccess::DY_FAILURE; }
 
   for (auto& renderItemName : (*optItemList))
   {
@@ -270,14 +270,14 @@ inline EDySuccess MRendering::Impl::RemoveRenderPipeline(const std::string& iPip
     DyPushLogError(
       "Failed to remove render pipeline, {}. Matched specifier is not exist.",
       iPipelineSpecifier);
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // Remove.
   EraseRemoveIf(this->mEntryRenderPipelines, 
     [iPipelineSpecifier](const auto& pipeline) { return pipeline.GetName() == iPipelineSpecifier; }
   );
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline void MRendering::Impl::PreRender(TF32 dt)
@@ -419,9 +419,9 @@ inline EDySuccess MRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalLight)(CLig
   if (this->mMainDirectionalLight == &iRefLight) 
   {
     this->mMainDirectionalLight = nullptr;
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
-  else { return DY_FAILURE; }
+  else { return EDySuccess::DY_FAILURE; }
 }
 
 inline CLightDirectional* MRendering::Impl::GetPtrMainDirectionalShadow() const noexcept
@@ -439,9 +439,9 @@ inline EDySuccess MRendering::Impl::MDY_PRIVATE(UnbindMainDirectionalShadow)(CLi
   if (this->mMainDirectionalShadow == &iRefLight) 
   {
     this->mMainDirectionalShadow = nullptr;
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
-  else { return DY_FAILURE; }
+  else { return EDySuccess::DY_FAILURE; }
 }
 
 inline const DMat4& MRendering::Impl::GetGeneralUiProjectionMatrix() const noexcept

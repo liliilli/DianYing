@@ -26,7 +26,7 @@ class FBtRenderPipelineWidget final : public ARenderPipeline
 {
   MDY_REGISTER_RESOURCE_RENDER_PIPELINE(FBtRenderPipelineWidget, "dyBtDefaultWidget")
 public:
-  EDySuccess OnPreRenderCheckCondition() override final { return DY_SUCCESS; }
+  EDySuccess OnPreRenderCheckCondition() override final { return EDySuccess::DY_SUCCESS; }
   void OnFailedCheckCondition() override final {}
   void OnSetupRenderingSetting() override final {}
   void OnReleaseRenderingSetting() override final {}

@@ -45,7 +45,7 @@ EDySuccess FWidgetBasicGaugeBar::Initialize(const PDyMetaWidgetBarDescriptor& ob
     this->Activate();
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FWidgetBasicGaugeBar::TryActivateInstance()

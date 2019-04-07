@@ -62,12 +62,12 @@ EDySuccess MDebug::pfInitialize()
     _->second.mAxisSpecifierName = specifierName;
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MDebug::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
@@ -84,7 +84,7 @@ EDySuccess MDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
       if (gEngine->IsInGameUpdatePaused() == true)  { gEngine->SetInGameUpdatePause(false); }
       else                                          { gEngine->SetInGameUpdatePause(true); }
 
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
 
     // Check F2.
@@ -110,11 +110,11 @@ EDySuccess MDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
         gEngine->SetInGameUpdatePause(false);
       }
 
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
   }
 
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 void MDebug::pUpdateInputKeys()

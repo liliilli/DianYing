@@ -50,7 +50,7 @@ EDySuccess CyPhysicsColliderCapsule::Initialize(_MIN_ const PDyColliderComponent
   this->mHalfHeight = refDetail.mHalfHeight;
 
   if (desc.mInitiallyActivated == true) { this->Activate(); }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CyPhysicsColliderCapsule::Release()

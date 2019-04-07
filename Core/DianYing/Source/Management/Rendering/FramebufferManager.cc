@@ -21,12 +21,12 @@ namespace dy
 
 EDySuccess MDyFramebuffer::pfInitialize()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MDyFramebuffer::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MDyFramebuffer::SetAttachmentInformation(const PDyGlAttachmentInformation& attachmentInfo)
@@ -34,7 +34,7 @@ EDySuccess MDyFramebuffer::SetAttachmentInformation(const PDyGlAttachmentInforma
   if (this->mValidAttachmentList.find(attachmentInfo.mAttachmentName) != this->mValidAttachmentList.end())
   {
     MDY_ASSERT_MSG(false, "attachmentInfo.mAttachmentName must not be duplicated in container's any arbitary attachment instance.");
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // First, make a vacant space for information.
@@ -46,7 +46,7 @@ EDySuccess MDyFramebuffer::SetAttachmentInformation(const PDyGlAttachmentInforma
   it->second.swap(heapInstance);
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(it->second), "Failed to swapping address for attachmentInfo. Unexpected error occurred");
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInformation& bufferInfo)
@@ -54,7 +54,7 @@ EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInform
   if (this->mValidFramebufferList.find(bufferInfo.mFrameBufferName) != this->mValidFramebufferList.end())
   {
     MDY_ASSERT_MSG(false, "bufferInfo.mFrameBufferName must not be duplicated in container's any arbitary framebuffer instance.");
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   // First, make a vacant space for information.
@@ -91,7 +91,7 @@ EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInform
     PDyGlAttachmentInformation& attachmentInstance = *this->mValidAttachmentList[attachmentCursor.mAttachmentName];
 
     // Check for parameter types.
-    MDY_ASSERT_MSG(DyCheckTextureParameterList(attachmentInstance.mParameterList) == DY_SUCCESS, "FFFFFFFF");
+    MDY_ASSERT_MSG(DyCheckTextureParameterList(attachmentInstance.mParameterList) == EDySuccess::DY_SUCCESS, "FFFFFFFF");
     attachmentInstance.mAttachmentId = attachmentBufferIdList[i];
 
     // Bind texture.
@@ -154,13 +154,13 @@ EDySuccess MDyFramebuffer::InitializeNewFrameBuffer(const PDyGlFrameBufferInform
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MDyFramebuffer::RemoveFrameBuffer(_MIN_ const std::string& framebufferName)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 PDyGlFrameBufferInformation* MDyFramebuffer::GetFrameBufferPointer(_MIN_ const std::string& framebufferName)

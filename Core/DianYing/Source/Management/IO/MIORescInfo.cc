@@ -22,12 +22,12 @@ namespace dy
 
 EDySuccess MIORescInfo::pfInitialize()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MIORescInfo::pfRelease()
 {
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void MIORescInfo::InsertResult(EResourceType type, void* ptrrawInstance)
@@ -102,7 +102,7 @@ EDySuccess MIORescInfo::MDY_PRIVATE(TryRemove)(const std::string& iSpecifier, ER
   case EResourceType::Sound:        { return this->mSoundContainer.Remove(iSpecifier); }
   case EResourceType::GLAttachment: { return this->mAttachmentContainer.Remove(iSpecifier); } 
   case EResourceType::GLFrameBuffer:{ return this->mFrameBufferContainer.Remove(iSpecifier); } 
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE);
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDySuccess::DY_FAILURE);
   }
 }
 

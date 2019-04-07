@@ -141,13 +141,13 @@ PDyMetaFontInformation PDyMetaFontInformation::CreateWithJson(const nlohmann::js
   /// @param  fontAtlas Input json atlas.
   static auto CheckHeaderValidity = [](const nlohmann::json& fontAtlas) -> EDySuccess
   {
-    if (json::HasJsonKey(fontAtlas, header_SpecifierName) == false)           { return DY_FAILURE; }
-    if (json::HasJsonKey(fontAtlas, header_FontType) == false)                { return DY_FAILURE; }
-    if (json::HasJsonKey(fontAtlas, header_FontInformationPath) == false)     { return DY_FAILURE; }
-    if (json::HasJsonKey(fontAtlas, header_FontTexturePathList) == false)     { return DY_FAILURE; }
-    if (json::HasJsonKey(fontAtlas, header_FontAlternativeFilePath) == false) { return DY_FAILURE; }
-    if (json::HasJsonKey(fontAtlas, header_IsEnableRuntimeCreation) == false) { return DY_FAILURE; }
-    return DY_SUCCESS;
+    if (json::HasJsonKey(fontAtlas, header_SpecifierName) == false)           { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_FontType) == false)                { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_FontInformationPath) == false)     { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_FontTexturePathList) == false)     { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_FontAlternativeFilePath) == false) { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(fontAtlas, header_IsEnableRuntimeCreation) == false) { return EDySuccess::DY_FAILURE; }
+    return EDySuccess::DY_SUCCESS;
   };
 
   /// @brief  Return PDyMetaFontInformation::EFontType from string. when not exist, just return __Error value.
@@ -167,7 +167,7 @@ PDyMetaFontInformation PDyMetaFontInformation::CreateWithJson(const nlohmann::js
 
   // (1) Pre-validity test.
   MDY_ASSERT_MSG(
-    CheckHeaderValidity(fontAtlas) == DY_SUCCESS, 
+    CheckHeaderValidity(fontAtlas) == EDySuccess::DY_SUCCESS, 
     "Font meta object must have all headers correctly.");
 
   // (2) Get Information from json atlas.

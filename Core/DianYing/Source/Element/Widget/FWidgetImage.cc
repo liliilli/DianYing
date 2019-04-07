@@ -40,7 +40,7 @@ EDySuccess FWidgetImage::Initialize(const PDyMetaWidgetImageDescriptor& objectMe
     this->Activate();
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FWidgetImage::Release() { }

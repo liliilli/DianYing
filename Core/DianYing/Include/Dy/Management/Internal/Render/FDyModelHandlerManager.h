@@ -53,9 +53,9 @@ public:
 
   /// @brief Try create handler, 
   /// given `iModelSpecifier` has a valid Reference Instance from `Resource` with `Model`.
-  /// If not, this function will return DY_FAILURE.
+  /// If not, this function will return EDySuccess::DY_FAILURE.
   /// But If model specifier is exist in meta Information (not instanted), 
-  /// just create and require resource and return DY_SUCCESS anyway.
+  /// just create and require resource and return EDySuccess::DY_SUCCESS anyway.
   MDY_NODISCARD EDySuccess TryCreateHandler(_MIN_ const std::string& iModelSpecifier) noexcept;
 
   /// @brief

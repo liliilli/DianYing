@@ -98,10 +98,10 @@ TU32 FResourceFrameBufferGeneral::GetTargetFrameBufferId() const noexcept
 
 EDySuccess FResourceFrameBufferGeneral::BindFrameBuffer() const noexcept
 {
-  if (this->GetTargetFrameBufferId() == 0) { return DY_FAILURE; }
+  if (this->GetTargetFrameBufferId() == 0) { return EDySuccess::DY_FAILURE; }
 
   XGLWrapper::BindFrameBufferObject(this->GetTargetFrameBufferId());
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

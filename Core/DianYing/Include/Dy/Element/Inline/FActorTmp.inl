@@ -129,10 +129,10 @@ EDySuccess FActor::RemoveComponent(TArgs&&... args)
       [](const auto& item) { return item->IsTypeMatched(TComponent::__mHashVal); }
     );
 
-    if (it == componentList.end()) { return DY_FAILURE; }
+    if (it == componentList.end()) { return EDySuccess::DY_FAILURE; }
     this->pReleaseComponent(*it);
     componentList.erase(it);
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   }
   else if constexpr (std::is_same_v<CActorScript, TComponent>)
   {
@@ -140,7 +140,7 @@ EDySuccess FActor::RemoveComponent(TArgs&&... args)
     return this->RemoveScriptComponent(std::forward<TArgs>(args)...);
   }
 
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 }

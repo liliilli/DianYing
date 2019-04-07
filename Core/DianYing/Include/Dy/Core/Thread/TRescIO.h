@@ -92,7 +92,7 @@ public:
   void BindSleepCallbackFunction(_MIN_ std::function<void(void)> iCbFunc);
 
   /// @brief Try call callback function when if only Thread I/O is slept.
-  /// If not slept or exist callback function, just return DY_FAILURE.
+  /// If not slept or exist callback function, just return EDySuccess::DY_FAILURE.
   EDySuccess outTryCallSleptCallbackFunction();
 
   /// @brief Try Garbage collect of Reference Instance with resource as Scope and Style, which
@@ -187,22 +187,22 @@ private:
   MDY_NODISCARD bool pIsReferenceInstanceExist(_MIN_ const std::string& specifier, _MIN_ EResourceType type, _MIN_ EResourceStyle style);
 
   /// @brief Try bind binder instance to Resource Reference Instance.
-  /// If not found RI, just return DY_FAILURE.
+  /// If not found RI, just return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToResourceRI
   (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder);
 
   /// @brief Try bind binder instance to Information Reference Instance.
-  /// If not found RI, just return DY_FAILURE.
+  /// If not found RI, just return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess TryBindBinderToInformationRI
   (const std::string & iSpecifier, EResourceType iType, IBinderBase& iPtrBinder);
 
   /// @brief Try detach binder instance from Resource Reference Instance.
-  /// If nnot found RI, just return DY_FAILURE.
+  /// If nnot found RI, just return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromResourceRI
   (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder);
 
   /// @brief Try detach binder instance from Information Reference Instance.
-  /// If nnot found RI, just return DY_FAILURE.
+  /// If nnot found RI, just return EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess TryDetachBinderFromInformationRI
   (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder);
 

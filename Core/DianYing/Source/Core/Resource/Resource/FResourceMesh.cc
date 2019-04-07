@@ -110,7 +110,7 @@ EDySuccess FResourceMesh::BindVertexArray() const noexcept
   if (this->mBufferIdInformation.mVao == 0) 
   { 
     DyPushLogDebugError("Failed to bind vertex array object. VAO is not created.");
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
   XGLWrapper::BindVertexArrayObject(this->mBufferIdInformation.mVao);
@@ -121,7 +121,7 @@ EDySuccess FResourceMesh::BindVertexArray() const noexcept
   {
     glBindVertexBuffer(1, *this->mInstancingBufferId, 0, sizeof(DMat4));
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 bool FResourceMesh::IsSupportingInstancing() const noexcept

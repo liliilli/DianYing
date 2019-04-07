@@ -69,7 +69,7 @@ public:
   EDySuccess TryUpdateUniformStruct(const TType& iContainer);
 
   /// @brief Try insert texture requisition. \n
-  /// If required `insertId` is out of bound of count of available texture, just do nothing but return DY_FAILURE.
+  /// If required `insertId` is out of bound of count of available texture, just do nothing but return EDySuccess::DY_FAILURE.
   /// When successful, find proper texture type from container, make requisition issue item and insert to queue. \n
   /// This function does not update texture binding status but need to call `TryUpdateUniformList` function.
   EDySuccess TryInsertTextureRequisition(TU32 insertId, TU32 textureId);

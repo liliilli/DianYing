@@ -265,13 +265,13 @@ void MSetting::SetVSyncMode(bool enableVsync) noexcept
 
 EDySuccess MSetting::MDY_PRIVATE(CheckObjectTagIsExist)(const std::string& iSpecifiedTag) const noexcept
 {
-  if (iSpecifiedTag.empty() == true) { return DY_SUCCESS; }
+  if (iSpecifiedTag.empty() == true) { return EDySuccess::DY_SUCCESS; }
   for (const auto& tagSpecifier : this->mTag.mObjectTag)
   {
-    if (tagSpecifier == iSpecifiedTag) { return DY_SUCCESS; }
+    if (tagSpecifier == iSpecifiedTag) { return EDySuccess::DY_SUCCESS; }
   }
 
-  return DY_FAILURE;
+  return EDySuccess::DY_FAILURE;
 }
 
 const std::string& MSetting::MDY_PRIVATE(GetEntrySettingFile)() const noexcept
@@ -449,9 +449,9 @@ EDySuccess MSetting::pfInitialize()
     case EDyRenderingApi::DirectX11:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyRenderingApi::DirectX12:  MDY_NOT_IMPLEMENTED_ASSERT(); break;
     case EDyRenderingApi::OpenGL:     DyPushLogDebugInfo("{} | Graphics API : {}", "Feature", "OpenGL"); break;
-    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(DY_FAILURE); 
+    default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(EDySuccess::DY_FAILURE); 
     }
-    return DY_SUCCESS;
+    return EDySuccess::DY_SUCCESS;
   };
 
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -505,13 +505,13 @@ EDySuccess MSetting::pfInitialize()
   else { MDY_UNEXPECTED_BRANCH(); }
 
   this->mIsInitialized = true;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MSetting::pfRelease()
 {
   DyPushLogDebugInfo("{} | MSetting::pfRelease()", "Function call");
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

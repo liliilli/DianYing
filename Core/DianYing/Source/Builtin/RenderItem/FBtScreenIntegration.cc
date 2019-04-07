@@ -39,10 +39,10 @@ EDySuccess FBtRenderItemScreenIntegeration::OnPreRenderCheckCondition()
   ||  this->mBinderTriangle.IsResourceExist() == false
   ||  this->mBinderAttSceneFinal.IsResourceExist() == false) 
   { 
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FBtRenderItemScreenIntegeration::OnSetupRenderingSetting()

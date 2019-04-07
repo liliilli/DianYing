@@ -30,7 +30,7 @@ void FBtRenderWidgetGeneral::__ConstructionHelper
 
 EDySuccess FBtRenderWidgetGeneral::OnPreRenderCheckCondition()
 {
-  return this->AreResourcesValid() ? DY_SUCCESS : DY_FAILURE;
+  return this->AreResourcesValid() ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
 }
 
 bool FBtRenderWidgetGeneral::AreResourcesValid()

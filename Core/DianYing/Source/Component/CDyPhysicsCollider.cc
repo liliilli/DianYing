@@ -62,7 +62,7 @@ EDySuccess CBasePhysicsCollider::Initialize(_MIN_ const PDyColliderComponentMeta
     MDY_ASSERT_MSG_FORCE(it != collisionLayerList.mCollisionTag.end(), "Not valid collision tag name.");
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CBasePhysicsCollider::UpdateBound(const DBounds3D& iArea)

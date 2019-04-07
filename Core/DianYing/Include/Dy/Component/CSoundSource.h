@@ -50,7 +50,7 @@ public:
   MDY_SET_CRC32_HASH_WITH_TYPE(CSoundSource);
 
   /// @brief  Initialize with descriptor.
-  /// @return If successful, return DY_SUCCESS or DY_FAILURE.
+  /// @return If successful, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE.
   MDY_NODISCARD EDySuccess Initialize(_MIN_ const PDySoundSourceComponentMetaInfo& descriptor) override final;
   /// @brief Release component.
   void Release() override final;

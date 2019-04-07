@@ -171,7 +171,7 @@ public:
   /// @brief Attach this actor to picking target pointer variable of internal system.
   void MDY_PRIVATE(AttachPickingTargetFromSystem)(_MINOUT_ FActor** iPPtrTarget);
   /// @brief Detach this actor from target pointer variable of internal system.
-  /// If already or not attached to pointer, just do nothing but return DY_FAILURE.
+  /// If already or not attached to pointer, just do nothing but return EDySuccess::DY_FAILURE.
   EDySuccess MDY_PRIVATE(DetachPickingTargetFromSystem)();
     
   CActorScript* pAddScriptComponent(const PDyScriptComponentMetaInfo& iInfo)
@@ -306,10 +306,10 @@ public:
         [](const auto& item) { return item->IsTypeMatched(TComponent::__mHashVal); }
       );
 
-      if (it == this->mComponentList.end()) { return DY_FAILURE; }
+      if (it == this->mComponentList.end()) { return EDySuccess::DY_FAILURE; }
       this->ReleaseComponent(*it);
       this->mComponentList.erase(it);
-      return DY_SUCCESS;
+      return EDySuccess::DY_SUCCESS;
     }
     else if constexpr (std::is_same_v<CActorScript, TComponent>)
     {
@@ -317,7 +317,7 @@ public:
       return this->RemoveScriptComponent(std::forward<TArgs>(args)...);
     }
 
-    return DY_FAILURE;
+    return EDySuccess::DY_FAILURE;
   }
 
   /// Actual actor type to discriminate actor type is so cast object with statically.

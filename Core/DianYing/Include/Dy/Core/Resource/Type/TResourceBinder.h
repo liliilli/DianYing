@@ -41,8 +41,8 @@ public:
   {
     // If resource is already exist and bound by something. 
     // Let it be until new resource is bounded soon.
-    // If flag == DY_FAILURE, iNewSpecifier will be stored as deferred resource specifier.
-    if (const auto flag = TSuper::pTryRequireResource(iNewSpecifier); flag == DY_SUCCESS) 
+    // If flag == EDySuccess::DY_FAILURE, iNewSpecifier will be stored as deferred resource specifier.
+    if (const auto flag = TSuper::pTryRequireResource(iNewSpecifier); flag == EDySuccess::DY_SUCCESS) 
     { 
       this->mSpecifierName = iNewSpecifier; this->Process(); 
     }
@@ -68,7 +68,8 @@ public:
   /// If resource is already bound to binder handle, detach it first and newly bind another resource into it.
   void TryRequireResource(_MIN_ const std::string& iNewSpecifier)
   {
-    if (const auto flag = pTryRequireResource(iNewSpecifier); flag == DY_SUCCESS) 
+    if (const auto flag = pTryRequireResource(iNewSpecifier); 
+        flag == EDySuccess::DY_SUCCESS) 
     { 
       this->mSpecifierName = iNewSpecifier; this->Process(); 
     }
@@ -94,7 +95,8 @@ public:
   /// If resource is already bound to binder handle, detach it first and newly bind another resource into it.
   void TryRequireResource(_MIN_ const std::string& iNewSpecifier)
   {
-    if (const auto flag = pTryRequireResource(iNewSpecifier); flag == DY_SUCCESS) 
+    if (const auto flag = pTryRequireResource(iNewSpecifier); 
+        flag == EDySuccess::DY_SUCCESS) 
     { 
       this->mSpecifierName = iNewSpecifier; this->Process(); 
     }

@@ -60,7 +60,7 @@ EDySuccess CLightDirectional::Initialize(const PDirLightComponentMetaInfo& metaI
 
   // Set first time flag to false to use second time flag logics.
   if (metaInfo.mInitiallyActivated == true) { this->Activate(); }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void CLightDirectional::Release()
@@ -325,9 +325,9 @@ void CLightDirectional::FrustumBoundingBoxLightViewSpace(
 
 EDySuccess CLightDirectional::pTryUpdateDirectionalLight()
 {
-  if (this->mIsBindedToRenderingManagerAsLighting == false) { return DY_FAILURE; }
+  if (this->mIsBindedToRenderingManagerAsLighting == false) { return EDySuccess::DY_FAILURE; }
   this->mIsNeededUpdateValueToGpu = false;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
   
 const DUboDirectionalLight& CLightDirectional::GetUboLightInfo() const noexcept
@@ -370,46 +370,46 @@ void CLightDirectional::TryDeactivateInstance()
 
 EDySuccess CLightDirectional::pTryActivateDirectionalLight()
 {
-  if (this->mIsBindedToRenderingManagerAsLighting == true)  { return DY_FAILURE; }
-  if (this->mIsCastingLight == false)                       { return DY_FAILURE; }
+  if (this->mIsBindedToRenderingManagerAsLighting == true)  { return EDySuccess::DY_FAILURE; }
+  if (this->mIsCastingLight == false)                       { return EDySuccess::DY_FAILURE; }
   this->mIsBindedToRenderingManagerAsLighting = true;
 
   // Bind and get a index of UBO array.
   MRendering::GetInstance().MDY_PRIVATE(BindMainDirectionalLight)(*this);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess CLightDirectional::pTryDeactivateDirectionalLight()
 {
-  if (this->mIsBindedToRenderingManagerAsLighting == false) { return DY_FAILURE; }
-  if (this->mIsCastingLight == true)                        { return DY_FAILURE; }
+  if (this->mIsBindedToRenderingManagerAsLighting == false) { return EDySuccess::DY_FAILURE; }
+  if (this->mIsCastingLight == true)                        { return EDySuccess::DY_FAILURE; }
   this->mIsBindedToRenderingManagerAsLighting = false;
 
   // Try Unbind from lighting system.
   MRendering::GetInstance().MDY_PRIVATE(UnbindMainDirectionalLight)(*this);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess CLightDirectional::pTryActivateCastingShadow()
 {
-  if (this->mIsBindedToRenderingManagerAsShadow == true)    { return DY_FAILURE; }
-  if (this->mIsCastingShadow == false)                      { return DY_FAILURE; }
+  if (this->mIsBindedToRenderingManagerAsShadow == true)    { return EDySuccess::DY_FAILURE; }
+  if (this->mIsCastingShadow == false)                      { return EDySuccess::DY_FAILURE; }
   this->mIsBindedToRenderingManagerAsShadow = true;
 
   // Try bind to lighting system.
   MRendering::GetInstance().MDY_PRIVATE(BindMainDirectionalShadow)(*this);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess CLightDirectional::pTryDeactivateCastingShadow()
 {
-  if (this->mIsBindedToRenderingManagerAsShadow == false)   { return DY_FAILURE; }
-  if (this->mIsCastingShadow == true)                       { return DY_FAILURE; }
+  if (this->mIsBindedToRenderingManagerAsShadow == false)   { return EDySuccess::DY_FAILURE; }
+  if (this->mIsCastingShadow == true)                       { return EDySuccess::DY_FAILURE; }
   this->mIsBindedToRenderingManagerAsShadow = false;
 
   // Unbind from shadow system.
   MRendering::GetInstance().MDY_PRIVATE(UnbindMainDirectionalShadow)(*this);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

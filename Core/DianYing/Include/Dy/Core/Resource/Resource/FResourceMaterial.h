@@ -71,11 +71,11 @@ public:
   }
 
   /// @brief Update texture list using shader. \n
-  /// When either texture list or material or shader is not exist, just do nothing but return DY_FAILURE.
+  /// When either texture list or material or shader is not exist, just do nothing but return EDySuccess::DY_FAILURE.
   EDySuccess TryUpdateTextureList() noexcept;
 
   /// @brief Detach texture list which is bound to present material shader.
-  /// When either texture list or material or shader is not exist, just do nothing but return DY_FAILURE.
+  /// When either texture list or material or shader is not exist, just do nothing but return EDySuccess::DY_FAILURE.
   EDySuccess TryDetachTextureListFromShader() noexcept;
 
 private:

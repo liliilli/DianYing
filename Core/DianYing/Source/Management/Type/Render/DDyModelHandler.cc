@@ -50,14 +50,14 @@ bool DDyModelHandler::IsModelResourceValid() const noexcept
 
 EDySuccess DDyModelHandler::TryCreateActorBinding(_MIN_ FActor& iRefActor)
 {
-  // If already exist, just return DY_FAILURE.
-  if (this->IsActorItemExist(iRefActor) == true) { return DY_FAILURE; }
+  // If already exist, just return EDySuccess::DY_FAILURE.
+  if (this->IsActorItemExist(iRefActor) == true) { return EDySuccess::DY_FAILURE; }
 
-  // Otherwise, just return DY_SUCCESS with creation.
+  // Otherwise, just return EDySuccess::DY_SUCCESS with creation.
   auto [it, isSucceeded] = this->mActorInformation.try_emplace(&iRefActor, DActorInfo{});
   MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DDyModelHandler::TryRemoveActorBinding(_MIN_ FActor& iRefActor)
@@ -65,74 +65,74 @@ EDySuccess DDyModelHandler::TryRemoveActorBinding(_MIN_ FActor& iRefActor)
   if (this->IsActorNeedToBeGc(iRefActor) == false) 
   { 
     
-    return DY_FAILURE; 
+    return EDySuccess::DY_FAILURE; 
   }
 
   this->mActorInformation.erase(&iRefActor);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DDyModelHandler::BindFilter(_MIN_ FActor& iRefActor, _MIN_ CModelFilter& iRefFilter)
 {
-  // If not exist, return DY_FAILURE.
-  if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
+  // If not exist, return EDySuccess::DY_FAILURE.
+  if (this->IsActorItemExist(iRefActor) == false) { return EDySuccess::DY_FAILURE; }
 
   // Otherwise, bind filter.
   auto& item = this->mActorInformation[&iRefActor];
   item.mPtrCompModelFilter = &iRefFilter;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DDyModelHandler::BindRenderer(_MIN_ FActor& iRefActor, _MIN_ CModelRenderer& iRefComp)
 {
-  // If not exist, return DY_FAILURE.
-  if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
+  // If not exist, return EDySuccess::DY_FAILURE.
+  if (this->IsActorItemExist(iRefActor) == false) { return EDySuccess::DY_FAILURE; }
 
   // Otherwise, bind filter.
   auto& item = this->mActorInformation[&iRefActor];
   item.mPtrModelRenderer = &iRefComp;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DDyModelHandler::BindAnimator(_MIN_ FActor& iRefActor, _MIN_ CModelAnimator& iRefComp)
 {
-  // If not exist, return DY_FAILURE.
-  if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
+  // If not exist, return EDySuccess::DY_FAILURE.
+  if (this->IsActorItemExist(iRefActor) == false) { return EDySuccess::DY_FAILURE; }
 
   // Otherwise, bind filter.
   auto& item = this->mActorInformation[&iRefActor];
   item.mPtrModelAnimator = &iRefComp;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DDyModelHandler::UnbindFilter(_MIN_ FActor& iRefActor)
 {
-  // If not exist, return DY_FAILURE.
-  if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
+  // If not exist, return EDySuccess::DY_FAILURE.
+  if (this->IsActorItemExist(iRefActor) == false) { return EDySuccess::DY_FAILURE; }
 
   auto& item = this->mActorInformation[&iRefActor];
   item.mPtrCompModelFilter = nullptr;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DDyModelHandler::UnbindRenderer(_MIN_ FActor& iRefActor)
 {
-  // If not exist, return DY_FAILURE.
-  if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
+  // If not exist, return EDySuccess::DY_FAILURE.
+  if (this->IsActorItemExist(iRefActor) == false) { return EDySuccess::DY_FAILURE; }
 
   auto& item = this->mActorInformation[&iRefActor];
   item.mPtrModelRenderer = nullptr;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess DDyModelHandler::UnbindAnimator(_MIN_ FActor& iRefActor)
 {
-  // If not exist, return DY_FAILURE.
-  if (this->IsActorItemExist(iRefActor) == false) { return DY_FAILURE; }
+  // If not exist, return EDySuccess::DY_FAILURE.
+  if (this->IsActorItemExist(iRefActor) == false) { return EDySuccess::DY_FAILURE; }
 
   auto& item = this->mActorInformation[&iRefActor];
   item.mPtrModelAnimator = nullptr;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 const DDyModelHandler::TContainer& DDyModelHandler::GetActorContainer() const noexcept

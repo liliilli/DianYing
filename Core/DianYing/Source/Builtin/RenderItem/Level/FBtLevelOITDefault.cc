@@ -45,7 +45,7 @@ EDySuccess FBtRenderLevelOitDefault::OnPreRenderCheckCondition()
   return list.empty() == false
       && this->mBinderFrameBuffer.IsResourceExist() == true 
       && this->mCompareZDepth.IsResourceExist() == true 
-    ? DY_SUCCESS : DY_FAILURE;
+    ? EDySuccess::DY_SUCCESS : EDySuccess::DY_FAILURE;
 }
 
 void FBtRenderLevelOitDefault::OnFailedCheckCondition()

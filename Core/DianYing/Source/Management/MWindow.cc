@@ -89,7 +89,7 @@ struct MWindow::Impl final : public IPlatformDependent
   /// @brief Check window is should closed this time.
   bool IsWindowShouldClose() const noexcept;
 
-  /// @brief Terminate window. if terminated already, just return DY_FAILURE. \n
+  /// @brief Terminate window. if terminated already, just return EDySuccess::DY_FAILURE. \n
   /// This function must be called in main thread.
   EDySuccess MDY_PRIVATE(TerminateWindow)() noexcept;
 
@@ -99,14 +99,14 @@ struct MWindow::Impl final : public IPlatformDependent
   const std::array<GLFWwindow*, 2>& GetGLWorkerWindowList() const noexcept;
 
   /// @brief  Create console window if OS supports. Even though OS does not support console window,
-  /// This function will return DY_SUCCESS because of conformity with remove function.
-  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE. \n
+  /// This function will return EDySuccess::DY_SUCCESS because of conformity with remove function.
+  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE. \n
   EDySuccess CreateConsoleWindow() override final;
   /// @brief  Check if console window is created or not.
   /// @return If created anyway, return true or false
   bool IsCreatedConsoleWindow() const noexcept override final;
   /// @brief  Remove console window when console window is initiailzed before.
-  /// @return If succeeded, return DY_SUCCESS or DY_FAILURE
+  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE
   EDySuccess RemoveConsoleWindow() override final;
 
   /// @brief Get cpu usage overall percentage. (0 ~ 100%)
@@ -188,13 +188,13 @@ std::optional<std::string> MWindow::GetFontPathOnSystem(const std::string& iFont
 EDySuccess MWindow::pfInitialize()
 {
   DY_INITIALIZE_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess MWindow::pfRelease()
 {
   DY_RESET_PIMPL();
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 DY_DEFINE_PIMPL(MWindow);

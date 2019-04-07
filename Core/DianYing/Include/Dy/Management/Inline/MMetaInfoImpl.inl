@@ -210,9 +210,9 @@ inline EDySuccess MIOMeta::Impl::pReadPrefabResourceMetaInformation(const std::s
   static auto CheckPrefabMetaCategory = []( const nlohmann::json& atlas) -> EDySuccess
   {
     using namespace json;
-    if (json::HasJsonKey(atlas, sCategoryMeta) == false)       { return DY_FAILURE; }
-    if (json::HasJsonKey(atlas, sCategoryObjectList) == false) { return DY_FAILURE; }
-    return DY_SUCCESS;
+    if (json::HasJsonKey(atlas, sCategoryMeta) == false)       { return EDySuccess::DY_FAILURE; }
+    if (json::HasJsonKey(atlas, sCategoryObjectList) == false) { return EDySuccess::DY_FAILURE; }
+    return EDySuccess::DY_SUCCESS;
   };
 
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -375,7 +375,7 @@ inline EDySuccess MIOMeta::Impl::pReadScriptMetaAtlas(const nlohmann::json& iJso
     MDY_ASSERT_MSG(isSucceeded == true, "Unexpected error occurred.");
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadPrefabMetaAtlas(const nlohmann::json& iJson)
@@ -409,7 +409,7 @@ inline EDySuccess MIOMeta::Impl::pReadPrefabMetaAtlas(const nlohmann::json& iJso
     const auto name = ptrsmtPrefabObject->mSpecifierName;
     this->mPrefabMetaInfo.try_emplace(name, std::move(ptrsmtPrefabObject));
   }
-  return DY_SUCCESS; 
+  return EDySuccess::DY_SUCCESS; 
 }
 
 inline EDySuccess MIOMeta::Impl::pReadWidgetMetaAtlas(const nlohmann::json& iJson)
@@ -420,7 +420,7 @@ inline EDySuccess MIOMeta::Impl::pReadWidgetMetaAtlas(const nlohmann::json& iJso
     MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
     this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadFontMetaAtlas(const nlohmann::json& iJson)
@@ -432,7 +432,7 @@ inline EDySuccess MIOMeta::Impl::pReadFontMetaAtlas(const nlohmann::json& iJson)
     auto [_, isSucceeded] = this->mFontMetaInfo.try_emplace(fontInfo.mSpecifierName, fontInfo);
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Font meta information creation must be succeeded.");
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadLevelMetaAtlas(const nlohmann::json& iJson)
@@ -446,7 +446,7 @@ inline EDySuccess MIOMeta::Impl::pReadLevelMetaAtlas(const nlohmann::json& iJson
     auto [_, isSucceeded] = this->mLevelMetaInfo.try_emplace(metaInfo.mLevelName, metaInfo);
     MDY_ASSERT(isSucceeded == true);
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadShaderMetaAtlas(const nlohmann::json& iJson)
@@ -459,7 +459,7 @@ inline EDySuccess MIOMeta::Impl::pReadShaderMetaAtlas(const nlohmann::json& iJso
     auto [it, isSucceeded] = this->mShaderMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadSoundMetaAtlas(const nlohmann::json& iJson)
@@ -472,7 +472,7 @@ inline EDySuccess MIOMeta::Impl::pReadSoundMetaAtlas(const nlohmann::json& iJson
     auto [it, isSucceeded] = this->mSoundMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadTextureMetaAtlas(const nlohmann::json& iJson)
@@ -485,7 +485,7 @@ inline EDySuccess MIOMeta::Impl::pReadTextureMetaAtlas(const nlohmann::json& iJs
     auto [it, isSucceeded] = this->mTextureMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadMaterialMetaAtlas(const nlohmann::json& iJson)
@@ -498,7 +498,7 @@ inline EDySuccess MIOMeta::Impl::pReadMaterialMetaAtlas(const nlohmann::json& iJ
     auto [it, isSucceeded] = this->mMaterialMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadModelAnimMetaAtlas(const nlohmann::json& iJson)
@@ -511,7 +511,7 @@ inline EDySuccess MIOMeta::Impl::pReadModelAnimMetaAtlas(const nlohmann::json& i
     auto [it, isSucceeded] = this->mModelAnimScrapMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadModelMeshMetaAtlas(const nlohmann::json& iJson)
@@ -524,7 +524,7 @@ inline EDySuccess MIOMeta::Impl::pReadModelMeshMetaAtlas(const nlohmann::json& i
     auto [it, isSucceeded] = this->mModelMeshMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadModelSkelMetaAtlas(const nlohmann::json& iJson)
@@ -537,7 +537,7 @@ inline EDySuccess MIOMeta::Impl::pReadModelSkelMetaAtlas(const nlohmann::json& i
     auto [it, isSucceeded] = this->mModelSkeletonMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pReadModelMetaAtlas(const nlohmann::json& iJson)
@@ -550,7 +550,7 @@ inline EDySuccess MIOMeta::Impl::pReadModelMetaAtlas(const nlohmann::json& iJson
     auto [it, isSucceeded] = this->mModelMetaInfo.try_emplace(desc.mSpecifierName, std::move(desc));
     MDY_ASSERT_MSG_FORCE(isSucceeded == true, "Unexpected error occurred.");
   }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pfAddWidgetMetaInformation(const std::string& metaInformationString)
@@ -560,7 +560,7 @@ inline EDySuccess MIOMeta::Impl::pfAddWidgetMetaInformation(const std::string& m
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
 
   this->mWidgetMetaInfo.try_emplace(rootInstance->mWidgetSpecifierName, std::move(rootInstance));
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::MDY_PRIVATE(AddLoadingWidgetMetaInformation)(const std::string& widgetMetaInfo)
@@ -570,7 +570,7 @@ inline EDySuccess MIOMeta::Impl::MDY_PRIVATE(AddLoadingWidgetMetaInformation)(co
   MDY_ASSERT_MSG(MDY_CHECK_ISNOTEMPTY(rootInstance), "Widget root instance must not be empty.");
 
   mLoadingWidgetMetaInfo = std::move(rootInstance);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pfAddScriptMetaInformation(const PDyScriptInstanceMetaInfo& metaInfo)
@@ -592,7 +592,7 @@ inline EDySuccess MIOMeta::Impl::pfAddScriptMetaInformation(const PDyScriptInsta
     this->mScriptMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pfAddGLShaderMetaInfo(const PDyGLShaderInstanceMetaInfo& metaInfo)
@@ -602,7 +602,7 @@ inline EDySuccess MIOMeta::Impl::pfAddGLShaderMetaInfo(const PDyGLShaderInstance
     "Duplicated gl shader name is exist.");
 
   this->mShaderMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pfAddBuiltinMeshMetaInfo(const PDyMeshInstanceMetaInfo& metaInfo)
@@ -620,7 +620,7 @@ inline EDySuccess MIOMeta::Impl::pfAddBuiltinMeshMetaInfo(const PDyMeshInstanceM
     "Duplicated Mesh name is exist.");
 
   this->mModelMeshMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pfAddModelMetaInfo(const PDyModelInstanceMetaInfo& metaInfo)
@@ -630,7 +630,7 @@ inline EDySuccess MIOMeta::Impl::pfAddModelMetaInfo(const PDyModelInstanceMetaIn
     "Duplicated model name is exist.");
 
   this->mModelMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pfAddTextureMetaInfo(const PDyTextureInstanceMetaInfo& metaInfo)
@@ -640,7 +640,7 @@ inline EDySuccess MIOMeta::Impl::pfAddTextureMetaInfo(const PDyTextureInstanceMe
     "Duplicated texture name is exist.");
 
   this->mTextureMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pfAddMaterialMetaInfo(const PDyMaterialInstanceMetaInfo& metaInfo)
@@ -650,7 +650,7 @@ inline EDySuccess MIOMeta::Impl::pfAddMaterialMetaInfo(const PDyMaterialInstance
     "Duplicated material name is exist.");
 
   this->mMaterialMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pfAddGLAttachmentMetaInfo(const PDyGlAttachmentInstanceMetaInfo& metaInfo)
@@ -672,7 +672,7 @@ inline EDySuccess MIOMeta::Impl::pfAddGLAttachmentMetaInfo(const PDyGlAttachment
     "Duplicated attachment name is exist.");
 
   this->mAttachmentMetaInfo.try_emplace(metaInfo.mSpecifierName, metaInfo);
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBufferInstanceMetaInfo& metaInfo)
@@ -721,19 +721,19 @@ inline EDySuccess MIOMeta::Impl::pfAddGLFrameBufferMetaInfo(const PDyGlFrameBuff
     instance.mDepthAttachmentSpecifier = defaultDepthBuffer.mSpecifierName;
   }
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::MDY_PRIVATE(AddBootResourceSpecifierList)(const TResourceSpecifierList& list)
 {
   this->mBootResourceSpecifierList = list;
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 inline EDySuccess MIOMeta::Impl::MDY_PRIVATE(AddGlobalResourceSpecifierList)(const TResourceSpecifierList& list)
 {
   if (list.empty() == false) { this->mGlobalResourceSpecifierList.emplace_back(list); }
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 } /// ::dy namespace

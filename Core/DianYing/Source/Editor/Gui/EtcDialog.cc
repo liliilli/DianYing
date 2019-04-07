@@ -33,7 +33,7 @@ EDySuccess FDyDialog::pfInitialize(const PDyGuiDialogDescriptor& desc)
   this->mParentRawPtr       = desc.mParentRawPtr;
   this->mParentBoolFlagPtr  = desc.mParentBoolFlag;
 
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 EDySuccess FDyDialog::pfRelease()
@@ -44,7 +44,7 @@ EDySuccess FDyDialog::pfRelease()
   }
 
   DyPushLogInfo("Released");
-  return DY_SUCCESS;
+  return EDySuccess::DY_SUCCESS;
 }
 
 void FDyDialog::DrawWindow(float dt) noexcept
