@@ -1,8 +1,0 @@
-C:/Users/jmyun/Downloads/zlib-1.2.11/build/CMakeFiles/zlib.dir
-C:/Users/jmyun/Downloads/zlib-1.2.11/build/CMakeFiles/zlibstatic.dir
-C:/Users/jmyun/Downloads/zlib-1.2.11/build/CMakeFiles/example.dir
-C:/Users/jmyun/Downloads/zlib-1.2.11/build/CMakeFiles/minigzip.dir
-C:/Users/jmyun/Downloads/zlib-1.2.11/build/CMakeFiles/INSTALL.dir
-C:/Users/jmyun/Downloads/zlib-1.2.11/build/CMakeFiles/RUN_TESTS.dir
-C:/Users/jmyun/Downloads/zlib-1.2.11/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/jmyun/Downloads/zlib-1.2.11/build/CMakeFiles/ZERO_CHECK.dir

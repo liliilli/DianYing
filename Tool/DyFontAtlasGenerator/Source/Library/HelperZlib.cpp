@@ -17,7 +17,7 @@
 
 #include <cstdlib>
 #include <QByteArray>
-#include <zlib/zlib.h>
+#include <zlib.h>
 #include <nlohmann/json.hpp>
 
 //!

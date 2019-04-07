@@ -12,6 +12,7 @@
     <None Include="Include\Expr\Inline\TCrc32Pre.inl" />
     <None Include="Include\Expr\Inline\TCrc32Post.inl" />
     <None Include="Include\Expr\Inline\XStringSwitch.inl" />
+    <None Include="Include\Expr\Inline\ISingleton.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\Expr\TTypeList.h" />
@@ -25,5 +26,7 @@
     <ClInclude Include="Include\Expr\XMacroes.h" />
     <ClInclude Include="Include\Expr\TEnumString.h" />
     <ClInclude Include="Include\Expr\TEnumTypeBinding.h" />
+    <ClInclude Include="Include\Expr\ISingleton.h" />
+    <ClInclude Include="Include\Expr\ESuccess.h" />
   </ItemGroup>
 </Project>

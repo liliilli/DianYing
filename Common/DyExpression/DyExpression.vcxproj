@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Include\Expr\Inline\ISingleton.inl" />
     <None Include="Include\Expr\Inline\TCrc32Post.inl" />
     <None Include="Include\Expr\Inline\TCrc32Pre.inl" />
     <None Include="Include\Expr\Inline\TExtendedTraits.inl" />
@@ -32,6 +33,8 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\Expr\ESuccess.h" />
+    <ClInclude Include="Include\Expr\ISingleton.h" />
     <ClInclude Include="Include\Expr\TCrc32.h" />
     <ClInclude Include="Include\Expr\TEnumTypeBinding.h" />
     <ClInclude Include="Include\Expr\TNull.h" />
