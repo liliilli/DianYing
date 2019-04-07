@@ -18,6 +18,8 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Management/Type/EGlobalGameState.h>
 
+#include <AEngineBase.h>
+
 //!
 //! Forward declaration
 //!
@@ -36,16 +38,21 @@ class MSynchronization;
 namespace dy
 {
 
+#define TEMP_CAST(Engine) static_cast<::dy::GEngine*>(Engine.get())
+
 /// @class GEngine
 /// @brief `Dy`(DianYing) Core engine class.
-class GEngine final : public ISingleton<GEngine>
+class GEngine final : public AEngineBase
 {
   MDY_SINGLETON_PROPERTIES(GEngine);
-  MDY_SINGLETON_DERIVED(GEngine);
 public:
-  ///
+  GEngine() = default;               
+  [[nodiscard]] EDySuccess pfInitialize();
+  [[nodiscard]] EDySuccess pfRelease();
+  friend class ISingleton<GEngine>; 
+  virtual ~GEngine() = default;
+
   /// @brief Run engine.
-  ///
   void operator()();
 
   /// @brief Get time manager reference.
@@ -118,8 +125,6 @@ private:
   friend class SIOBindingHelper;
   friend class MSynchronization;
 };
-
-extern GEngine* gEngine;
 
 } /// ::dy namespace
 

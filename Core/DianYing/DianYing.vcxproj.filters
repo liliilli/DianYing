@@ -9,8 +9,6 @@
     <ClCompile Include="Libraries\imgui\imgui\imgui_demo.cpp" />
     <ClCompile Include="Source\Helper\Geometry\Types.cc" />
     <ClCompile Include="Source\Helper\Internal\ImageBinaryBuffer.cc" />
-    <ClCompile Include="Libraries\glad\src\glad.c" />
-    <ClCompile Include="Source\Entry\Entry.cc" />
     <ClCompile Include="Source\Editor\Gui\EtcDialog.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpAboutMain.cc" />
     <ClCompile Include="Source\Editor\Gui\HelpLicenseWindow.cc" />
@@ -376,8 +374,6 @@
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_glfw.h" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
-    <ClInclude Include="Libraries\glad\include\glad\glad.h" />
-    <ClInclude Include="Libraries\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="Libraries\sol2\sol2\sol.hpp" />
     <ClInclude Include="Libraries\sol2\sol2\sol_forward.hpp" />
     <ClInclude Include="Include\Dy\Helper\GlobalType.h" />
@@ -489,7 +485,6 @@
     <ClInclude Include="Include\Dy\Helper\Library\HelperRegex.h" />
     <ClInclude Include="Include\Dy\Element\Abstract\Actor\ADyActorBinderContainer.h" />
     <ClInclude Include="Include\DyMacroPlatformSetting.h" />
-    <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RenderCSMLightNormal.h" />

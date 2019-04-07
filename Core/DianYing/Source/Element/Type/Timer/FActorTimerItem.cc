@@ -130,7 +130,7 @@ void FActorTimerItem::CallFunction(_MIN_ bool iCallOnlyOnce) noexcept
         this->mDeferredCallCount--;
         
         // Check game end signal is called.
-        if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+        if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
       }
     }
   }

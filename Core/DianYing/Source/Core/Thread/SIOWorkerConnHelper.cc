@@ -21,15 +21,15 @@ namespace dy
 
 void SIOWorkerConnHelper::InsertResult(_MIN_ const DRescIOWorkerResult& result) noexcept
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.SyncInsertResult(result);
 }
 
 void SIOWorkerConnHelper::TryForwardToMainTaskList(_MIN_ const DRescIOTask& task) noexcept
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.SyncTryForwardTaskToMainList(task);
 }
 

@@ -318,7 +318,7 @@ void MScript::CallDestroyFuncWidgetScriptGCList()
     ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
 
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+    if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 
@@ -345,7 +345,7 @@ void MScript::CallDestroyFuncActorScriptGCList()
     ptrsmtScript->MDY_PRIVATE(CallDestroyFunctionAnyway)();
 
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) 
+    if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) 
     { 
       return; 
     }

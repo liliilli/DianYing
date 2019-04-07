@@ -358,7 +358,7 @@ inline EDySuccess MWorld::Impl::MDY_PRIVATE(PopulateNextLevelResources)()
     auto& mWorld = MWorld::GetInstance();
     mWorld.MDY_PRIVATE(BuildNextLevel)(); 
     mWorld.MDY_PRIVATE(TransitionToNextLevel)();
-    GEngine::GetInstance().SetNextGameStatus(EGlobalGameState::GameRuntime);
+    TEMP_CAST(gEngine)->SetNextGameStatus(EGlobalGameState::GameRuntime);
   });
   return EDySuccess::DY_SUCCESS;
 }

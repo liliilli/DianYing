@@ -115,7 +115,7 @@ inline void MScript::Impl::UpdateWidgetScript(TF32 dt)
     if (ptrsmtScript == nullptr) { continue; }
     ptrsmtScript->CallScriptFunction(dt);
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+    if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 
@@ -126,7 +126,7 @@ inline void MScript::Impl::UpdateWidgetScript(TF32 dt, EScriptState type)
     if (ptrsmtScript == nullptr) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+    if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 
   for (auto& ptrsmtScript : this->mWidgetScriptList)
@@ -134,7 +134,7 @@ inline void MScript::Impl::UpdateWidgetScript(TF32 dt, EScriptState type)
     if (ptrsmtScript == nullptr) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+    if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 
@@ -153,7 +153,7 @@ inline void MScript::Impl::UpdateActorScript(TF32 iDt)
     if (ptrsmtScript == nullptr) { continue; }
     ptrsmtScript->CallScriptFunction(iDt);
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+    if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 
@@ -164,7 +164,7 @@ inline void MScript::Impl::UpdateActorScript(TF32 dt, EScriptState type)
     if (ptrsmtScript == nullptr) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+    if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 
   for (auto& ptrsmtScript : this->mActorScriptList)
@@ -172,7 +172,7 @@ inline void MScript::Impl::UpdateActorScript(TF32 dt, EScriptState type)
     if (ptrsmtScript == nullptr) { continue; }
     if (ptrsmtScript->GetScriptStatus() == type) { ptrsmtScript->CallScriptFunction(dt); }
     // If engine must be stopped and end application, return instantly.
-    if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+    if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
   }
 }
 

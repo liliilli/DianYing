@@ -171,7 +171,7 @@ void MGameTimer::Update(TF32 iDt)
       timerItem.Update(iDt);
       if (timerItem.Checked() == true) { timerItem.CallFunction(false); }
       // Check game end signal is called.
-      if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+      if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
     }
   }
 
@@ -182,7 +182,7 @@ void MGameTimer::Update(TF32 iDt)
       timerItem.Update(iDt);
       if (timerItem.Checked() == true) { timerItem.CallFunction(false); }
       // Check game end signal is called.
-      if (gEngine->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
+      if (TEMP_CAST(gEngine)->MDY_PRIVATE(IsGameEndCalled)() == true) { return; }
     }
   }
 }

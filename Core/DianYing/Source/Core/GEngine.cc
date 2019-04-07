@@ -34,6 +34,8 @@
 #include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Management/Internal/MDebug.h>
 
+#include <AEngineBase.h>
+
 //!
 //! Implementation
 //!
@@ -41,11 +43,8 @@
 namespace dy
 {
 
-GEngine* gEngine = nullptr;
-
 EDySuccess GEngine::pfInitialize()
 {
-  gEngine = this;
   MSetting::GetInstance().pSetupExecutableArgumentSettings();
 
   switch (MSetting::GetInstance().GetApplicationMode())
@@ -247,7 +246,7 @@ void GEngine::MDY_PRIVATE(ReflectGameStatusTransition)()
 
       SIOConnectionHelper::PopulateResourceList(
           std::vector<DDyResourceName>{}, EResourceScope::Global, 
-          []() { GEngine::GetInstance().SetNextGameStatus(EGlobalGameState::Ended); }
+          []() { TEMP_CAST(gEngine)->SetNextGameStatus(EGlobalGameState::Ended); }
       );
     } break;
     }
@@ -598,6 +597,11 @@ void GEngine::TryUpdateStatus()
     this->mStatus = this->mNextStatus;
     this->mIsStatusTransitionDone = false;
   }
+}
+
+AEngineBase* CreateEngine()
+{
+  return new GEngine();
 }
 
 } /// ::dy namespace

@@ -19,6 +19,7 @@
 #include <Dy/Management/MWorld.h>
 #include <Dy/Management/MSetting.h>
 #include <Dy/Management/MScript.h>
+#include <AEngineBase.h>
 
 namespace dy
 {
@@ -47,7 +48,7 @@ NotNull<TRescIO*> MSynchronization::pfGetIOThread()
 
 void MSynchronization::TrySynchronization()
 {
-  switch (gEngine->GetGlobalGameStatus())
+  switch (TEMP_CAST(gEngine)->GetGlobalGameStatus())
   {
   case EGlobalGameState::Booted:       { this->pRunFrameBooted(); }        break;
   case EGlobalGameState::FirstLoading: { this->pRunFrameFirstLoading(); }  break; // Syncrhonization

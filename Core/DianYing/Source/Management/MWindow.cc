@@ -69,7 +69,7 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 {
   glfwSetKeyCallback(window, nullptr);
   glfwSetCursorPosCallback(window, nullptr);
-  dy::gEngine->TryEndGame();
+  TEMP_CAST(dy::gEngine)->TryEndGame();
 }
 
 } /// unnamed namespace

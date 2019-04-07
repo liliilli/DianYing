@@ -126,7 +126,7 @@ inline void MIOMeta::Impl::MDY_PRIVATE(PopulateBootResourceSpecifierList)() cons
   SIOConnectionHelper::PopulateResourceList(
       this->mBootResourceSpecifierList, 
       EResourceScope::Global,
-      []() { GEngine::GetInstance().SetNextGameStatus(EGlobalGameState::FirstLoading); }
+      []() { TEMP_CAST(gEngine)->SetNextGameStatus(EGlobalGameState::FirstLoading); }
   );
 
   mIsCalled = true;
@@ -145,7 +145,7 @@ inline void MIOMeta::Impl::MDY_PRIVATE(PopulateGlobalResourceSpecifierList)() co
       auto& scriptManager = MScript::GetInstance();
       scriptManager.CreateGlobalScriptInstances();
       scriptManager.CallonStartGlobalScriptList();
-      GEngine::GetInstance().SetNextGameStatus(EGlobalGameState::Loading); 
+      TEMP_CAST(gEngine)->SetNextGameStatus(EGlobalGameState::Loading); 
     }
   );
   mIsCalled = true;

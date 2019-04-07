@@ -15,7 +15,7 @@
 /// Header file
 #include <Dy/Helper/Library/HelperZlib.h>
 /// Libraries
-#include <zlib/zlib.h>
+#include <zlib.h>
 
 //!
 //! Forward declaration & local translation unit function

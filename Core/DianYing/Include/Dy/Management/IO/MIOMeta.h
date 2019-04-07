@@ -19,6 +19,7 @@
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 #include <Dy/Meta/Type/DDyResourceName.h>
 #include <Dy/Meta/Information/MetaInfoFont.h>
+#include <AEngineBase.h>
 
 //!
 //! Forward declaration

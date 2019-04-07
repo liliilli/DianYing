@@ -25,8 +25,8 @@ MDY_NODISCARD EDySuccess
 SIOBindingHelper::MDY_PRIVATE(pTryRequireInformation)
 (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
 
   if (ioThread.pIsReferenceInstanceExist(iSpecifier, iType, EResourceStyle::Information) == false)
   { // If binding is failed, it specifies that RI has not been created (Related task queue was not created neither).
@@ -177,8 +177,8 @@ EDySuccess SIOBindingHelper::MDY_PRIVATE(pTryDetachInformation)
 (const std::string& iSpecifier, EResourceType iType, IBinderBase& iPtrBinder)
 {
   MDY_ASSERT_MSG(iType != EResourceType::NoneError, "iType must be valid resource type.");
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
 
   // If binding is failed, it specifies that RI has not been created (Related task queue was not created neither).
   // So we need populate task queue for resource as temporary.

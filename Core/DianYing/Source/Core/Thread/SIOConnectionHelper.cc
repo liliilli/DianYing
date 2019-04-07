@@ -27,8 +27,8 @@ void SIOConnectionHelper::PopulateResource(
     _MIN_ EResourceStyle resourceStyle,
     _MIN_ EResourceScope scope)
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   
   // Check resourceType is `Skeleton` and `AnimationScrap` which can not be created as `Resource` but only `Information`.
   if (resourceType == EResourceType::Skeleton
@@ -42,15 +42,15 @@ void SIOConnectionHelper::PopulateResource(
 
 void SIOConnectionHelper::TryStop()
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.SyncTryStop();
 }
 
 void SIOConnectionHelper::TryGC(EResourceScope iScope, EResourceStyle iStyle)
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.outTryForwardCandidateRIToGCList(iScope, iStyle);
 }
 
@@ -64,8 +64,8 @@ void SIOConnectionHelper::PopulateResourceList(
     PopulateResource(specifier, type, EResourceStyle::Resource, iScope);
   }
 
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.BindSleepCallbackFunction(callback);
 }
 
@@ -88,8 +88,8 @@ void SIOConnectionHelper::PopulateResourceList(
     }
   }
 
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.BindSleepCallbackFunction(callback);
 }
 
@@ -103,8 +103,8 @@ void SIOConnectionHelper::PopulateResourceList(
     PopulateResource(specifier, type, EResourceStyle::Resource, iScope);
   }
 
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.BindSleepCallbackFunction(iCallback);
 }
 
@@ -120,8 +120,8 @@ void SIOConnectionHelper::PopulateInstantMaterialResource(
   if (callback != nullptr) { scope = EResourceScope::UserDefined; }
 
   // Set instant specifier name.
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   desc.mSpecifierName = fmt::format("instant{}{:04}", CreateRandomString(5), instantMatId++);
   
   // Require population instant mateiral resource.
@@ -133,78 +133,78 @@ bool SIOConnectionHelper::IsReferenceInstanceExist(
   const std::string& iSpecifier, 
   EResourceType iType, EResourceStyle iStyle)
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   return ioThread.pIsReferenceInstanceExist(iSpecifier, iType, iStyle);
 }
 
 bool SIOConnectionHelper::IsGcCandidateExist() noexcept
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   return ioThread.IsGcCandidateExist();
 }
 
 void SIOConnectionHelper::TryGC()
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   return ioThread.TryGC();
 }
 
 void SIOConnectionHelper::InsertWorkerResult(const DRescIOWorkerResult& result) noexcept
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.SyncInsertResult(result);
 }
 
 void SIOConnectionHelper::InsertGcCandidate(std::unique_ptr<DIOReferenceInstance>&& iRefRI)
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.outInsertGcCandidate(iRefRI);
 }
 
 bool SIOConnectionHelper::IsWorkerResultExist() noexcept
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   return ioThread.SyncIsWorkerResultExist();
 }
 
 bool SIOConnectionHelper::IsMainTaskListEmpty() noexcept
 {
-  MDY_ASSERT_MSG(gEngine != nullptr, "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(TEMP_CAST(gEngine) != nullptr, "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   return ioThread.isoutIsMainTaskListIsEmpty();
 }
 
 void SIOConnectionHelper::ForceProcessDeferredMainTaskList()
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.outMainForceProcessDeferredMainTaskList();
 }
 
 void SIOConnectionHelper::ForceProcessIOInsertPhase()
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   ioThread.outForceProcessIOInsertPhase();
 }
 
 bool SIOConnectionHelper::IsIOThreadSleep()
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   return ioThread.outIsIOThreadSlept();
 }
 
 EDySuccess SIOConnectionHelper::TryCallSleptCallbackFunction()
 {
-  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(gEngine), "gEngine must not be null.");
-  auto& ioThread = *gEngine->pfGetIOThread();
+  MDY_ASSERT_MSG(MDY_CHECK_ISNOTNULL(TEMP_CAST(gEngine)), "TEMP_CAST(gEngine) must not be null.");
+  auto& ioThread = *TEMP_CAST(gEngine)->pfGetIOThread();
   return ioThread.outTryCallSleptCallbackFunction();
 }
 

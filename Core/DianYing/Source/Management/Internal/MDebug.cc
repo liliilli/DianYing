@@ -81,8 +81,8 @@ EDySuccess MDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
     // Check F1.
     if (this->IsActionPressed("DyPauseInGameUpdate") == true)
     {
-      if (gEngine->IsInGameUpdatePaused() == true)  { gEngine->SetInGameUpdatePause(false); }
-      else                                          { gEngine->SetInGameUpdatePause(true); }
+      if (TEMP_CAST(gEngine)->IsInGameUpdatePaused() == true)  { TEMP_CAST(gEngine)->SetInGameUpdatePause(false); }
+      else                                          { TEMP_CAST(gEngine)->SetInGameUpdatePause(true); }
 
       return EDySuccess::DY_SUCCESS;
     }
@@ -92,7 +92,7 @@ EDySuccess MDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
     {
       if (this->mIsDebugMenuOpened == false)
       {
-        gEngine->SetInGameUpdatePause(true);
+        TEMP_CAST(gEngine)->SetInGameUpdatePause(true);
 
         // Create debug menu.
         this->mMainMenu = std::make_unique<editor::FDyEditor_MainMenu>();
@@ -107,7 +107,7 @@ EDySuccess MDebug::CheckInput(_MIN_ MDY_NOTUSED TF32 dt) noexcept
         this->mIsDebugMenuOpened = false;
         this->mMainMenu = nullptr;
 
-        gEngine->SetInGameUpdatePause(false);
+        TEMP_CAST(gEngine)->SetInGameUpdatePause(false);
       }
 
       return EDySuccess::DY_SUCCESS;
