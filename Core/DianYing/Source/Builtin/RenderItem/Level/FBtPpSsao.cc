@@ -87,10 +87,9 @@ void FBtRenderItemSsao::OnFailedCheckCondition()
 {
   if (this->AreResourcesValid() == false) { return; }
 
-  this->mBinderFbSSAOBlur->BindFrameBuffer();
-  const GLfloat one = 1.0f;
-  glClearBufferfv(GL_COLOR, 0, &one);
-  this->mBinderFbSSAOBlur->UnbindFrameBuffer();
+  XGLWrapper::ClearColorFrameBuffer(
+    this->mBinderFbSSAOBlur->GetTargetFrameBufferId(),
+    DColorRGBA{1, 1, 1, 1});
 }
 
 void FBtRenderItemSsao::OnSetupRenderingSetting()

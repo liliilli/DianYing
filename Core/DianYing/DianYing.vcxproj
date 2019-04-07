@@ -86,6 +86,9 @@
       </IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>$(SolutionDir)Common\ThirdParty\assimp\lib\$(Configuration)\$(Platform);$(SolutionDir)Common\ThirdParty\vulkan\Lib;$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\msdfgen\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Configuration);$(ProjectDir)Libraries\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -116,12 +119,11 @@
       <AdditionalDependencies>glfw3.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib;Msdfgen.lib;Lua.lib;zlibstatic.lib;freetype.lib;fmodL64_vc.lib;assimp-vc140-mt.lib;opengl32.lib;vulkan-1.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Common\ThirdParty\assimp\lib\$(Configuration)\$(Platform);$(SolutionDir)Common\ThirdParty\vulkan\Lib;$(SolutionDir)Common\ThirdParty\zlib\zlib\build\$(Configuration);$(SolutionDir)Common\ThirdParty\freetype\objs\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\msdfgen\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(ProjectDir)Libraries\glfw\$(Configuration);$(ProjectDir)Libraries\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="data\Script\Astronaut\AstroidConstructor.cc" />
-    <ClCompile Include="data\Script\Astronaut\PlanetScript.cc" />
-    <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
-    <ClCompile Include="data\Script\GlobalTestScript.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AFontResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AGLAttachmentResource.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AGLFrameBufferResource.cc" />
@@ -185,9 +187,6 @@
     <ClCompile Include="Source\Builtin\Model\BoxOIT.cc" />
     <ClCompile Include="Source\Builtin\Model\EmissiveSphere.cc" />
     <ClCompile Include="Source\Builtin\Model\UiFontQuad.cc" />
-    <ClCompile Include="data\Script\DebugActor\BtScActorTest1.cc" />
-    <ClCompile Include="data\Script\DebugActor\BtScActorTest2.cc" />
-    <ClCompile Include="data\Script\DebugActor\BtScActorTest3.cc" />
     <ClCompile Include="Source\Builtin\Prefab\FBtPbCameraMan.cc" />
     <ClCompile Include="Source\Builtin\Prefab\FBtPbDefaultSphere.cc" />
     <ClCompile Include="Source\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.cc" />
@@ -213,7 +212,6 @@
     <ClCompile Include="Source\Builtin\Script\DebugUiScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingBootScriptCpp.cc" />
     <ClCompile Include="Source\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.cc" />
-    <ClCompile Include="data\Script\FDyBtScTestLoadingUi.cc" />
     <ClCompile Include="Source\Builtin\Shader\Debug\BtShDebugLine.cc" />
     <ClCompile Include="Source\Builtin\Shader\Level\BtShOITAccumulation.cc" />
     <ClCompile Include="Source\Builtin\Shader\Level\BtShOITIntegration.cc" />
@@ -412,6 +410,7 @@
     <ClCompile Include="Source\Management\Type\Sound\FSound2DBinder.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FSound3DBinder.cc" />
     <ClCompile Include="Source\Management\Type\Time\DTimePoint.cc" />
+    <ClCompile Include="Source\Management\Type\UBOInformation.cc" />
     <ClCompile Include="Source\Meta\Components\PCompPointLightMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Components\PCompSpotLightMetaInfo.cc" />
     <ClCompile Include="Source\Meta\Descriptor\WidgetBarMetaInformation.cc" />
@@ -490,6 +489,7 @@
     <ClCompile Include="Source\Meta\Type\EDyWidgetTypes.cc" />
     <ClCompile Include="Source\Meta\Type\EDyTextureParameter.cc" />
     <ClCompile Include="Source\Meta\Type\Input\JsonInputButton.cc" />
+    <ClCompile Include="Source\Meta\Type\Meta\DGlVaoBindInformation.cc" />
     <ClCompile Include="Source\Meta\Type\Physics\EDyColliderType.cc" />
     <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
     <ClCompile Include="Source\precompiled.cc">
@@ -498,10 +498,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="data\Script\Astronaut\AstroidConstructor.h" />
-    <ClInclude Include="data\Script\Astronaut\PlanetScript.h" />
-    <ClInclude Include="data\Script\DebugActor\BtScCollisionTest1.h" />
-    <ClInclude Include="data\Script\GlobalTestScript.h" />
     <ClInclude Include="Include\Dy\Binding\FLuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AFontResource.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\ALoadingWidgetMetaResource.h" />
@@ -583,8 +579,6 @@
     <ClInclude Include="Include\Dy\Builtin\Model\ScreenProjectionTriangle.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\UIFontQuad.h" />
-    <ClInclude Include="data\Script\DebugActor\BtScActorTest2.h" />
-    <ClInclude Include="data\Script\DebugActor\BtScActorTest3.h" />
     <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbCameraMan.h" />
     <ClInclude Include="Include\Dy\Builtin\Prefab\FBtPbDefaultSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\RenderItem\Debug\FBtDebugCollisionAabb.h" />
@@ -609,8 +603,6 @@
     <ClInclude Include="Include\Dy\Builtin\Script\DebugUiScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingBootScriptCpp.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\Default\DefaultLoadingGlobalScriptCpp.h" />
-    <ClInclude Include="data\Script\FDyBtScTestLoadingUi.h" />
-    <ClInclude Include="data\Script\DebugActor\BtScActorTest1.h" />
     <ClInclude Include="Include\Dy\Builtin\Script\BtScrGlobalDefaultUniformBuffer.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Debug\BtShDebugLine.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\BtShOITAccumulation.h" />
@@ -768,6 +760,7 @@
     <ClInclude Include="Include\Dy\Helper\Type\DUuid.h" />
     <ClInclude Include="Include\Dy\Helper\Wrapper\DMutexUniqueHashMap.h" />
     <ClInclude Include="Include\Dy\Include\Entry.h" />
+    <ClInclude Include="Include\Dy\Include\GlInclude.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SProfilingHelper.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerBuiltin.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerCompressed.h" />
@@ -984,7 +977,7 @@
     <ClInclude Include="Include\Dy\Meta\Type\EDyTextureParameter.h" />
     <ClInclude Include="Include\Dy\Helper\Constant\StringPipelineUniform.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\JsonInputButton.h" />
-    <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Mesh\DGlVaoBindInformation.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyRigidbodyType.h" />
     <ClInclude Include="Include\precompiled.h" />
     <ClInclude Include="Libraries\glad\include\glad\glad.h" />
@@ -993,32 +986,6 @@
     <ClInclude Include="Libraries\imgui\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\imgui\imgui\imconfig.h" />
     <ClInclude Include="Libraries\imgui\imgui\imgui.h" />
-    <ClInclude Include="Libraries\lua\include\lapi.h" />
-    <ClInclude Include="Libraries\lua\include\lauxlib.h" />
-    <ClInclude Include="Libraries\lua\include\lcode.h" />
-    <ClInclude Include="Libraries\lua\include\lctype.h" />
-    <ClInclude Include="Libraries\lua\include\ldebug.h" />
-    <ClInclude Include="Libraries\lua\include\ldo.h" />
-    <ClInclude Include="Libraries\lua\include\lfunc.h" />
-    <ClInclude Include="Libraries\lua\include\lgc.h" />
-    <ClInclude Include="Libraries\lua\include\llex.h" />
-    <ClInclude Include="Libraries\lua\include\llimits.h" />
-    <ClInclude Include="Libraries\lua\include\lmem.h" />
-    <ClInclude Include="Libraries\lua\include\lobject.h" />
-    <ClInclude Include="Libraries\lua\include\lopcodes.h" />
-    <ClInclude Include="Libraries\lua\include\lparser.h" />
-    <ClInclude Include="Libraries\lua\include\lprefix.h" />
-    <ClInclude Include="Libraries\lua\include\lstate.h" />
-    <ClInclude Include="Libraries\lua\include\lstring.h" />
-    <ClInclude Include="Libraries\lua\include\ltable.h" />
-    <ClInclude Include="Libraries\lua\include\ltm.h" />
-    <ClInclude Include="Libraries\lua\include\lua.h" />
-    <ClInclude Include="Libraries\lua\include\lua.hpp" />
-    <ClInclude Include="Libraries\lua\include\luaconf.h" />
-    <ClInclude Include="Libraries\lua\include\lualib.h" />
-    <ClInclude Include="Libraries\lua\include\lundump.h" />
-    <ClInclude Include="Libraries\lua\include\lvm.h" />
-    <ClInclude Include="Libraries\lua\include\lzio.h" />
     <ClInclude Include="Libraries\sol2\sol2\sol.hpp" />
     <ClInclude Include="Libraries\sol2\sol2\sol_forward.hpp" />
     <ClInclude Include="Libraries\stb\stb_image.h" />
@@ -1028,8 +995,6 @@
     <ClInclude Include="Include\Dy\Resource\resource1.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\Level\Test_Astronaut.json" />
-    <None Include="data\Level\Test_Scene.json" />
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />
     <None Include="Include\Dy\Component\Interface\Internal\IOnColliderBaseDelegatorTmp.inl" />
     <None Include="Include\Dy\Core\Reflection\Inline\RReflectionTmp.inl" />
@@ -1054,12 +1019,6 @@
     <None Include="Include\Dy\Management\Inline\MWindowImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MWorldImpl.inl" />
     <None Include="Include\Dy\Meta\Information\Inline\DMetaMetarialInstanceTmp.inl" />
-    <None Include="README.md" />
-    <None Include="TestResource\Lua\player_script.lua" />
-    <None Include="TestResource\Lua\test_bindingscript.lua" />
-    <None Include="TestResource\Lua\variables.lua">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resource\Gothic.png" />

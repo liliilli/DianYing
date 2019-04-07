@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_MANAGEMENT_TYPE_INPUT_EDyMouseMode_H
-#define GUARD_DY_MANAGEMENT_TYPE_INPUT_EDyMouseMode_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,17 +12,5 @@
 /// SOFTWARE.
 ///
 
-namespace dy
-{
-
-/// @enum EDyMouseMode
-/// @brief Mouse mode.
-enum class EDyMouseMode 
-{
-  Normal,   // Normal
-  Picking,  // Picked
-};
-
-} /// ::dy namespace
-
-#endif /// GUARD_DY_MANAGEMENT_TYPE_INPUT_EDyMouseMode_H
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>

@@ -26,6 +26,7 @@
 
 #include <stb_image.h>
 #include <nlohmann/json.hpp>
+#include <Dy/Include/GlInclude.h>
 #include <Dy/Management/MLog.h>
 
 #if defined(_WIN32)
@@ -80,7 +81,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyImageColorFormatStyle&
   else { MDY_UNEXPECTED_BRANCH(); }
 }
 
-std::optional<GLenum> GlGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept
+std::optional<TGlEnum> GlGetImageFormatFrom(EDyImageColorFormatStyle style) noexcept
 {
   switch (style)
   {
@@ -111,7 +112,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlImagePixelReadType& 
   else { MDY_UNEXPECTED_BRANCH(); }
 }
 
-GLenum GlGetImagePixelTypeFrom(_MIN_ EDyGlImagePixelReadType iType) noexcept
+TGlEnum GlGetImagePixelTypeFrom(EDyGlImagePixelReadType iType) noexcept
 {
   switch (iType)
   {

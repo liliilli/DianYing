@@ -95,10 +95,6 @@
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiBarQuad.cc" />
     <ClCompile Include="Source\Helper\Library\HelperRegex.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
-    <ClCompile Include="data\Script\FDyBtScTestLoadingUi.cc" />
-    <ClCompile Include="data\Script\DebugActor\BtScActorTest1.cc" />
-    <ClCompile Include="data\Script\DebugActor\BtScActorTest2.cc" />
-    <ClCompile Include="data\Script\DebugActor\BtScActorTest3.cc" />
     <ClCompile Include="Source\Helper\Library\HelperString.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\CSM\FDyBtFbCSM.cc" />
     <ClCompile Include="Source\Builtin\Attachment\CSM\FDyBtAtLight.cc" />
@@ -119,7 +115,6 @@
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.cc" />
     <ClCompile Include="Source\Builtin\Texture\SSAONoiseMap.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.cc" />
-    <ClCompile Include="data\Script\GlobalTestScript.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\CDyGlobalScriptCpp.cc" />
     <ClCompile Include="Source\Component\Internal\Script\Global\FDyGlobalScriptStatus.cc" />
     <ClCompile Include="Source\Helper\Library\HelperFilesystem.cc" />
@@ -146,7 +141,6 @@
     <ClCompile Include="Source\Builtin\Attachment\Deferred\FDyBtAtSkyOutput.cc" />
     <ClCompile Include="Source\Builtin\GlobalInstance\FDyBtGiDebugStatus.cc" />
     <ClCompile Include="Source\Meta\Type\Physics\EDyRigidbodyType.cc" />
-    <ClCompile Include="data\Script\DebugActor\BtScCollisionTest1.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiFontQuad.cc" />
     <ClCompile Include="Source\Builtin\Mesh\Widget\FDyBtMsUiImgQuad.cc" />
     <ClCompile Include="Source\Builtin\Attachment\SceneIntegration\FDyBtAtActorId.cc" />
@@ -323,13 +317,11 @@
     <ClCompile Include="Source\Management\Type\Input\DButtonInputItem.cc" />
     <ClCompile Include="Source\Management\Type\Input\DAnalogInputItem.cc" />
     <ClCompile Include="Source\Management\Type\Time\DTimePoint.cc" />
-    <ClCompile Include="data\Script\Astronaut\AstroidConstructor.cc" />
     <ClCompile Include="Source\Builtin\Prefab\FBtPbCameraMan.cc" />
     <ClCompile Include="Source\Builtin\Abstract\APrefabResource.cc" />
     <ClCompile Include="Source\Builtin\Prefab\FBtPbDefaultSphere.cc" />
     <ClCompile Include="Source\Builtin\Shader\Level\RenderCSMInstancing.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITDepth.cc" />
-    <ClCompile Include="data\Script\Astronaut\PlanetScript.cc" />
     <ClCompile Include="Source\Builtin\Texture\FDyBtTexWhiteTexture.cc" />
     <ClCompile Include="Source\Builtin\Shader\Render\FDyBtShOITPlainColor.cc" />
     <ClCompile Include="Source\Helper\Type\DBounds.cc" />
@@ -373,6 +365,8 @@
     <ClCompile Include="Source\Management\Interface\AFontContainer.cc" />
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerRuntime.cc" />
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerCompressed.cc" />
+    <ClCompile Include="Source\Meta\Type\Meta\DGlVaoBindInformation.cc" />
+    <ClCompile Include="Source\Management\Type\UBOInformation.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -405,32 +399,6 @@
     <ClInclude Include="Include\Dy\Editor\Gui\Dialog\ProjectCreator.h" />
     <ClInclude Include="Include\Dy\Editor\Gui\Helper\ComponentHelper.h" />
     <ClInclude Include="Include\Dy\Editor\Helper\Win32Helper.h" />
-    <ClInclude Include="Libraries\lua\include\lua.hpp" />
-    <ClInclude Include="Libraries\lua\include\lua.h" />
-    <ClInclude Include="Libraries\lua\include\lapi.h" />
-    <ClInclude Include="Libraries\lua\include\lauxlib.h" />
-    <ClInclude Include="Libraries\lua\include\lcode.h" />
-    <ClInclude Include="Libraries\lua\include\lctype.h" />
-    <ClInclude Include="Libraries\lua\include\ldebug.h" />
-    <ClInclude Include="Libraries\lua\include\ldo.h" />
-    <ClInclude Include="Libraries\lua\include\lfunc.h" />
-    <ClInclude Include="Libraries\lua\include\lgc.h" />
-    <ClInclude Include="Libraries\lua\include\llex.h" />
-    <ClInclude Include="Libraries\lua\include\llimits.h" />
-    <ClInclude Include="Libraries\lua\include\lmem.h" />
-    <ClInclude Include="Libraries\lua\include\lobject.h" />
-    <ClInclude Include="Libraries\lua\include\lopcodes.h" />
-    <ClInclude Include="Libraries\lua\include\lparser.h" />
-    <ClInclude Include="Libraries\lua\include\lprefix.h" />
-    <ClInclude Include="Libraries\lua\include\lstate.h" />
-    <ClInclude Include="Libraries\lua\include\lstring.h" />
-    <ClInclude Include="Libraries\lua\include\ltable.h" />
-    <ClInclude Include="Libraries\lua\include\ltm.h" />
-    <ClInclude Include="Libraries\lua\include\luaconf.h" />
-    <ClInclude Include="Libraries\lua\include\lualib.h" />
-    <ClInclude Include="Libraries\lua\include\lundump.h" />
-    <ClInclude Include="Libraries\lua\include\lvm.h" />
-    <ClInclude Include="Libraries\lua\include\lzio.h" />
     <ClInclude Include="Include\Dy\Builtin\Material\OpaqueStaticPlain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Plain.h" />
     <ClInclude Include="Include\Dy\Builtin\Model\Sphere.h" />
@@ -514,7 +482,6 @@
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsSphere.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiFontQuad.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModel.h" />
-    <ClInclude Include="Include\Dy\Meta\Type\Mesh\DDyGLVaoBindInformation.h" />
     <ClInclude Include="Include\Dy\Core\Rendering\Wrapper\PDyGLVaoBindDescriptor.h" />
     <ClInclude Include="Include\Dy\Builtin\Widget\FDyBtWdTestLoadingUi.h" />
     <ClInclude Include="Include\Dy\Builtin\Mesh\FDyBtMsUiImgQuad.h" />
@@ -525,10 +492,6 @@
     <ClInclude Include="Include\Dy\Include\Entry.h" />
     <ClInclude Include="Include\Dy\Core\EDyAppMode.h" />
     <ClInclude Include="Include\Dy\Helper\MCS\Functions.h" />
-    <ClInclude Include="data\Script\FDyBtScTestLoadingUi.h" />
-    <ClInclude Include="data\Script\DebugActor\BtScActorTest1.h" />
-    <ClInclude Include="data\Script\DebugActor\BtScActorTest2.h" />
-    <ClInclude Include="data\Script\DebugActor\BtScActorTest3.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Level\RenderCSMLightNormal.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\CSM\FDyBtFbCSM.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\CSM\FDyBtAtLight.h" />
@@ -556,7 +519,6 @@
     <ClInclude Include="Include\Dy\Builtin\Attachment\Deferred\FDyBtAtSSAOFinalOutput.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\SSAONoiseMap.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\SSAO.h" />
-    <ClInclude Include="data\Script\GlobalTestScript.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperFilesystem.h" />
     <ClInclude Include="Include\Dy\Helper\Library\HelperAssimp.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelMesh.h" />
@@ -583,7 +545,6 @@
     <ClInclude Include="Include\Dy\Builtin\Abstract\ADyGlobalInstance.h" />
     <ClInclude Include="Include\Dy\Builtin\GlobalInstance\FDyBtGiDebugStatus.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Physics\EDyRigidbodyType.h" />
-    <ClInclude Include="data\Script\DebugActor\BtScCollisionTest1.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\SceneIntegration\FDyBtAtActorId.h" />
     <ClInclude Include="Include\Dy\Builtin\Attachment\UIIntegration\FDyBtAtUiId.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
@@ -834,7 +795,6 @@
     <ClInclude Include="Include\Dy\Management\Type\Time\ETimeDST.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\ETimeType.h" />
     <ClInclude Include="Include\Dy\Management\Type\EGlobalGameState.h" />
-    <ClInclude Include="data\Script\Astronaut\AstroidConstructor.h" />
     <ClInclude Include="Include\Dy\Element\Widget\AWidgetObject.h" />
     <ClInclude Include="Include\Dy\Element\Widget\AWidgetUiObjectChildrenable.h" />
     <ClInclude Include="Include\Dy\Element\Widget\FWidget.h" />
@@ -849,7 +809,6 @@
     <ClInclude Include="Include\Dy\Helper\Internal\FHandler.h" />
     <ClInclude Include="Include\Dy\Helper\Internal\FHandle.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Internal\XHandleAliases.h" />
-    <ClInclude Include="data\Script\Astronaut\PlanetScript.h" />
     <ClInclude Include="Include\Dy\Builtin\Texture\FDyBtTexWhiteTexture.h" />
     <ClInclude Include="Include\Dy\Builtin\ShaderGl\Render\FDyBtShOITPlainColor.h" />
     <ClInclude Include="Include\Dy\Helper\Type\EAxis.h" />
@@ -903,11 +862,10 @@
     <ClInclude Include="Include\Dy\Management\Interface\AFontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerRuntime.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerCompressed.h" />
+    <ClInclude Include="Include\Dy\Include\GlInclude.h" />
+    <ClInclude Include="Include\Dy\Meta\Type\Mesh\DGlVaoBindInformation.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TestResource\Lua\variables.lua" />
-    <None Include="TestResource\Lua\player_script.lua" />
-    <None Include="TestResource\Lua\test_bindingscript.lua" />
     <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
     <None Include="Include\Dy\Helper\Library\HelperString.inl" />
     <None Include="Include\Dy\Management\Inline\MPhysicsImpl.inl" />
@@ -925,16 +883,13 @@
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandleTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FProxyHandlerTmp.inl" />
     <None Include="Include\Dy\Core\Reflection\Inline\RReflectionTmp.inl" />
-    <None Include="data\Level\Test_Scene.json" />
     <None Include="Include\Dy\Helper\Internal\Inline\FThreadPoolTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FCallStackTmp.inl" />
     <None Include="Include\Dy\Component\Interface\Internal\IOnColliderBaseDelegatorTmp.inl" />
     <None Include="Include\Dy\Core\Reflection\Inline\RBuiltinResourcesTmp.inl" />
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />
-    <None Include="data\Level\Test_Astronaut.json" />
     <None Include="Include\Dy\Helper\Internal\Inline\FHandlerTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FHandleTmp.inl" />
-    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resource\icon.ico" />

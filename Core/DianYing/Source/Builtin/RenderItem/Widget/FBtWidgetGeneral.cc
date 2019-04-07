@@ -17,6 +17,7 @@
 #include <Dy/Management/MFont.h>
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Element/Widget/AWidgetObject.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 
 namespace dy
 {
@@ -39,9 +40,14 @@ bool FBtRenderWidgetGeneral::AreResourcesValid()
 
 void FBtRenderWidgetGeneral::OnSetupRenderingSetting()
 {
+  XGLWrapper::ClearColorFrameBuffer(
+    this->mBinderFrameBuffer->GetTargetFrameBufferId(),
+    DColorRGBA{0, 0, 0, 0});
   this->mBinderFrameBuffer->BindFrameBuffer();
+#ifdef false
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT);
+#endif
 }
 
 void FBtRenderWidgetGeneral::OnRender()

@@ -28,6 +28,8 @@
 #include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Component/CTransform.h>
 
+#include <Dy/Include/GlInclude.h>
+
 namespace dy
 {
 
@@ -52,10 +54,18 @@ void FBtRenderLevelOitDefault::OnFailedCheckCondition()
 
   /* Do nothing */
   { 
+    XGLWrapper::ClearColorFrameBuffer(
+      this->mBinderFrameBuffer->GetTargetFrameBufferId(),
+      DColorRGBA::Black, 0);
+    XGLWrapper::ClearColorFrameBuffer(
+      this->mBinderFrameBuffer->GetTargetFrameBufferId(),
+      DColorRGBA::White, 1);
+#ifdef false
     this->mBinderFrameBuffer->BindFrameBuffer();
     glClearBufferfv(GL_COLOR, 0, &DColorRGBA::Black.R);
     glClearBufferfv(GL_COLOR, 1, &DColorRGBA::White.R);
     this->mBinderFrameBuffer->UnbindFrameBuffer();
+#endif
   }
 }
 
@@ -79,9 +89,16 @@ void FBtRenderLevelOitDefault::OnSetupRenderingSetting()
   status.mBlendMode = blendingList;
 
   XGLWrapper::PushInternalGlobalState(status);
-
+  XGLWrapper::ClearColorFrameBuffer(
+    this->mBinderFrameBuffer->GetTargetFrameBufferId(),
+    DColorRGBA::Black, 0);
+  XGLWrapper::ClearColorFrameBuffer(
+    this->mBinderFrameBuffer->GetTargetFrameBufferId(),
+    DColorRGBA::White, 1);
+#ifdef false
   glClearBufferfv(GL_COLOR, 0, &DColorRGBA::Black.R);
   glClearBufferfv(GL_COLOR, 1, &DColorRGBA::White.R);
+#endif
 
   this->mBinderFrameBuffer->BindFrameBuffer();
 }

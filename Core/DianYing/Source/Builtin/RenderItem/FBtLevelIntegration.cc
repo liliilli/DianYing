@@ -61,10 +61,14 @@ void FBtRenderItemLevelIntegeration::pSetupOpaqueCSMIntegration()
   this->pUpdateUboDirectionalLightInfo();
   this->pUpdateUboPointLightsInfo();
 
+  XGLWrapper::ClearColorFrameBuffer(
+    this->mBinderFrameBuffer->GetTargetFrameBufferId(),
+    MWorld::GetInstance().GetValidLevelReference().GetBackgroundColor());
   this->mBinderFrameBuffer->BindFrameBuffer();
-  const auto& backgroundColor = MWorld::GetInstance().GetValidLevelReference().GetBackgroundColor();
+#ifdef false
   glClearColor(backgroundColor.R, backgroundColor.G, backgroundColor.B, backgroundColor.A);
   glClear(GL_COLOR_BUFFER_BIT);
+#endif
 }
 
 void FBtRenderItemLevelIntegeration::pUpdateUboShadowInfo()
@@ -134,10 +138,13 @@ void FBtRenderItemLevelIntegeration::pUpdateUboPointLightsInfo()
 
 void FBtRenderItemLevelIntegeration::pSetupTranslucentOITIntegration()
 {
-  this->mBinderFbTranslucent->BindFrameBuffer();
+  XGLWrapper::ClearColorFrameBuffer(
+    this->mBinderFbTranslucent->GetTargetFrameBufferId(),
+    DColorRGBA{0, 0, 0, 0});
+#ifdef false
   glClearColor(0, 0, 0, 0); 
   glClear(GL_COLOR_BUFFER_BIT);
-  this->mBinderFbTranslucent->UnbindFrameBuffer(); 
+#endif
 }
 
 void FBtRenderItemLevelIntegeration::OnRender()

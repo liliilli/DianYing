@@ -24,8 +24,10 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLFrameBufferDescriptor.h>
 #include <Dy/Core/Rendering/Wrapper/PDyGLVaoBindDescriptor.h>
 #include <Dy/Core/Resource/Internal/XShaderTypes.h>
-#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
+#include <Dy/Meta/Type/Mesh/DGlVaoBindInformation.h>
 #include <Dy/Helper/Type/DArea.h>
+
+#include <Dy/Include/GlInclude.h>
 
 #define MDY_GL_NONE 0
 #define MDY_GL_NONE_VAO 0
@@ -248,7 +250,7 @@ FCallStack<DGlGlobalStates::DCullfaceMode>  XGLWrapper::mInternal_CullfaceModeSt
 FCallStack<DGlGlobalStates::DViewport>      XGLWrapper::mInternal_ViewportStack;
 FCallStack<std::vector<PBlendingEquation>>    XGLWrapper::sAttachmentBlendings;
 
-GLFWwindow* XGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor)
+GLFWwindow* XGLWrapper::CreateGLWindow(const PDyGLWindowContextDescriptor& descriptor)
 {
   MDY_ASSERT_MSG(descriptor.mWindowName.empty() == false, "Window name must not be empty.");
   MDY_ASSERT_MSG(descriptor.mWindowSize.X > 0 && descriptor.mWindowSize.Y > 0, "Window size must be valid.");
@@ -286,12 +288,12 @@ GLFWwindow* XGLWrapper::CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor&
       ptrMonitor, descriptor.mSharingContext);
 }
 
-void XGLWrapper::CreateGLContext(_MIN_ GLFWwindow* window)
+void XGLWrapper::CreateGLContext(GLFWwindow* window)
 {
   glfwMakeContextCurrent(window);
 }
 
-std::optional<TU32> XGLWrapper::CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateTexture(const PDyGLTextureDescriptor& descriptor)
 {
   // Validation check.
   MDY_ASSERT_MSG(descriptor.mImageFormat != GL_NONE, "Texture Image format must be specified.");
@@ -424,12 +426,12 @@ std::optional<TU32> XGLWrapper::CreateTexture(const PDyGLTextureCubemapDescripto
   return mTextureResourceId;
 }
 
-void XGLWrapper::DeleteTexture(_MIN_ const TU32 validTextureId)
+void XGLWrapper::DeleteTexture(const TU32 validTextureId)
 {
   glDeleteTextures(1, &validTextureId);
 }
 
-std::optional<TU32> XGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFragmentDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateShaderFragment(const PDyGLShaderFragmentDescriptor& descriptor)
 {
   TU32 shaderFragmentId;
 
@@ -453,12 +455,12 @@ std::optional<TU32> XGLWrapper::CreateShaderFragment(_MIN_ const PDyGLShaderFrag
   return shaderFragmentId;
 }
 
-void XGLWrapper::DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId)
+void XGLWrapper::DeleteShaderFragment(const TU32 shaderFragmentId)
 {
   glDeleteShader(shaderFragmentId);
 }
 
-std::optional<TU32> XGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList& fragmentList)
+std::optional<TU32> XGLWrapper::CreateShaderProgram(const TFragmentList& fragmentList)
 {
   const TU32 shaderProgramId = glCreateProgram();
 
@@ -477,12 +479,12 @@ std::optional<TU32> XGLWrapper::CreateShaderProgram(_MIN_ const TFragmentList& f
   return shaderProgramId;
 }
 
-void XGLWrapper::DeleteShaderProgram(_MIN_ const TU32 shaderProgramId)
+void XGLWrapper::DeleteShaderProgram(const TU32 shaderProgramId)
 {
   glDeleteProgram(shaderProgramId);
 }
 
-void XGLWrapper::UseShaderProgram(_MIN_ TU32 iShaderProgramId)
+void XGLWrapper::UseShaderProgram(TU32 iShaderProgramId)
 {
   glUseProgram(iShaderProgramId);
 }
@@ -492,7 +494,7 @@ void XGLWrapper::DisuseShaderProgram()
   glUseProgram(0);
 }
 
-std::optional<TU32> XGLWrapper::CreateBuffer(_MIN_ const PGLBufferDescriptor& descriptor)
+std::optional<TU32> XGLWrapper::CreateBuffer(const PGLBufferDescriptor& descriptor)
 {
   TU32 id = MDY_INITIALIZE_DEFUINT;
   GLenum usage = GL_NONE;
@@ -542,14 +544,14 @@ std::optional<TU32> XGLWrapper::CreateBuffer(_MIN_ const PGLBufferDescriptor& de
   return id;
 }
 
-void XGLWrapper::DeleteBuffer(_MIN_ const TU32 directBufferId)
+void XGLWrapper::DeleteBuffer(const TU32 directBufferId)
 {
   glDeleteBuffers(1, &directBufferId);
 }
 
 void XGLWrapper::MapBuffer(
-    _MIN_ EDirectBufferType iBufferType, _MIN_ TU32 iBufferId, 
-    _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize)
+  EDirectBufferType iBufferType, TU32 iBufferId, 
+  const void* iPtrBuffer, TU32 iBufferSize)
 {
   GLenum bufferType = GL_NONE;
   switch (iBufferType)
@@ -564,11 +566,11 @@ void XGLWrapper::MapBuffer(
 }
 
 void XGLWrapper::MapBufferExt(
-    _MIN_ EDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize,
-    _MIN_ TU32 iItemByteSize, _MIN_ TU32 iGapByteSize, _MIN_ TU32 iStartPoint)
+  EDirectBufferType iBufferType, TU32 iBufferId, const void* iPtrBuffer, TU32 iBufferSize,
+  TU32 iItemByteSize, TU32 iGapByteSize, TU32 iStartPoint)
 {
   GLenum  bufferType = GL_NONE;
-  auto*   ptrInput   = static_cast<char*>(iPtrBuffer);
+  auto*   ptrInput   = static_cast<const char*>(iPtrBuffer);
   switch (iBufferType)
   {
   case EDirectBufferType::VertexBuffer:   { bufferType = GL_ARRAY_BUFFER; } break;
@@ -595,7 +597,7 @@ TU32 XGLWrapper::CreateVertexArrayObject()
   return vaoId;
 }
 
-void XGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDescriptor)
+void XGLWrapper::BindVertexArrayObject(const PDyGLVaoBindDescriptor& iDescriptor)
 {
   if (iDescriptor.mAttributeInfo.mIsUsingDefaultDyAttributeModel == true)
   { // If descriptor using default attribute structure binding model, retrieve information from another dimesion
@@ -669,12 +671,12 @@ void XGLWrapper::BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& iDesc
   glFlush();
 }
 
-void XGLWrapper::DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId)
+void XGLWrapper::DeleteVertexArrayObject(const TU32 vertexArrayObjectId)
 {
   glDeleteVertexArrays(1, &vertexArrayObjectId);
 }
 
-std::optional<TU32> XGLWrapper::CreateAttachment(_MIN_ const PGLAttachmentDescriptor& iDescriptor)
+std::optional<TU32> XGLWrapper::CreateAttachment(const PGLAttachmentDescriptor& iDescriptor)
 {
   // Validation check.
   MDY_ASSERT_MSG(iDescriptor.mBufferSize.X > 0 && iDescriptor.mBufferSize.Y > 0, 
@@ -741,7 +743,7 @@ std::optional<TU32> XGLWrapper::CreateAttachment(_MIN_ const PGLAttachmentDescri
   return attachmentId;
 }
 
-EDySuccess XGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIsRenderBuffer)
+EDySuccess XGLWrapper::DeleteAttachment(TU32 iAttachmentId, bool iIsRenderBuffer)
 {
   // Delete attachment (only texture attachment now)
   if (iIsRenderBuffer == true) 
@@ -755,7 +757,7 @@ EDySuccess XGLWrapper::DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIs
   return DY_SUCCESS;
 }
 
-std::optional<TU32> XGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor)
+std::optional<TU32> XGLWrapper::CreateFrameBuffer(const PDyGLFrameBufferDescriptor& iDescriptor)
 {
   const auto attachmentBindingSize = TU32(iDescriptor.mAttachmentBindingList.size());
   std::vector<GLenum> attachmentTypeList = {};
@@ -768,11 +770,14 @@ std::optional<TU32> XGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDe
 
   for (TU32 i = 0; i < attachmentBindingSize; ++i)
   {
-    const auto [attachmentId, attachmentType, attachmentFormat, isRenderBuffer] = iDescriptor.mAttachmentBindingList[i];
+    const auto [attachmentId, attachmentType, attachmentFormat, isRenderBuffer] 
+      = iDescriptor.mAttachmentBindingList[i];
     if (isRenderBuffer == false)
-    { // If attachment is texture.
+    { 
+      // If attachment is texture.
       glBindTexture(GlGetLowTextureType(attachmentType), attachmentId);
       const auto typeValue = DyGetAttachmentTypeValue(attachmentFormat);
+
       glFramebufferTexture(GL_FRAMEBUFFER, typeValue, attachmentId, 0);
       attachmentTypeList.emplace_back(typeValue);
     }
@@ -804,8 +809,14 @@ std::optional<TU32> XGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDe
 
   // Let framebuffer know that attachmentBuffer's id will be drawn at framebuffer.
   // @WARNING TODO BE CAREFUL OF INSERTING DEPTH ATTACHMENTS AS COLOR ATTACHMENT!.
-  if (iDescriptor.mIsUsingPixelShader == false) { glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE); }
-  else { glDrawBuffers(attachmentBindingSize, attachmentTypeList.data()); }
+  if (iDescriptor.mIsUsingPixelShader == false) 
+  { 
+    glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE); 
+  }
+  else 
+  { 
+    glDrawBuffers(attachmentBindingSize, attachmentTypeList.data()); 
+  }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glFlush();
@@ -814,7 +825,7 @@ std::optional<TU32> XGLWrapper::CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDe
   return framebufferId;
 }
 
-EDySuccess XGLWrapper::DeleteFrameBuffer(_MIN_ const TU32 framebufferId)
+EDySuccess XGLWrapper::DeleteFrameBuffer(const TU32 framebufferId)
 {
   glDeleteFramebuffers(1, &framebufferId);
   return DY_SUCCESS;
@@ -839,7 +850,7 @@ void XGLWrapper::SetViewportIndexed(TU32 iIndex, const DArea2D& iViewportRegion)
     iViewportRegion.GetHeight());
 }
 
-void XGLWrapper::BindFrameBufferObject(_MIN_ TU32 iFboId)
+void XGLWrapper::BindFrameBufferObject(TU32 iFboId)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, iFboId);
 }
@@ -849,7 +860,21 @@ void XGLWrapper::UnbindFrameBufferObject()
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void XGLWrapper::BindVertexArrayObject(_MIN_ TU32 iVaoId)
+void XGLWrapper::ClearColorFrameBuffer(TU32 frameBufferId, const DColorRGBA& color, TU32 drawBufferId)
+{
+  XGLWrapper::BindFrameBufferObject(frameBufferId);
+  glClearBufferfv(GL_COLOR, drawBufferId, color.Data());
+  XGLWrapper::UnbindFrameBufferObject();
+}
+
+void XGLWrapper::ClearDepthFrameBuffer(TU32 frameBufferId, TF32 depthValue)
+{
+  XGLWrapper::BindFrameBufferObject(frameBufferId);
+  glClearBufferfv(GL_DEPTH, 0, &depthValue);
+  XGLWrapper::UnbindFrameBufferObject();
+}
+
+void XGLWrapper::BindVertexArrayObject(TU32 iVaoId)
 {
   glBindVertexArray(iVaoId);
 }
@@ -860,8 +885,8 @@ void XGLWrapper::UnbindVertexArrayObject()
 }
 
 void XGLWrapper::BindTexture(
-    _MIN_ TU32 activeTextureIndex, 
-    _MIN_ ETextureStyleType type, _MIN_ TU32 textureId)
+    TU32 activeTextureIndex, 
+    ETextureStyleType type, TU32 textureId)
 {
   #if defined(NDEBUG) == false 
   {
@@ -878,7 +903,7 @@ void XGLWrapper::BindTexture(
   }
 }
 
-void XGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ ETextureStyleType type)
+void XGLWrapper::UnbindTexture(TU32 textureIndex, ETextureStyleType type)
 {
   glActiveTexture(GL_TEXTURE0 + textureIndex);
   switch (type)
@@ -889,7 +914,7 @@ void XGLWrapper::UnbindTexture(_MIN_ TU32 textureIndex, _MIN_ ETextureStyleType 
   }
 }
 
-void XGLWrapper::Draw(_MIN_ EDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount)
+void XGLWrapper::Draw(EDrawType iType, bool iIsElement, TU32 iCount)
 {
   GLenum drawType = GL_POINT;
   switch (iType)
@@ -937,20 +962,20 @@ void XGLWrapper::DrawInstanced(EDrawType iType, bool iIsElement, TU32 iCount, TU
   }
 }
 
-TI32 XGLWrapper::QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum)
+TI32 XGLWrapper::QueryShaderProgramIV(TU32 iShaderProgramId, TGlEnum iQueryEnum)
 {
   TI32 result = 0;
   glGetProgramiv(iShaderProgramId, iQueryEnum, &result);
   return result;
 }
 
-void XGLWrapper::QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector)
+void XGLWrapper::QueryFloatVector(TGlEnum iGLLowEnumCommand, TF32* iPtrRawFloatVector)
 {
   glGetFloatv(iGLLowEnumCommand, iPtrRawFloatVector);
 }
 
-std::optional<std::tuple<std::string, GLsizei, GLint, EAttributeVariableType, TU32>> 
-XGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex)
+std::optional<std::tuple<std::string, TGlSize, TI32, EAttributeVariableType, TU32>> 
+XGLWrapper::GetShaderProgramAttributeInfo(TU32 iShaderProgramId, TU32 iAttrIndex)
 {
   const TI32 attrBufferLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH);
   auto* attributeName = static_cast<char*>(std::calloc(attrBufferLength, sizeof(GLchar)));
@@ -971,8 +996,8 @@ XGLWrapper::GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU3
   return result;
 }
 
-std::optional<std::tuple<std::string, GLsizei, GLint, EUniformVariableType, TU32>>
-XGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformIndex)
+std::optional<std::tuple<std::string, TGlSize, TI32, EUniformVariableType, TU32>>
+XGLWrapper::GetShaderProgramUniformInfo(TU32 iShaderProgramId, TU32 iUniformIndex)
 {
   const TI32 uniformBufLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_UNIFORM_MAX_LENGTH);
   auto* uniformName = static_cast<char*>(std::calloc(uniformBufLength, sizeof(GLchar)));
@@ -1013,7 +1038,7 @@ XGLWrapper::GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 
 }
 
 std::optional<std::string> 
-XGLWrapper::GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex)
+XGLWrapper::GetShaderProgramUniformBlockInfo(TU32 iShaderProgramId, TU32 iUniformBlockIndex)
 {
   const TI32 uboNameMaxLength = QueryShaderProgramIV(iShaderProgramId, GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH);
   auto* uniformName = static_cast<char*>(std::calloc(uboNameMaxLength, sizeof(GLchar)));

@@ -30,6 +30,8 @@
 #include <Dy/Component/Internal/Camera/DUboCameraBlock.h>
 #include <Dy/Component/CTransform.h>
 
+#include <Dy/Include/GlInclude.h>
+
 namespace dy
 {
 

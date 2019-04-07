@@ -59,17 +59,15 @@ void FBtRenderItemEmissive::OnFailedCheckCondition()
 
 void FBtRenderItemEmissive::ClearFramebuffers()
 {
-  const GLfloat one = 1.0f;
+  const auto one = DColorRGBA{1, 1, 1, 1};
 
-  this->mFbBlur->BindFrameBuffer();
-  glClearBufferfv(GL_COLOR, 0, &one);
+  XGLWrapper::ClearColorFrameBuffer(this->mFbBlur->GetTargetFrameBufferId(), one);
   this->mFbBlur->Swap();
-  this->mFbBlur->BindFrameBuffer();
-  glClearBufferfv(GL_COLOR, 0, &one);
+  XGLWrapper::ClearColorFrameBuffer(this->mFbBlur->GetTargetFrameBufferId(), one);
   this->mFbBlur->Swap();
 
+  XGLWrapper::ClearColorFrameBuffer(this->mFbTone->GetTargetFrameBufferId(), one);
   this->mFbTone->BindFrameBuffer();
-  glClearBufferfv(GL_COLOR, 0, &one);
 }
 
 void FBtRenderItemEmissive::OnSetupRenderingSetting()

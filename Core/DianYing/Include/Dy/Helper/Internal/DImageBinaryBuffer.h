@@ -37,7 +37,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyImageColorFormatStyle&
 
 /// @brief Get internal GLenum for texture formatting from style.
 /// If errored, just return null value.
-MDY_NODISCARD std::optional<GLenum> GlGetImageFormatFrom(_MIN_ EDyImageColorFormatStyle style) noexcept;
+std::optional<TGlEnum> GlGetImageFormatFrom(EDyImageColorFormatStyle style) noexcept;
 
 /// @enum EDyGlImagePixelReadType
 /// @brief Image reading pixel's type.
@@ -54,7 +54,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlImagePixelReadType& p)
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlImagePixelReadType& p);
 
 /// @brief Get internal image format type.
-MDY_NODISCARD GLenum GlGetImagePixelTypeFrom(_MIN_ EDyGlImagePixelReadType iType) noexcept;
+TGlEnum GlGetImagePixelTypeFrom(EDyGlImagePixelReadType iType) noexcept;
 
 /// @class DImageBinaryBuffer
 /// @brief Image binary buffer that manages binary buffer chunk, 

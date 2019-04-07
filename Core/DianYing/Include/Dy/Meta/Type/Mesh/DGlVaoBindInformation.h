@@ -19,34 +19,25 @@
 namespace dy
 {
 
-enum class EDyGLPixelFormatType : char
+enum class EGLPixelFormatType : char
 {
   Float,
   Int,
   NoneError,
 };
 
-/// @brief Get internal GLenum value from `EDyGLPixelFormatType`.
-MDY_NODISCARD inline static GLenum 
-DyGetGLTypeFrom(EDyGLPixelFormatType type) 
-{
-  switch(type)
-  {
-  case EDyGLPixelFormatType::Float: return GL_FLOAT;
-  case EDyGLPixelFormatType::Int:   return GL_INT;
-  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
-  }
-}
+/// @brief Get internal GLenum value from `EGLPixelFormatType`.
+TGlEnum DyGetGLTypeFrom(EGLPixelFormatType type);
 
 struct PDyVaoAttributeFormat final
 {
-  EDyGLPixelFormatType mType = EDyGLPixelFormatType::NoneError;
+  EGLPixelFormatType mType = EGLPixelFormatType::NoneError;
   bool  mIsMustNormalized = false;
   TU32  mElementCount     = MDY_INITIALIZE_DEFUINT;
   TU32  mOffsetByteSize   = MDY_INITIALIZE_DEFUINT;
 
   PDyVaoAttributeFormat(
-    EDyGLPixelFormatType type, 
+    EGLPixelFormatType type, 
     bool isMustNormalized, 
     TU32 elementCount, 
     TU32 offsetByteSize) 
@@ -56,7 +47,7 @@ struct PDyVaoAttributeFormat final
       mOffsetByteSize{ offsetByteSize }
   {
     MDY_ASSERT_MSG(
-      this->mType != EDyGLPixelFormatType::NoneError, 
+      this->mType != EGLPixelFormatType::NoneError, 
       "Attribute format type must not be ::NullError.");
     MDY_ASSERT_MSG(
       this->mElementCount != 0, 
@@ -64,12 +55,12 @@ struct PDyVaoAttributeFormat final
   }
 };
 
-/// @struct DDyGLVaoBindInformation
+/// @struct DGlVaoBindInformation
 /// @brief use this.
-struct DDyGLVaoBindInformation final
+struct DGlVaoBindInformation final
 {
-  TU32 mOffsetByteSize  = MDY_INITIALIZE_DEFUINT;
-  TU32 mStrideByteSize  = MDY_INITIALIZE_DEFUINT;
+  TU32 mOffsetByteSize  = 0;
+  TU32 mStrideByteSize  = 0;
   bool mIsUsingDefaultDyAttributeModel = true;
 
   /// If `mIsUsingDefaultDyAttributeModel` is true, `mAttributeFormatList` will be neglected.

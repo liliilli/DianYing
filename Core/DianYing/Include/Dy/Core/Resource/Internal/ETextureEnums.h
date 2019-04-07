@@ -62,7 +62,7 @@ void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const ETextureStyleType& p);
 void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ ETextureStyleType& p);
 
 /// @brief Get converted low-level gl texture type from wrapping type.
-MDY_NODISCARD GLenum GlGetLowTextureType(ETextureStyleType iType) noexcept;
+TGlEnum GlGetLowTextureType(ETextureStyleType iType) noexcept;
 
 /// @enum  EGlBufferDataInternalFormat
 /// @brief RenderBuffer internal format.
@@ -81,7 +81,7 @@ enum class EGlBufferDataInternalFormat : unsigned char
   NoneError = 0xFF
 };
 
-MDY_NODISCARD GLenum GlGetLowDataFormatType(EGlBufferDataInternalFormat iValue) noexcept;
+TGlEnum GlGetLowDataFormatType(EGlBufferDataInternalFormat iValue) noexcept;
 
 } /// ::dy namespace
 

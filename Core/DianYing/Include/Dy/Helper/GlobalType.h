@@ -62,6 +62,11 @@ using ::dy::math::TReal;
 using ::dy::math::kMaxValueOf;
 using ::dy::math::kMinValueOf;
 
+/// @brief GLenum has 32bit depth.
+/// https://www.khronos.org/opengl/wiki/OpenGL_Type
+using TGlEnum = TI32;
+using TGlSize = TU32;
+
 template <
     typename TValue,
     typename THash = std::hash<std::string>,

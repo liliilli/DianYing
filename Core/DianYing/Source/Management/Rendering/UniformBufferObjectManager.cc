@@ -16,6 +16,7 @@
 #include <Dy/Management/Rendering/MUniformBufferObject.h>
 #include <Dy/Management/MLog.h>
 #include <Dy/Helper/Library/HelperContainer.h>
+#include <Dy/Include/GlInclude.h>
 
 //!
 //! Forward declaration & Local translation unit data.

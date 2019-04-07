@@ -18,6 +18,7 @@
 #include <nlohmann/json.hpp>
 
 #include <Dy/Helper/Internal/DImageBinaryBuffer.h>
+#include <Dy/Include/GlInclude.h>
 
 namespace dy
 {

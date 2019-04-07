@@ -18,6 +18,8 @@
 #include <Dy/Core/Thread/IO/DRescIOWorkerResult.h>
 #include <Dy/Helper/System/Pointer.h>
 
+struct GLFWwindow;
+
 namespace dy
 {
 class MIOMeta;

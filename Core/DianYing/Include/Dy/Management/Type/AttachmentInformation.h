@@ -35,7 +35,7 @@ enum class EDyGlAttachmentType : TI32
 /// @brief  Get attachment type value from EDyGlAttachmentType.
 /// @param  iAttType
 /// @return GL_COLOR_ATTACHMENT_X
-MDY_NODISCARD GLenum DyGetAttachmentTypeValue(EDyGlAttachmentType iAttType) noexcept;
+TGlEnum DyGetAttachmentTypeValue(EDyGlAttachmentType iAttType) noexcept;
 
 /// @struct PBlendingEquation
 /// @brief Describes blending equation [src, mode, dst] 
@@ -86,11 +86,11 @@ struct PBlendingEquation final
     EFunc iSrc, EMode iMode, EFunc iDst, 
     const DColorRGBA& iConstantColor = DColorRGBA{});
 
-  MDY_NODISCARD static GLenum ToGLenum(EMode iMode);
-  MDY_NODISCARD static EMode  ToMode(GLenum iGlMode);
+  MDY_NODISCARD static TGlEnum ToGLenum(EMode iMode);
+  MDY_NODISCARD static EMode   ToMode(TGlEnum iGlMode);
 
-  MDY_NODISCARD static GLint ToGLenum(EFunc iFunc);
-  MDY_NODISCARD static EFunc ToFunc(GLenum iGlFunc);
+  MDY_NODISCARD static TGlEnum ToGLenum(EFunc iFunc);
+  MDY_NODISCARD static EFunc   ToFunc(TGlEnum iGlFunc);
 };
 using TBlendingEquationList = std::vector<PBlendingEquation>;
 
@@ -118,11 +118,9 @@ struct PDyGlAttachmentInformation final
   DIVec2                             mAttachmentSize = {};
   DColorRGBA                              mBorderColor    = DColorRGBA::Black;
 
-  ///
   /// @brief  Get attachment id. If attachment is not initialized yet, just return 0.
   /// @return Attachment texture id.
-  ///
-  FORCEINLINE MDY_NODISCARD TU32 GetAttachmentId() const noexcept
+  TU32 GetAttachmentId() const noexcept
   {
     return this->mAttachmentId;
   }

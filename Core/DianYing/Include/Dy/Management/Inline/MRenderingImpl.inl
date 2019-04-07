@@ -16,6 +16,7 @@
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
 #include <Dy/Component/CTransform.h>
 #include <Math/Utility/XGraphicsMath.h>
+#include <Dy/Include/GlInclude.h>
 
 namespace dy
 {

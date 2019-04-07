@@ -15,7 +15,7 @@
 
 #include <Dy/Core/Reflection/RBuiltinResources.h>
 #include <Dy/Core/Resource/Internal/XGeometryTypes.h>
-#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
+#include <Dy/Meta/Type/Mesh/DGlVaoBindInformation.h>
 #include <Dy/Meta/Information/CommonResourceMetaInfo.h>
 #include <nlohmann/json_fwd.hpp>
 
@@ -54,7 +54,7 @@ struct PDyMeshInstanceMetaInfo final : public PDyCommonResourceMetaInfo
   std::vector<TU32> mIndiceBuffer       = {};
 
   EDyMeshUsage      mMeshUsage          = EDyMeshUsage::StaticDraw;
-  DDyGLVaoBindInformation mVAOBindingInfo;
+  DGlVaoBindInformation mVAOBindingInfo;
 
   //! External (Follows `PDyDefaultMeshInformation` binding and must StaticDraw.)
   std::string       mExternalPath       = MDY_INITIALIZE_EMPTYSTR;

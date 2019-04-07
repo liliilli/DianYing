@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Rendering/FramebufferManager.h>
+#include <Dy/Include/GlInclude.h>
 
 namespace dy
 {

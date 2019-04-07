@@ -41,6 +41,8 @@
 #include <Dy/Builtin/Constant/GeneralValue.h>
 #include <Dy/Helper/Library/HelperString.h>
 
+#include <Dy/Include/GlInclude.h>
+
 namespace dy
 {
 

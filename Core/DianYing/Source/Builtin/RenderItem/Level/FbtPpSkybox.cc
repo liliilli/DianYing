@@ -57,17 +57,17 @@ void FBtRenderItemSkybox::OnFailedCheckCondition()
 {
   if (this->AreResourcesValid() == false) { return; }
 
-  this->mBinderFbSkyRend->BindFrameBuffer();
-  const GLfloat one = 0.0f;
-  glClearBufferfv(GL_COLOR, 0, &one);
-  this->mBinderFbSkyRend->UnbindFrameBuffer();;
+  XGLWrapper::ClearColorFrameBuffer(
+    this->mBinderFbSkyRend->GetTargetFrameBufferId(),
+    DColorRGBA{0, 0, 0, 0});
 }
 
 void FBtRenderItemSkybox::OnSetupRenderingSetting()
 {
+  XGLWrapper::ClearColorFrameBuffer(
+    this->mBinderFbSkyRend->GetTargetFrameBufferId(),
+    DColorRGBA{0, 0, 0, 0});
   this->mBinderFbSkyRend->BindFrameBuffer();
-  const GLfloat one = 0.0f;
-  glClearBufferfv(GL_COLOR, 0, &one);
 }
 
 void FBtRenderItemSkybox::OnRender()

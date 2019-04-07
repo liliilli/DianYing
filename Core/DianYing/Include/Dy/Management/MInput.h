@@ -30,6 +30,9 @@
 //! Forward declaration
 //!
 
+struct GLFWcursor;
+struct GLFWwindow;
+
 namespace dy
 {
 class FActor; 

@@ -27,10 +27,10 @@ struct PDyGLTextureBase
   virtual ~PDyGLTextureBase() = 0;
 
   ETextureStyleType mType = ETextureStyleType::NoneError;
-  bool                mIsUsingDefaultMipmap       = false;
-  bool                mIsUsingCustomizedParameter = false;
-  TI32                mImageFormat    = MDY_INITIALIZE_DEFINT;
-  GLenum              mImagePixelType = GL_NONE;
+  bool              mIsUsingDefaultMipmap       = false;
+  bool              mIsUsingCustomizedParameter = false;
+  TI32              mImageFormat    = -1;
+  TGlEnum           mImagePixelType = 0;
   DColorRGBA        mBorderColor    = {};
 
   const TTextureParameterList* mPtrParameterList = MDY_INITIALIZE_NULL;

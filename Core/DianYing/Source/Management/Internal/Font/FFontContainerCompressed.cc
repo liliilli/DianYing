@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Internal/Font/FFontContainerCompressed.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 
 namespace dy
 {
@@ -30,7 +31,7 @@ FFontContainerCompressed::FFontContainerCompressed(
 FFontContainerCompressed::~FFontContainerCompressed()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  glDeleteTextures(1, &this->mTexImageResId);
+  XGLWrapper::DeleteTexture(this->mTexImageResId);
 }
 
 bool FFontContainerCompressed::IsCharacterGlyphExist(TChr16 fontCode)

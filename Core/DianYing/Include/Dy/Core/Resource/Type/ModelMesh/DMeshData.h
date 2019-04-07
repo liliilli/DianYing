@@ -27,7 +27,7 @@ struct DMeshData final
 
   std::vector<TF32> mCustomMeshBuffer   = {};
   std::vector<TU32> mIndiceBuffer       = {};
-  DDyGLVaoBindInformation mVAOBindingInfo;
+  DGlVaoBindInformation mVAOBindingInfo;
   EDyMeshUsage  mMeshUsage = EDyMeshUsage::StaticDraw;
 };
 

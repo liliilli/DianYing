@@ -30,6 +30,8 @@
 #include <Dy/Element/Internal/TIdDistributor.h>
 #include <Dy/Element/FActor.h>
 
+#include <Dy/Include/GlInclude.h>
+
 //!
 //! Data
 //!

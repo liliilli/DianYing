@@ -47,9 +47,14 @@ EDySuccess FBtRenderItemScreenIntegeration::OnPreRenderCheckCondition()
 
 void FBtRenderItemScreenIntegeration::OnSetupRenderingSetting()
 {
+  XGLWrapper::ClearColorFrameBuffer(0, DColorRGBA{0, 0, 0, 0}, 0);
+  XGLWrapper::ClearDepthFrameBuffer(0, 1.0f);
+  XGLWrapper::BindFrameBufferObject(0);
+#ifdef false
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+#endif
 }
 
 void FBtRenderItemScreenIntegeration::OnRender()
@@ -77,7 +82,8 @@ void FBtRenderItemScreenIntegeration::OnRender()
 
 void FBtRenderItemScreenIntegeration::OnReleaseRenderingSetting()
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  XGLWrapper::BindFrameBufferObject(0);
+  //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 } /// ::dy namespace

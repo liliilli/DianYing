@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_MANAGEMENT_TYPE_RENDER_DDyPixelInfo_H
-#define GUARD_DY_MANAGEMENT_TYPE_RENDER_DDyPixelInfo_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,18 +12,21 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Management/Type/UBOInformation.h>
+#include <Dy/Include/GlInclude.h>
+
 namespace dy
 {
 
-/// @struct DDyPixelInfo
-/// @brief Pixel information of object picking.
-struct DDyPixelInfo final
+TGlEnum DyGetBufferDrawTypeValue(EDyBufferDrawType type) noexcept
 {
-  float ObjectID = 0.0f;
-  float DrawID = 0.0f;
-  float PrimID = 0.0f;
-};
-
+  TGlEnum retValue = GL_NONE;
+  switch (type)
+  {
+  case EDyBufferDrawType::StaticDraw:   retValue = GL_STATIC_DRAW;  break;
+  case EDyBufferDrawType::DynamicDraw:  retValue = GL_DYNAMIC_DRAW; break;
+  }
+  return retValue;
 }
 
-#endif /// GUARD_DY_MANAGEMENT_TYPE_RENDER_DDyPixelInfo_H
+} /// ::dy namespace

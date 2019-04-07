@@ -22,6 +22,8 @@
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <Dy/Core/Reflection/RReflection.h>
 
+#include <Dy/Include/GlInclude.h>
+
 //!
 //! Forward declaration
 //!

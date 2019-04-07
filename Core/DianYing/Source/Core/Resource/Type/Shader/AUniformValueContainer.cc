@@ -23,6 +23,8 @@
 #include <Dy/Core/Resource/Resource/AResourceAttachmentBase.h>
 #include <Dy/Core/Reflection/RReflection.h>
 
+#include <Dy/Include/GlInclude.h>
+
 #define MDY_CONSTRUCT_UNIFORM_ITEM(__MATypeSpecifier__, __MASpecifier__, __MAId__) \
     auto [it2, MDY_NOUSEVAR] = this->mUniformMap.try_emplace( \
       __MASpecifier__, std::make_unique<TUniformValue<TEnum::__MATypeSpecifier__>>(__MAId__)); \

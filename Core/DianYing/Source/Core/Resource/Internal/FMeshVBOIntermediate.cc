@@ -108,7 +108,7 @@ const DDySubmeshFlagInformation & FMeshVBOIntermediate::GetMeshFlagInfo() const 
   return this->mMeshFlagInformation;
 }
 
-const DDyGLVaoBindInformation & FMeshVBOIntermediate::GetVaoBindingInfo() const noexcept
+const DGlVaoBindInformation & FMeshVBOIntermediate::GetVaoBindingInfo() const noexcept
 {
   return this->mVaoBindAttributeInfo;
 }

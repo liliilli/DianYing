@@ -13,7 +13,7 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
+#include <Dy/Meta/Type/Mesh/DGlVaoBindInformation.h>
 
 namespace dy
 {
@@ -27,7 +27,7 @@ struct PDyGLVaoBindDescriptor final
   TU32 mVaoId             = MDY_INITIALIZE_DEFUINT;
   TU32 mBoundVboId        = MDY_INITIALIZE_DEFUINT;
   TU32 mBoundEboId        = MDY_INITIALIZE_DEFUINT;
-  DDyGLVaoBindInformation mAttributeInfo {};
+  DGlVaoBindInformation mAttributeInfo {};
   /// @brief Instancing ID will be used as binding number 1.
   std::optional<TU32> mInstancingVboId;
 };

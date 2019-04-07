@@ -90,17 +90,17 @@ MDY_NODISCARD bool DyIsHaveValueIn(
 namespace dy
 {
 
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterName& p)
+void to_json(nlohmann::json& j, const EDyGlParameterName& p)
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
 }
 
-void from_json(_MIN_ const nlohmann::json& j, _MOUT_ EDyGlParameterName& p)
+void from_json(const nlohmann::json& j, EDyGlParameterName& p)
 {
   p = DyConvertStringToEDyGlParameterName(j.get<std::string>());
 }
 
-EDyGlParameterName DyConvertStringToEDyGlParameterName(_MIN_ const std::string& iString) noexcept
+EDyGlParameterName DyConvertStringToEDyGlParameterName(const std::string& iString) noexcept
 {
   if (iString == "TextureMinFilter")      { return EDyGlParameterName::TextureMinFilter; }
   else if (iString == "TextureMagFilter") { return EDyGlParameterName::TextureMagFilter; }

@@ -23,6 +23,8 @@
 #include <Dy/Management/Rendering/MRendering.h>
 #include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 
+#include <Dy/Include/GlInclude.h>
+
 //!
 //! Forward declaration & Local translation unit function data.
 //!

@@ -14,20 +14,12 @@
 
 /// Header file
 #include <Dy/Management/Type/AttachmentInformation.h>
-#include <array>
-
-//!
-//! Local translation unit functions
-//!
-
-//!
-//! Implementation
-//!
+#include <Dy/Include/GlInclude.h>
 
 namespace dy
 {
 
-GLenum DyGetAttachmentTypeValue(EDyGlAttachmentType iAttType) noexcept
+TGlEnum DyGetAttachmentTypeValue(EDyGlAttachmentType iAttType) noexcept
 { // Integrity test
   if (iAttType == EDyGlAttachmentType::NoneError) { return GL_NONE; }
   if (iAttType == EDyGlAttachmentType::Depth)     { return GL_DEPTH_ATTACHMENT; }
@@ -43,7 +35,7 @@ PBlendingEquation::PBlendingEquation(
     mConstantColor{iConstantColor}
 { }
 
-GLenum PBlendingEquation::ToGLenum(EMode iMode)
+TGlEnum PBlendingEquation::ToGLenum(EMode iMode)
 {
   switch (iMode)
   {
@@ -56,7 +48,7 @@ GLenum PBlendingEquation::ToGLenum(EMode iMode)
   }
 }
 
-PBlendingEquation::EMode PBlendingEquation::ToMode(GLenum iGlMode)
+PBlendingEquation::EMode PBlendingEquation::ToMode(TGlEnum iGlMode)
 {
   switch (iGlMode)
   {
@@ -89,7 +81,7 @@ GLint PBlendingEquation::ToGLenum(EFunc iFunc)
   }
 }
 
-PBlendingEquation::EFunc PBlendingEquation::ToFunc(GLenum iGlFunc)
+PBlendingEquation::EFunc PBlendingEquation::ToFunc(TGlEnum iGlFunc)
 {
   switch (iGlFunc)
   {
@@ -109,7 +101,7 @@ PBlendingEquation::EFunc PBlendingEquation::ToFunc(GLenum iGlFunc)
   }
 }
 
-GLenum DyGetTexParameterNameValue(_MIN_ const EDyGlParameterName attachment) noexcept
+TGlEnum DyGetTexParameterNameValue(EDyGlParameterName attachment) noexcept
 {
   switch (attachment)
   {
@@ -124,7 +116,7 @@ GLenum DyGetTexParameterNameValue(_MIN_ const EDyGlParameterName attachment) noe
   return GL_NONE;
 }
 
-GLenum DyGetTexParameterValueValue(_MIN_ const EDyGlParameterValue value) noexcept
+TGlEnum DyGetTexParameterValueValue(EDyGlParameterValue value) noexcept
 {
   switch (value)
   {

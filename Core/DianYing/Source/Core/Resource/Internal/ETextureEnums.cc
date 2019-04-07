@@ -17,6 +17,7 @@
 
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Internal/XStringSwitch.h>
+#include <Dy/Include/GlInclude.h>
 
 namespace dy
 {
@@ -84,7 +85,7 @@ void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ ETextureStyleType& p)
   else { MDY_UNEXPECTED_BRANCH(); }
 }
 
-GLenum GlGetLowTextureType(ETextureStyleType iType) noexcept
+TGlEnum GlGetLowTextureType(ETextureStyleType iType) noexcept
 {
   switch (iType)
   {
@@ -100,7 +101,7 @@ GLenum GlGetLowTextureType(ETextureStyleType iType) noexcept
   }
 }
 
-GLenum GlGetLowDataFormatType(EGlBufferDataInternalFormat iValue) noexcept
+TGlEnum GlGetLowDataFormatType(EGlBufferDataInternalFormat iValue) noexcept
 {
   switch (iValue)
   {

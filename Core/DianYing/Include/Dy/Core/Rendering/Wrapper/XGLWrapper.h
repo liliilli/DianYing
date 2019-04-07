@@ -26,6 +26,8 @@
 //! Forward declaration
 //!
 
+struct GLFWwindow;
+
 namespace dy
 {
 struct PDyGLTextureCubemapDescriptor;
@@ -38,7 +40,7 @@ struct PDyGLWindowContextDescriptor;
 struct PGLBufferDescriptor;
 struct PGLAttachmentDescriptor;
 struct PDyGLFrameBufferDescriptor;
-struct DDyGLVaoBindInformation;
+struct DGlVaoBindInformation;
 } /// ::dy namespace
 
 //!
@@ -53,84 +55,90 @@ namespace dy
 class XGLWrapper
 {
 public:
-  ///
   /// @brief Create window context following descriptor. \n\n
   /// Window name and Window size must be valid. \n
   /// If mSharingContext is valid, created window is shared by mSharingContext. \n
   /// If sharing context deleted but derived window is alive, this occurs undefined behaviour.
-  ///
-  MDY_NODISCARD static GLFWwindow* CreateGLWindow(_MIN_ const PDyGLWindowContextDescriptor& descriptor);
-
+  MDY_NODISCARD static GLFWwindow* 
+  CreateGLWindow(const PDyGLWindowContextDescriptor& descriptor);
   /// @brief Create opengl context.
-  static void CreateGLContext(_MIN_ GLFWwindow* window);
+  static void CreateGLContext(GLFWwindow* window);
 
   /// @brief Create texture and get texture id. \n
   /// This function is thread-safe and get performance down.
-  MDY_NODISCARD static std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureDescriptor& descriptor);
+  MDY_NODISCARD static std::optional<TU32> 
+  CreateTexture(const PDyGLTextureDescriptor& descriptor);
   /// @brief Create cubemap texture and get cubemap texture id. \n
   /// This function is thread-safe and get performance down.
-  MDY_NODISCARD static std::optional<TU32> CreateTexture(_MIN_ const PDyGLTextureCubemapDescriptor& descriptor);
+  MDY_NODISCARD static std::optional<TU32> 
+  CreateTexture(const PDyGLTextureCubemapDescriptor& descriptor);
   /// @brief Delete texture if texture id is valid.
   /// This function is thread-safe and get performance down.
-  static void DeleteTexture(_MIN_ const TU32 validTextureId);
+  static void DeleteTexture(const TU32 validTextureId);
 
   /// @brief Create shader fragment and get fragment id. \n
   /// This function is thread-safe and get performance down.
-  MDY_NODISCARD static std::optional<TU32> CreateShaderFragment(_MIN_ const PDyGLShaderFragmentDescriptor& descriptor);
+  MDY_NODISCARD static std::optional<TU32> 
+  CreateShaderFragment(const PDyGLShaderFragmentDescriptor& descriptor);
   /// @brief Delete shader fragment with valid shader fragment id. \n
   /// This function is thread-safe and get performance down.
-  static void DeleteShaderFragment(_MIN_ const TU32 shaderFragmentId);
+  static void DeleteShaderFragment(const TU32 shaderFragmentId);
 
   /// @brief Create shader program and get shader program id. \n
   /// This function is thread-safe and get performance down.
-  MDY_NODISCARD static std::optional<TU32> CreateShaderProgram(_MIN_ const TFragmentList& fragmentList);
+  MDY_NODISCARD static std::optional<TU32> 
+  CreateShaderProgram(const TFragmentList& fragmentList);
   /// @brief Delete shader program with valid shader program id.
   /// This function is thread-safe and get performance down.
-  static void DeleteShaderProgram(_MIN_ const TU32 shaderProgramId);
+  static void DeleteShaderProgram(const TU32 shaderProgramId);
 
   /// @brief Use shader program.
-  static void UseShaderProgram(_MIN_ TU32 iShaderProgramId);
+  static void UseShaderProgram(TU32 iShaderProgramId);
   /// @brief Disuse shader program.
   static void DisuseShaderProgram();
 
   /// @brief Create direct buffer which can be shared between OpenGL contexts. \n
   /// This function is thread-safe and get performance down.
-  MDY_NODISCARD static std::optional<TU32> CreateBuffer(_MIN_ const PGLBufferDescriptor& descriptor);
+  MDY_NODISCARD static std::optional<TU32> 
+  CreateBuffer(const PGLBufferDescriptor& descriptor);
   /// @brief Delete shader program with valid shader program id.
   /// This function is thread-safe and get performance down.
-  static void DeleteBuffer(_MIN_ const TU32 directBufferId);
+  static void DeleteBuffer(const TU32 directBufferId);
 
   /// @brief Map data to arbitary buffer from zero. This function is needed to bind
   /// related vertex array object prior to function.
   /// This function thread-safe and might get performance down.
-  static void MapBuffer(_MIN_ EDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize);
+  static void MapBuffer(
+    EDirectBufferType iBufferType, TU32 iBufferId, const void* iPtrBuffer, TU32 iBufferSize);
   /// @brief Map data to arbitary buffer with start point, input buffer size, and gap of each input target pointer.
   /// This funciton is needed to bind related vertex array object prior to function.
   /// This function thread-safe and might get performance down.
   static void MapBufferExt(
-      _MIN_ EDirectBufferType iBufferType, _MIN_ TU32 iBufferId, _MIN_ void* iPtrBuffer, _MIN_ TU32 iBufferSize, 
-      _MIN_ TU32 iItemByteSize, _MIN_ TU32 iGapByteSize, _MIN_ TU32 iStartPoint);
+    EDirectBufferType iBufferType, TU32 iBufferId, const void* iPtrBuffer, TU32 iBufferSize, 
+    TU32 iItemByteSize, TU32 iGapByteSize, TU32 iStartPoint);
 
   /// @brief Just create and return created vertex array object id.
-  MDY_NODISCARD static TU32 CreateVertexArrayObject(void);
+  MDY_NODISCARD static TU32 CreateVertexArrayObject();
   /// @brief Bind properties with valid Vertex Array Object Id.
-  static void BindVertexArrayObject(_MIN_ const PDyGLVaoBindDescriptor& descriptor);
+  static void BindVertexArrayObject(const PDyGLVaoBindDescriptor& descriptor);
   /// @brief Delete Vertex Array Object id.
-  static void DeleteVertexArrayObject(_MIN_ const TU32 vertexArrayObjectId);
+  static void DeleteVertexArrayObject(const TU32 vertexArrayObjectId);
 
   /// @brief Create attachment (texture or renderbuffer) and get texture id. \n
   /// This function is thread-safe and get performance down.
-  MDY_NODISCARD static std::optional<TU32> CreateAttachment(_MIN_ const PGLAttachmentDescriptor& iDescriptor);
+  MDY_NODISCARD static std::optional<TU32> 
+  CreateAttachment(const PGLAttachmentDescriptor& iDescriptor);
   /// @brief Delete attachment (texture or renderbuffer) if texture id is valid.
   /// This function is thread-safe and get performance down.
-  MDY_NODISCARD static EDySuccess DeleteAttachment(_MIN_ TU32 iAttachmentId, _MIN_ bool iIsRenderBuffer);
+  MDY_NODISCARD static EDySuccess DeleteAttachment(TU32 iAttachmentId, bool iIsRenderBuffer);
 
   /// @brief Create frame buffer. \n
   /// Creating frame buffer object must be held on main thread context.
-  MDY_NODISCARD static std::optional<TU32> CreateFrameBuffer(_MIN_ const PDyGLFrameBufferDescriptor& iDescriptor);
+  MDY_NODISCARD static std::optional<TU32> 
+  CreateFrameBuffer(const PDyGLFrameBufferDescriptor& iDescriptor);
   /// @brief Delete frame buffer. \n
   /// Deleting frame buffer object must be held on main thread context.
-  MDY_NODISCARD static EDySuccess DeleteFrameBuffer(_MIN_ const TU32 framebufferId);
+  MDY_NODISCARD static EDySuccess DeleteFrameBuffer(const TU32 framebufferId);
 
   /// @brief Set global viewport region.
   /// ...You always need to call glViewport() before starting to draw to a framebuffer with a different size. 
@@ -142,41 +150,46 @@ public:
   static void SetViewportIndexed(TU32 iIndex, const DArea2D& iViewportRegion);
 
   /// @brief Bind frame buffer object.
-  static void BindFrameBufferObject(_MIN_ TU32 iFboId);
+  static void BindFrameBufferObject(TU32 iFboId);
   /// @brief Unbind frame buffer object.
   static void UnbindFrameBufferObject();
+  /// @brief
+  static void ClearColorFrameBuffer(
+    TU32 frameBufferId, const DColorRGBA& color, TU32 drawBufferId = 0);
+  /// @brief
+  static void ClearDepthFrameBuffer(TU32 frameBufferId, TF32 depthValue);
 
   /// @brief Bind vertex array object.
-  static void BindVertexArrayObject(_MIN_ TU32 iVaoId);
+  static void BindVertexArrayObject(TU32 iVaoId);
   /// @brief Unbind vertex array object.
   static void UnbindVertexArrayObject();
 
   /// @brief Bind texture to activated shader. Shader must be actiated before use this.
-  static void BindTexture(_MIN_ TU32 activeTextureIndex, _MIN_ ETextureStyleType type, _MIN_ TU32 textureId);
+  static void BindTexture(TU32 activeTextureIndex, ETextureStyleType type, TU32 textureId);
   /// @brief Unbind texture from GL_TEXTURE_XX from activated shader.
-  static void UnbindTexture(TU32 textureIndex, _MIN_ ETextureStyleType type);
+  static void UnbindTexture(TU32 textureIndex, ETextureStyleType type);
   /// @brief Unbind textures of `textureIndexList` from activated shader.
-  static void UnbindTextureList(_MIN_ const std::vector<TU32>& textureIndexList);
+  static void UnbindTextureList(const std::vector<TU32>& textureIndexList);
 
   /// @brief Draw command.
-  static void Draw(_MIN_ EDrawType iType, _MIN_ bool iIsElement, _MIN_ TU32 iCount);
+  static void Draw(EDrawType iType, bool iIsElement, TU32 iCount);
   /// @brief Instancing drawing command.
   static void DrawInstanced(EDrawType iType, bool iIsElement, TU32 iCount, TU32 iInstanceCount);
 
   /// @brief Query command. Shader program id must be valid and query enum also.
-  MDY_NODISCARD static TI32 QueryShaderProgramIV(_MIN_ TU32 iShaderProgramId, _MIN_ GLenum iQueryEnum);
+  MDY_NODISCARD static TI32 QueryShaderProgramIV(TU32 iShaderProgramId, TGlEnum iQueryEnum);
   /// @brief Query Float vector command.
-  static void QueryFloatVector(_MIN_ GLenum iGLLowEnumCommand, _MIN_ TF32* iPtrRawFloatVector);
+  static void QueryFloatVector(TGlEnum iGLLowEnumCommand, TF32* iPtrRawFloatVector);
 
   /// @brief 
-  MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EAttributeVariableType, TU32>>
-  GetShaderProgramAttributeInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iAttrIndex);
+  MDY_NODISCARD static std::optional<std::tuple<std::string, TGlSize, TI32, EAttributeVariableType, TU32>>
+  GetShaderProgramAttributeInfo(TU32 iShaderProgramId, TU32 iAttrIndex);
   /// @brief
-  MDY_NODISCARD static std::optional<std::tuple<std::string, GLsizei, GLint, EUniformVariableType, TU32>>
-  GetShaderProgramUniformInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformIndex);
+  MDY_NODISCARD static std::optional<std::tuple<std::string, TGlSize, TI32, EUniformVariableType, TU32>>
+  GetShaderProgramUniformInfo(TU32 iShaderProgramId, TU32 iUniformIndex);
   /// @brief
   MDY_NODISCARD static std::optional<std::string>
-  GetShaderProgramUniformBlockInfo(_MIN_ TU32 iShaderProgramId, _MIN_ TU32 iUniformBlockIndex);
+  GetShaderProgramUniformBlockInfo(TU32 iShaderProgramId, TU32 iUniformBlockIndex);
 
   /// @brief Update uniform matrix4x4 item. Specified shader must be valid and activated.
   static void UpdateUniformMatrix4(TU32 iId, const DMat4& iBuffer, bool iTransposed = false);
@@ -235,7 +248,7 @@ private:
   static std::mutex mGLCriticalSectionMutex;
 
   /// @brief Default format descriptor of VAO.
-  MDY_NODISCARD static const DDyGLVaoBindInformation& GetDefaultAttributeFormatDescriptor() noexcept;
+  MDY_NODISCARD static const DGlVaoBindInformation& GetDefaultAttributeFormatDescriptor() noexcept;
 
   /// @brief Global status stack for management. \n
   /// This container will be push & popped automatically by following rendering pipeline.

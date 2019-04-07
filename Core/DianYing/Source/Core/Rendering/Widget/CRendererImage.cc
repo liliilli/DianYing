@@ -25,6 +25,8 @@
 #include <Dy/Core/Resource/Resource/FResourceMaterial.h>
 #include <Dy/Management/Rendering/MRendering.h>
 
+#include <Dy/Include/GlInclude.h>
+
 namespace dy
 {
 

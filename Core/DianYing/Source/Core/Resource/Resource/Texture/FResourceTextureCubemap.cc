@@ -19,6 +19,8 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 #include <Dy/Management/Helper/SProfilingHelper.h>
 
+#include <Dy/Include/GlInclude.h>
+
 namespace dy
 {
 

@@ -18,6 +18,8 @@
 
 #include <Dy/Management/Platform/MPlatformInfoWindows.h>
 
+struct GLFWwindow;
+
 namespace dy
 {
 

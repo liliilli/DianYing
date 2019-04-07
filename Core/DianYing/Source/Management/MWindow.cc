@@ -30,6 +30,8 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLWindowContextDescriptor.h>
 #include <Dy/Core/GEngine.h>
 
+#include <Dy/Include/GlInclude.h>
+
 //!
 //! Independent anonymous namespace
 //!

@@ -25,6 +25,8 @@
 #include <Dy/Core/Rendering/Wrapper/PGLBufferDescriptor.h>
 #include <Dy/Management/Rendering/MRendering.h>
 
+#include <Dy/Include/GlInclude.h>
+
 //!
 //! Forward declaration
 //!

@@ -18,6 +18,10 @@
 #include <nlohmann/json.hpp>
 
 #include <Dy/Helper/Internal/DImageBinaryBuffer.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
+#include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
+
+#include <Dy/Include/GlInclude.h>
 
 namespace dy
 {

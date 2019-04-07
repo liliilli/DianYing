@@ -20,6 +20,8 @@
 #include <Dy/Management/Helper/SProfilingHelper.h>
 #include <Dy/Management/MLog.h>
 
+#include <Dy/Include/GlInclude.h>
+
 namespace dy
 {
 

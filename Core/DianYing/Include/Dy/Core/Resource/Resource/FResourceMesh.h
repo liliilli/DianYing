@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Information/FInformationModel.h>
-#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
+#include <Dy/Meta/Type/Mesh/DGlVaoBindInformation.h>
 
 //!
 //! Forward declaration
@@ -72,7 +72,7 @@ private:
   std::string mSpecifierName;
   DGlBufferIdInformation    mBufferIdInformation  = {};
   DDySubmeshFlagInformation mMeshFlagInformation  = {};
-  DDyGLVaoBindInformation   mBindInformation = {};
+  DGlVaoBindInformation   mBindInformation = {};
 
   /// @brief Instancing buffer id for only used when instancing,
   std::optional<TU32> mInstancingBufferId;

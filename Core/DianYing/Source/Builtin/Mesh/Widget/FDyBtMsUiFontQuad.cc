@@ -76,9 +76,9 @@ void FDyBtMsUiFontQuad::ConstructBuffer(_MOUT_ PDyMeshInstanceMetaInfo& property
   property.mVAOBindingInfo.mIsUsingDefaultDyAttributeModel = false;
   property.mVAOBindingInfo.mOffsetByteSize = 0;
   property.mVAOBindingInfo.mStrideByteSize = sizeof(DVec2) * 3;
-  property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 0);
-  property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 8);
-  property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EDyGLPixelFormatType::Float, false, 2, 16);
+  property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EGLPixelFormatType::Float, false, 2, 0);
+  property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EGLPixelFormatType::Float, false, 2, 8);
+  property.mVAOBindingInfo.mAttributeFormatList.emplace_back(EGLPixelFormatType::Float, false, 2, 16);
 }
 
 } /// ::dy namespace

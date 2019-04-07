@@ -16,6 +16,8 @@
 #include <Dy/Management/Type/Input/DButtonInputItem.h>
 #include <Dy/Management/MLog.h>
 
+#include <Dy/Include/GlInclude.h>
+
 //!
 //! Local translation unit functions.
 //!

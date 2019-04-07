@@ -31,6 +31,8 @@
 #include <Dy/Management/MSetting.h>
 #include <Dy/Component/CTransform.h>
 
+#include <Dy/Include/GlInclude.h>
+
 namespace dy
 {
 

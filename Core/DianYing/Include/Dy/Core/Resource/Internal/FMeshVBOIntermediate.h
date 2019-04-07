@@ -14,7 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Information/FInformationModel.h>
-#include <Dy/Meta/Type/Mesh/DDyGLVaoBindInformation.h>
+#include <Dy/Meta/Type/Mesh/DGlVaoBindInformation.h>
 
 //!
 //! Forward declaration
@@ -54,7 +54,7 @@ public:
   MDY_NODISCARD const DDySubmeshFlagInformation& GetMeshFlagInfo() const noexcept;
 
   /// @brief
-  MDY_NODISCARD const DDyGLVaoBindInformation& GetVaoBindingInfo() const noexcept;
+  MDY_NODISCARD const DGlVaoBindInformation& GetVaoBindingInfo() const noexcept;
 
   /// @brief Check this will support instancing.
   MDY_NODISCARD bool IsSupportingInstancing() const noexcept;
@@ -66,7 +66,7 @@ private:
   std::string             mSpecifierName;
   DGlBufferIdInformation  mBufferIdInformation  = {};
   DDySubmeshFlagInformation mMeshFlagInformation  = {};
-  DDyGLVaoBindInformation   mVaoBindAttributeInfo = {};
+  DGlVaoBindInformation   mVaoBindAttributeInfo = {};
 
   bool mIsSupportingInstancing = false;
 };

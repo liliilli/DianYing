@@ -18,10 +18,8 @@
 namespace dy
 {
 
-///
 /// @enum   EDyGlParameterName
 /// @brief  Texture parameter option name.
-///
 enum class EDyGlParameterName
 {
   TextureMinFilter,
@@ -39,18 +37,18 @@ enum class EDyGlParameterName
 };
 
 /// @brief Serialization function
-void to_json(_MINOUT_ nlohmann::json& j, _MIN_ const EDyGlParameterName& p);
+void to_json(nlohmann::json& j, const EDyGlParameterName& p);
 /// @brief Deserialization function
-void from_json(_MIN_ const nlohmann::json& j, _MINOUT_ EDyGlParameterName& p);
+void from_json(const nlohmann::json& j, EDyGlParameterName& p);
 /// @brief Convert plain string value to proper `EDyGlParameterName`. \n
 /// If no value is matched, just return NoneError.
 MDY_NODISCARD EDyGlParameterName 
-DyConvertStringToEDyGlParameterName(_MIN_ const std::string& iString) noexcept;
+DyConvertStringToEDyGlParameterName(const std::string& iString) noexcept;
 
 /// @brief  Get internal plain parameter value from EDyGlParameterName.
 /// @param  name EDyGlParameterName
 /// @return OpenGL C-plain parameter value.
-MDY_NODISCARD GLenum DyGetTexParameterNameValue(_MIN_ const EDyGlParameterName name) noexcept;
+TGlEnum DyGetTexParameterNameValue(EDyGlParameterName name) noexcept;
 
 /// @enum   EDyGlParameterValue
 /// @brief  Texture parameter value name.
@@ -93,7 +91,7 @@ DyConvertStringToEDyGlParameterValue(_MIN_ const std::string& iString) noexcept;
 /// @brief  Get internal plain parameter value from EDyGlParameterValue.
 /// @param  value EDyGlParameterValue
 /// @return OpenGL C-plain parameter value.
-MDY_NODISCARD GLenum DyGetTexParameterValueValue(_MIN_ const EDyGlParameterValue value) noexcept;
+TGlEnum DyGetTexParameterValueValue(EDyGlParameterValue value) noexcept;
 
 ///
 /// @struct PDyGlTexParameterInformation
@@ -106,7 +104,7 @@ struct PDyGlTexParameterInformation final
   EDyGlParameterValue mParameterValue  = EDyGlParameterValue::NoneError;
 
   PDyGlTexParameterInformation() = default;
-  PDyGlTexParameterInformation(_MIN_ EDyGlParameterName name, _MIN_ EDyGlParameterValue value) :
+  PDyGlTexParameterInformation(EDyGlParameterName name, EDyGlParameterValue value) :
       mParameterOption(name),
       mParameterValue(value)
   { }

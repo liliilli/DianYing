@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Internal/Font/FFontContainerRuntime.h>
+#include <Dy/Core/Rendering/Wrapper/XGLWrapper.h>
 
 namespace dy
 {
@@ -29,7 +30,7 @@ FFontContainerRuntime::FFontContainerRuntime(const PDyMetaFontInformation::DRunt
 FFontContainerRuntime::~FFontContainerRuntime()
 {
   MDY_NOT_IMPLEMENTED_ASSERT();
-  glDeleteTextures(1, &this->mTexImageResId);
+  XGLWrapper::DeleteTexture(this->mTexImageResId);
 }
 
 bool FFontContainerRuntime::IsCharacterGlyphExist(TChr16 fontCode)

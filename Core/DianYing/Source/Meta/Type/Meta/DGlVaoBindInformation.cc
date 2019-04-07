@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_META_INFORMATION_COMMONRESOURCEMETAINFO_H
-#define GUARD_DY_META_INFORMATION_COMMONRESOURCEMETAINFO_H
+#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,17 +12,19 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Meta/Type/EDyResourceTypes.h>
+#include <Dy/Meta/Type/Mesh/DGlVaoBindInformation.h>
+#include <Dy/Include/GlInclude.h>
 
 namespace dy
 {
 
-struct PDyCommonResourceMetaInfo
+TGlEnum DyGetGLTypeFrom(EGLPixelFormatType type)
 {
-  // Resource type for arbitary meta information.
-  EDyResourceSource mSourceType = EDyResourceSource::Builtin;
-};
-
-} /// ::dy namespace
-
-#endif /// GUARD_DY_META_INFORMATION_COMMONRESOURCEMETAINFO_H
+  switch(type)
+  {
+  case EGLPixelFormatType::Float: return GL_FLOAT;
+  case EGLPixelFormatType::Int:   return GL_INT;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(GL_NONE);
+  }
+}
+}
