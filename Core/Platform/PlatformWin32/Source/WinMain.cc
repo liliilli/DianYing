@@ -1,4 +1,3 @@
-#include <precompiled.h>
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,10 +11,40 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Include/Entry.h>
+#include <FWindowsPlatform.h>
+#include <AEngineBase.h>
 
-/// @brief Main entry function of WIN32 platforms.
-#if defined(MDY_PLATFORM_FLAG_WINDOWS)
+using namespace dy;
+
+/// @brief Main function of win32 / win64 platform.
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
+{
+  (void*)(hInstance);
+  (void*)(hPrevInstance);
+  (void)(pCmdLine);
+  (void)(nCmdShow);
+
+  gEngine.reset(CreateEngine());
+  gEngine = nullptr;
+  //delete engine;
+#ifdef false
+  ghInstance      = hInstance;
+  ghPrevInstance  = hPrevInstance;
+  gpCmdLine       = pCmdLine;
+  gnCmdShow       = nCmdShow;
+
+  //_crtBreakAlloc = 681;
+
+  MDY_WIN32_TRY_TURN_ON_DEBUG();
+  MDY_CALL_ASSERT_SUCCESS(dy::GEngine::Initialize());
+  dy::GEngine::GetInstance()();
+  MDY_CALL_ASSERT_SUCCESS(dy::GEngine::Release());
+  MDY_WIN32_TRY_TURN_OFF_DEBUG();
+#endif
+  return 0;
+}
+
+#if 0
 #include <csignal>
 
 namespace
@@ -55,6 +84,7 @@ EDySuccess MDY_PRIVATE(DyInitializeWin32Debug)()
 #define MDY_WIN32_TRY_TURN_OFF_DEBUG()  (void)0
 #endif
 
+#if 0
 /// @brief Main function of win32 / win64 platform.
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
@@ -72,8 +102,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
   MDY_WIN32_TRY_TURN_OFF_DEBUG();
   return 0;
 }
-#elif defined(MDY_PLATFORM_FLAG_LINUX)
-int main() { return 0; }
-#elif defined(MDY_PLATFORM_FLAG_MACOS)
-int main() { return 0; }
+#endif
+
 #endif

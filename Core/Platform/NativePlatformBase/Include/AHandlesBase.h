@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_INCLUDE_ENTRY_H
-#define GUARD_DY_INCLUDE_ENTRY_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,13 +12,15 @@
 /// SOFTWARE.
 ///
 
-#include <filesystem>
-#include <regex>
+namespace dy
+{
 
-#include <Dy/Core/GEngine.h>
-#include <Dy/Helper/Library/HelperRegex.h>
-#include <Dy/Helper/Library/HelperJson.h>
-#include <Dy/Management/MWindow.h>
-#include <Dy/Management/MSetting.h>
+/// @struct AHandlesBase
+/// @brief Handle base type for dependent OS platform.
+struct AHandlesBase
+{
+  AHandlesBase() = default;
+  virtual ~AHandlesBase() = 0;
+};
 
-#endif /// GUARD_DY_INCLUDE_ENTRY_H
+} /// ::dy namespace

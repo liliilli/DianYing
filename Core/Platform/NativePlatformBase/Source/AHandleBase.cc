@@ -1,5 +1,3 @@
-#ifndef GUARD_DY_CORE_RESOURCE_INTERNAL_XHANDLEALIASES_H
-#define GUARD_DY_CORE_RESOURCE_INTERNAL_XHANDLEALIASES_H
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,17 +11,11 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Internal/FHandler.h>
-#include <Dy/Helper/Internal/FHandle.h>
+#include <AHandlesBase.h>
 
 namespace dy
 {
 
-struct FDummyResource final {};
-
-using FResourceHandle   = FHandle<FDummyResource>;
-using FResourceHandler  = FHandler<FDummyResource>;
+AHandlesBase::~AHandlesBase() = default;
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_CORE_RESOURCE_INTERNAL_XHANDLEALIASES_H

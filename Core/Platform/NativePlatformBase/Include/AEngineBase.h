@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_MANAGEMENT_INTERNAL_PHYSICS_CollsionResults_H
-#define GUARD_DY_MANAGEMENT_INTERNAL_PHYSICS_CollsionResults_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,19 +12,22 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/Type/DVector3.h>
+#include <memory>
 
 namespace dy
 {
 
-/// @struct FHitResult
-/// @brief Hit result instance for collision callback handling (just hit).
-struct FHitResult final
+class AEngineBase
 {
-  /// @brief specifies contact position between two physics shapes.
-  DVec3 mContactPosition{};
+public:
+  AEngineBase() = default;
+  virtual ~AEngineBase() = 0;
 };
 
-} /// ::dy namespace
+inline AEngineBase::~AEngineBase() = default;
 
-#endif /// GUARD_DY_MANAGEMENT_INTERNAL_PHYSICS_CollsionResults_H
+/// @brief Bootstrapping function.
+extern AEngineBase* CreateEngine();
+extern "C" std::unique_ptr<AEngineBase> gEngine;
+
+} /// ::dy namespace

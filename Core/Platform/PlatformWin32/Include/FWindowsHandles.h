@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_GUI_MAIN_MENU_H
-#define GUARD_DY_GUI_MAIN_MENU_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,34 +12,33 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/System/Pointer.h>
+#ifndef NOMINMAX
+  #define NOMINMAX
+#endif
+#include <Windows.h>
+#include <AHandlesBase.h>
 
 //!
 //! Forward declaration
 //!
 
-namespace dy
-{
-class FDyBtGiDebugStatus;
-}
+struct GLFWwindow;
 
 //!
 //! Implementation
 //!
 
-namespace dy::editor
+namespace dy
 {
 
-class FDyEditor_MainMenu final
+struct FWindowsHandles final : public AHandlesBase
 {
-public:
-  FDyEditor_MainMenu();
-  void Draw(_MIN_ TF32 dt) noexcept;
+  FWindowsHandles(HANDLE mainProcess);
 
-private:
-  FDyBtGiDebugStatus* mPtrGlobalInstance = nullptr;
+  HANDLE  mMainProcess = nullptr;
+  HWND    mMainWindow = nullptr;
+
+  GLFWwindow* mGlfwWindow = nullptr;
 };
 
-} /// ::dy::editor namespace
-
-#endif /// GUARD_DY_GUI_MAIN_MENU_H
+} /// ::dy namespace
