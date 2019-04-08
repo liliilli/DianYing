@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include "PlanetScript.h"
+#include <Script/PlanetScript.h>
 #include <Dy/Management/MInput.h>
 #include <Dy/Element/FActor.h>
 #include <Dy/Management/MWorld.h>

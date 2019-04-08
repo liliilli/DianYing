@@ -2,7 +2,8 @@
 // Microsoft Visual C++ generated include file.
 // Used by Builtin.rc
 //
-#define IDB_PNG2                        102
+#define IDR_JSON1                       101
+#define IDB_PNG1                        102
 
 // Next default values for new objects
 // 
