@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Helper/Internal/FNameGenerator.h>
 #include <Dy/Helper/Library/HelperContainer.h>
+#include <Dy/Helper/Library/HelperString.h>
 
 namespace dy
 {
@@ -31,7 +32,7 @@ std::string FNameGenerator::TryGetGeneratedName(const std::string& iName) noexce
     const auto index = this->mContainer[iName];
     this->mContainer[iName] += 1;
 
-    return fmt::format("{}_{}", iName, index);
+    return MakeStringU8("{}_{}", iName, index);
   }
 }
 

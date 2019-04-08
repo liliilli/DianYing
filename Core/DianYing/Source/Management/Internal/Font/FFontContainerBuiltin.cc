@@ -46,7 +46,25 @@ FFontContainerBuiltin::FFontContainerBuiltin(const PDyMetaFontInformation::DBuil
   } break;
   case EBuffer::Index: 
   {
-    MDY_NOT_IMPLEMENTED_ASSERT();
+    const auto infoId = std::get<XInfo::ToDetailType<EBuffer::Index>>(details.mFontInfoBuffer);
+    std::size_t resourceSize = 0;
+    void* ptr = nullptr;
+
+#ifdef _WIN32
+    /// https://stackoverflow.com/questions/29461310/findresource-giving-error-1813-when-loading-png
+    HRSRC hResource = FindResource(nullptr, MAKEINTRESOURCE(infoId), L"JSON");
+    MDY_ASSERT_FORCE(hResource != nullptr);
+
+    HGLOBAL hMemory = LoadResource(nullptr, hResource);
+    resourceSize = SizeofResource(nullptr, hResource);
+    ptr = LockResource(hMemory);
+#endif
+
+    jsonAtlas = nlohmann::json::parse(static_cast<const char*>(ptr));
+
+#ifdef _WIN32
+    FreeResource(hMemory);
+#endif
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }

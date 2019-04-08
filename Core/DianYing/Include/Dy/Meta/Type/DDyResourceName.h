@@ -15,6 +15,7 @@
 
 #include <Dy/Meta/Type/EResourceType.h>
 #include <unordered_set>
+#include <Dy/Helper/Library/HelperString.h>
 
 namespace dy
 {
@@ -43,10 +44,10 @@ struct Hash_DDyResourceName final
   std::size_t operator()(DDyResourceName const& s) const noexcept
   {
     return std::hash<std::string>{}(
-        fmt::format("{}{}", 
-            static_cast<std::underlying_type_t<decltype(s.mResourceType)>>(s.mResourceType), 
-            s.mName
-        )
+      MakeStringU8("{}{}", 
+        static_cast<std::underlying_type_t<decltype(s.mResourceType)>>(s.mResourceType), 
+        s.mName
+      )
     );
   }
 };

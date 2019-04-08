@@ -40,8 +40,6 @@
 #include <Dy/Builtin/Attachment/WeightBlendOIT/FDyBtAtOITDepth.h>
 #include <Dy/Builtin/Attachment/WeightBlendOIT/FDyBtAtOITWeight.h>
 
-#include <Dy/Builtin/Font/Gothic.h>
-
 #include <Dy/Builtin/FrameBuffer/BasicShadow/FDyBtFBBasicShadow.h>
 #include <Dy/Builtin/FrameBuffer/CSM/FDyBtFbCSM.h>
 #include <Dy/Builtin/FrameBuffer/Debug/FDyBtFbDebug.h>

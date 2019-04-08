@@ -20,6 +20,13 @@
 #include <Dy/Helper/System/Pointer.h>
 
 #if (defined(_WIN32) == true)
+#include <Windows.h>
+#ifdef max
+#undef max
+#endif
+#ifdef min
+#undef min
+#endif
 namespace dy
 {
 

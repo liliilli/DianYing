@@ -19,13 +19,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -46,18 +46,18 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(ProjectDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)imm\$(Configuration)\$(ProjectName)\</IntDir>
     <IncludePath>$(ProjectDir)Include;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
-    <LibraryPath>$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(SolutionDir)Core\Platform\NativePlatformBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(ProjectDir)bin\$(PlatformTarget)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(PlatformTarget)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)imm\$(Configuration)\$(ProjectName)\</IntDir>
     <IncludePath>$(ProjectDir)Include;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
-    <LibraryPath>$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(SolutionDir)Core\Platform\NativePlatformBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -73,12 +73,13 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib\include;$(SolutionDir)Common\ThirdParty\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;$(SolutionDir)Common\ThirdParty\Lua\Include;$(SolutionDir)Core\Platform\NativePlatformBase\Include;$(SolutionDir)Core\Platform\PlatformWin32\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(SolutionDir)Common\ThirdParty\PhysX\pxshared\include;$(SolutionDir)Common\ThirdParty\PhysX\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib\include;$(SolutionDir)Common\ThirdParty\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;$(SolutionDir)Common\ThirdParty\Lua\Include;$(SolutionDir)Core\Platform\NativePlatformBase\Include;$(SolutionDir)Core\Platform\PlatformWin32\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
-      <PreprocessorDefinitions>__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ZLIB_WINAPI;__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/Bt+ %(AdditionalOptions)</AdditionalOptions>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -90,6 +91,7 @@
     </Link>
     <Lib>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <AdditionalDependencies>zlib.lib;Lua.lib;fmodL64_vc.lib;glfw3.lib;PlatformWin32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -108,11 +110,12 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
-      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(ProjectDir)Libraries\PhysX\pxshared\include;$(ProjectDir)Libraries\physX\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib\include;$(SolutionDir)Common\ThirdParty\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;$(SolutionDir)Common\ThirdParty\Lua\Include;$(SolutionDir)Core\Platform\NativePlatformBase\Include;$(SolutionDir)Core\Platform\PlatformWin32\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libraries\fmod\lowlevel\inc;$(SolutionDir)Common\ThirdParty\PhysX\pxshared\include;$(SolutionDir)Common\ThirdParty\PhysX\include;$(ProjectDir)Libraries\sol2;$(ProjectDir)Libraries\phitos;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Libraries\stb;$(ProjectDir)Libraries\imgui;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\assimp\assimp\$(Platform);$(SolutionDir)Common\Thirdparty\assimp;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\Thirdparty\freetype\include;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\zlib\include;$(SolutionDir)Common\ThirdParty\cxxopts\include;$(SolutionDir)Common\Thirdparty\nlohmann;$(SolutionDir)Common\ThirdParty\boost;$(SolutionDir)Common\Thirdparty\msdfgen;$(SolutionDir)Common\Thirdparty\vulkan\Include;$(SolutionDir)Common\ThirdParty\Lua\Include;$(SolutionDir)Core\Platform\NativePlatformBase\Include;$(SolutionDir)Core\Platform\PlatformWin32\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ZLIB_WINAPI;NDEBUG;__MDY_FLAG_IN_EDITOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996;4244;4267;4189;4100;4458</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ExceptionHandling>Sync</ExceptionHandling>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -123,6 +126,7 @@
     </Link>
     <Lib>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <AdditionalDependencies>zlib.lib;Lua.lib;fmodL64_vc.lib;glfw3.lib;NativePlatformBase.lib;PlatformWin32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -155,7 +159,6 @@
     <ClCompile Include="Source\Builtin\Attachment\UIIntegration\FDyBtAtUiId.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITColor.cc" />
     <ClCompile Include="Source\Builtin\Attachment\WeightBlendOIT\FDyBtAtOITWeight.cc" />
-    <ClCompile Include="Source\Builtin\Font\Gothic.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\CSM\FDyBtFbCSM.cc" />
     <ClCompile Include="Source\Builtin\FrameBuffer\Debug\FDyBtFbDebug.cc" />
@@ -379,6 +382,7 @@
     <ClCompile Include="Source\Helper\Library\HelperString.cc" />
     <ClCompile Include="Source\Helper\MCS\Functions.cc" />
     <ClCompile Include="Source\Helper\MCS\GLShaderParser.cc" />
+    <ClCompile Include="Source\Helper\System\Assertion.cc" />
     <ClCompile Include="Source\Helper\Type\DBounds.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB.cc" />
     <ClCompile Include="Source\Helper\Type\DUuid.cc" />
@@ -539,7 +543,7 @@
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralValue.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\GeneralLevel.h" />
     <ClInclude Include="Include\Dy\Builtin\Constant\SSAO.h" />
-    <ClInclude Include="Include\Dy\Builtin\Font\Gothic.h" />
+    <ClInclude Include="Include\Dy\Builtin\ExternalHeader.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\BasicShadow\FDyBtFBBasicShadow.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\CSM\FDyBtFbCSM.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Debug\FDyBtFbDebug.h" />
@@ -985,8 +989,6 @@
     <ClInclude Include="Libraries\stb\stb_image.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAO.h" />
     <ClInclude Include="Include\Dy\Builtin\FrameBuffer\Deferred\FDyBtFbSSAOBlur.h" />
-    <ClInclude Include="Include\Dy\Resource\resource.h" />
-    <ClInclude Include="Include\Dy\Resource\resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />
@@ -1013,14 +1015,6 @@
     <None Include="Include\Dy\Management\Inline\MWindowImpl.inl" />
     <None Include="Include\Dy\Management\Inline\MWorldImpl.inl" />
     <None Include="Include\Dy\Meta\Information\Inline\DMetaMetarialInstanceTmp.inl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resource\Gothic.png" />
-    <Image Include="Resource\icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Builtin.rc" />
-    <ResourceCompile Include="Include\Dy\Resource\MainApp.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

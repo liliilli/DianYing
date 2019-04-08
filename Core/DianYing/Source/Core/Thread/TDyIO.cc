@@ -789,6 +789,7 @@ bool TRescIO::outIsIOThreadSlept() noexcept
     // Check all worker are idle.
     for (const auto& [instance, thread] : this->mWorkerList)
     {
+      if (instance == nullptr) { continue; } 
       if (instance->SyncIsIdle() == false) 
       { 
         sleptFlag = false; break; 
