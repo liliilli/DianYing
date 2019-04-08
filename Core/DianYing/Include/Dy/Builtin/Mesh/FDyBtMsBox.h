@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_MESH_FDYBTMSBOX_H
-#define GUARD_DY_BUILTIN_MESH_FDYBTMSBOX_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -18,15 +17,11 @@
 namespace dy
 {
 
-///
 /// @class FDyBtMsBox
 /// @brief Create mesh box information and resources.
-///
 class FDyBtMsBox final : public AMeshResource
 {
   MDY_REGISTER_RESOURCE_MESH(FDyBtMsBox, "dyBtMsBox");
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_MESH_FDYBTMSBOX_H

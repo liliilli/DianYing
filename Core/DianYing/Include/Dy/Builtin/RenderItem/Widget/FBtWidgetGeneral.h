@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_RENDERITEM_FBTDEBUGPICKING_H
-#define GUARD_DY_BUILTIN_RENDERITEM_FBTDEBUGPICKING_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -47,5 +46,3 @@ private:
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_RENDERITEM_FBTDEBUGPICKING_H

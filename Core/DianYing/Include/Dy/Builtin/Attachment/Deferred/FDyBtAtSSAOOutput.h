@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_ATTACHMENT_DEFERRED_FDyBtAtSSAOOutput_H
-#define GUARD_DY_BUILTIN_ATTACHMENT_DEFERRED_FDyBtAtSSAOOutput_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -30,4 +29,3 @@ class FDyBtAtSSAOOutput final : public AGLAttachmentResource
 
 } /// ::dy::builtin namespace
 
-#endif /// GUARD_DY_BUILTIN_ATTACHMENT_DEFERRED_FDyBtAtSSAOOutput_H

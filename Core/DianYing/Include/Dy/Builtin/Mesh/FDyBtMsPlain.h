@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_MESH_FDYBTMSPLAIN_H
-#define GUARD_DY_BUILTIN_MESH_FDYBTMSPLAIN_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -28,5 +27,3 @@ class FDyBtMsPlain final : public AMeshResource
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_MESH_FDYBTMSPLAIN_H

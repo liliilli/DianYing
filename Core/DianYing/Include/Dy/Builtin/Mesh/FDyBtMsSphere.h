@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_MESH_FDYBTMSSPHERE_H
-#define GUARD_DY_BUILTIN_MESH_FDYBTMSSPHERE_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -40,5 +39,3 @@ class FDyBtMsSphere final : public AMeshResource
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_MESH_FDYBTMSSPHERE_H

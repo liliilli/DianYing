@@ -1,5 +1,4 @@
-#ifndef GURAD_DY_BUILTIN_ATTACHMENT_BASICSHADOW_BASICSHADOW_H
-#define GURAD_DY_BUILTIN_ATTACHMENT_BASICSHADOW_BASICSHADOW_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -29,5 +28,3 @@ class FDyBtAttachmentBasicShadow final : public AGLAttachmentResource
 };
 
 } /// ::dy namespace
-
-#endif /// GURAD_DY_BUILTIN_ATTACHMENT_BASICSHADOW_BASICSHADOW_H

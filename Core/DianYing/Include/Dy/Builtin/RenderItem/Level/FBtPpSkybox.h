@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_RENDERITEM_FBTPPSKYBOX_H
-#define GUARD_DY_BUILTIN_RENDERITEM_FBTPPSKYBOX_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -52,5 +51,3 @@ private:
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_RENDERITEM_FBTPPSKYBOX_H

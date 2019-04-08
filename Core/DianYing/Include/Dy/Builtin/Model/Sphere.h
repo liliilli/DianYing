@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_MODEL_SPHERE_H
-#define GUARD_DY_BUILTIN_MODEL_SPHERE_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -29,5 +28,3 @@ class FDyBuiltinModelSphere final : public AModelResource
 };
 
 } /// ::dy::builtin namespace
-
-#endif /// GUARD_DY_BUILTIN_MODEL_SPHERE_H

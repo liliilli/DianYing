@@ -1,5 +1,4 @@
-#ifndef GAURD_DY_BUILTIN_MODEL_PLAIN_H
-#define GAURD_DY_BUILTIN_MODEL_PLAIN_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -29,5 +28,3 @@ class FDyBuiltinModelPlain final : public AModelResource
 };
 
 } /// ::dy::builtin namespace
-
-#endif /// GAURD_DY_BUILTIN_MODEL_PLAIN_H

@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_MESH_FDYBTMSUIFONTQUAD_H
-#define GUARD_DY_BUILTIN_MESH_FDYBTMSUIFONTQUAD_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -28,5 +27,3 @@ class FDyBtMsUiFontQuad final : public AMeshResource
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_MESH_FDYBTMSUIFONTQUAD_H
