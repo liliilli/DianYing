@@ -32,6 +32,10 @@
 
 #include <Dy/Include/GlInclude.h>
 
+#ifdef DELETE
+#undef DELETE
+#endif
+
 //!
 //! Data
 //!

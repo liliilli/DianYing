@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_ATTACHMENT_CSM_FDYBTATTLIGHT_H
-#define GUARD_DY_BUILTIN_ATTACHMENT_CSM_FDYBTATTLIGHT_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -29,5 +28,3 @@ class FDyBtAtCSMLight final : public AGLAttachmentResource
 };
 
 } /// ::dy::builtin namespace
-
-#endif /// GUARD_DY_BUILTIN_ATTACHMENT_CSM_FDYBTATTLIGHT_H

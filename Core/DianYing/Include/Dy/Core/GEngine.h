@@ -44,16 +44,20 @@ namespace dy
 /// @brief `Dy`(DianYing) Core engine class.
 class GEngine final : public AEngineBase
 {
-  MDY_SINGLETON_PROPERTIES(GEngine);
 public:
+  MDY_SINGLETON_PROPERTIES(GEngine);
+
   GEngine() = default;               
-  [[nodiscard]] EDySuccess pfInitialize();
-  [[nodiscard]] EDySuccess pfRelease();
-  friend class ISingleton<GEngine>; 
   virtual ~GEngine() = default;
 
+  void StoreCommmandLines(int& argc, char**& argv) override final;
+
+  EDySuccess Initialize() override final;
+
   /// @brief Run engine.
-  void operator()();
+  void Run() override final;
+
+  EDySuccess Shutdown() override final;
 
   /// @brief Get time manager reference.
   MDY_NODISCARD MTime&    GetTimeManager();
@@ -108,6 +112,7 @@ private:
   void pfReleaseDependentManager();
   void pfReleaseIndependentManager();
 
+private:
   MSynchronization* mSynchronization = nullptr;
 
   EGlobalGameState mNextStatus = EGlobalGameState::Booted;

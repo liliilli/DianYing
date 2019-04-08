@@ -43,7 +43,12 @@
 namespace dy
 {
 
-EDySuccess GEngine::pfInitialize()
+void GEngine::StoreCommmandLines(int& argc, char**& argv)
+{
+  return;
+}
+
+EDySuccess GEngine::Initialize()
 {
   MSetting::GetInstance().pSetupExecutableArgumentSettings();
 
@@ -59,7 +64,7 @@ EDySuccess GEngine::pfInitialize()
   return EDySuccess::DY_SUCCESS;
 }
 
-EDySuccess GEngine::pfRelease()
+EDySuccess GEngine::Shutdown()
 {
   switch (MSetting::GetInstance().GetApplicationMode())
   {
@@ -72,7 +77,7 @@ EDySuccess GEngine::pfRelease()
   return EDySuccess::DY_SUCCESS;
 }
 
-void GEngine::operator()()
+void GEngine::Run()
 {
   static auto& timeManager = MTime::GetInstance();
   while (true)
@@ -597,6 +602,11 @@ void GEngine::TryUpdateStatus()
     this->mStatus = this->mNextStatus;
     this->mIsStatusTransitionDone = false;
   }
+}
+
+void AEngineBase::SetPlatformInfo(std::unique_ptr<APlatformBase> info)
+{
+  this->mPlatformInfo = std::move(info);
 }
 
 AEngineBase* CreateEngine()

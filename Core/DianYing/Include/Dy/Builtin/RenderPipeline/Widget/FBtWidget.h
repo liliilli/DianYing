@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_RENDERPIPELINE_FBTWIDGET_H
-#define GUARD_DY_BUILTIN_RENDERPIPELINE_FBTWIDGET_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -34,5 +33,3 @@ public:
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_RENDERPIPELINE_FBTWIDGET_H

@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_ATTACHMENT_UIINTEGRATION_H
-#define GUARD_DY_BUILTIN_ATTACHMENT_UIINTEGRATION_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -29,5 +28,3 @@ class FDyBtAttUiBasic final : public AGLAttachmentResource
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_ATTACHMENT_UIINTEGRATION_H

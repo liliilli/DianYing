@@ -13,21 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <cstdio>
-#include <cstdlib>
-#include <spdlog/fmt/fmt.h>
-
-#if defined(_WIN32) == true
-#include <Windows.h>
-#endif
-
-#if defined(max)
-#undef max
-#endif
-#if defined(min)
-#undef min
-#endif
-
 namespace dy::assert
 {
 
@@ -90,97 +75,26 @@ namespace dy::assert
 /// @brief
 /// @param function
 /// @param update
-inline void ReleaseFunction(void (*function)(), bool update) 
-{
-  static void (*sFunction)() = nullptr;
-
-  if (update == true) 
-  { 
-    sFunction = function; 
-    return;
-  }
-
-  if (sFunction != nullptr) 
-  {
-    sFunction();
-  }
-}
+void ReleaseFunction(void (*function)(), bool update);
 
 /// @brief
 /// Test expression on runtime.
 /// If expression return false, abort() with failedMessage unlike assert().
-///
 /// https://stackoverflow.com/questions/3692954/add-custom-messages-in-assert
-inline void AssertEnhanced(
-  const char* expression,  
-  bool result,  
-  const char* filePath,  
-  int line,  
-  const char* failedMessage)
-{
-  if (result == true)
-  {
-    return;
-  }
-
-  const auto msg = fmt::format(
-    R"dy(Assert Failed : {0}, Expected : {1}, Sourtce : {2}, Line : {3})dy",
-    failedMessage, expression, filePath, line);
-  std::printf("%s\n", msg.c_str());
-
-  #if defined(_WIN32) == true
-  {
-    std::wstring winMsg{msg.begin(), msg.end()};
-    MessageBox(nullptr, winMsg.c_str(), L"Error!", MB_ICONWARNING | MB_OK);
-  }
-  #endif
-
-  ReleaseFunction(nullptr, false);
-  exit(1);
-}
+void AssertEnhanced(
+  const char* expression, 
+  bool result, 
+  const char* filePath, 
+  int line,
+  const char* failedMessage);
 
 /// @brief
 /// Implement error message on function is defined but not implemented yet.
-///
 /// https://stackoverflow.com/questions/3314314/ways-to-show-your-co-programmers-that-some-methods-are-not-yet-implemented-in-a-c/3316954#3316954
-inline void AssertNotImplemented(const char* filePath, int line)
-{
-  const auto msg = fmt::format(
-    R"dy(This function is not implemented yet. Source : {0}, Line : {1})dy", 
-    filePath, line);
-  std::printf("%s\n", msg.c_str());
-
-  #if defined(_WIN32) == true
-  {
-    std::wstring winMsg{msg.begin(), msg.end()};
-    MessageBox(nullptr, winMsg.c_str(), L"Error!", MB_ICONWARNING | MB_OK);
-  }
-  #endif
-
-  ReleaseFunction(nullptr, false);
-  exit(1);
-}
+void AssertNotImplemented(const char* filePath, int line);
 
 /// @brief Unexpected branch entering.
-inline void AssertUnexpectedBranch(const char* filePath, int line)
-{
-  const auto msg = fmt::format(
-    R"dy(Unexpected branch not intended. Source : {0}, Line : {1})dy", 
-    filePath, line);
-  std::printf("%s\n", msg.c_str());
-
-  #if defined(_WIN32) == true
-  {
-    std::wstring winMsg{msg.begin(), msg.end()};
-    MessageBox(nullptr, winMsg.c_str(), L"Error!", MB_ICONWARNING | MB_OK);
-  }
-  #endif
-
-  printf("Unexpected branch not intended.\n" "Source : \t%s, line : %d\n", filePath, line);
-
-  ReleaseFunction(nullptr, false);
-  exit(1);
-}
+void AssertUnexpectedBranch(const char* filePath, int line);
 
 } /// ::dy::assert namespace
 

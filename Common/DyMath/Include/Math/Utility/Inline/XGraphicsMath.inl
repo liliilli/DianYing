@@ -15,6 +15,13 @@
 #include <Math/Utility/XGraphicsMath.h>
 #include <Math/Utility/XLinearMath.h>
 
+#ifdef near
+#undef near
+#endif
+#ifdef far
+#undef far
+#endif
+
 namespace dy::math::detail
 {
 

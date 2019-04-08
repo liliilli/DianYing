@@ -13,6 +13,8 @@
 ///
 
 #include <memory>
+#include <APlatformBase.h>
+#include <Expr/ESuccess.h>
 
 namespace dy
 {
@@ -22,6 +24,25 @@ class AEngineBase
 public:
   AEngineBase() = default;
   virtual ~AEngineBase() = 0;
+
+  /// @brief Set platform information instance into engine.
+  /// This function must be called only once, Otherwise causes assert.
+  void SetPlatformInfo(std::unique_ptr<APlatformBase> info);
+
+  /// @brief Store application command lines into container.
+  virtual void StoreCommmandLines(int& argc, char**& argv) = 0;
+
+  /// @brief Initialize Engine.
+  virtual expr::EDySuccess Initialize() = 0;
+
+  /// @brief Run Engine.
+  virtual void Run() = 0;
+
+  /// @brief Shutdown Engine.
+  virtual expr::EDySuccess Shutdown() = 0;
+
+private:
+  std::unique_ptr<APlatformBase> mPlatformInfo = nullptr;
 };
 
 inline AEngineBase::~AEngineBase() = default;

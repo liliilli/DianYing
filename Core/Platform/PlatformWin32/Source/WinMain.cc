@@ -13,95 +13,86 @@
 
 #include <FWindowsPlatform.h>
 #include <AEngineBase.h>
+#include <csignal>
+#include <cassert>
 
 using namespace dy;
-
-/// @brief Main function of win32 / win64 platform.
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
-{
-  (void*)(hInstance);
-  (void*)(hPrevInstance);
-  (void)(pCmdLine);
-  (void)(nCmdShow);
-
-  gEngine.reset(CreateEngine());
-  gEngine = nullptr;
-  //delete engine;
-#ifdef false
-  ghInstance      = hInstance;
-  ghPrevInstance  = hPrevInstance;
-  gpCmdLine       = pCmdLine;
-  gnCmdShow       = nCmdShow;
-
-  //_crtBreakAlloc = 681;
-
-  MDY_WIN32_TRY_TURN_ON_DEBUG();
-  MDY_CALL_ASSERT_SUCCESS(dy::GEngine::Initialize());
-  dy::GEngine::GetInstance()();
-  MDY_CALL_ASSERT_SUCCESS(dy::GEngine::Release());
-  MDY_WIN32_TRY_TURN_OFF_DEBUG();
-#endif
-  return 0;
-}
-
-#if 0
-#include <csignal>
 
 namespace
 {
 
-HINSTANCE ghInstance      = nullptr;
-HINSTANCE ghPrevInstance  = nullptr;
-LPSTR     gpCmdLine;
-int       gnCmdShow;
-
-void __SignalHandler(int signal)  
+/// @brief Signal handler callback function.
+void OnSignalHandler(int signal)  
 {  
-  if (signal == SIGABRT) { exit(3); }
+  if (signal == SIGABRT) 
+  { 
+    DebugBreak();
+    exit(3); 
+  }
 }  
 
-///
 /// @brief Turn on memory leak detection feature and console window for logging.
-///
-EDySuccess MDY_PRIVATE(DyInitializeWin32Debug)()
+void InitializeWin32Debug()
 {
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
   _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_DEBUG );
 
-
   typedef void (*SignalHandlerPointer)(int);  
-  signal(SIGABRT, __SignalHandler); 
-  return EDySuccess::DY_SUCCESS;
+  signal(SIGABRT, OnSignalHandler); 
 }
 
-} /// unname namespace
+} /// ::unnamed namespace
 
-#if (defined(_DEBUG) == true) || (defined(NDEBUG) == false)
-#define MDY_WIN32_TRY_TURN_ON_DEBUG() MDY_CALL_ASSERT_SUCCESS(MDY_PRIVATE(DyInitializeWin32Debug)())
-#define MDY_WIN32_TRY_TURN_OFF_DEBUG()  (void)0
+#if defined(_DEBUG) == true
+
+#define WIN32_CRT_BREAKPOINT(Id)    _crtBreakAlloc(Id) 
+#define WIN32_TRY_TURN_ON_DEBUG()   InitializeWin32Debug()
+#define WIN32_TRY_TURN_OFF_DEBUG()  (void)0
+
 #else
-#define MDY_WIN32_TRY_TURN_ON_DEBUG()   (void)0
-#define MDY_WIN32_TRY_TURN_OFF_DEBUG()  (void)0
+
+#define WIN32_CRT_BREAKPOINT(Id)    (void)0
+#define WIN32_TRY_TURN_ON_DEBUG()   (void)0
+#define WIN32_TRY_TURN_OFF_DEBUG()  (void)0
+
 #endif
 
-#if 0
 /// @brief Main function of win32 / win64 platform.
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
+int APIENTRY WinMain(
+  [[maybe_unused]] HINSTANCE hInstance, 
+  [[maybe_unused]] HINSTANCE hPrevInstance, 
+  [[maybe_unused]] LPSTR pCmdLine, 
+  [[maybe_unused]] int nCmdShow)
 {
-  ghInstance      = hInstance;
-  ghPrevInstance  = hPrevInstance;
-  gpCmdLine       = pCmdLine;
-  gnCmdShow       = nCmdShow;
+  // Boot strapping.
+  WIN32_TRY_TURN_ON_DEBUG();
+  gEngine.reset(CreateEngine());
 
-  //_crtBreakAlloc = 681;
+  // Store command lines.
+  assert(gEngine != nullptr);
+  gEngine->StoreCommmandLines(__argc, __argv);
 
-  MDY_WIN32_TRY_TURN_ON_DEBUG();
-  MDY_CALL_ASSERT_SUCCESS(dy::GEngine::Initialize());
-  dy::GEngine::GetInstance()();
-  MDY_CALL_ASSERT_SUCCESS(dy::GEngine::Release());
-  MDY_WIN32_TRY_TURN_OFF_DEBUG();
+  // Create platform information and insert it to gEngine.
+  gEngine->SetPlatformInfo(std::make_unique<FWindowsPlatform>());
+
+  // Initialize engine.
+  {
+    const auto flag = gEngine->Initialize();
+    assert(flag == expr::DY_SUCCESS);
+  }
+
+  // Run engine.
+  gEngine->Run();
+
+  // Shutdown engine.
+  {
+    const auto flag = gEngine->Shutdown();
+    assert(flag == expr::DY_SUCCESS);
+  }
+
+  // Release engine.
+  gEngine = nullptr;
+  WIN32_TRY_TURN_OFF_DEBUG();
+
   return 0;
 }
-#endif
-
-#endif

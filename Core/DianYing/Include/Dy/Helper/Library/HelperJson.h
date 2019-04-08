@@ -15,6 +15,7 @@
 
 #include <nlohmann/json.hpp>
 #include <optional>
+#include <filesystem>
 
 //!
 //! Implementation

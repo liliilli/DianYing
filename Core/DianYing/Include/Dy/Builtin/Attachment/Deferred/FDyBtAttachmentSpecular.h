@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_ATTACHMENT_FDYBTATTACHMENTSPECULAR_H
-#define GUARD_DY_BUILTIN_ATTACHMENT_FDYBTATTACHMENTSPECULAR_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -29,5 +28,3 @@ class FDyBtAttachmentSpecular final : public AGLAttachmentResource
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUILTIN_ATTACHMENT_FDYBTATTACHMENTSPECULAR_H

@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUITLIN_ATTACHMENT_SCENEINTEGRATION_FDyBtAtOpaqueOutput_H
-#define GUARD_DY_BUITLIN_ATTACHMENT_SCENEINTEGRATION_FDyBtAtOpaqueOutput_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -29,5 +28,3 @@ class FDyBtAtOpaqueOutput final : public AGLAttachmentResource
 };
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_BUITLIN_ATTACHMENT_SCENEINTEGRATION_FDyBtAtOpaqueOutput_H

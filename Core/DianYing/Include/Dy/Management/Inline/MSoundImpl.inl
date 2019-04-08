@@ -15,6 +15,16 @@
 
 #include <Dy/Helper/Library/HelperContainer.h>
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+#ifdef max
+#undef max
+#endif
+#ifdef min
+#undef min
+#endif
+
 namespace dy
 {
 

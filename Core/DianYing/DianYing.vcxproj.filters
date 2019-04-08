@@ -358,13 +358,13 @@
     <ClCompile Include="Source\Meta\Information\MetaInfoFont.cc" />
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerPlain.cc" />
     <ClCompile Include="Source\Builtin\Abstract\AFontResource.cc" />
-    <ClCompile Include="Source\Builtin\Font\Gothic.cc" />
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerBuiltin.cc" />
     <ClCompile Include="Source\Management\Interface\AFontContainer.cc" />
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerRuntime.cc" />
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerCompressed.cc" />
     <ClCompile Include="Source\Meta\Type\Meta\DGlVaoBindInformation.cc" />
     <ClCompile Include="Source\Management\Type\UBOInformation.cc" />
+    <ClCompile Include="Source\Helper\System\Assertion.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />
@@ -847,18 +847,16 @@
     <ClInclude Include="Include\Dy\Core\Resource\Resource\FResourceShader.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureCubemap.h" />
     <ClInclude Include="Include\Dy\Core\Resource\Resource\Texture\FResourceTextureGeneral.h" />
-    <ClInclude Include="Include\Dy\Builtin\Font\Gothic.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AFontResource.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFont.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerPlain.h" />
-    <ClInclude Include="Include\Dy\Resource\resource1.h" />
-    <ClInclude Include="Include\Dy\Resource\resource.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerBuiltin.h" />
     <ClInclude Include="Include\Dy\Management\Interface\AFontContainer.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerRuntime.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Font\FFontContainerCompressed.h" />
     <ClInclude Include="Include\Dy\Include\GlInclude.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Mesh\DGlVaoBindInformation.h" />
+    <ClInclude Include="Include\Dy\Builtin\ExternalHeader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Dy\Helper\Library\HelperJson.inl" />
@@ -885,13 +883,5 @@
     <None Include="Include\Dy\Component\Inline\CPhysicsRigidbodyTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FHandlerTmp.inl" />
     <None Include="Include\Dy\Helper\Internal\Inline\FHandleTmp.inl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resource\icon.ico" />
-    <Image Include="Resource\Gothic.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Include\Dy\Resource\MainApp.rc" />
-    <ResourceCompile Include="Builtin.rc" />
   </ItemGroup>
 </Project>

@@ -12,27 +12,31 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Builtin/Font/Gothic.h>
-#include <Dy/Resource/resource1.h>
+/// Header file
+#include <Script/FDyBtScTestLoadingUi.h>
+#include <Dy/Management/MLog.h>
 
 namespace dy::builtin
 {
 
-void FBtFtDefaultGothic::ConstructBuffer(PBuiltinMetaFontInfo& oInfo) noexcept
+void FDyBtScTestLoadingUi::Initiate()
 {
-  oInfo.mIdentifier = this->sName;
-  oInfo.mUuid       = DUuid("204c0ab2-b0ab-422e-9b69-43a716ce802d");
+  DyPushLogCritical("FDyBtScTestLoadingUi::Initiate() Loading widget initialized.");
+}
 
-  auto& details = oInfo.mDetails;
+void FDyBtScTestLoadingUi::Start()
+{
 
-  details.mFontType = decltype(details.mFontType)::SDF;
-  details.mFontInfoType = PDyMetaFontInformation::DBuiltin::EBuffer::Plain;
-  details.mFontInfoBuffer = 
-#include "Gothic.info"
-    ;
+}
 
-  details.mTextureType = PDyMetaFontInformation::DBuiltin::EBuffer::Index;
-  details.mTexureBuffers = PDyMetaFontInformation::DBuiltin::TTexIndexes{IDB_PNG2};
+void FDyBtScTestLoadingUi::Update(_MIN_ TF32 dt)
+{
+
+}
+
+void FDyBtScTestLoadingUi::Destroy()
+{
+
 }
 
 } /// ::dy::builtin namespace

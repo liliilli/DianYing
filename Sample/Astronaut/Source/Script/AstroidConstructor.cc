@@ -13,7 +13,7 @@
 ///
 
 /// Header file
-#include "AstroidConstructor.h"
+#include <Script/AstroidConstructor.h>
 #include <Dy/Management/MInput.h>
 #include <Dy/Element/FActor.h>
 #include <Dy/Management/MWorld.h>
@@ -77,7 +77,7 @@ void AstroidConstructor::Update(TF32 dt)
 void AstroidConstructor::InGameEnd()
 {
   DyPushLogCritical("InGameEnd Called!");
-  dy::gEngine->TryEndGame();
+  TEMP_CAST(dy::gEngine)->TryEndGame();
 }
 
 void AstroidConstructor::InNewScene()

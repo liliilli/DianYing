@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_BUILTIN_MODEL_EmissiveSPHERE_H
-#define GUARD_DY_BUILTIN_MODEL_EmissiveSPHERE_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -27,5 +26,3 @@ class FDyBuiltinModelEmissiveSphere final : public AModelResource
 };
 
 } /// ::dy::builtin namespace
-
-#endif /// GUARD_DY_BUILTIN_MODEL_EmissiveSPHERE_H
