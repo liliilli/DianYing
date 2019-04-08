@@ -24,12 +24,21 @@
     <ClCompile Include="Source\FWindowsHandles.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\FBtResourceHandle.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\FWindowsPlatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\FWindowsHandles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\FBtResourceHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\XDisableWinMacro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
