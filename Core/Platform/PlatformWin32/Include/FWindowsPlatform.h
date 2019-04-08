@@ -17,8 +17,10 @@
   #define NOMINMAX
 #endif
 
-#include <Windows.h>
 #include <APlatformBase.h>
+
+#include <Windows.h>
+#include <XDisableWinMacro.h>
 
 namespace dy
 {
@@ -41,6 +43,13 @@ public:
   uint32_t GetWindowWidth() const override final;
 
   void ResizeWindow(uint32_t width, uint32_t height) override final;
+
+#undef FindResource // This sucks
+
+  std::unique_ptr<ABtResourceBase> 
+  FindResource(int id, EXPR_E(EBtResource) type) override final;
+
+#define FindResource FindResourceW // Resume
 };
 
 }

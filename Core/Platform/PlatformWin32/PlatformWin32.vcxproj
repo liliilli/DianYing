@@ -99,13 +99,16 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\FBtResourceHandle.cc" />
     <ClCompile Include="Source\FWindowsHandles.cc" />
     <ClCompile Include="Source\FWindowsPlatform.cc" />
     <ClCompile Include="Source\WinMain.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\FBtResourceHandle.h" />
     <ClInclude Include="Include\FWindowsHandles.h" />
     <ClInclude Include="Include\FWindowsPlatform.h" />
+    <ClInclude Include="Include\XDisableWinMacro.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -22,6 +22,11 @@
 #include <Dy/Core/Rendering/Wrapper/PDyGLTextureDescriptor.h>
 
 #include <Dy/Include/GlInclude.h>
+#include <AEngineBase.h>
+
+#ifdef _WIN32
+#undef FindResource
+#endif
 
 namespace dy
 {
@@ -47,24 +52,14 @@ FFontContainerBuiltin::FFontContainerBuiltin(const PDyMetaFontInformation::DBuil
   case EBuffer::Index: 
   {
     const auto infoId = std::get<XInfo::ToDetailType<EBuffer::Index>>(details.mFontInfoBuffer);
-    std::size_t resourceSize = 0;
-    void* ptr = nullptr;
 
-#ifdef _WIN32
-    /// https://stackoverflow.com/questions/29461310/findresource-giving-error-1813-when-loading-png
-    HRSRC hResource = FindResource(nullptr, MAKEINTRESOURCE(infoId), L"JSON");
-    MDY_ASSERT_FORCE(hResource != nullptr);
+    // Find json information
+    auto& platformInfo = gEngine->GetPlatformInfo();
+    auto ptrResource = platformInfo.FindResource(infoId, EBtResource::JSON);
+    MDY_ASSERT_FORCE(ptrResource != nullptr);
 
-    HGLOBAL hMemory = LoadResource(nullptr, hResource);
-    resourceSize = SizeofResource(nullptr, hResource);
-    ptr = LockResource(hMemory);
-#endif
-
-    jsonAtlas = nlohmann::json::parse(static_cast<const char*>(ptr));
-
-#ifdef _WIN32
-    FreeResource(hMemory);
-#endif
+    // Parse
+    jsonAtlas = nlohmann::json::parse(static_cast<const char*>(ptrResource->GetBufferPtr()));
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;
   }
@@ -102,27 +97,22 @@ FFontContainerBuiltin::FFontContainerBuiltin(const PDyMetaFontInformation::DBuil
     glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 1024, 1024, count);
     for (TI32 i = 0; i < count; ++i)
     {
-      std::size_t resourceSize = 0;
-      void* ptr = nullptr;
-#ifdef _WIN32
-      /// https://stackoverflow.com/questions/29461310/findresource-giving-error-1813-when-loading-png
-      HRSRC hResource = FindResource(nullptr, MAKEINTRESOURCE(list[i]), L"PNG");
-      MDY_ASSERT_FORCE(hResource != nullptr);
+      // Find texture information
+      auto& platformInfo = gEngine->GetPlatformInfo();
+      auto ptrResource = platformInfo.FindResource(list[i], EBtResource::PNG);
+      MDY_ASSERT_FORCE(ptrResource != nullptr);
 
-      HGLOBAL hMemory = LoadResource(nullptr, hResource);
-      resourceSize = SizeofResource(nullptr, hResource);
-      ptr = LockResource(hMemory);
-#endif
+      // Get image buffer from texture information.
+      std::size_t resourceSize = ptrResource->GetResourceSize();
+      void* ptr = ptrResource->GetBufferPtr();
       const auto dataBuffer = std::make_unique<DImageBinaryBuffer>(resourceSize, ptr);
       MDY_ASSERT(dataBuffer->IsBufferCreatedProperly() == true);
 
+      // Set image.
       glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 
         0, 0, 0, i, 1024, 1024, 1, 
         GL_RGBA, GL_UNSIGNED_BYTE, 
         dataBuffer->GetBufferStartPoint());
-#ifdef _WIN32
-      FreeResource(hMemory);
-#endif
     }
   } break;
   default: MDY_UNEXPECTED_BRANCH(); break;

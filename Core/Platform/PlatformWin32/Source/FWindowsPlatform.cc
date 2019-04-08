@@ -16,11 +16,13 @@
 
 #include <EPlatform.h>
 #include <FWindowsHandles.h>
+#include <FBtResourceHandle.h>
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
 #include <GLFW/glfw3native.h>
+#include <atlconv.h>
 
 namespace dy
 {
@@ -149,5 +151,23 @@ void FWindowsPlatform::ResizeWindow(uint32_t width, uint32_t height)
   // Set size.
   glfwSetWindowSize(handle.mGlfwWindow, width, height);
 }
+
+#undef FindResource
+
+std::unique_ptr<ABtResourceBase> 
+FWindowsPlatform::FindResource(int id, EXPR_E(EBtResource) type)
+{
+#define FindResource FindResourceW
+  USES_CONVERSION;
+  HRSRC hResource = FindResource(
+    nullptr, 
+    MAKEINTRESOURCE(id), 
+    A2W(EBtResource::ToString(type))
+  );
+  if (hResource == nullptr) { return nullptr; }
+
+  return std::make_unique<FBtResourceHandle>(hResource);
+}
+
 
 } /// ::dy namespace

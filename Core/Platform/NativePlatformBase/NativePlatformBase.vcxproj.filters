@@ -27,6 +27,12 @@
     <ClInclude Include="Include\AEngineBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\EBtResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ABtResourceBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\APlatformBase.cc">
@@ -36,6 +42,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\XExternEngine.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ABtResourceBase.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\AEngineBase.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

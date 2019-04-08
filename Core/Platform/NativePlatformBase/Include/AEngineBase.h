@@ -41,6 +41,9 @@ public:
   /// @brief Shutdown Engine.
   virtual expr::EDySuccess Shutdown() = 0;
 
+  /// @brief Get platform information. This function call must be succeeded.
+  APlatformBase& GetPlatformInfo() noexcept;
+
 private:
   std::unique_ptr<APlatformBase> mPlatformInfo = nullptr;
 };
