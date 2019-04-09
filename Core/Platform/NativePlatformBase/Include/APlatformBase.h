@@ -17,6 +17,7 @@
 #include <EBtResource.h>
 #include <AHandlesBase.h>
 #include <ABtResourceBase.h>
+#include <ADebugBase.h>
 
 namespace dy
 {
@@ -29,6 +30,8 @@ class APlatformBase
 public:
   APlatformBase(EXPR_E(EPlatform) platform);
   virtual ~APlatformBase() = 0; 
+
+  ADebugBase& GetDebugManager() noexcept;
 
   virtual void SetWindowTitle(const std::string& newTitle) = 0;
 
@@ -56,6 +59,7 @@ public:
 
 protected:
   std::unique_ptr<AHandlesBase> mHandle = nullptr;
+  std::unique_ptr<ADebugBase> mDebug = nullptr;
 
 private:
   EXPR_E(EPlatform) mPlatform;
