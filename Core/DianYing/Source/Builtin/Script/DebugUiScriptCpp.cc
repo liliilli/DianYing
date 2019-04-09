@@ -75,8 +75,8 @@ void FDyBuiltinDebugUiScript::Start()
 void FDyBuiltinDebugUiScript::Update(_MIN_ TF32 dt)
 {
   auto& windowManager = MWindow::GetInstance(); 
-  const TF32 usageCpu = windowManager.GetCpuUsage();
-  const auto usageRam = windowManager.GetRamUsage();
+  const TF32 usageCpu = gEngine->GetPlatformInfo().GetProfilingManager().GetCpuUsage();
+  const auto usageRam = gEngine->GetPlatformInfo().GetProfilingManager().GetRamUsage();
   auto& widgetRef = this->GetWidgetReference();
 
   FWidgetText* infoText     = widgetRef.GetWidget<FWidgetText>("DebugTestText");

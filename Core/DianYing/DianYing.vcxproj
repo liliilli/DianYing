@@ -448,7 +448,6 @@
     <ClCompile Include="Source\Management\MInput.cc" />
     <ClCompile Include="Source\Management\MLog.cc" />
     <ClCompile Include="Source\Management\MPhysics.cc" />
-    <ClCompile Include="Source\Management\Platform\MPlatformInfoWindows.cc" />
     <ClCompile Include="Source\Management\Rendering\MRendering.cc" />
     <ClCompile Include="Source\Management\MScript.cc" />
     <ClCompile Include="Source\Management\Type\AttachmentInformation.cc" />
@@ -921,7 +920,6 @@
     <ClInclude Include="Include\Dy\Management\Helper\XLuaBindingEntry.h" />
     <ClInclude Include="Include\Dy\Management\Helper\FPhysxSimulationCallback.h" />
     <ClInclude Include="Include\Dy\Management\Interface\AFontContainer.h" />
-    <ClInclude Include="Include\Dy\Management\Interface\IPlatformDependent.h" />
     <ClInclude Include="Include\Dy\Management\Rendering\FramebufferManager.h" />
     <ClInclude Include="Include\Dy\Management\Rendering\MUniformBufferObject.h" />
     <ClInclude Include="Include\Dy\Management\IO\MIOMeta.h" />
@@ -931,7 +929,6 @@
     <ClInclude Include="Include\Dy\Management\MInput.h" />
     <ClInclude Include="Include\Dy\Management\MLog.h" />
     <ClInclude Include="Include\Dy\Management\MPhysics.h" />
-    <ClInclude Include="Include\Dy\Management\Platform\MPlatformInfoWindows.h" />
     <ClInclude Include="Include\Dy\Management\Rendering\MRendering.h" />
     <ClInclude Include="Include\Dy\Management\MScript.h" />
     <ClInclude Include="Include\Dy\Management\MSound.h" />

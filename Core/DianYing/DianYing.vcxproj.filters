@@ -235,7 +235,6 @@
     <ClCompile Include="Source\Management\MWindow.cc" />
     <ClCompile Include="Source\Management\MWorld.cc" />
     <ClCompile Include="Source\Management\Rendering\MRendering.cc" />
-    <ClCompile Include="Source\Management\Platform\MPlatformInfoWindows.cc" />
     <ClCompile Include="Source\Management\IO\MIOResource.cc" />
     <ClCompile Include="Source\Management\IO\MIOMeta.cc" />
     <ClCompile Include="Source\Management\IO\MIORescInfo.cc" />
@@ -642,7 +641,6 @@
     <ClInclude Include="Include\Dy\Management\MWorld.h" />
     <ClInclude Include="Include\Dy\Management\Rendering\MRendering.h" />
     <ClInclude Include="Include\Dy\Management\Rendering\MUniformBufferObject.h" />
-    <ClInclude Include="Include\Dy\Management\Platform\MPlatformInfoWindows.h" />
     <ClInclude Include="Include\Dy\Management\IO\MIOMeta.h" />
     <ClInclude Include="Include\Dy\Management\IO\MIORescInfo.h" />
     <ClInclude Include="Include\Dy\Management\IO\MIOResource.h" />
@@ -652,7 +650,6 @@
     <ClInclude Include="Include\Dy\Management\Internal\Input\MInputDelegates.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Sound\XCallbackChannel.h" />
     <ClInclude Include="Include\Dy\Management\Internal\World\MWorldUIContainers.h" />
-    <ClInclude Include="Include\Dy\Management\Interface\IPlatformDependent.h" />
     <ClInclude Include="Include\Dy\Meta\Type\EResourceType.h" />
     <ClInclude Include="Include\Dy\Binding\FLuaScriptFrame.h" />
     <ClInclude Include="Include\Dy\Builtin\Abstract\AGLAttachmentResource.h" />

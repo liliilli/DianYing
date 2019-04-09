@@ -118,17 +118,12 @@ inline MWindow::Impl::Impl(MWindow& parent) : mImplParent{parent}
   //! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   DyPushLogDebugInfo("{} | MWindow::Impl::pfInitialize().", "FunctionCall");
-  #if defined(_WIN32)
-    this->mDependentWindowContext = new MPlatformInfoWindows();
-  #else
-    static_assert(false, "Other platform does not support yet.");
-  #endif
-  this->mDependentWindowContext->InitializeDep();
 
   // If we should create console window...
   if (MSetting::GetInstance().IsEnabledSubFeatureLoggingToConsole() == true)
   {
-    MDY_CALL_ASSERT_SUCCESS(this->mDependentWindowContext->CreateConsoleWindow());
+    const auto flag = gEngine->GetPlatformInfo().CreateConsoleWindow();
+    MDY_ASSERT(flag == true);
   }
 
   // @TODO TEMP
@@ -160,14 +155,11 @@ inline MWindow::Impl::~Impl()
     break;
   }
 
-  if (this->mDependentWindowContext->IsCreatedConsoleWindow() == true)
+  if (gEngine->GetPlatformInfo().IsConsoleWindowCreated() == true)
   {
-    MDY_CALL_ASSERT_SUCCESS(this->mDependentWindowContext->RemoveConsoleWindow());
+    const auto flag = gEngine->GetPlatformInfo().RemoveConsoleWindow();
+    MDY_ASSERT(flag == true);
   }
-
-  this->mDependentWindowContext->ReleaseDep();
-  delete this->mDependentWindowContext;
-  this->mDependentWindowContext = nullptr;
 }
 
 inline bool MWindow::Impl::IsWindowShouldClose() const noexcept
@@ -202,37 +194,23 @@ inline const std::array<GLFWwindow*, 2>& MWindow::Impl::GetGLWorkerWindowList() 
 
 inline EDySuccess MWindow::Impl::CreateConsoleWindow()
 {
-  return this->mDependentWindowContext->CreateConsoleWindow();
+  return 
+    gEngine->GetPlatformInfo().CreateConsoleWindow() 
+  ? EDySuccess::DY_SUCCESS 
+  : EDySuccess::DY_FAILURE;
 }
 
 inline bool MWindow::Impl::IsCreatedConsoleWindow() const noexcept
 {
-  return this->mDependentWindowContext->IsCreatedConsoleWindow();
+  return gEngine->GetPlatformInfo().IsConsoleWindowCreated();
 }
 
 inline EDySuccess MWindow::Impl::RemoveConsoleWindow()
 {
-  return this->mDependentWindowContext->RemoveConsoleWindow();
-}
-
-inline TF32 MWindow::Impl::GetCpuUsage()
-{
-  return this->mDependentWindowContext->GetCpuUsage();
-}
-
-inline TU64 MWindow::Impl::GetRamUsage()
-{
-  return this->mDependentWindowContext->GetRamUsage();
-}
-
-inline bool MWindow::Impl::IsFontExistOnSystem(const std::string& iFontKey) const
-{
-  return this->mDependentWindowContext->IsFontExistOnSystem(iFontKey);
-}
-
-inline std::optional<std::string> MWindow::Impl::GetFontPathOnSystem(const std::string& iFontKey) const
-{
-  return this->mDependentWindowContext->GetFontPathOnSystem(iFontKey);
+  return 
+    gEngine->GetPlatformInfo().RemoveConsoleWindow() 
+  ? EDySuccess::DY_SUCCESS 
+  : EDySuccess::DY_FAILURE; 
 }
 
 } /// ::dy namespace

@@ -71,6 +71,7 @@ inline EDySuccess MRendering::Impl::Initialize()
 
   // 
   {
+#ifdef false
     // Get imgui IO module.
     ImGuiIO& io = ImGui::GetIO();
     const auto& windowManager = MWindow::GetInstance();
@@ -90,7 +91,6 @@ inline EDySuccess MRendering::Impl::Initialize()
       }
     }
 
-#ifdef false
     // Check hangul (NanumGothic) font is exist on system.
     {
       std::string koreanFontName = MDY_INITIALIZE_EMPTYSTR;
