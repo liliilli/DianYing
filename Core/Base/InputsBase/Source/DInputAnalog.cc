@@ -1,4 +1,3 @@
-#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,15 +11,20 @@
 /// SOFTWARE.
 ///
 
-#include <array>
-#include <DInputButton.h>
+/// Header file
 #include <DInputAnalog.h>
-#include <EInputButton.h>
 
 namespace dy::base
 {
 
-extern std::array<DInputButtonItem, EInputButton::__Error> sLowLevelInputs;
-extern std::array<DInputAnalogItem, 6> sLowLevelAnalogs;
+void DInputAnalogItem::Update(float iValue) noexcept
+{
+  this->mValue  = iValue;
+}
+
+float DInputAnalogItem::GetValue() const noexcept
+{
+  return this->mValue;
+}
 
 } /// ::dy::base namespace

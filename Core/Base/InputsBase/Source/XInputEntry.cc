@@ -17,5 +17,6 @@ namespace dy::base
 {
 
 std::array<DInputButtonItem, EInputButton::__Error> sLowLevelInputs = {};
+std::array<DInputAnalogItem, 6> sLowLevelAnalogs = {};
 
 } /// ::dy::base namespace

@@ -27,12 +27,18 @@
     <ClInclude Include="Include\EInputButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\DInputAnalog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DInputButton.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\XInputEntry.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DInputAnalog.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -12,15 +12,23 @@
 /// SOFTWARE.
 ///
 
-#include <array>
-#include <DInputButton.h>
-#include <DInputAnalog.h>
-#include <EInputButton.h>
-
 namespace dy::base
 {
 
-extern std::array<DInputButtonItem, EInputButton::__Error> sLowLevelInputs;
-extern std::array<DInputAnalogItem, 6> sLowLevelAnalogs;
+/// @class DInputAnalogItem
+/// @brief Joystick's stick analog value binding.
+class DInputAnalogItem final
+{
+public:
+  /// @brief Update original value of this stick instance.
+  void Update(float iValue) noexcept;
+
+  /// @brief Get original value which is different from delta value, \n
+  /// not calibrated value.
+  float GetValue() const noexcept;
+
+private:
+  float mValue = 0;
+};
 
 } /// ::dy::base namespace

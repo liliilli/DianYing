@@ -85,12 +85,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\DInputAnalog.h" />
     <ClInclude Include="Include\DInputButton.h" />
     <ClInclude Include="Include\EInputButton.h" />
     <ClInclude Include="Include\EInputState.h" />
     <ClInclude Include="Include\XInputEntry.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\DInputAnalog.cc" />
     <ClCompile Include="Source\DInputButton.cc" />
     <ClCompile Include="Source\XInputEntry.cc" />
   </ItemGroup>
