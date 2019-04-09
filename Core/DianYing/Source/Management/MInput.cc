@@ -369,7 +369,7 @@ float MInput::GetAxisValue(_MIN_ const std::string& axisKeyName) noexcept
   const auto keyIt = this->mBindedAxisMap.find(axisKeyName);
   if (keyIt == this->mBindedAxisMap.end())
   {
-    DyPushLogDebugError(err_input_key_not_exist, axisKeyName);
+    DyPushLogDebugError("Failed to find {}.", axisKeyName);
 		return 0.f;
 	}
 
@@ -403,7 +403,7 @@ bool MInput::IsAxisPressed(_MIN_ const std::string& axisSpecifierName) noexcept
   const auto keyIt = this->mBindedAxisMap.find(axisSpecifierName);
   if (keyIt == mBindedAxisMap.end())
   {
-    DyPushLogDebugError(err_input_key_not_exist, axisSpecifierName);
+    DyPushLogDebugError("Failed to find {}.", axisSpecifierName);
 		return false;
   }
 
@@ -424,7 +424,7 @@ bool MInput::IsAxisReleased(_MIN_ const std::string& axisSpecifierName) noexcept
   const auto keyIt = this->mBindedAxisMap.find(axisSpecifierName);
   if (keyIt == mBindedAxisMap.end())
   {
-    DyPushLogDebugError(err_input_key_not_exist, axisSpecifierName);
+    DyPushLogDebugError("Failed to find {}.", axisSpecifierName);
 		return false;
   }
 
@@ -448,7 +448,7 @@ bool MInput::IsActionPressed(_MIN_ const std::string& actionSpecifier) const noe
   const auto keyIt = this->mBindedActionMap.find(actionSpecifier);
   if (keyIt == mBindedActionMap.end())
   {
-    DyPushLogDebugError(err_input_key_not_exist, actionSpecifier);
+    DyPushLogDebugError("Failed to find {}.", actionSpecifier);
 		return false;
   }
 
