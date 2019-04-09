@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Management/Type/AttachmentInformation.h>
 #include <Dy/Include/GlInclude.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

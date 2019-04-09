@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Management/Type/KeyAxisBindingInformation.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

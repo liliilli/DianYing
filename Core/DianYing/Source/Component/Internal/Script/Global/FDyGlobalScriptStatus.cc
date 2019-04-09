@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Component/Internal/Script/FGlobalScriptState.h>
 #include <Dy/Component/Internal/Global/CGlobalScriptCpp.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

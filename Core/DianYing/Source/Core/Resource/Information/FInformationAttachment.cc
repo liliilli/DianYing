@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/Resource/Information/FInformationAttachment.h>
 #include <Dy/Meta/Information/MetaInfoAttachment.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

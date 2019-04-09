@@ -17,6 +17,7 @@
 #include <Dy/Element/Helper/DescriptorComponentHeaderString.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Type/DColorRGB.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration

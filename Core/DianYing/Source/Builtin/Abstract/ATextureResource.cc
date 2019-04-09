@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Builtin/Abstract/ATextureResource.h>
+#include <Dy/Helper/System/Assertion.h>
 #include <Dy/Meta/Information/MetaInfoTexture.h>
 
 namespace dy

@@ -20,6 +20,7 @@
 #include <Dy/Management/Internal/Font/FFontContainerPlain.h>
 #include <Dy/Management/Internal/Font/FFontContainerBuiltin.h>
 #include <Dy/Helper/Library/HelperContainer.h>
+#include <Dy/Helper/System/Assertion.h>
 #include <Dy/Management/MLog.h>
 
 namespace dy

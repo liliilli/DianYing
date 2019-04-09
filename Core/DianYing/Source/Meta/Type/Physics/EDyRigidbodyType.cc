@@ -16,6 +16,7 @@
 #include <Dy/Meta/Type/Physics/EDyRigidbodyType.h>
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Internal/XStringSwitch.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

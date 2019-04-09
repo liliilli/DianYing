@@ -17,6 +17,7 @@
 
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/MScript.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration

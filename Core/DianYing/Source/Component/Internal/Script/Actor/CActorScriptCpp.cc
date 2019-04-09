@@ -15,6 +15,7 @@
 #include <Dy/Component/Internal/Actor/CActorScriptCpp.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

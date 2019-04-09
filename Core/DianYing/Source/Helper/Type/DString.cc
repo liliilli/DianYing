@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Helper/Type/DString.h>
 #include <sstream>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration & local functions

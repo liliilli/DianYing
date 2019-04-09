@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Component/Widget/CWidgetScript.h>
+#include <Dy/Helper/System/Assertion.h>
 #include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
 #include <Dy/Component/Internal/Script/FWidgetScriptState.h>
 #include <Dy/Management/MScript.h>

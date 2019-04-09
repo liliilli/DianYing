@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Management/Platform/MPlatformInfoWindows.h>
 #include <sstream>
+#include <Dy/Helper/System/Assertion.h>
 
 #if (defined(_WIN32) == true)
 

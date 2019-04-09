@@ -18,6 +18,7 @@
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Type/DColorRGB24.h>
 #include <Dy/Helper/Library/HelperFilesystem.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration & local translation unit data

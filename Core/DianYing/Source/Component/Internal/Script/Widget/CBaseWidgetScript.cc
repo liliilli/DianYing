@@ -13,6 +13,7 @@
 ///
 
 #include <Dy/Component/Internal/Widget/CBaseWidgetScript.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

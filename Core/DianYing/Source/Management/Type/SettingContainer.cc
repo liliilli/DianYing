@@ -19,6 +19,7 @@
 
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Meta/Type/Input/JsonInputButton.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration

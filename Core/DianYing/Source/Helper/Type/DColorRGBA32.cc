@@ -16,6 +16,7 @@
 /// Header file
 #include <Dy/Helper/Type/DColorRGBA32.h>
 #include <nlohmann/json.hpp>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy {
 

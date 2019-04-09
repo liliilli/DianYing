@@ -18,6 +18,7 @@
 #include <Dy/Component/Internal/Actor/CActorScriptCpp.h>
 #include <Dy/Component/Internal/Actor/CActorScriptLua.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

@@ -14,6 +14,7 @@
 
 /// header file
 #include <Dy/Component/Internal/Actor/CBaseActorScript.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

@@ -17,6 +17,7 @@
 #include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
 #include <Dy/Helper/System/Idioms.h>
 #include <Dy/Management/MGameTimer.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

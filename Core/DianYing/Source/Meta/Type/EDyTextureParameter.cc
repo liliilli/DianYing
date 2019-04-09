@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Meta/Type/EDyTextureParameter.h>
 #include <nlohmann/json.hpp>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration

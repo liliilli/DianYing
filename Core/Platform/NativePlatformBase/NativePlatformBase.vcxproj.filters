@@ -33,6 +33,9 @@
     <ClInclude Include="Include\ABtResourceBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\ADebugBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\APlatformBase.cc">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\AEngineBase.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ADebugBase.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

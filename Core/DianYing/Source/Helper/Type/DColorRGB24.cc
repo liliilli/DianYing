@@ -18,6 +18,7 @@
 
 #include <bitset>
 #include <nlohmann/json.hpp>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration & local translation unit.

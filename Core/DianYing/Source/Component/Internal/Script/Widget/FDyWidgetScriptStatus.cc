@@ -17,6 +17,7 @@
 #include <Dy/Component/Internal/Widget/CBaseWidgetScript.h>
 #include <Dy/Component/Internal/Widget/CWidgetScriptCpp.h>
 #include <Dy/Meta/Information/ScriptMetaInformation.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {
@@ -35,7 +36,7 @@ FWidgetScriptState::FWidgetScriptState(FWidget& widgetReference, const PDyScript
   { // Lua
     MDY_NOT_IMPLEMENTED_ASSERT();
   } break;
-  default: MDY_NOT_IMPLEMENTED_ASSERT();
+  default: MDY_UNEXPECTED_BRANCH();
   }
 }
 

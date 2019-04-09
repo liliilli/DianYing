@@ -19,6 +19,7 @@
 #include <functional>
 #include <Dy/Helper/Library/HelperRegex.h>
 #include <Dy/Helper/Internal/XStringSwitch.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Local translation unit function & data

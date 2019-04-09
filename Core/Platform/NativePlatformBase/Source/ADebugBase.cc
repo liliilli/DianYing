@@ -11,25 +11,24 @@
 /// SOFTWARE.
 ///
 
-#include <APlatformBase.h>
+/// Header file
+#include <ADebugBase.h>
 
 namespace dy
 {
 
-APlatformBase::APlatformBase(EXPR_E(EPlatform) platform)
-  : mPlatform{platform}
-{ }
+ADebugBase::~ADebugBase() = default;
 
-APlatformBase::~APlatformBase() = default;
-
-ADebugBase& APlatformBase::GetDebugManager() noexcept
+void ADebugBase::SetReleaseFunction(TReleaseFuntion function)
 {
-  return *this->mDebug;
+  this->mReleaseFunction = function;
 }
 
-EPlatform::_ APlatformBase::GetPlatformType() const noexcept
+void ADebugBase::TryCallReleaseFunction()
 {
-  return this->mPlatform;
+  if (this->mReleaseFunction == nullptr) { return; }
+
+  this->mReleaseFunction();
 }
 
 } /// ::dy namespace

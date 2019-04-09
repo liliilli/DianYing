@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Element/Widget/AWidgetObject.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

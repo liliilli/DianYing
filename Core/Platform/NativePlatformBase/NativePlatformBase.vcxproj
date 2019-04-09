@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\ADebugBase.h" />
     <ClInclude Include="Include\AEngineBase.h" />
     <ClInclude Include="Include\AHandlesBase.h" />
     <ClInclude Include="Include\APlatformBase.h" />
@@ -97,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ABtResourceBase.cc" />
+    <ClCompile Include="Source\ADebugBase.cc" />
     <ClCompile Include="Source\AEngineBase.cc" />
     <ClCompile Include="Source\AHandleBase.cc" />
     <ClCompile Include="Source\APlatformBase.cc" />

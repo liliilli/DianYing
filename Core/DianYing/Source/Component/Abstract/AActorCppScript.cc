@@ -18,6 +18,7 @@
 #include <Dy/Management/MGameTimer.h>
 #include <Dy/Component/CPhysicsRigidbody.h>
 #include <Dy/Helper/Library/HelperContainer.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

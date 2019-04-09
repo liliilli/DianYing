@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Management/Internal/Input/MInputDelegates.h>
 #include <Dy/Management/MLog.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

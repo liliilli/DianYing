@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Helper/System/Macroes.h>
+#include <Dy/Helper/System/Assertion.h>
 #include <Dy/Helper/GlobalType.h>
 
 namespace dy

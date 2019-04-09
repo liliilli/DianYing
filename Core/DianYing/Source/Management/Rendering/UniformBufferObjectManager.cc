@@ -17,6 +17,7 @@
 #include <Dy/Management/MLog.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Include/GlInclude.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration & Local translation unit data.

@@ -364,7 +364,6 @@
     <ClCompile Include="Source\Management\Internal\Font\FFontContainerCompressed.cc" />
     <ClCompile Include="Source\Meta\Type\Meta\DGlVaoBindInformation.cc" />
     <ClCompile Include="Source\Management\Type\UBOInformation.cc" />
-    <ClCompile Include="Source\Helper\System\Assertion.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\precompiled.h" />

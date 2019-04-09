@@ -16,6 +16,7 @@
 #include <Dy/Meta/Information/MetaInfoSound.h>
 #include <Dy/Helper/Library/HelperJson.h>
 #include <Dy/Helper/Library/HelperFilesystem.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

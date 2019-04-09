@@ -14,6 +14,7 @@
 ///
 
 #include <string>
+#include <Dy/Helper/System/Macroes.h>
 
 namespace dy
 {

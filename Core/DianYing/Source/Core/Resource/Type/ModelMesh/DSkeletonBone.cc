@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Core/Resource/Type/ModelMesh/DSkeletonBones.h>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

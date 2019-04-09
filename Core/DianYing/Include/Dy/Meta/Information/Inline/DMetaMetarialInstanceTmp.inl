@@ -14,6 +14,7 @@
 ///
 
 #include <Dy/Core/Resource/Type/Uniform/TUniformValue.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {
