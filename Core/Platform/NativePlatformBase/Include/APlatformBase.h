@@ -18,6 +18,7 @@
 #include <AHandlesBase.h>
 #include <ABtResourceBase.h>
 #include <ADebugBase.h>
+#include <AProfilingBase.h>
 
 namespace dy
 {
@@ -31,7 +32,13 @@ public:
   APlatformBase(EXPR_E(EPlatform) platform);
   virtual ~APlatformBase() = 0; 
 
+  /// @brief Get debugging manager as reference.
+  /// This function must be succeeded.
   ADebugBase& GetDebugManager() noexcept;
+
+  /// @brief Get profiling manager as reference.
+  /// This function must be succeeded.
+  AProfilingBase& GetProfilingManager() noexcept;
 
   virtual void SetWindowTitle(const std::string& newTitle) = 0;
 
@@ -44,6 +51,17 @@ public:
   virtual void ResizeWindow(uint32_t width, uint32_t height) = 0;
 
   EXPR_E(EPlatform) GetPlatformType() const noexcept;
+
+  /// @brief Create console window. 
+  /// If console window is already created do nothing but just return false.
+  virtual bool CreateConsoleWindow() = 0;
+
+  /// @brief Check console window is created.
+  [[nodiscard]] bool IsConsoleWindowCreated() noexcept;
+
+  /// @brief Remove console window.
+  /// If console window is not created, do nothing but just return false.
+  virtual bool RemoveConsoleWindow() = 0;
 
 #ifdef _WIN32
 #undef FindResource
@@ -60,6 +78,8 @@ public:
 protected:
   std::unique_ptr<AHandlesBase> mHandle = nullptr;
   std::unique_ptr<ADebugBase> mDebug = nullptr;
+  std::unique_ptr<AProfilingBase> mProfiling = nullptr;
+  bool mIsConsoleWindowCreated = false;
 
 private:
   EXPR_E(EPlatform) mPlatform;

@@ -16,14 +16,12 @@
 #include <Dy/Helper/System/Macroes.h>
 #include <Dy/Management/Interface/ISingletonCrtp.h>
 
-#include <Dy/Management/Platform/MPlatformInfoWindows.h>
-
 struct GLFWwindow;
 
 namespace dy
 {
 
-class MWindow final : public ISingleton<MWindow>, public IPlatformDependent
+class MWindow final : public ISingleton<MWindow>
 {
   DY_PIMPL_SINGELTON_DERIVED(MWindow);
   MDY_SINGLETON_PROPERTIES(MWindow);
@@ -43,23 +41,13 @@ public:
   /// @brief  Create console window if OS supports. Even though OS does not support console window,
   /// This function will return EDySuccess::DY_SUCCESS because of conformity with remove function.
   /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE. \n
-  EDySuccess CreateConsoleWindow() override final;
+  EDySuccess CreateConsoleWindow();
   /// @brief  Check if console window is created or not.
   /// @return If created anyway, return true or false
-  MDY_NODISCARD bool IsCreatedConsoleWindow() const noexcept override final;
+  MDY_NODISCARD bool IsCreatedConsoleWindow() const noexcept;
   /// @brief  Remove console window when console window is initiailzed before.
   /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE
-  EDySuccess RemoveConsoleWindow() override final;
-
-  /// @brief Get cpu usage overall percentage. (0 ~ 100%)
-  MDY_NODISCARD TF32 GetCpuUsage() override final;
-  /// @brief Get ram usage as byte.
-  MDY_NODISCARD TU64 GetRamUsage() override final;
-
-  /// @brief Check font exist on system path.
-  MDY_NODISCARD bool IsFontExistOnSystem(const std::string& iFontKey) const override final;
-  /// @brief Get system font path with iFontKey. If not found, just return null value.
-  MDY_NODISCARD std::optional<std::string> GetFontPathOnSystem(const std::string& iFontKey) const override final;
+  EDySuccess RemoveConsoleWindow();
 };
 
 } /// ::dy namespace

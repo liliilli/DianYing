@@ -81,7 +81,7 @@ void DyGlCallbackWindowClose(GLFWwindow* window)
 namespace dy
 {
 
-struct MWindow::Impl final : public IPlatformDependent
+struct MWindow::Impl final
 {
   DY_DECLARE_PIMPL_CTOR(MWindow);
   virtual ~Impl();
@@ -101,30 +101,16 @@ struct MWindow::Impl final : public IPlatformDependent
   /// @brief  Create console window if OS supports. Even though OS does not support console window,
   /// This function will return EDySuccess::DY_SUCCESS because of conformity with remove function.
   /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE. \n
-  EDySuccess CreateConsoleWindow() override final;
+  EDySuccess CreateConsoleWindow();
   /// @brief  Check if console window is created or not.
   /// @return If created anyway, return true or false
-  bool IsCreatedConsoleWindow() const noexcept override final;
+  bool IsCreatedConsoleWindow() const noexcept;
   /// @brief  Remove console window when console window is initiailzed before.
   /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE
-  EDySuccess RemoveConsoleWindow() override final;
+  EDySuccess RemoveConsoleWindow();
 
-  /// @brief Get cpu usage overall percentage. (0 ~ 100%)
-  TF32 GetCpuUsage() override final;
-  /// @brief Get ram usage as byte.
-  TU64 GetRamUsage() override final;
-
-  /// @brief Check font exist on system path.
-  bool IsFontExistOnSystem(const std::string& iFontKey) const override final;
-  /// @brief Get system font path with iFontKey. If not found, just return null value.
-  std::optional<std::string> GetFontPathOnSystem(const std::string& iFontKey) const override final;
-
-  void InitializeDep() override final {}; 
-  void ReleaseDep() override final {};
-  
   GLFWwindow*                 mGlfwWindow     = nullptr;
   std::array<GLFWwindow*, 2>  mGlfwWorkerWnds = {};
-  IPlatformDependent*         mDependentWindowContext = nullptr;
 };
 
 } /// ::dy namespace
@@ -170,19 +156,6 @@ bool MWindow::IsCreatedConsoleWindow() const noexcept
 EDySuccess MWindow::RemoveConsoleWindow() 
 { 
   return DY_PIMPL->RemoveConsoleWindow(); 
-}
-
-TF32 MWindow::GetCpuUsage() { return DY_PIMPL->GetCpuUsage(); }
-TU64 MWindow::GetRamUsage() { return DY_PIMPL->GetRamUsage(); }
-
-bool MWindow::IsFontExistOnSystem(const std::string& iFontKey) const
-{
-  return DY_PIMPL->IsFontExistOnSystem(iFontKey);
-}
-
-std::optional<std::string> MWindow::GetFontPathOnSystem(const std::string& iFontKey) const
-{
-  return DY_PIMPL->GetFontPathOnSystem(iFontKey);
 }
 
 EDySuccess MWindow::pfInitialize()

@@ -1,3 +1,4 @@
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -11,35 +12,30 @@
 /// SOFTWARE.
 ///
 
-#include <APlatformBase.h>
+#include <AProfilingBase.h>
+#include <Windows.h>
 
 namespace dy
 {
 
-APlatformBase::APlatformBase(EXPR_E(EPlatform) platform)
-  : mPlatform{platform}
-{ }
-
-APlatformBase::~APlatformBase() = default;
-
-ADebugBase& APlatformBase::GetDebugManager() noexcept
+class FWindowsProfiling final : public AProfilingBase
 {
-  return *this->mDebug;
-}
+public:
+  FWindowsProfiling(HANDLE& mainProcess);
+  virtual ~FWindowsProfiling() = default;
 
-AProfilingBase& APlatformBase::GetProfilingManager() noexcept
-{
-  return *this->mProfiling;
-}
+  /// @brief Get cpu usage as percentage.
+  float GetCpuUsage() override final;
 
-EPlatform::_ APlatformBase::GetPlatformType() const noexcept
-{
-  return this->mPlatform;
-}
+  /// @brief Get ram usage as byte unit.
+  uint64_t GetRamUsage() override final;
 
-bool APlatformBase::IsConsoleWindowCreated() noexcept
-{
-  return this->mIsConsoleWindowCreated;
-}
+private:
+  ULARGE_INTEGER mLastCpu;
+  ULARGE_INTEGER mLastSysCpu;
+  ULARGE_INTEGER mLastUserCpu;
+  int            mNumProcessors = 0;
+  HANDLE         mSelf = nullptr;
+};
 
 } /// ::dy namespace
