@@ -1,5 +1,4 @@
-#ifndef GUARD_DY_MANAGEMENT_TYPE_INPUT_EDYINPUTBUTTONSTATUS_H
-#define GUARD_DY_MANAGEMENT_TYPE_INPUT_EDYINPUTBUTTONSTATUS_H
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -13,18 +12,11 @@
 /// SOFTWARE.
 ///
 
+#include <EInputState.h>
+
 namespace dy
 {
 
-/// @enum EInputButtonStatus
-/// @brief Check key primary state only in this file.
-enum class EInputButtonStatus : unsigned char
-{
-  Released  = 0,
-  Pressed   = 1,
-  Repeated  = 2
-};
+using EInputButtonStatus = base::EInputState;
 
 } /// ::dy namespace
-
-#endif /// GUARD_DY_MANAGEMENT_TYPE_INPUT_EDYINPUTBUTTONSTATUS_H

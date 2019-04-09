@@ -48,16 +48,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Core\Base\InputsBase\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
-    <LibraryPath>$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(SolutionDir)Core\Platform\NativePlatformBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Core\Base\InputsBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(SolutionDir)Core\Platform\NativePlatformBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Core\Base\InputsBase\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
-    <LibraryPath>$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(SolutionDir)Core\Platform\NativePlatformBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Core\Base\InputsBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(SolutionDir)Core\Platform\NativePlatformBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -91,7 +91,7 @@
     </Link>
     <Lib>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
-      <AdditionalDependencies>zlib.lib;Lua.lib;fmodL64_vc.lib;glfw3.lib;PlatformWin32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib</AdditionalDependencies>
+      <AdditionalDependencies>InputsBase.lib;zlib.lib;Lua.lib;fmodL64_vc.lib;glfw3.lib;PlatformWin32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -126,7 +126,7 @@
     </Link>
     <Lib>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
-      <AdditionalDependencies>zlib.lib;Lua.lib;fmodL64_vc.lib;glfw3.lib;NativePlatformBase.lib;PlatformWin32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib</AdditionalDependencies>
+      <AdditionalDependencies>InputsBase.lib;zlib.lib;Lua.lib;fmodL64_vc.lib;glfw3.lib;NativePlatformBase.lib;PlatformWin32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -400,7 +400,6 @@
     <ClCompile Include="Source\Management\Internal\World\MWorldUIContainers.cc" />
     <ClCompile Include="Source\Management\IO\MIORescInfo.cc" />
     <ClCompile Include="Source\Management\IO\MIOResource.cc" />
-    <ClCompile Include="Source\Management\Type\Input\DButtonInputItem.cc" />
     <ClCompile Include="Source\Management\Type\Input\DAnalogInputItem.cc" />
     <ClCompile Include="Source\Management\Type\Render\DDyModelHandler.cc" />
     <ClCompile Include="Source\Management\Type\Sound\ASoundInstance.cc" />
@@ -774,8 +773,8 @@
     <ClInclude Include="Include\Dy\Management\IO\MIOResource.h" />
     <ClInclude Include="Include\Dy\Management\MGameTimer.h" />
     <ClInclude Include="Include\Dy\Helper\Type\DCompUpdator.h" />
-    <ClInclude Include="Include\Dy\Management\Type\Input\DButtonInputItem.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DAnalogInputItem.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Input\EInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Physics\DCollisionIssueItem.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DGlGlobalStates.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DDyPixelInfo.h" />
@@ -807,7 +806,6 @@
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoModelSkeleton.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoSound.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Input\EDyInputButton.h" />
-    <ClInclude Include="Include\Dy\Management\Type\Input\EInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoAttachment.h" />
     <ClInclude Include="Include\Dy\Meta\Information\MetaInfoFrameBuffer.h" />
     <ClInclude Include="Include\Dy\Meta\Type\DDyResourceName.h" />

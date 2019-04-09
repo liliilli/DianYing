@@ -311,7 +311,6 @@
     <ClCompile Include="Source\Management\Type\Sound\FSoundGroup.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FSound2DBinder.cc" />
     <ClCompile Include="Source\Management\Type\Sound\FSound3DBinder.cc" />
-    <ClCompile Include="Source\Management\Type\Input\DButtonInputItem.cc" />
     <ClCompile Include="Source\Management\Type\Input\DAnalogInputItem.cc" />
     <ClCompile Include="Source\Management\Type\Time\DTimePoint.cc" />
     <ClCompile Include="Source\Builtin\Prefab\FBtPbCameraMan.cc" />
@@ -768,7 +767,6 @@
     <ClInclude Include="Include\Dy\Management\Helper\FPhysxSimulationCallback.h" />
     <ClInclude Include="Include\Dy\Management\Helper\SProfilingHelper.h" />
     <ClInclude Include="Include\Dy\Management\Internal\Physics\FCollisionResults.h" />
-    <ClInclude Include="Include\Dy\Management\Type\Input\EInputButtonStatus.h" />
     <ClInclude Include="Include\Dy\Management\Type\Physics\DCollisionIssueItem.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\DGlGlobalStates.h" />
     <ClInclude Include="Include\Dy\Management\Type\Render\ERenderingModelMode.h" />
@@ -779,7 +777,6 @@
     <ClInclude Include="Include\Dy\Management\Type\Sound\FSoundGroup.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FSound2DBinder.h" />
     <ClInclude Include="Include\Dy\Management\Type\Sound\FSound3DBinder.h" />
-    <ClInclude Include="Include\Dy\Management\Type\Input\DButtonInputItem.h" />
     <ClInclude Include="Include\Dy\Management\Type\Input\DAnalogInputItem.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\DTimePoint.h" />
     <ClInclude Include="Include\Dy\Management\Type\Time\ETimeDay.h" />
@@ -853,6 +850,7 @@
     <ClInclude Include="Include\Dy\Include\GlInclude.h" />
     <ClInclude Include="Include\Dy\Meta\Type\Mesh\DGlVaoBindInformation.h" />
     <ClInclude Include="Include\Dy\Builtin\ExternalHeader.h" />
+    <ClInclude Include="Include\Dy\Management\Type\Input\EInputButtonStatus.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Dy\Helper\Library\HelperJson.inl" />

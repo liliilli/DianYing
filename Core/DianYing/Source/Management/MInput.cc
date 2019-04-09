@@ -21,7 +21,6 @@
 #include <Dy/Management/MTime.h>
 #include <Dy/Management/MWindow.h>
 #include <Dy/Management/MSetting.h>
-#include <Dy/Management/Type/Input/DButtonInputItem.h>
 #include <Dy/Management/Type/Input/DAnalogInputItem.h>
 #include <Dy/Management/Type/Render/DDyPixelInfo.h>
 #include <Dy/Management/MWorld.h>
@@ -31,6 +30,7 @@
 #include <Dy/Element/FActor.h>
 
 #include <Dy/Include/GlInclude.h>
+#include <XInputEntry.h>
 
 #ifdef DELETE
 #undef DELETE
@@ -43,13 +43,22 @@
 namespace
 {
 
-constexpr const char err_input_key_not_exist[] = "Key axis is not exist. [Key axis : {}]";
+dy::base::EInputState GetStatusFromGLFWEnum(int iLowLevelStatus) noexcept
+{
+  switch (iLowLevelStatus)
+  {
+  case GLFW_PRESS:    return dy::base::EInputState::Pressed;
+  case GLFW_RELEASE:  return dy::base::EInputState::Released;
+  case GLFW_REPEAT:   return dy::base::EInputState::Repeated;
+  default: MDY_UNEXPECTED_BRANCH_BUT_RETURN(dy::base::EInputState::Released);
+  }
+};
+
 constexpr TF32 kNegativeValue = -1.0f;
 constexpr TF32 kPositiveValue = +1.0f;
 constexpr TU32 kMaximumStickCount = 6;
 
-std::array<dy::DButtonInputItem, dy::kEDyInputButtonCount> mInputButtonList = {};
-std::array<dy::DAnalogInputItem, kMaximumStickCount> mInputAnalogStickList = {};
+//std::array<dy::DAnalogInputItem, kMaximumStickCount> mInputAnalogStickList = {};
 
 dy::DVec2    sMouseLastPosition    = {};
 dy::DVec2    sMousePresentPosition = {};
@@ -69,108 +78,109 @@ void DyCallbackCheckJoystickConnection(_MIN_ int joy, _MIN_ int event);
 /// @param[in] scancode Not be used now.
 /// @param[in] action Key pressed, released, keeping pushed states.
 /// @param[in] mod Not be used now.
-void DyCallbackInputKeyboard(MDY_NOTUSED GLFWwindow* window, _MIN_ int key, MDY_NOTUSED int scancode, _MIN_ int action, MDY_NOTUSED int mod)
+void DyCallbackInputKeyboard(MDY_NOTUSED GLFWwindow* window, _MIN_ int key, MDY_NOTUSED int scancode, _MIN_ int iAction, MDY_NOTUSED int mod)
 {
   using namespace dy;
   using TEnum = EDyInputButton;
+  const auto action = GetStatusFromGLFWEnum(iAction);
   
   switch (key)
   {
-  case GLFW_KEY_RIGHT:mInputButtonList[TEnum::Right].Update(action); break;
-  case GLFW_KEY_LEFT: mInputButtonList[TEnum::Left].Update(action); break;
-  case GLFW_KEY_DOWN: mInputButtonList[TEnum::Down].Update(action); break;
-  case GLFW_KEY_UP:   mInputButtonList[TEnum::Up].Update(action); break;
+  case GLFW_KEY_RIGHT: ::dy::base::sLowLevelInputs[TEnum::Right].Update(action); break;
+  case GLFW_KEY_LEFT: ::dy::base::sLowLevelInputs[TEnum::Left].Update(action); break;
+  case GLFW_KEY_DOWN: ::dy::base::sLowLevelInputs[TEnum::Down].Update(action); break;
+  case GLFW_KEY_UP:   ::dy::base::sLowLevelInputs[TEnum::Up].Update(action); break;
 
-  case GLFW_KEY_A: mInputButtonList[TEnum::A].Update(action); break;
-  case GLFW_KEY_B: mInputButtonList[TEnum::B].Update(action); break;
-  case GLFW_KEY_C: mInputButtonList[TEnum::C].Update(action); break;
-  case GLFW_KEY_D: mInputButtonList[TEnum::D].Update(action); break;
-  case GLFW_KEY_E: mInputButtonList[TEnum::E].Update(action); break;
-  case GLFW_KEY_F: mInputButtonList[TEnum::F].Update(action); break;
-  case GLFW_KEY_G: mInputButtonList[TEnum::G].Update(action); break;
-  case GLFW_KEY_H: mInputButtonList[TEnum::H].Update(action); break;
-  case GLFW_KEY_I: mInputButtonList[TEnum::I].Update(action); break;
-  case GLFW_KEY_J: mInputButtonList[TEnum::J].Update(action); break;
-  case GLFW_KEY_K: mInputButtonList[TEnum::K].Update(action); break;
-  case GLFW_KEY_L: mInputButtonList[TEnum::L].Update(action); break;
-  case GLFW_KEY_M: mInputButtonList[TEnum::M].Update(action); break;
-  case GLFW_KEY_N: mInputButtonList[TEnum::N].Update(action); break;
-  case GLFW_KEY_O: mInputButtonList[TEnum::O].Update(action); break;
-  case GLFW_KEY_P: mInputButtonList[TEnum::P].Update(action); break;
-  case GLFW_KEY_Q: mInputButtonList[TEnum::Q].Update(action); break;
-  case GLFW_KEY_R: mInputButtonList[TEnum::R].Update(action); break;
-  case GLFW_KEY_S: mInputButtonList[TEnum::S].Update(action); break;
-  case GLFW_KEY_T: mInputButtonList[TEnum::T].Update(action); break;
-  case GLFW_KEY_U: mInputButtonList[TEnum::U].Update(action); break;
-  case GLFW_KEY_V: mInputButtonList[TEnum::V].Update(action); break;
-  case GLFW_KEY_X: mInputButtonList[TEnum::X].Update(action); break;
-  case GLFW_KEY_Y: mInputButtonList[TEnum::Y].Update(action); break;
-  case GLFW_KEY_Z: mInputButtonList[TEnum::Z].Update(action); break;
+  case GLFW_KEY_A: ::dy::base::sLowLevelInputs[TEnum::A].Update(action); break;
+  case GLFW_KEY_B: ::dy::base::sLowLevelInputs[TEnum::B].Update(action); break;
+  case GLFW_KEY_C: ::dy::base::sLowLevelInputs[TEnum::C].Update(action); break;
+  case GLFW_KEY_D: ::dy::base::sLowLevelInputs[TEnum::D].Update(action); break;
+  case GLFW_KEY_E: ::dy::base::sLowLevelInputs[TEnum::E].Update(action); break;
+  case GLFW_KEY_F: ::dy::base::sLowLevelInputs[TEnum::F].Update(action); break;
+  case GLFW_KEY_G: ::dy::base::sLowLevelInputs[TEnum::G].Update(action); break;
+  case GLFW_KEY_H: ::dy::base::sLowLevelInputs[TEnum::H].Update(action); break;
+  case GLFW_KEY_I: ::dy::base::sLowLevelInputs[TEnum::I].Update(action); break;
+  case GLFW_KEY_J: ::dy::base::sLowLevelInputs[TEnum::J].Update(action); break;
+  case GLFW_KEY_K: ::dy::base::sLowLevelInputs[TEnum::K].Update(action); break;
+  case GLFW_KEY_L: ::dy::base::sLowLevelInputs[TEnum::L].Update(action); break;
+  case GLFW_KEY_M: ::dy::base::sLowLevelInputs[TEnum::M].Update(action); break;
+  case GLFW_KEY_N: ::dy::base::sLowLevelInputs[TEnum::N].Update(action); break;
+  case GLFW_KEY_O: ::dy::base::sLowLevelInputs[TEnum::O].Update(action); break;
+  case GLFW_KEY_P: ::dy::base::sLowLevelInputs[TEnum::P].Update(action); break;
+  case GLFW_KEY_Q: ::dy::base::sLowLevelInputs[TEnum::Q].Update(action); break;
+  case GLFW_KEY_R: ::dy::base::sLowLevelInputs[TEnum::R].Update(action); break;
+  case GLFW_KEY_S: ::dy::base::sLowLevelInputs[TEnum::S].Update(action); break;
+  case GLFW_KEY_T: ::dy::base::sLowLevelInputs[TEnum::T].Update(action); break;
+  case GLFW_KEY_U: ::dy::base::sLowLevelInputs[TEnum::U].Update(action); break;
+  case GLFW_KEY_V: ::dy::base::sLowLevelInputs[TEnum::V].Update(action); break;
+  case GLFW_KEY_X: ::dy::base::sLowLevelInputs[TEnum::X].Update(action); break;
+  case GLFW_KEY_Y: ::dy::base::sLowLevelInputs[TEnum::Y].Update(action); break;
+  case GLFW_KEY_Z: ::dy::base::sLowLevelInputs[TEnum::Z].Update(action); break;
 
-  case GLFW_KEY_0: mInputButtonList[TEnum::Num0].Update(action); break;
-  case GLFW_KEY_1: mInputButtonList[TEnum::Num1].Update(action); break;
-  case GLFW_KEY_2: mInputButtonList[TEnum::Num2].Update(action); break;
-  case GLFW_KEY_3: mInputButtonList[TEnum::Num3].Update(action); break;
-  case GLFW_KEY_4: mInputButtonList[TEnum::Num4].Update(action); break;
-  case GLFW_KEY_5: mInputButtonList[TEnum::Num5].Update(action); break;
-  case GLFW_KEY_6: mInputButtonList[TEnum::Num6].Update(action); break;
-  case GLFW_KEY_7: mInputButtonList[TEnum::Num7].Update(action); break;
-  case GLFW_KEY_8: mInputButtonList[TEnum::Num8].Update(action); break;
-  case GLFW_KEY_9: mInputButtonList[TEnum::Num9].Update(action); break;
+  case GLFW_KEY_0: ::dy::base::sLowLevelInputs[TEnum::Num0].Update(action); break;
+  case GLFW_KEY_1: ::dy::base::sLowLevelInputs[TEnum::Num1].Update(action); break;
+  case GLFW_KEY_2: ::dy::base::sLowLevelInputs[TEnum::Num2].Update(action); break;
+  case GLFW_KEY_3: ::dy::base::sLowLevelInputs[TEnum::Num3].Update(action); break;
+  case GLFW_KEY_4: ::dy::base::sLowLevelInputs[TEnum::Num4].Update(action); break;
+  case GLFW_KEY_5: ::dy::base::sLowLevelInputs[TEnum::Num5].Update(action); break;
+  case GLFW_KEY_6: ::dy::base::sLowLevelInputs[TEnum::Num6].Update(action); break;
+  case GLFW_KEY_7: ::dy::base::sLowLevelInputs[TEnum::Num7].Update(action); break;
+  case GLFW_KEY_8: ::dy::base::sLowLevelInputs[TEnum::Num8].Update(action); break;
+  case GLFW_KEY_9: ::dy::base::sLowLevelInputs[TEnum::Num9].Update(action); break;
     
-  case GLFW_KEY_KP_0: mInputButtonList[TEnum::NumKp0].Update(action); break;
-  case GLFW_KEY_KP_1: mInputButtonList[TEnum::NumKp1].Update(action); break;
-  case GLFW_KEY_KP_2: mInputButtonList[TEnum::NumKp2].Update(action); break;
-  case GLFW_KEY_KP_3: mInputButtonList[TEnum::NumKp3].Update(action); break;
-  case GLFW_KEY_KP_4: mInputButtonList[TEnum::NumKp4].Update(action); break;
-  case GLFW_KEY_KP_5: mInputButtonList[TEnum::NumKp5].Update(action); break;
-  case GLFW_KEY_KP_6: mInputButtonList[TEnum::NumKp6].Update(action); break;
-  case GLFW_KEY_KP_7: mInputButtonList[TEnum::NumKp7].Update(action); break;
-  case GLFW_KEY_KP_8: mInputButtonList[TEnum::NumKp8].Update(action); break;
-  case GLFW_KEY_KP_9: mInputButtonList[TEnum::NumKp9].Update(action); break;
+  case GLFW_KEY_KP_0: ::dy::base::sLowLevelInputs[TEnum::NumKp0].Update(action); break;
+  case GLFW_KEY_KP_1: ::dy::base::sLowLevelInputs[TEnum::NumKp1].Update(action); break;
+  case GLFW_KEY_KP_2: ::dy::base::sLowLevelInputs[TEnum::NumKp2].Update(action); break;
+  case GLFW_KEY_KP_3: ::dy::base::sLowLevelInputs[TEnum::NumKp3].Update(action); break;
+  case GLFW_KEY_KP_4: ::dy::base::sLowLevelInputs[TEnum::NumKp4].Update(action); break;
+  case GLFW_KEY_KP_5: ::dy::base::sLowLevelInputs[TEnum::NumKp5].Update(action); break;
+  case GLFW_KEY_KP_6: ::dy::base::sLowLevelInputs[TEnum::NumKp6].Update(action); break;
+  case GLFW_KEY_KP_7: ::dy::base::sLowLevelInputs[TEnum::NumKp7].Update(action); break;
+  case GLFW_KEY_KP_8: ::dy::base::sLowLevelInputs[TEnum::NumKp8].Update(action); break;
+  case GLFW_KEY_KP_9: ::dy::base::sLowLevelInputs[TEnum::NumKp9].Update(action); break;
 
-  case GLFW_KEY_ESCAPE:       mInputButtonList[TEnum::ESCAPE].Update(action); break;
-  case GLFW_KEY_ENTER:        mInputButtonList[TEnum::ENTER].Update(action); break;
-  case GLFW_KEY_SPACE:        mInputButtonList[TEnum::SPACE].Update(action); break;
-  case GLFW_KEY_LEFT_SHIFT:   mInputButtonList[TEnum::LSHIFT].Update(action); break;
-  case GLFW_KEY_LEFT_CONTROL: mInputButtonList[TEnum::LCTRL].Update(action); break;
-  case GLFW_KEY_LEFT_ALT:     mInputButtonList[TEnum::LALT].Update(action); break;
+  case GLFW_KEY_ESCAPE:       ::dy::base::sLowLevelInputs[TEnum::ESCAPE].Update(action); break;
+  case GLFW_KEY_ENTER:        ::dy::base::sLowLevelInputs[TEnum::ENTER].Update(action); break;
+  case GLFW_KEY_SPACE:        ::dy::base::sLowLevelInputs[TEnum::SPACE].Update(action); break;
+  case GLFW_KEY_LEFT_SHIFT:   ::dy::base::sLowLevelInputs[TEnum::LSHIFT].Update(action); break;
+  case GLFW_KEY_LEFT_CONTROL: ::dy::base::sLowLevelInputs[TEnum::LCTRL].Update(action); break;
+  case GLFW_KEY_LEFT_ALT:     ::dy::base::sLowLevelInputs[TEnum::LALT].Update(action); break;
 
-  case GLFW_KEY_INSERT:   mInputButtonList[TEnum::INSERT].Update(action); break;
-  case GLFW_KEY_DELETE:   mInputButtonList[TEnum::DELETE].Update(action); break;
-  case GLFW_KEY_PAGE_UP:  mInputButtonList[TEnum::PAGEUP].Update(action); break;
-  case GLFW_KEY_PAGE_DOWN:mInputButtonList[TEnum::PAGEDOWN].Update(action); break;
-  case GLFW_KEY_HOME:     mInputButtonList[TEnum::HOME].Update(action); break;
-  case GLFW_KEY_END:      mInputButtonList[TEnum::END].Update(action); break;
+  case GLFW_KEY_INSERT:   ::dy::base::sLowLevelInputs[TEnum::INSERT].Update(action); break;
+  case GLFW_KEY_DELETE:   ::dy::base::sLowLevelInputs[TEnum::DELETE].Update(action); break;
+  case GLFW_KEY_PAGE_UP:  ::dy::base::sLowLevelInputs[TEnum::PAGEUP].Update(action); break;
+  case GLFW_KEY_PAGE_DOWN: ::dy::base::sLowLevelInputs[TEnum::PAGEDOWN].Update(action); break;
+  case GLFW_KEY_HOME:     ::dy::base::sLowLevelInputs[TEnum::HOME].Update(action); break;
+  case GLFW_KEY_END:      ::dy::base::sLowLevelInputs[TEnum::END].Update(action); break;
 
-  case GLFW_KEY_MINUS:          mInputButtonList[TEnum::MINUS].Update(action); break;
-  case GLFW_KEY_EQUAL:          mInputButtonList[TEnum::EQUAL].Update(action); break;
-  case GLFW_KEY_LEFT_BRACKET:   mInputButtonList[TEnum::LBRACKET].Update(action); break;
-  case GLFW_KEY_RIGHT_BRACKET:  mInputButtonList[TEnum::RBRACKET].Update(action); break;
+  case GLFW_KEY_MINUS:          ::dy::base::sLowLevelInputs[TEnum::MINUS].Update(action); break;
+  case GLFW_KEY_EQUAL:          ::dy::base::sLowLevelInputs[TEnum::EQUAL].Update(action); break;
+  case GLFW_KEY_LEFT_BRACKET:   ::dy::base::sLowLevelInputs[TEnum::LBRACKET].Update(action); break;
+  case GLFW_KEY_RIGHT_BRACKET:  ::dy::base::sLowLevelInputs[TEnum::RBRACKET].Update(action); break;
 
-  case GLFW_KEY_SEMICOLON:  mInputButtonList[TEnum::SEMICOLON].Update(action); break;
-  case GLFW_KEY_APOSTROPHE: mInputButtonList[TEnum::APOSTROPHE].Update(action); break;
-  case GLFW_KEY_COMMA:      mInputButtonList[TEnum::COMMA].Update(action); break;
-  case GLFW_KEY_PERIOD:     mInputButtonList[TEnum::PERIOD].Update(action); break;
+  case GLFW_KEY_SEMICOLON:  ::dy::base::sLowLevelInputs[TEnum::SEMICOLON].Update(action); break;
+  case GLFW_KEY_APOSTROPHE: ::dy::base::sLowLevelInputs[TEnum::APOSTROPHE].Update(action); break;
+  case GLFW_KEY_COMMA:      ::dy::base::sLowLevelInputs[TEnum::COMMA].Update(action); break;
+  case GLFW_KEY_PERIOD:     ::dy::base::sLowLevelInputs[TEnum::PERIOD].Update(action); break;
 
-  case GLFW_KEY_F1:  mInputButtonList[TEnum::F1].Update(action); break;
-  case GLFW_KEY_F2:  mInputButtonList[TEnum::F2].Update(action); break;
-  case GLFW_KEY_F3:  mInputButtonList[TEnum::F3].Update(action); break;
-  case GLFW_KEY_F4:  mInputButtonList[TEnum::F4].Update(action); break;
-  case GLFW_KEY_F5:  mInputButtonList[TEnum::F5].Update(action); break;
-  case GLFW_KEY_F6:  mInputButtonList[TEnum::F6].Update(action); break;
-  case GLFW_KEY_F7:  mInputButtonList[TEnum::F7].Update(action); break;
-  case GLFW_KEY_F8:  mInputButtonList[TEnum::F8].Update(action); break;
-  case GLFW_KEY_F9:  mInputButtonList[TEnum::F9].Update(action); break;
-  case GLFW_KEY_F10: mInputButtonList[TEnum::F10].Update(action); break;
-  case GLFW_KEY_F11: mInputButtonList[TEnum::F11].Update(action); break;
-  case GLFW_KEY_F12: mInputButtonList[TEnum::F12].Update(action); break;
+  case GLFW_KEY_F1:  ::dy::base::sLowLevelInputs[TEnum::F1].Update(action); break;
+  case GLFW_KEY_F2:  ::dy::base::sLowLevelInputs[TEnum::F2].Update(action); break;
+  case GLFW_KEY_F3:  ::dy::base::sLowLevelInputs[TEnum::F3].Update(action); break;
+  case GLFW_KEY_F4:  ::dy::base::sLowLevelInputs[TEnum::F4].Update(action); break;
+  case GLFW_KEY_F5:  ::dy::base::sLowLevelInputs[TEnum::F5].Update(action); break;
+  case GLFW_KEY_F6:  ::dy::base::sLowLevelInputs[TEnum::F6].Update(action); break;
+  case GLFW_KEY_F7:  ::dy::base::sLowLevelInputs[TEnum::F7].Update(action); break;
+  case GLFW_KEY_F8:  ::dy::base::sLowLevelInputs[TEnum::F8].Update(action); break;
+  case GLFW_KEY_F9:  ::dy::base::sLowLevelInputs[TEnum::F9].Update(action); break;
+  case GLFW_KEY_F10: ::dy::base::sLowLevelInputs[TEnum::F10].Update(action); break;
+  case GLFW_KEY_F11: ::dy::base::sLowLevelInputs[TEnum::F11].Update(action); break;
+  case GLFW_KEY_F12: ::dy::base::sLowLevelInputs[TEnum::F12].Update(action); break;
 
-  case GLFW_KEY_CAPS_LOCK:    mInputButtonList[TEnum::CAPSLOCK].Update(action); break;
-  case GLFW_KEY_TAB:          mInputButtonList[TEnum::TAB].Update(action); break;
-  case GLFW_KEY_BACKSPACE:    mInputButtonList[TEnum::BACKSPACE].Update(action); break;
-  case GLFW_KEY_BACKSLASH:    mInputButtonList[TEnum::BACKSLASH].Update(action); break;
-  case GLFW_KEY_GRAVE_ACCENT: mInputButtonList[TEnum::GBACCENT].Update(action); break;
+  case GLFW_KEY_CAPS_LOCK:    ::dy::base::sLowLevelInputs[TEnum::CAPSLOCK].Update(action); break;
+  case GLFW_KEY_TAB:          ::dy::base::sLowLevelInputs[TEnum::TAB].Update(action); break;
+  case GLFW_KEY_BACKSPACE:    ::dy::base::sLowLevelInputs[TEnum::BACKSPACE].Update(action); break;
+  case GLFW_KEY_BACKSLASH:    ::dy::base::sLowLevelInputs[TEnum::BACKSLASH].Update(action); break;
+  case GLFW_KEY_GRAVE_ACCENT: ::dy::base::sLowLevelInputs[TEnum::GBACCENT].Update(action); break;
   default: break;
   }
 }
@@ -200,22 +210,23 @@ void DyCallbackMouseMoving(MDY_NOTUSED GLFWwindow* window, _MIN_ double xPos, _M
 /// The action is one of `GLFW_PRESS` or `GLFW_RELEASE`.
 /// @reference http://www.glfw.org/docs/latest/group__buttons.html
 /// @reference http://www.glfw.org/docs/latest/group__mods.html
-void DyCallbackMouseInput(MDY_NOTUSED GLFWwindow* window, _MIN_ int button, _MIN_ int action, MDY_NOTUSED int mods)
+void DyCallbackMouseInput(MDY_NOTUSED GLFWwindow* window, _MIN_ int button, _MIN_ int iAction, MDY_NOTUSED int mods)
 {
   using namespace dy;
   using TEnum = EDyInputButton;
+  const auto action = GetStatusFromGLFWEnum(iAction);
 
   switch (button)
   {
-  case GLFW_MOUSE_BUTTON_1: mInputButtonList[TEnum::Mouse0Lmb].Update(action); break;
-  case GLFW_MOUSE_BUTTON_2: mInputButtonList[TEnum::Mouse1Rmb].Update(action); break;
-  case GLFW_MOUSE_BUTTON_3: mInputButtonList[TEnum::Mouse2Mid].Update(action); break;
+  case GLFW_MOUSE_BUTTON_1: ::dy::base::sLowLevelInputs[TEnum::Mouse0Lmb].Update(action); break;
+  case GLFW_MOUSE_BUTTON_2: ::dy::base::sLowLevelInputs[TEnum::Mouse1Rmb].Update(action); break;
+  case GLFW_MOUSE_BUTTON_3: ::dy::base::sLowLevelInputs[TEnum::Mouse2Mid].Update(action); break;
 
-  case GLFW_MOUSE_BUTTON_4: mInputButtonList[TEnum::Mouse3].Update(action); break;
-  case GLFW_MOUSE_BUTTON_5: mInputButtonList[TEnum::Mouse4].Update(action); break;
-  case GLFW_MOUSE_BUTTON_6: mInputButtonList[TEnum::Mouse5].Update(action); break;
-  case GLFW_MOUSE_BUTTON_7: mInputButtonList[TEnum::Mouse6].Update(action); break;
-  case GLFW_MOUSE_BUTTON_8: mInputButtonList[TEnum::Mouse7].Update(action); break;
+  case GLFW_MOUSE_BUTTON_4: ::dy::base::sLowLevelInputs[TEnum::Mouse3].Update(action); break;
+  case GLFW_MOUSE_BUTTON_5: ::dy::base::sLowLevelInputs[TEnum::Mouse4].Update(action); break;
+  case GLFW_MOUSE_BUTTON_6: ::dy::base::sLowLevelInputs[TEnum::Mouse5].Update(action); break;
+  case GLFW_MOUSE_BUTTON_7: ::dy::base::sLowLevelInputs[TEnum::Mouse6].Update(action); break;
+  case GLFW_MOUSE_BUTTON_8: ::dy::base::sLowLevelInputs[TEnum::Mouse7].Update(action); break;
   default: break;
   }
 };
@@ -377,13 +388,13 @@ const DVec2& MInput::GetPresentLastMousePosition() const noexcept
 
 TF32 MInput::GetJoystickStickValue(_MIN_ DClamp<TU32, 0, 5> index) const noexcept
 {
-  return mInputAnalogStickList[index].GetValue();
+  return ::dy::base::sLowLevelAnalogs[index].GetValue();
 }
 
 EInputButtonStatus MInput::GetButtonStatusValue(_MIN_ EDyButton button) const noexcept
 {
   MDY_ASSERT_MSG(button != EDyButton::NoneError, "Button value must not be `NoneErorr`.");
-  return mInputButtonList[button].Get();
+  return ::dy::base::sLowLevelInputs[button].Get();
 }
 
 bool MInput::IsAxisPressed(_MIN_ const std::string& axisSpecifierName) noexcept
@@ -487,7 +498,7 @@ EDyMouseMode MInput::PopMouseMode() noexcept
 
 bool MInput::IsKeyPressed(_MIN_ EDyInputButton keyValue) const noexcept
 {
-  return mInputButtonList[keyValue].Get() == EInputButtonStatus::Pressed; 
+  return ::dy::base::sLowLevelInputs[keyValue].Get() == EInputButtonStatus::Pressed; 
 }
 
 void MInput::pfInGameUpdate(_MIN_ TF32 dt) noexcept
@@ -522,7 +533,7 @@ void MInput::MDY_PRIVATE(pUpdateJoystickSticks)()
     : kMaximumStickCount;
   for (TU32 i = 0; i < stickCount; ++i)
   {
-    mInputAnalogStickList[i].Update(stickValueList[i]);
+    base::sLowLevelAnalogs[i].Update(stickValueList[i]);
   }
 }
 
@@ -540,7 +551,8 @@ void MInput::MDY_PRIVATE(pUpdateJoystickButtons)()
 
   for (int i = 0; i < supportedButtonCount; ++i)
   {
-    mInputButtonList[TEnum::Joystick0 + i].Update(actionList[i]);
+    const auto state = GetStatusFromGLFWEnum(actionList[i]);
+    ::dy::base::sLowLevelInputs[TEnum::Joystick0 + i].Update(state);
   }
 }
 
@@ -552,7 +564,7 @@ void MInput::MDY_PRIVATE(pCheckAxisStatus)(_MIN_ TF32 dt)
   {
     return std::any_of(
         MDY_BIND_CBEGIN_CEND((isPositive == true ? axisInfo.mPositiveButtonId : axisInfo.mNegativeButtonId)),
-        [goalState](_MIN_ const auto& id) { return mInputButtonList[id].Get() == goalState; }
+        [goalState](_MIN_ const auto& id) { return ::dy::base::sLowLevelInputs[id].Get() == goalState; }
     );
   };
 
@@ -562,7 +574,7 @@ void MInput::MDY_PRIVATE(pCheckAxisStatus)(_MIN_ TF32 dt)
   {
     return std::all_of(
         MDY_BIND_CBEGIN_CEND((isPositive == true ? axisInfo.mPositiveButtonId : axisInfo.mNegativeButtonId)),
-        [goalState](_MIN_ const auto& id) { return mInputButtonList[id].Get() == goalState; }
+        [goalState](_MIN_ const auto& id) { return ::dy::base::sLowLevelInputs[id].Get() == goalState; }
     );
   };
 
@@ -637,7 +649,7 @@ void MInput::MDY_PRIVATE(pCheckActionStatus)(_MIN_ TF32 dt)
   {
     return std::any_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
-        [goalState](_MIN_ const auto& id) { return mInputButtonList[id].Get() == goalState; }
+        [goalState](_MIN_ const auto& id) { return ::dy::base::sLowLevelInputs[id].Get() == goalState; }
     );
   };
 
@@ -647,7 +659,7 @@ void MInput::MDY_PRIVATE(pCheckActionStatus)(_MIN_ TF32 dt)
   {
     return std::all_of(
         MDY_BIND_CBEGIN_CEND(actionInfo.mActionId),
-        [goalState](_MIN_ const auto& id) { return mInputButtonList[id].Get() == goalState; }
+        [goalState](_MIN_ const auto& id) { return ::dy::base::sLowLevelInputs[id].Get() == goalState; }
     );
   };
 
@@ -814,7 +826,7 @@ EDySuccess MInput::MDY_PRIVATE(TryDetachContollerActor)(_MIN_ AActorCppScript& i
 
 EInputButtonStatus MInput::MDY_PRIVATE(GetLowlevelKeyStatus)(_MIN_ EDyButton iId) noexcept
 {
-  return mInputButtonList[iId].Get();
+  return ::dy::base::sLowLevelInputs[iId].Get();
 }
 
 EDySuccess MInput::TryPickObject(_MIN_ const DVec2& iScreenPosition)
