@@ -18,6 +18,7 @@
 #include <FWindowsHandles.h>
 #include <FWindowsDebug.h>
 #include <FBtResourceHandle.h>
+#include <FWindowsProfiling.h>
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -33,6 +34,8 @@ FWindowsPlatform::FWindowsPlatform()
 {
   this->mHandle = std::make_unique<FWindowsHandles>(GetCurrentProcess());
   this->mDebug  = std::make_unique<FWindowsDebug>();
+  this->mProfiling = std::make_unique<FWindowsProfiling>(
+    static_cast<FWindowsHandles&>(*this->mHandle).mMainProcess);
 }
 
 FWindowsPlatform::~FWindowsPlatform()
@@ -152,6 +155,53 @@ void FWindowsPlatform::ResizeWindow(uint32_t width, uint32_t height)
 
   // Set size.
   glfwSetWindowSize(handle.mGlfwWindow, width, height);
+}
+
+bool FWindowsPlatform::CreateConsoleWindow()
+{
+  if (this->mIsConsoleWindowCreated == true) { return false; } 
+
+  // Allocate console and forward stdout to console.
+  if (AllocConsole() == false)
+  {
+    MessageBox(
+      nullptr, 
+      L"The console window was not created.", 
+      nullptr, MB_ICONEXCLAMATION);
+    return false;
+  }
+
+  // Open console.
+  freopen_s(&this->mFdConsole, "CONOUT$", "w", stdout);
+  this->mIsConsoleWindowCreated = true;
+  return true;
+}
+
+bool FWindowsPlatform::RemoveConsoleWindow()
+{
+  if (this->mIsConsoleWindowCreated == false) { return false; } 
+
+  // Release console.
+  if (fclose(this->mFdConsole) != 0)
+  {
+     MessageBox(
+      nullptr, 
+      L"Unexpected error occurred when closing console.", 
+      nullptr, MB_ICONEXCLAMATION);   
+     return false;
+  }
+
+  if (FreeConsole() == false)
+  {
+    MessageBox(
+      nullptr, 
+      L"Failed to free console resource.", 
+      nullptr, MB_ICONEXCLAMATION);
+    return false;
+  }
+
+  this->mIsConsoleWindowCreated = false;
+  return true;
 }
 
 #undef FindResource

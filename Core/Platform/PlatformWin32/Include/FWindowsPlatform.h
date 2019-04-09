@@ -44,12 +44,23 @@ public:
 
   void ResizeWindow(uint32_t width, uint32_t height) override final;
 
+  /// @brief Create console window. 
+  /// If console window is already created do nothing but just return false.
+  bool CreateConsoleWindow() override final;
+
+  /// @brief Remove console window.
+  /// If console window is not created, do nothing but just return false.
+  bool RemoveConsoleWindow() override final;
+
 #undef FindResource // This sucks
 
   std::unique_ptr<ABtResourceBase> 
   FindResource(int id, EXPR_E(EBtResource) type) override final;
 
 #define FindResource FindResourceW // Resume
+
+private:
+  FILE* mFdConsole = nullptr;
 };
 
 }

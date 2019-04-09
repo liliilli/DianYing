@@ -103,6 +103,7 @@
     <ClCompile Include="Source\FWindowsDebug.cc" />
     <ClCompile Include="Source\FWindowsHandles.cc" />
     <ClCompile Include="Source\FWindowsPlatform.cc" />
+    <ClCompile Include="Source\FWindowsProfiling.cc" />
     <ClCompile Include="Source\WinMain.cc" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +111,7 @@
     <ClInclude Include="Include\FWindowsDebug.h" />
     <ClInclude Include="Include\FWindowsHandles.h" />
     <ClInclude Include="Include\FWindowsPlatform.h" />
+    <ClInclude Include="Include\FWindowsProfiling.h" />
     <ClInclude Include="Include\XDisableWinMacro.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
