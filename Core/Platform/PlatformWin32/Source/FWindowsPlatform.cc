@@ -16,6 +16,7 @@
 
 #include <EPlatform.h>
 #include <FWindowsHandles.h>
+#include <FWindowsDebug.h>
 #include <FBtResourceHandle.h>
 
 #include <GLFW/glfw3.h>
@@ -31,6 +32,7 @@ FWindowsPlatform::FWindowsPlatform()
   : APlatformBase{EPlatform::Windows}
 {
   this->mHandle = std::make_unique<FWindowsHandles>(GetCurrentProcess());
+  this->mDebug  = std::make_unique<FWindowsDebug>();
 }
 
 FWindowsPlatform::~FWindowsPlatform()

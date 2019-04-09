@@ -27,6 +27,9 @@
     <ClCompile Include="Source\FBtResourceHandle.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\FWindowsDebug.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\FWindowsPlatform.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\XDisableWinMacro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\FWindowsDebug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
