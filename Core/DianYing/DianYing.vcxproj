@@ -126,7 +126,7 @@
     </Link>
     <Lib>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
-      <AdditionalDependencies>InputsBase.lib;zlib.lib;Lua.lib;fmodL64_vc.lib;glfw3.lib;NativePlatformBase.lib;PlatformWin32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib</AdditionalDependencies>
+      <AdditionalDependencies>InputsBase.lib;zlib.lib;Lua.lib;fmodL64_vc.lib;glfw3.lib;PlatformWin32.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXFoundation_64.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
