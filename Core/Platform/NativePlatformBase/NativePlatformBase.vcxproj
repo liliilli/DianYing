@@ -93,6 +93,7 @@
     <ClInclude Include="Include\AHandlesBase.h" />
     <ClInclude Include="Include\APlatformBase.h" />
     <ClInclude Include="Include\ABtResourceBase.h" />
+    <ClInclude Include="Include\AProfilingBase.h" />
     <ClInclude Include="Include\EBtResource.h" />
     <ClInclude Include="Include\EPlatform.h" />
   </ItemGroup>

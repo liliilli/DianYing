@@ -1,3 +1,4 @@
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -11,35 +12,26 @@
 /// SOFTWARE.
 ///
 
-#include <APlatformBase.h>
+#include <cstdint>
 
 namespace dy
 {
 
-APlatformBase::APlatformBase(EXPR_E(EPlatform) platform)
-  : mPlatform{platform}
-{ }
-
-APlatformBase::~APlatformBase() = default;
-
-ADebugBase& APlatformBase::GetDebugManager() noexcept
+/// @class AProfilingBase
+/// @brief Application Profiling base type.
+class AProfilingBase
 {
-  return *this->mDebug;
-}
+public:
+  AProfilingBase() = default;
+  virtual ~AProfilingBase() = 0;
 
-AProfilingBase& APlatformBase::GetProfilingManager() noexcept
-{
-  return *this->mProfiling;
-}
+  /// @brief Get cpu usage as percentage.
+  virtual float GetCpuUsage() = 0;
 
-EPlatform::_ APlatformBase::GetPlatformType() const noexcept
-{
-  return this->mPlatform;
-}
+  /// @brief Get ram usage as byte unit.
+  virtual uint64_t GetRamUsage() = 0;
+};
 
-bool APlatformBase::IsConsoleWindowCreated() noexcept
-{
-  return this->mIsConsoleWindowCreated;
-}
+inline AProfilingBase::~AProfilingBase() = default;
 
 } /// ::dy namespace
