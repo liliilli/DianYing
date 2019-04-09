@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Meta/Information/MetaInfoFrameBuffer.h>
 #include <nlohmann/json.hpp>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

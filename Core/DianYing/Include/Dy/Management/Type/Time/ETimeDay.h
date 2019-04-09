@@ -13,6 +13,8 @@
 /// SOFTWARE.
 ///
 
+#include <Dy/Helper/System/Assertion.h>
+
 namespace dy
 {
 

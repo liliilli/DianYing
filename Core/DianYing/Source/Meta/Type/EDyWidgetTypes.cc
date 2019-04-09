@@ -18,6 +18,7 @@
 
 #include <Dy/Helper/Type/DVector2.h>
 #include <Dy/Helper/Internal/XStringSwitch.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration & local translation unit data

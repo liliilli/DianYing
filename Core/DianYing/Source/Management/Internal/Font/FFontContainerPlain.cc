@@ -19,6 +19,7 @@
 
 #include <Dy/Helper/Internal/DImageBinaryBuffer.h>
 #include <Dy/Include/GlInclude.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

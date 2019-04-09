@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Meta/Type/Input/JsonInputButton.h>
 #include <nlohmann/json.hpp>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

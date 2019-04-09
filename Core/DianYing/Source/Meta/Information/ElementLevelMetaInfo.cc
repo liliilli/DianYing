@@ -22,6 +22,7 @@
 
 #include <Dy/Meta/Information/ComponentMetaInformation.h>
 #include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Local translation unit function & varaible data

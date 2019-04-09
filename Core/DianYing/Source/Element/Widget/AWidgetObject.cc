@@ -16,6 +16,7 @@
 #include <Dy/Element/Widget/AWidgetObject.h>
 #include <Dy/Meta/Type/EDyWidgetTypes.h>
 #include <Dy/Element/Widget/AWidgetUiObjectChildrenable.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

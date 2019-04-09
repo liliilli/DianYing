@@ -16,6 +16,7 @@
 #include <Dy/Meta/Components/PCompPointLightMetaInfo.h>
 #include <Dy/Helper/Type/DColorRGB.h>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration

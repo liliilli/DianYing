@@ -15,6 +15,7 @@
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Management/MLog.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

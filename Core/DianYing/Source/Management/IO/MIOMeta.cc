@@ -55,6 +55,7 @@
 #include <Dy/Meta/Information/MetaInfoRenderPipeline.h>
 #include <Dy/Meta/Information/MetaInfoRenderItem.h>
 #include <Dy/Meta/Resource/PLevelInstanceMetaInfo.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Local tranlation unit variables

@@ -14,6 +14,7 @@
 
 #include <Dy/Core/Resource/Internal/EMaterialBlendMode.h>
 #include <nlohmann/json.hpp>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Implementation

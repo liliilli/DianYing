@@ -17,6 +17,7 @@
 #include <Dy/Management/MScript.h>
 #include <Dy/Management/MInput.h>
 #include <Dy/Component/Internal/Actor/CActorScriptCpp.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

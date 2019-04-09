@@ -28,6 +28,7 @@
 #include <nlohmann/json.hpp>
 #include <Dy/Include/GlInclude.h>
 #include <Dy/Management/MLog.h>
+#include <Dy/Helper/System/Assertion.h>
 
 #if defined(_WIN32)
 #pragma warning(pop)

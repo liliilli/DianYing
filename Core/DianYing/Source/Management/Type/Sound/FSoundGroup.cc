@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Management/Type/Sound/FSoundGroup.h>
 #include <Dy/Management/Type/Sound/FSoundChannel.h>
+#include <Dy/Helper/System/Assertion.h>
 #include <Dy/Management/MLog.h>
 
 namespace dy

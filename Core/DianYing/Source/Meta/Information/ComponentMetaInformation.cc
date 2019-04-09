@@ -20,6 +20,7 @@
 #include <Dy/Meta/Components/PCompDirLightMetaInfo.h>
 #include <Dy/Meta/Components/PCompPointLightMetaInfo.h>
 #include <Dy/Meta/Components/PCompSpotLightMetaInfo.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration & local translation unit functions.

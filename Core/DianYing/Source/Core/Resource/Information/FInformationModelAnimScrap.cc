@@ -17,7 +17,7 @@
 #include <Dy/Meta/Information/MetaInfoModelAnim.h>
 #include <Dy/Helper/Library/HelperFilesystem.h>
 #include <Math/Utility/XLinearMath.h>
-
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

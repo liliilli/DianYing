@@ -14,6 +14,7 @@
 
 #include <Dy/Meta/Components/PCompSpotLightMetaInfo.h>
 #include <Dy/Helper/Library/HelperJson.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Forward declaration

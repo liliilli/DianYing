@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Element/Widget/AWidgetUiObjectChildrenable.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

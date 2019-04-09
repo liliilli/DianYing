@@ -13,7 +13,6 @@
 /// SOFTWARE.
 ///
 
-#include <Dy/Helper/System/Assertion.h>
 #include <DyMacroPlatformSetting.h>
 
 ///

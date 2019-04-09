@@ -17,6 +17,7 @@
 #include <Dy/Core/Resource/Type/XTemplateRescInfoType.h>
 #include <Dy/Core/Thread/SIOBindingHelper.h>
 #include <Dy/Meta/Type/EResourceType.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

@@ -18,6 +18,7 @@
 #include <nlohmann/json.hpp>
 #include <Dy/Helper/Internal/XStringSwitch.h>
 #include <Dy/Helper/Library/HelperString.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace
 {

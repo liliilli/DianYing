@@ -18,6 +18,7 @@
 #include <Dy/Core/Thread/SIOConnectionHelper.h>
 #include <Dy/Helper/Library/HelperContainer.h>
 #include <Dy/Management/MLog.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

@@ -15,6 +15,7 @@
 /// Header file
 #include <Dy/Meta/Type/Physics/EDyColliderType.h>
 #include <Dy/Helper/Internal/XStringSwitch.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

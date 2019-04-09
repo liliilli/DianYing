@@ -17,6 +17,7 @@
 #include <Dy/Management/MLog.h>
 
 #include <Dy/Include/GlInclude.h>
+#include <Dy/Helper/System/Assertion.h>
 
 //!
 //! Local translation unit functions.

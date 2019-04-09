@@ -17,6 +17,7 @@
 
 #include <Dy/Management/IO/MIOMeta.h>
 #include <Dy/Helper/System/Pointer.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

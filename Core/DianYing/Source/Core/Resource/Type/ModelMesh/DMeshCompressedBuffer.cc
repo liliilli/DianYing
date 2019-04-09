@@ -14,17 +14,17 @@
 
 /// Header file
 #include <Dy/Core/Resource/Type/ModelMesh/DMeshCompressedBuffer.h>
-#include <filesystem>
+#include <Dy/Helper/System/Assertion.h>
+#include <Dy/Helper/Library/HelperFilesystem.h>
 
 namespace dy
 {
 
 DMeshCompressedBuffer DyCreateMeshBufferInfoFromDyMeshFile(const std::string& iFilePath)
 {
-  namespace fs = std::filesystem;
   MDY_ASSERT_MSG_FORCE(
-      fs::exists(iFilePath) == true, 
-      "Model external file path must be valid. Could not found file path.");
+    IsFileExist(iFilePath) == true, 
+    "Model external file path must be valid. Could not found file path.");
 
   FILE* fdFile = fopen(iFilePath.c_str(), "r");
   MDY_ASSERT_MSG_FORCE(fdFile != nullptr, "Failed to read file.");

@@ -20,6 +20,7 @@
 #include <Dy/Builtin/Constant/GeneralValue.h>
 #include <Dy/Helper/MCS/GLShaderParser.h>
 #include <Dy/Helper/Library/HelperIO.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

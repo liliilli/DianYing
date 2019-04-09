@@ -13,6 +13,7 @@
 ///
 
 #include <Dy/Core/Reflection/Internal/EReflectionType.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy::reflect
 {

@@ -14,6 +14,7 @@
 
 /// Header file
 #include <Dy/Core/Resource/Information/FInformationTextureGeneral.h>
+#include <Dy/Helper/System/Assertion.h>
 
 namespace dy
 {

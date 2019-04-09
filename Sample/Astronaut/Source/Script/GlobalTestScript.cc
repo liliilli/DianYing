@@ -17,6 +17,7 @@
 #include <Dy/Management/MSetting.h>
 #include <Dy/Core/Reflection/RGlobalInstanceManager.h>
 #include <Dy/Builtin/GlobalInstance/FDyBtGiDebugStatus.h>
+#include <Dy/Helper/System/Assertion.h>
 
 void BtScrGlobalTestScript::OnStart()
 {
