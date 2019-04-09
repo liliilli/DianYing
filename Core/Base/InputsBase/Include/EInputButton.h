@@ -12,6 +12,10 @@
 /// SOFTWARE.
 ///
 
+#ifdef DELETE
+#undef DELETE
+#endif
+
 namespace dy::base
 {
 
