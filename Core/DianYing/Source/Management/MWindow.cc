@@ -98,17 +98,6 @@ struct MWindow::Impl final
   /// @brief Get glfw worker window context list
   const std::array<GLFWwindow*, 2>& GetGLWorkerWindowList() const noexcept;
 
-  /// @brief  Create console window if OS supports. Even though OS does not support console window,
-  /// This function will return EDySuccess::DY_SUCCESS because of conformity with remove function.
-  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE. \n
-  EDySuccess CreateConsoleWindow();
-  /// @brief  Check if console window is created or not.
-  /// @return If created anyway, return true or false
-  bool IsCreatedConsoleWindow() const noexcept;
-  /// @brief  Remove console window when console window is initiailzed before.
-  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE
-  EDySuccess RemoveConsoleWindow();
-
   GLFWwindow*                 mGlfwWindow     = nullptr;
   std::array<GLFWwindow*, 2>  mGlfwWorkerWnds = {};
 };
@@ -141,21 +130,6 @@ GLFWwindow* MWindow::GetGLMainWindow() const noexcept
 const std::array<GLFWwindow*, 2>& MWindow::GetGLWorkerWindowList() const noexcept
 {
   return DY_PIMPL->GetGLWorkerWindowList();
-}
-
-EDySuccess MWindow::CreateConsoleWindow()
-{
-  return DY_PIMPL->CreateConsoleWindow();
-}
-
-bool MWindow::IsCreatedConsoleWindow() const noexcept
-{
-  return DY_PIMPL->IsCreatedConsoleWindow();
-}
-
-EDySuccess MWindow::RemoveConsoleWindow() 
-{ 
-  return DY_PIMPL->RemoveConsoleWindow(); 
 }
 
 EDySuccess MWindow::pfInitialize()

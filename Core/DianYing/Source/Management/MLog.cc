@@ -122,10 +122,10 @@ EDySuccess MLog::pfTurnOn()
   {
     if (settingManager.IsEnabledSubFeatureLoggingToConsole() == true)
     {
-      if (auto& managerWindow = MWindow::GetInstance();
-          managerWindow.IsInitialized() == true)
+      auto& managerWindow = gEngine->GetPlatformInfo();
       {
-        MDY_CALL_ASSERT_SUCCESS(managerWindow.CreateConsoleWindow());
+        const auto flag = managerWindow.CreateConsoleWindow();
+        MDY_ASSERT_FORCE(flag == true);
       }
 
       #if defined(_WIN32)
@@ -172,10 +172,11 @@ EDySuccess MLog::pfTurnOff()
   DY_PIMPL->mLogger.reset();
   DY_PIMPL->mSinks.clear();
 
-  if (auto& windowManager = MWindow::GetInstance();
-      windowManager.IsCreatedConsoleWindow() == true)
+  if (auto& windowManager = gEngine->GetPlatformInfo();
+      windowManager.IsConsoleWindowCreated() == true)
   {
-    MDY_CALL_ASSERT_SUCCESS(windowManager.RemoveConsoleWindow());
+    const auto flag = windowManager.RemoveConsoleWindow();
+    MDY_ASSERT(flag == true);
   }
   return EDySuccess::DY_SUCCESS;
 }

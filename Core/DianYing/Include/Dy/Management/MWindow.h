@@ -37,17 +37,6 @@ public:
   MDY_NODISCARD GLFWwindow* GetGLMainWindow() const noexcept;
   /// @brief Get glfw worker window context list
   MDY_NODISCARD const std::array<GLFWwindow*, 2>& GetGLWorkerWindowList() const noexcept;
-
-  /// @brief  Create console window if OS supports. Even though OS does not support console window,
-  /// This function will return EDySuccess::DY_SUCCESS because of conformity with remove function.
-  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE. \n
-  EDySuccess CreateConsoleWindow();
-  /// @brief  Check if console window is created or not.
-  /// @return If created anyway, return true or false
-  MDY_NODISCARD bool IsCreatedConsoleWindow() const noexcept;
-  /// @brief  Remove console window when console window is initiailzed before.
-  /// @return If succeeded, return EDySuccess::DY_SUCCESS or EDySuccess::DY_FAILURE
-  EDySuccess RemoveConsoleWindow();
 };
 
 } /// ::dy namespace

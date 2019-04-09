@@ -192,27 +192,6 @@ inline const std::array<GLFWwindow*, 2>& MWindow::Impl::GetGLWorkerWindowList() 
   return this->mGlfwWorkerWnds;
 }
 
-inline EDySuccess MWindow::Impl::CreateConsoleWindow()
-{
-  return 
-    gEngine->GetPlatformInfo().CreateConsoleWindow() 
-  ? EDySuccess::DY_SUCCESS 
-  : EDySuccess::DY_FAILURE;
-}
-
-inline bool MWindow::Impl::IsCreatedConsoleWindow() const noexcept
-{
-  return gEngine->GetPlatformInfo().IsConsoleWindowCreated();
-}
-
-inline EDySuccess MWindow::Impl::RemoveConsoleWindow()
-{
-  return 
-    gEngine->GetPlatformInfo().RemoveConsoleWindow() 
-  ? EDySuccess::DY_SUCCESS 
-  : EDySuccess::DY_FAILURE; 
-}
-
 } /// ::dy namespace
 
 #endif /// GUARD_DY_MANAGEMENT_WINDOWMANAGER_IMPL_INL
