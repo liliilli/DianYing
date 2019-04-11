@@ -289,12 +289,60 @@ const auto& details = std::get<PDyMetaFontInformation::ToDetailType<ELoadingType
 
 ```
 
+### Singleton Helper
+
+`DyExpr` provides helper API of construction Singleton with CRTP (Curiously Recurring Template Pattern) idiom rapidly.
+
+Any type that have singleton property can be set using `EXPR_SINGLETON_PROPERTIES` and `EXPR_SINGLETON_DERIVED` macro with given type.
+and singleton type must implement `pfInitialize` and `pfRelease` function that initilaize and shutdown singleton instance type properties.
+
+Any singleton instance can be get instance with `SingletonType::GetInstance()` or macro `EXPR_SGT(SingletonType)`.
+
+#### Example
+
+``` c++
+#include <ISingletonType.h>
+
+class AnySingleton : public expr::ISingleton<AnySingleton>
+{
+public:
+	EXPR_SINGLETON_PROPERTIES(AnySingleton);
+	EXPR_SINGLETON_DERIVED(AnySingleton);
+
+private:
+	// ...
+};
+
+inline EDySuccess AnySingleton::pfInitialize()
+{
+	// Do Initialization.
+	return expr::DY_SUCCESS;
+}
+inline EDySuccess AnySingleton::pfRelease()
+{
+	// Do shutdown
+	return expr::DY_SUCCESS;
+}
+
+int main() 
+{
+	AnySingleton::Initialize();
+	auto& a = AnySingleton::GetInstance();
+	auto& b = EXPR_SGT(AnySingleton);
+
+	assert(&a == &b);
+	AnySingleton::Release();
+	return 0;
+}
+```
+
 ## Log
 
 19-03-19 Make Project, Add TypeList.
 19-03-25 Add TZip, Extended type_traits.
 19-04-01 Add Crc32 Hash value creation function.
 19-04-03 Add Common macroes.
+19-04-11 Add Singleton description.
 
 ## Copyright
 
