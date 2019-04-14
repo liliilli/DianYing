@@ -58,7 +58,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\Platform\NativePlatformBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Core\DianYing\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\zlib\Include;$(SolutionDir)Common\Thirdparty\vulkan\Include;$(SolutionDir)Common\ThirdParty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\PhysX\pxshared\include;$(SolutionDir)Common\ThirdParty\PhysX\include;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\ThirdParty\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Core\DianYing\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\zlib\Include;$(SolutionDir)Common\Thirdparty\vulkan\Include;$(SolutionDir)Common\ThirdParty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\PhysX\pxshared\include;$(SolutionDir)Common\ThirdParty\PhysX\include;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\ThirdParty\boost</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -81,7 +81,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Core\Platform\NativePlatformBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Core\DianYing\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\zlib\Include;$(SolutionDir)Common\Thirdparty\vulkan\Include;$(SolutionDir)Common\ThirdParty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\PhysX\pxshared\include;$(SolutionDir)Common\ThirdParty\PhysX\include;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\ThirdParty\boost</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Core\DianYing\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Common\Thirdparty\zlib\Include;$(SolutionDir)Common\Thirdparty\vulkan\Include;$(SolutionDir)Common\ThirdParty\nlohmann;$(SolutionDir)Common\Thirdparty\spdlog\include;$(SolutionDir)Common\ThirdParty\PhysX\pxshared\include;$(SolutionDir)Common\ThirdParty\PhysX\include;$(SolutionDir)Common\Thirdparty\glm;$(SolutionDir)Common\ThirdParty\boost</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
