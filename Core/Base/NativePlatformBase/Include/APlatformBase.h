@@ -63,6 +63,16 @@ public:
   /// If console window is not created, do nothing but just return false.
   virtual bool RemoveConsoleWindow() = 0;
 
+  /// @brief Create game window.
+  /// Game window is initially visible.
+  /// If failed, just return false.
+  virtual bool CreateGameWindow() = 0;
+
+  /// @brief Remove game window.
+  /// All related resource will be removed and released.
+  /// If failed, just return false.
+  virtual bool RemoveGameWindow() = 0;
+
 #ifdef _WIN32
 #undef FindResource
 #endif
@@ -82,6 +92,14 @@ protected:
   bool mIsConsoleWindowCreated = false;
 
 private:
+  /// @brief Create background (helper) window.
+  /// This window will get background message & HID and controller device detecting etc.
+  virtual bool CreateBackgroundWindow() = 0;
+
+  /// @brief Remove background (helper) window resource.
+  /// If already removed or failed to remove window, just return false.
+  virtual bool RemoveBackgroundWindow() = 0;
+
   EXPR_E(EPlatform) mPlatform;
 };
 

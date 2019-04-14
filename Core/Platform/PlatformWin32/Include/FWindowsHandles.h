@@ -37,6 +37,8 @@ struct FWindowsHandles final : public AHandlesBase
 
   HANDLE  mMainProcess = nullptr;
   HWND    mMainWindow = nullptr;
+  HWND    mBackgroundWindow = nullptr;
+  HDEVNOTIFY mDeviceNotiHandle = nullptr;
 
   GLFWwindow* mGlfwWindow = nullptr;
 };
