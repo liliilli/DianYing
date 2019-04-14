@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{8828343E-470F-4B94-B42B-98F1507453F1}</ProjectGuid>
+    <RootNamespace>gainput</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="source\gainput\builtin\GainputInputDeviceBuiltIn.cpp" />
+    <ClCompile Include="source\gainput\dev\GainputDev.cpp" />
+    <ClCompile Include="source\gainput\dev\GainputMemoryStream.cpp" />
+    <ClCompile Include="source\gainput\dev\GainputNetAddress.cpp" />
+    <ClCompile Include="source\gainput\dev\GainputNetConnection.cpp" />
+    <ClCompile Include="source\gainput\dev\GainputNetListener.cpp" />
+    <ClCompile Include="source\gainput\gainput.cpp" />
+    <ClCompile Include="source\gainput\GainputAllocator.cpp" />
+    <ClCompile Include="source\gainput\GainputInputDeltaState.cpp" />
+    <ClCompile Include="source\gainput\GainputInputDevice.cpp" />
+    <ClCompile Include="source\gainput\GainputInputManager.cpp" />
+    <ClCompile Include="source\gainput\GainputInputMap.cpp" />
+    <ClCompile Include="source\gainput\GainputInputState.cpp" />
+    <ClCompile Include="source\gainput\GainputMapFilters.cpp" />
+    <ClCompile Include="source\gainput\gestures\GainputButtonStickGesture.cpp" />
+    <ClCompile Include="source\gainput\gestures\GainputDoubleClickGesture.cpp" />
+    <ClCompile Include="source\gainput\gestures\GainputHoldGesture.cpp" />
+    <ClCompile Include="source\gainput\gestures\GainputPinchGesture.cpp" />
+    <ClCompile Include="source\gainput\gestures\GainputRotateGesture.cpp" />
+    <ClCompile Include="source\gainput\gestures\GainputSimultaneouslyDownGesture.cpp" />
+    <ClCompile Include="source\gainput\gestures\GainputTapGesture.cpp" />
+    <ClCompile Include="source\gainput\keyboard\GainputInputDeviceKeyboard.cpp" />
+    <ClCompile Include="source\gainput\keyboard\GainputInputDeviceKeyboardMac.cpp" />
+    <ClCompile Include="source\gainput\mouse\GainputInputDeviceMouse.cpp" />
+    <ClCompile Include="source\gainput\pad\GainputInputDevicePad.cpp" />
+    <ClCompile Include="source\gainput\pad\GainputInputDevicePadMac.cpp" />
+    <ClCompile Include="source\gainput\recorder\GainputInputPlayer.cpp" />
+    <ClCompile Include="source\gainput\recorder\GainputInputRecorder.cpp" />
+    <ClCompile Include="source\gainput\recorder\GainputInputRecording.cpp" />
+    <ClCompile Include="source\gainput\touch\GainputInputDeviceTouch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\gainput\gainput.h" />
+    <ClInclude Include="include\gainput\GainputAllocator.h" />
+    <ClInclude Include="include\gainput\GainputContainers.h" />
+    <ClInclude Include="include\gainput\GainputDebugRenderer.h" />
+    <ClInclude Include="include\gainput\GainputHelpers.h" />
+    <ClInclude Include="include\gainput\GainputInputDeltaState.h" />
+    <ClInclude Include="include\gainput\GainputInputDevice.h" />
+    <ClInclude Include="include\gainput\GainputInputDeviceBuiltIn.h" />
+    <ClInclude Include="include\gainput\GainputInputDeviceKeyboard.h" />
+    <ClInclude Include="include\gainput\GainputInputDeviceMouse.h" />
+    <ClInclude Include="include\gainput\GainputInputDevicePad.h" />
+    <ClInclude Include="include\gainput\GainputInputDeviceTouch.h" />
+    <ClInclude Include="include\gainput\GainputInputListener.h" />
+    <ClInclude Include="include\gainput\GainputInputManager.h" />
+    <ClInclude Include="include\gainput\GainputInputMap.h" />
+    <ClInclude Include="include\gainput\GainputInputState.h" />
+    <ClInclude Include="include\gainput\GainputIos.h" />
+    <ClInclude Include="include\gainput\GainputLog.h" />
+    <ClInclude Include="include\gainput\GainputMapFilters.h" />
+    <ClInclude Include="include\gainput\gestures\GainputButtonStickGesture.h" />
+    <ClInclude Include="include\gainput\gestures\GainputDoubleClickGesture.h" />
+    <ClInclude Include="include\gainput\gestures\GainputGestures.h" />
+    <ClInclude Include="include\gainput\gestures\GainputHoldGesture.h" />
+    <ClInclude Include="include\gainput\gestures\GainputPinchGesture.h" />
+    <ClInclude Include="include\gainput\gestures\GainputRotateGesture.h" />
+    <ClInclude Include="include\gainput\gestures\GainputSimultaneouslyDownGesture.h" />
+    <ClInclude Include="include\gainput\gestures\GainputTapGesture.h" />
+    <ClInclude Include="include\gainput\recorder\GainputInputPlayer.h" />
+    <ClInclude Include="include\gainput\recorder\GainputInputRecorder.h" />
+    <ClInclude Include="include\gainput\recorder\GainputInputRecording.h" />
+    <ClInclude Include="source\gainput\builtin\GainputInputDeviceBuiltInAndroid.h" />
+    <ClInclude Include="source\gainput\builtin\GainputInputDeviceBuiltInImpl.h" />
+    <ClInclude Include="source\gainput\builtin\GainputInputDeviceBuiltInIos.h" />
+    <ClInclude Include="source\gainput\builtin\GainputInputDeviceBuiltInNull.h" />
+    <ClInclude Include="source\gainput\dev\GainputDev.h" />
+    <ClInclude Include="source\gainput\dev\GainputDevProtocol.h" />
+    <ClInclude Include="source\gainput\dev\GainputMemoryStream.h" />
+    <ClInclude Include="source\gainput\dev\GainputNetAddress.h" />
+    <ClInclude Include="source\gainput\dev\GainputNetConnection.h" />
+    <ClInclude Include="source\gainput\dev\GainputNetListener.h" />
+    <ClInclude Include="source\gainput\dev\GainputStream.h" />
+    <ClInclude Include="source\gainput\GainputHelpersEvdev.h" />
+    <ClInclude Include="source\gainput\GainputWindows.h" />
+    <ClInclude Include="source\gainput\keyboard\GainputInputDeviceKeyboardAndroid.h" />
+    <ClInclude Include="source\gainput\keyboard\GainputInputDeviceKeyboardEvdev.h" />
+    <ClInclude Include="source\gainput\keyboard\GainputInputDeviceKeyboardImpl.h" />
+    <ClInclude Include="source\gainput\keyboard\GainputInputDeviceKeyboardLinux.h" />
+    <ClInclude Include="source\gainput\keyboard\GainputInputDeviceKeyboardMac.h" />
+    <ClInclude Include="source\gainput\keyboard\GainputInputDeviceKeyboardNull.h" />
+    <ClInclude Include="source\gainput\keyboard\GainputInputDeviceKeyboardWin.h" />
+    <ClInclude Include="source\gainput\keyboard\GainputInputDeviceKeyboardWinRaw.h" />
+    <ClInclude Include="source\gainput\keyboard\GainputKeyboardKeyNames.h" />
+    <ClInclude Include="source\gainput\mouse\GainputInputDeviceMouseEvdev.h" />
+    <ClInclude Include="source\gainput\mouse\GainputInputDeviceMouseImpl.h" />
+    <ClInclude Include="source\gainput\mouse\GainputInputDeviceMouseLinux.h" />
+    <ClInclude Include="source\gainput\mouse\GainputInputDeviceMouseMac.h" />
+    <ClInclude Include="source\gainput\mouse\GainputInputDeviceMouseNull.h" />
+    <ClInclude Include="source\gainput\mouse\GainputInputDeviceMouseWin.h" />
+    <ClInclude Include="source\gainput\mouse\GainputInputDeviceMouseWinRaw.h" />
+    <ClInclude Include="source\gainput\mouse\GainputMouseInfo.h" />
+    <ClInclude Include="source\gainput\pad\GainputInputDevicePadAndroid.h" />
+    <ClInclude Include="source\gainput\pad\GainputInputDevicePadImpl.h" />
+    <ClInclude Include="source\gainput\pad\GainputInputDevicePadIos.h" />
+    <ClInclude Include="source\gainput\pad\GainputInputDevicePadLinux.h" />
+    <ClInclude Include="source\gainput\pad\GainputInputDevicePadMac.h" />
+    <ClInclude Include="source\gainput\pad\GainputInputDevicePadNull.h" />
+    <ClInclude Include="source\gainput\pad\GainputInputDevicePadWin.h" />
+    <ClInclude Include="source\gainput\touch\GainputInputDeviceTouchAndroid.h" />
+    <ClInclude Include="source\gainput\touch\GainputInputDeviceTouchImpl.h" />
+    <ClInclude Include="source\gainput\touch\GainputInputDeviceTouchIos.h" />
+    <ClInclude Include="source\gainput\touch\GainputInputDeviceTouchNull.h" />
+    <ClInclude Include="source\gainput\touch\GainputTouchInfo.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
