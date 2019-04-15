@@ -91,11 +91,13 @@
     <ClInclude Include="Include\DInputButton.h" />
     <ClInclude Include="Include\EInputButton.h" />
     <ClInclude Include="Include\EInputState.h" />
+    <ClInclude Include="Include\ELowKeyboard.h" />
     <ClInclude Include="Include\XInputEntry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DInputAnalog.cc" />
     <ClCompile Include="Source\DInputButton.cc" />
+    <ClCompile Include="Source\ELowKeyboard.cc" />
     <ClCompile Include="Source\XInputEntry.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
