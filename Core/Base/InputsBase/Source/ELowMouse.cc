@@ -1,4 +1,3 @@
-#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,35 +11,11 @@
 /// SOFTWARE.
 ///
 
-#ifndef NOMINMAX
-  #define NOMINMAX
-#endif
-#include <Windows.h>
-#include <AHandlesBase.h>
+#include <ELowMouse.h>
 
-//!
-//! Forward declaration
-//!
-
-struct GLFWwindow;
-
-//!
-//! Implementation
-//!
-
-namespace dy
+namespace dy::base
 {
 
-struct FWindowsHandles final : public AHandlesBase
-{
-  FWindowsHandles(HANDLE mainProcess);
+std::array<DInputButtonItem, ELowMouseButton::DyMouse__Sum> sLowMouseButtons = {};
 
-  HANDLE  mMainProcess = nullptr;
-  HWND    mMainWindow = nullptr;
-  HWND    mBackgroundWindow = nullptr;
-  HDEVNOTIFY mDeviceNotiHandle = nullptr;
-
-  GLFWwindow* mGlfwWindow = nullptr;
-};
-
-} /// ::dy namespace
+} /// ::dy::base namespace

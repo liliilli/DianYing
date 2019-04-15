@@ -1,4 +1,3 @@
-#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,35 +11,33 @@
 /// SOFTWARE.
 ///
 
-#ifndef NOMINMAX
-  #define NOMINMAX
-#endif
-#include <Windows.h>
-#include <AHandlesBase.h>
+/// Header file
+#include <ALowInput.h>
 
-//!
-//! Forward declaration
-//!
-
-struct GLFWwindow;
-
-//!
-//! Implementation
-//!
-
-namespace dy
+namespace dy::base
 {
 
-struct FWindowsHandles final : public AHandlesBase
+inline ALowInput::~ALowInput() = default;
+
+EInputState ALowInput::GetKeyboard(ELowKeyboard id)
 {
-  FWindowsHandles(HANDLE mainProcess);
+  if (id == ELowKeyboard::Dy___Error)
+  {
+    return EInputState::Released;
+  }
 
-  HANDLE  mMainProcess = nullptr;
-  HWND    mMainWindow = nullptr;
-  HWND    mBackgroundWindow = nullptr;
-  HDEVNOTIFY mDeviceNotiHandle = nullptr;
+  return this->sLowKeyboards[id].Get();
+}
 
-  GLFWwindow* mGlfwWindow = nullptr;
-};
+EInputState ALowInput::GetMouseButton(ELowMouseButton id)
+{
+  if (id == ELowMouseButton::DyMouse__Error
+  ||  id == ELowMouseButton::DyMouse__Sum)
+  {
+    return EInputState::Released;
+  }
 
-} /// ::dy namespace
+  return this->sLowMouseButtons[id].Get();
+}
+
+} /// ::dy::base namespace

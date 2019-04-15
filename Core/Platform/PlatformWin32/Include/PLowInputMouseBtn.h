@@ -12,35 +12,18 @@
 /// SOFTWARE.
 ///
 
-#ifndef NOMINMAX
-  #define NOMINMAX
-#endif
+#define NOMINMAX
 #include <Windows.h>
-#include <AHandlesBase.h>
-
-//!
-//! Forward declaration
-//!
-
-struct GLFWwindow;
-
-//!
-//! Implementation
-//!
 
 namespace dy
 {
-
-struct FWindowsHandles final : public AHandlesBase
+  
+/// @struct PLowInputMouseBtn
+/// @brief Descriptor type of LowInputMouseBtn `pfUpdateMouseBtn`
+struct PLowInputMouseBtn final
 {
-  FWindowsHandles(HANDLE mainProcess);
-
-  HANDLE  mMainProcess = nullptr;
-  HWND    mMainWindow = nullptr;
-  HWND    mBackgroundWindow = nullptr;
-  HDEVNOTIFY mDeviceNotiHandle = nullptr;
-
-  GLFWwindow* mGlfwWindow = nullptr;
+  UINT   mMessage;
+  WPARAM mWparam;
 };
 
 } /// ::dy namespace

@@ -1,3 +1,4 @@
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -11,35 +12,25 @@
 /// SOFTWARE.
 ///
 
-#include <APlatformBase.h>
+#include <ALowInput.h>
 
 namespace dy
 {
 
-APlatformBase::APlatformBase(EXPR_E(EPlatform) platform)
-  : mPlatform{platform}
-{ }
-
-APlatformBase::~APlatformBase() = default;
-
-ADebugBase& APlatformBase::GetDebugManager() noexcept
+/// @class FWindowsLowInput
+/// @brief Windows OS (WIN32) low-input level management type.
+class FWindowsLowInput final : public base::ALowInput
 {
-  return *this->mDebug;
-}
+public:
+  FWindowsLowInput();
+  virtual ~FWindowsLowInput() = default;
 
-AProfilingBase& APlatformBase::GetProfilingManager() noexcept
-{
-  return *this->mProfiling;
-}
+private:
+  /// @brief Implementation function.
+  void UpdateKeyboard(void* descriptor) override final;
 
-EPlatform::_ APlatformBase::GetPlatformType() const noexcept
-{
-  return this->mPlatform;
-}
-
-bool APlatformBase::IsConsoleWindowCreated() noexcept
-{
-  return this->mIsConsoleWindowCreated;
-}
+  /// @brief Implementation function.
+  void UpdateMouseButton(void* descriptor) override final;
+};
 
 } /// ::dy namespace

@@ -28,7 +28,7 @@ namespace dy
 /// @class FWindowsPlatform
 /// @brief Platform base type. 
 /// This manages platform dependent instance and do bootstrapping of DyEngine.
-class FWindowsPlatform : public APlatformBase
+class FWindowsPlatform final : public APlatformBase
 {
 public:
   FWindowsPlatform();
@@ -59,7 +59,29 @@ public:
 
 #define FindResource FindResourceW // Resume
 
+  /// @brief Create game window.
+  /// Game window is initially visible.
+  /// If failed, just return false.
+  bool CreateGameWindow() override final;
+  
+  /// @brief Remove game window.
+  /// All related resource will be removed and released.
+  /// If failed, just return false.
+  bool RemoveGameWindow() override final;
+
 private:
+  /// @brief Register window class into Win32 internal system.
+  bool RegisterWindowClassWin32();
+  /// @brief Create background (helper) window.
+  /// This window will get background message & HID and controller device detecting etc.
+  bool CreateBackgroundWindow() override final;
+
+  /// @brief Remove background (helper) window resource.
+  /// If already removed or failed to remove window, just return false.
+  bool RemoveBackgroundWindow() override final;
+  /// @brief Unregister window class from Win32 internal system.
+  bool UnregisterWindowClassWin32();
+
   FILE* mFdConsole = nullptr;
 };
 

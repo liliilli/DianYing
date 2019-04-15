@@ -19,6 +19,7 @@
 #include <ABtResourceBase.h>
 #include <ADebugBase.h>
 #include <AProfilingBase.h>
+#include <ALowInput.h>
 
 namespace dy
 {
@@ -39,6 +40,10 @@ public:
   /// @brief Get profiling manager as reference.
   /// This function must be succeeded.
   AProfilingBase& GetProfilingManager() noexcept;
+
+  /// @brief Get input manager as reference.
+  /// This function must be succeeded.
+  base::ALowInput& GetInputManager() noexcept;
 
   virtual void SetWindowTitle(const std::string& newTitle) = 0;
 
@@ -63,6 +68,16 @@ public:
   /// If console window is not created, do nothing but just return false.
   virtual bool RemoveConsoleWindow() = 0;
 
+  /// @brief Create game window.
+  /// Game window is initially visible.
+  /// If failed, just return false.
+  virtual bool CreateGameWindow() = 0;
+
+  /// @brief Remove game window.
+  /// All related resource will be removed and released.
+  /// If failed, just return false.
+  virtual bool RemoveGameWindow() = 0;
+
 #ifdef _WIN32
 #undef FindResource
 #endif
@@ -76,12 +91,21 @@ public:
 #endif
 
 protected:
-  std::unique_ptr<AHandlesBase> mHandle = nullptr;
-  std::unique_ptr<ADebugBase> mDebug = nullptr;
-  std::unique_ptr<AProfilingBase> mProfiling = nullptr;
+  std::unique_ptr<AHandlesBase>     mHandle     = nullptr;
+  std::unique_ptr<ADebugBase>       mDebug      = nullptr;
+  std::unique_ptr<AProfilingBase>   mProfiling  = nullptr;
+  std::unique_ptr<base::ALowInput>  mLowInput   = nullptr;
   bool mIsConsoleWindowCreated = false;
 
 private:
+  /// @brief Create background (helper) window.
+  /// This window will get background message & HID and controller device detecting etc.
+  virtual bool CreateBackgroundWindow() = 0;
+
+  /// @brief Remove background (helper) window resource.
+  /// If already removed or failed to remove window, just return false.
+  virtual bool RemoveBackgroundWindow() = 0;
+
   EXPR_E(EPlatform) mPlatform;
 };
 
