@@ -87,6 +87,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Include\ALowInput.h" />
     <ClInclude Include="Include\DInputAnalog.h" />
     <ClInclude Include="Include\DInputButton.h" />
     <ClInclude Include="Include\EInputButton.h" />
