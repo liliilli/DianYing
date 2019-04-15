@@ -19,6 +19,7 @@
 #include <ABtResourceBase.h>
 #include <ADebugBase.h>
 #include <AProfilingBase.h>
+#include <ALowInput.h>
 
 namespace dy
 {
@@ -39,6 +40,10 @@ public:
   /// @brief Get profiling manager as reference.
   /// This function must be succeeded.
   AProfilingBase& GetProfilingManager() noexcept;
+
+  /// @brief Get input manager as reference.
+  /// This function must be succeeded.
+  base::ALowInput& GetInputManager() noexcept;
 
   virtual void SetWindowTitle(const std::string& newTitle) = 0;
 
@@ -86,9 +91,10 @@ public:
 #endif
 
 protected:
-  std::unique_ptr<AHandlesBase> mHandle = nullptr;
-  std::unique_ptr<ADebugBase> mDebug = nullptr;
-  std::unique_ptr<AProfilingBase> mProfiling = nullptr;
+  std::unique_ptr<AHandlesBase>     mHandle     = nullptr;
+  std::unique_ptr<ADebugBase>       mDebug      = nullptr;
+  std::unique_ptr<AProfilingBase>   mProfiling  = nullptr;
+  std::unique_ptr<base::ALowInput>  mLowInput   = nullptr;
   bool mIsConsoleWindowCreated = false;
 
 private:

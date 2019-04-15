@@ -32,6 +32,11 @@ AProfilingBase& APlatformBase::GetProfilingManager() noexcept
   return *this->mProfiling;
 }
 
+base::ALowInput& APlatformBase::GetInputManager() noexcept
+{
+  return *this->mLowInput;
+}
+
 EPlatform::_ APlatformBase::GetPlatformType() const noexcept
 {
   return this->mPlatform;
