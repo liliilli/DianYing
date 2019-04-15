@@ -20,6 +20,7 @@
 #define LOG(...) {char buf[256]; sprintf(buf, __VA_ARGS__); OutputDebugStringA(buf); }
 
 #include <ELowKeyboard.h>
+#include "ELowMouse.h"
 
 static char szWindowClass[] = "win32app";
 const char* windowName = "Gainput basic sample";
@@ -170,6 +171,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	char greeting[] = "Hello, World!";
 
+  using namespace dy::base;
+
 	switch (message)
 	{
 		case WM_PAINT:
@@ -192,25 +195,69 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
       if (wParam == VK_SNAPSHOT)
       {
         // When key is pressed with `PrintScreen` key.
-        dy::base::sLowKeyboards[keyCode].Update(dy::base::EInputState::Pressed);
-        dy::base::sLowKeyboards[keyCode].Update(dy::base::EInputState::Released);
+        sLowKeyboards[keyCode].Update(EInputState::Pressed);
+        sLowKeyboards[keyCode].Update(EInputState::Released);
       }
       else
       {
         // General case
         const auto keyState = ((message == WM_KEYDOWN) || (message == WM_SYSKEYDOWN))
-          ? dy::base::EInputState::Pressed
-          : dy::base::EInputState::Released;
+          ? EInputState::Pressed
+          : EInputState::Released;
 
-        dy::base::sLowKeyboards[keyCode].Update(keyState);
+        // Insert
+        sLowKeyboards[keyCode].Update(keyState);
       }
     } break;
-		default:
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+    case WM_MBUTTONDOWN:
+    case WM_XBUTTONDOWN:
+    case WM_LBUTTONUP:
+    case WM_RBUTTONUP:
+    case WM_MBUTTONUP:
+    case WM_XBUTTONUP:
     {
-			return DefWindowProc(hWnd, message, wParam, lParam);
-    }
-	}
+      // Get mouse button code
+      ELowMouseButton buttonCode = ELowMouseButton::DyMouse__Error;
+      if (message == WM_LBUTTONDOWN || message == WM_LBUTTONUP)
+      {
+        buttonCode = ELowMouseButton::DyMouseButton1;
+      }
+      else if (message == WM_RBUTTONDOWN || message == WM_RBUTTONUP)
+      {
+        buttonCode = ELowMouseButton::DyMouseButton2;
+      }
+      else if (message == WM_MBUTTONDOWN || message == WM_MBUTTONUP)
+      {
+        buttonCode = ELowMouseButton::DyMouseButton3;
+      }
+      else 
+      {
+        switch (GET_XBUTTON_WPARAM(wParam))
+        {
+        case XBUTTON1: buttonCode = ELowMouseButton::DyMouseButton4; break;
+        case XBUTTON2: buttonCode = ELowMouseButton::DyMouseButton5; break;
+        default: break;
+        }
+      }
 
+      // Get state of button input.
+      EInputState mouseButtonState = EInputState::Released;
+      if (message == WM_LBUTTONDOWN
+      ||  message == WM_RBUTTONDOWN
+      ||  message == WM_MBUTTONDOWN
+      ||  message == WM_XBUTTONDOWN)
+      {
+        mouseButtonState = EInputState::Pressed;
+      }
+
+      // Insert
+      sLowMouseButtons[buttonCode].Update(mouseButtonState);
+    } break;
+
+		default: { return DefWindowProc(hWnd, message, wParam, lParam); }
+	}
 	return 0;
 }
 
