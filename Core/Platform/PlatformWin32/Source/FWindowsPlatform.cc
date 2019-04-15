@@ -19,6 +19,7 @@
 #include <FWindowsDebug.h>
 #include <FBtResourceHandle.h>
 #include <FWindowsProfiling.h>
+#include <FWindowsLowInput.h>
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -60,12 +61,10 @@ FWindowsPlatform::FWindowsPlatform()
   this->mDebug  = std::make_unique<FWindowsDebug>();
   this->mProfiling = std::make_unique<FWindowsProfiling>(
     static_cast<FWindowsHandles&>(*this->mHandle).mMainProcess);
+  this->mLowInput = std::make_unique<FWindowsLowInput>();
 }
 
-FWindowsPlatform::~FWindowsPlatform()
-{
-
-}
+FWindowsPlatform::~FWindowsPlatform() = default;
 
 void FWindowsPlatform::SetWindowTitle(const std::string& newTitle)
 {

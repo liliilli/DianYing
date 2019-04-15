@@ -46,13 +46,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\glad\bin\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\glad\bin\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -102,6 +102,7 @@
     <ClCompile Include="Source\FBtResourceHandle.cc" />
     <ClCompile Include="Source\FWindowsDebug.cc" />
     <ClCompile Include="Source\FWindowsHandles.cc" />
+    <ClCompile Include="Source\FWindowsLowInput.cc" />
     <ClCompile Include="Source\FWindowsPlatform.cc" />
     <ClCompile Include="Source\FWindowsProfiling.cc" />
     <ClCompile Include="Source\WinMain.cc" />
@@ -110,8 +111,11 @@
     <ClInclude Include="Include\FBtResourceHandle.h" />
     <ClInclude Include="Include\FWindowsDebug.h" />
     <ClInclude Include="Include\FWindowsHandles.h" />
+    <ClInclude Include="Include\FWindowsLowInput.h" />
     <ClInclude Include="Include\FWindowsPlatform.h" />
     <ClInclude Include="Include\FWindowsProfiling.h" />
+    <ClInclude Include="Include\PLowInputKeyboard.h" />
+    <ClInclude Include="Include\PLowInputMouseBtn.h" />
     <ClInclude Include="Include\XDisableWinMacro.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

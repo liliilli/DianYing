@@ -28,7 +28,7 @@ namespace dy
 /// @class FWindowsPlatform
 /// @brief Platform base type. 
 /// This manages platform dependent instance and do bootstrapping of DyEngine.
-class FWindowsPlatform : public APlatformBase
+class FWindowsPlatform final : public APlatformBase
 {
 public:
   FWindowsPlatform();
