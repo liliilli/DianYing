@@ -97,6 +97,7 @@
     <ClInclude Include="Include\XInputEntry.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\ALowInput.cc" />
     <ClCompile Include="Source\DInputAnalog.cc" />
     <ClCompile Include="Source\DInputButton.cc" />
     <ClCompile Include="Source\ELowKeyboard.cc" />

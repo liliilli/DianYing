@@ -56,5 +56,8 @@
     <ClCompile Include="Source\ELowMouse.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ALowInput.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

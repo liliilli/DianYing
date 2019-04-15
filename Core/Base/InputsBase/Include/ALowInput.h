@@ -33,11 +33,15 @@ public:
   /// @brief Update mouse button with derived platform descriptor instance.
   virtual void UpdateMouseButton(void* descriptor) = 0;
 
+  /// @brief Get keyboard state. ELowKeyboard::Dy_Key__Error must not be used.
+  EInputState GetKeyboard(ELowKeyboard id);
+
+  /// @brief Get mouse state. ELowMouseButton::DyMouse__Error, __Sum must not be used.
+  EInputState GetMouseButton(ELowMouseButton id);
+
 protected:
   std::array<DInputButtonItem, Dy_Key_Menu>   sLowKeyboards;
   std::array<DInputButtonItem, DyMouse__Sum>  sLowMouseButtons;
 };
-
-inline ALowInput::~ALowInput() = default;
 
 } /// ::dy::base namespace
