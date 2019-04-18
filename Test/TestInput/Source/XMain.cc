@@ -23,18 +23,21 @@
 #include <FWindowsPlatform.h>
 #include <PLowInputKeyboard.h>
 #include <PLowInputMouseBtn.h>
+#include <PLowInputMousePos.h>
+#include <cassert>
 
-static char szWindowClass[] = "win32app";
-const char* windowName = "Gainput basic sample";
+static wchar_t szWindowClass[] = L"win32app";
+const wchar_t* windowName = L"Gainput basic sample";
 bool doExit = false;
 
 std::unique_ptr<dy::APlatformBase> platform = nullptr;
+HWND gHwnd; // Window handle. 
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-	char greeting[] = "Hello, World!";
+	wchar_t greeting[] = L"Hello, World!";
 
   using namespace dy::base;
 
@@ -42,17 +45,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		case WM_PAINT:
 			hdc = BeginPaint(hWnd, &ps);
-			TextOut(hdc, 5, 5, greeting, int(strlen(greeting)));
+			TextOut(hdc, 5, 5, greeting, int(lstrlen(greeting)));
 			EndPaint(hWnd, &ps);
 			break;
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			doExit = true;
 			break;
-    case WM_KEYDOWN:
-    case WM_SYSKEYDOWN:
-    case WM_KEYUP:
-    case WM_SYSKEYUP:
+    case WM_KEYDOWN: case WM_KEYUP:
+    case WM_SYSKEYDOWN: case WM_SYSKEYUP:
     {
       dy::PLowInputKeyboard desc;
       desc.mLparam  = lParam;
@@ -62,14 +63,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
       auto& input = platform->GetInputManager();
       input.UpdateKeyboard(&desc);
     } break;
-    case WM_LBUTTONDOWN:
-    case WM_RBUTTONDOWN:
-    case WM_MBUTTONDOWN:
-    case WM_XBUTTONDOWN:
-    case WM_LBUTTONUP:
-    case WM_RBUTTONUP:
-    case WM_MBUTTONUP:
-    case WM_XBUTTONUP:
+    case WM_LBUTTONDOWN: case WM_RBUTTONDOWN: case WM_MBUTTONDOWN: case WM_XBUTTONDOWN:
+    case WM_LBUTTONUP: case WM_RBUTTONUP: case WM_MBUTTONUP: case WM_XBUTTONUP:
     {
       dy::PLowInputMouseBtn desc;
       desc.mMessage = message;
@@ -80,24 +75,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
     case WM_MOUSEMOVE:
     {
-      const int x = GET_X_LPARAM(lParam);
-      const int y = GET_Y_LPARAM(lParam);
+      dy::PLowInputMousePos desc;
+      desc.mFocusedWindow = gHwnd;
+      desc.mLparam = lParam;
 
+      platform->GetInputManager().UpdateMousePos(&desc);
 
+      // Debug
+#ifdef false
+      if (auto optPos = platform->GetInputManager().GetMousePos(); 
+          optPos.has_value() == true)
+      {
+        LOG("Mouse Position : (%3d, %3d)\n", (*optPos).first, (*optPos).second);
+      }
+      if (auto optAmnt = platform->GetInputManager().GetMousePosMovement();
+          optAmnt.has_value() == true)
+      {
+        LOG("Mouse Movement Amount : (%3d, %3d)\n", (*optAmnt).first, (*optAmnt).second);
+      }
+#endif
 
+      // Dispensable tracing event.
+      {
+        TRACKMOUSEEVENT mouseEvent;
+        mouseEvent.cbSize     = sizeof(mouseEvent);
+        mouseEvent.dwFlags    = TME_LEAVE;
+        mouseEvent.hwndTrack  = gHwnd;
+        TrackMouseEvent(&mouseEvent);
+      }
     } break;
     case WM_MOUSELEAVE:
-    {
-
-    } break;
-    case WM_MOUSEWHEEL:
-    {
-
-    } break;
-    case WM_MOUSEHWHEEL:
-    {
-
-    } break;
+    { } break;
+    case WM_MOUSEWHEEL: // Vertical scroll.
+    { } break;
+    case WM_MOUSEHWHEEL: // Horizontal scroll.
+    { } break;
 		default: { return DefWindowProc(hWnd, message, wParam, lParam); }
 	}
 	return 0;
@@ -128,30 +140,33 @@ int WINAPI WinMain(
 
 	if (!RegisterClassEx(&wcex))
 	{
-		MessageBox(NULL, "Call to RegisterClassEx failed!", "Gainput basic sample", NULL);
+		MessageBox(NULL, L"Call to RegisterClassEx failed!", L"Gainput basic sample", NULL);
 		return 1;
 	}
 
-	HWND hWnd = CreateWindow(
+	gHwnd = CreateWindow(
     szWindowClass,
     windowName,
     WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
     800, 600,
     NULL, NULL, hInstance, NULL);
 
-	if (!hWnd)
+	if (!gHwnd)
 	{
-		MessageBox(NULL, "Call to CreateWindow failed!", "Gainput basic sample", NULL);
+		MessageBox(NULL, L"Call to CreateWindow failed!", L"Gainput basic sample", NULL);
 		return 1;
 	}
 
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
+	ShowWindow(gHwnd, nCmdShow);
+	UpdateWindow(gHwnd);
+
+  auto& input = platform->GetInputManager();
+  input.SetMousePosFeatureState(dy::base::ELowMousePosState::Normal);
 
 	while (!doExit)
 	{
 		MSG msg;
-		while (PeekMessage(&msg, hWnd,  0, 0, PM_REMOVE)) 
+		while (PeekMessage(&msg, gHwnd,  0, 0, PM_REMOVE)) 
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);

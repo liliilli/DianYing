@@ -149,6 +149,4 @@ enum ELowKeyboard
   ,Dy_Key_Menu          = 348
 };
 
-extern std::array<DInputButtonItem, Dy_Key_Menu> sLowKeyboards;
-
 } /// ::dy::base namespace

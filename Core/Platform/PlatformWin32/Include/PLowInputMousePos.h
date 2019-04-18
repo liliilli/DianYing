@@ -1,3 +1,4 @@
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -11,11 +12,19 @@
 /// SOFTWARE.
 ///
 
+#define NOMINMAX
+#include <Windows.h>
 #include <ELowMouse.h>
 
-namespace dy::base
+namespace dy
 {
+  
+/// @struct PLowInputMousePos
+/// @brief Descriptor type of LowInputMousePos `UpdateMousePos`
+struct PLowInputMousePos final
+{
+  HWND mFocusedWindow = nullptr;
+  LPARAM mLparam = 0;
+};
 
-std::array<DInputButtonItem, ELowMouseButton::DyMouse__Sum> sLowMouseButtons = {};
-
-} /// ::dy::base namespace
+} /// ::dy namespace

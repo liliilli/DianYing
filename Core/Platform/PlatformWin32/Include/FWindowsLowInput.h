@@ -31,6 +31,9 @@ private:
 
   /// @brief Implementation function.
   void UpdateMouseButton(void* descriptor) override final;
+
+  /// @brief Implementated function.
+  void UpdateMousePos(void* descriptor) override;
 };
 
 } /// ::dy namespace

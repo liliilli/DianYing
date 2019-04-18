@@ -116,6 +116,7 @@
     <ClInclude Include="Include\FWindowsProfiling.h" />
     <ClInclude Include="Include\PLowInputKeyboard.h" />
     <ClInclude Include="Include\PLowInputMouseBtn.h" />
+    <ClInclude Include="Include\PLowInputMousePos.h" />
     <ClInclude Include="Include\XDisableWinMacro.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

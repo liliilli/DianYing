@@ -90,6 +90,7 @@
     <ClInclude Include="Include\ALowInput.h" />
     <ClInclude Include="Include\DInputAnalog.h" />
     <ClInclude Include="Include\DInputButton.h" />
+    <ClInclude Include="Include\DInputMousePos.h" />
     <ClInclude Include="Include\EInputButton.h" />
     <ClInclude Include="Include\EInputState.h" />
     <ClInclude Include="Include\ELowKeyboard.h" />
@@ -100,8 +101,7 @@
     <ClCompile Include="Source\ALowInput.cc" />
     <ClCompile Include="Source\DInputAnalog.cc" />
     <ClCompile Include="Source\DInputButton.cc" />
-    <ClCompile Include="Source\ELowKeyboard.cc" />
-    <ClCompile Include="Source\ELowMouse.cc" />
+    <ClCompile Include="Source\DInputMousePos.cc" />
     <ClCompile Include="Source\XInputEntry.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
