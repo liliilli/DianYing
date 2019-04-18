@@ -31,6 +31,7 @@ const char* windowName = "Gainput basic sample";
 bool doExit = false;
 
 std::unique_ptr<dy::APlatformBase> platform = nullptr;
+HWND gHwnd; // Window handle. 
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -51,10 +52,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			PostQuitMessage(0);
 			doExit = true;
 			break;
-    case WM_KEYDOWN:
-    case WM_SYSKEYDOWN:
-    case WM_KEYUP:
-    case WM_SYSKEYUP:
+    case WM_KEYDOWN: case WM_KEYUP:
+    case WM_SYSKEYDOWN: case WM_SYSKEYUP:
     {
       dy::PLowInputKeyboard desc;
       desc.mLparam  = lParam;
@@ -64,14 +63,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
       auto& input = platform->GetInputManager();
       input.UpdateKeyboard(&desc);
     } break;
-    case WM_LBUTTONDOWN:
-    case WM_RBUTTONDOWN:
-    case WM_MBUTTONDOWN:
-    case WM_XBUTTONDOWN:
-    case WM_LBUTTONUP:
-    case WM_RBUTTONUP:
-    case WM_MBUTTONUP:
-    case WM_XBUTTONUP:
+    case WM_LBUTTONDOWN: case WM_RBUTTONDOWN: case WM_MBUTTONDOWN: case WM_XBUTTONDOWN:
+    case WM_LBUTTONUP: case WM_RBUTTONUP: case WM_MBUTTONUP: case WM_XBUTTONUP:
     {
       dy::PLowInputMouseBtn desc;
       desc.mMessage = message;
@@ -83,11 +76,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_MOUSEMOVE:
     {
       dy::PLowInputMousePos desc;
+      desc.mFocusedWindow = gHwnd;
       desc.mLparam = lParam;
+
       platform->GetInputManager().UpdateMousePos(&desc);
+
+      // Debug
+#ifdef false
+      if (auto optPos = platform->GetInputManager().GetMousePos(); 
+          optPos.has_value() == true)
+      {
+        LOG("Mouse Position : (%3d, %3d)\n", (*optPos).first, (*optPos).second);
+      }
+      if (auto optAmnt = platform->GetInputManager().GetMousePosMovement();
+          optAmnt.has_value() == true)
+      {
+        LOG("Mouse Movement Amount : (%3d, %3d)\n", (*optAmnt).first, (*optAmnt).second);
+      }
+#endif
     } break;
     case WM_MOUSELEAVE:
     {
+
+      assert(false);
     } break;
     case WM_MOUSEWHEEL:
     {
@@ -131,29 +142,29 @@ int WINAPI WinMain(
 		return 1;
 	}
 
-	HWND hWnd = CreateWindow(
+	gHwnd = CreateWindow(
     szWindowClass,
     windowName,
     WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
     800, 600,
     NULL, NULL, hInstance, NULL);
 
-	if (!hWnd)
+	if (!gHwnd)
 	{
 		MessageBox(NULL, "Call to CreateWindow failed!", "Gainput basic sample", NULL);
 		return 1;
 	}
 
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
+	ShowWindow(gHwnd, nCmdShow);
+	UpdateWindow(gHwnd);
 
   auto& input = platform->GetInputManager();
-  input.SetMousePosFeatureState(dy::base::ELowMousePosState::Normal);
+  input.SetMousePosFeatureState(dy::base::ELowMousePosState::Unlimited);
 
 	while (!doExit)
 	{
 		MSG msg;
-		while (PeekMessage(&msg, hWnd,  0, 0, PM_REMOVE)) 
+		while (PeekMessage(&msg, gHwnd,  0, 0, PM_REMOVE)) 
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);

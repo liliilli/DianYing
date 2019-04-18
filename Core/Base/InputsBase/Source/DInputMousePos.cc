@@ -39,21 +39,33 @@ void DInputMousePos::UpdatePosition(int x, int y)
   switch (this->mState)
   {
   case ELowMousePosState::Normal: 
-  case ELowMousePosState::Unlimited: 
   {
     if (this->mIsMovedFirst == false)
     {
-      this->mPosX = this->mPrePosX = x;
-      this->mPosY = this->mPrePosY = y;
+      this->mPosX = this->mPrePosX = x; this->mPosY = this->mPrePosY = y;
       this->mIsMovedFirst = true;
     }
     else
     {
       // Move old position to prepos.
-      this->mPrePosX = this->mPosX;
-      this->mPrePosY = this->mPosY;
+      this->mPrePosX = this->mPosX; this->mPrePosY = this->mPosY;
       // Move new position to pos.
-      this->mPosX = x;
+      this->mPosX = x; this->mPosY = y;
+    }
+  } break;
+  case ELowMousePosState::Unlimited: 
+  {
+    if (this->mIsMovedFirst == false)
+    {
+      this->mPosX = this->mPrePosX = x; this->mPosY = this->mPrePosY = y;
+      this->mIsMovedFirst = true;
+    }
+    else
+    {
+      // Move old position to prepos.
+      this->mPrePosX = this->mPosX; this->mPrePosY = this->mPosY;
+      // Move new position to pos.
+      this->mPosX = x ;
       this->mPosY = y;
     }
   } break;
@@ -96,6 +108,11 @@ std::pair<int, int> DInputMousePos::GetPreviousPosition() const noexcept
 std::pair<int, int> DInputMousePos::GetMovementPosition() const noexcept
 {
   return this->GetPresentPosition() - this->GetPreviousPosition();
+}
+
+bool DInputMousePos::HasInitiallyMoved() const noexcept
+{
+  return this->mIsMovedFirst;
 }
 
 } /// ::dy::base namespace

@@ -54,6 +54,9 @@ public:
   /// @return Position amount (first, second) as (x, y).
   std::pair<int, int> GetMovementPosition() const noexcept;
 
+  /// @brief Check mouse initially moved.
+  [[nodiscard]] bool HasInitiallyMoved() const noexcept;
+
 private:
   /// @brief Position value.
   int mPosX = -1, mPosY = -1;

@@ -23,6 +23,7 @@ namespace dy
 /// @brief Descriptor type of LowInputMousePos `UpdateMousePos`
 struct PLowInputMousePos final
 {
+  HWND mFocusedWindow = nullptr;
   LPARAM mLparam = 0;
 };
 

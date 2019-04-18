@@ -248,8 +248,52 @@ void FWindowsLowInput::UpdateMousePos(void* descriptor)
   auto x = GET_X_LPARAM(desc.mLparam);
   auto y = GET_Y_LPARAM(desc.mLparam);
 
-  // Try update position. When state is Off, just pass it.
-  this->mLowMousePos.UpdatePosition(x, y);
+  // Branch
+  switch (this->GetMousePosState())
+  {
+  case ELowMousePosState::Normal: 
+  {
+    // Try update position. When state is Off, just pass it.
+    this->mLowMousePos.UpdatePosition(x, y);
+  } break;
+  case ELowMousePosState::Unlimited: 
+  {
+    // Get screen size.
+    RECT rect;
+    GetWindowRect(desc.mFocusedWindow, &rect);
+   
+    if (this->mLowMousePos.HasInitiallyMoved() == false)
+    {
+      // Initial virtual position starts (0, 0).
+      this->mLowMousePos.UpdatePosition(0, 0);
+    }
+    else
+    {
+      // Get screen (width, height) from overall screen RECT.
+      const auto screenWidth  = rect.right - rect.left;
+      const auto screenHeight = rect.bottom - rect.top;
+      const auto amountX = x - (screenWidth >> 1);
+      const auto amountY = y - (screenHeight >> 1);
+
+      // Add relatvie moving amount.
+      auto [relativeX, relativeY] = this->mLowMousePos.GetPresentPosition();
+      x = relativeX + amountX + 8; // MAGIC NUMBER 
+      y = relativeY + amountY + 31;// MAGIC NUMBER
+
+      // Try update position. When state is Off, just pass it.
+      this->mLowMousePos.UpdatePosition(x, y);
+    }
+
+    // Restrictly align position into centeral position.
+    const auto entireScreenHalfX = (rect.right + rect.left) >> 1;
+    const auto entireScreenHalfY = (rect.top + rect.bottom) >> 1;
+
+    POINT pos = { entireScreenHalfX, entireScreenHalfY };
+    ClientToScreen(desc.mFocusedWindow, &pos);
+    SetCursorPos(entireScreenHalfX, entireScreenHalfY);
+  } break;
+  default: break;
+  }
 }
 
 } /// ::dy namespace
