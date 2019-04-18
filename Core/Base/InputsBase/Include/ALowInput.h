@@ -12,9 +12,10 @@
 /// SOFTWARE.
 ///
 
-#include <DInputButton.h>
 #include <ELowKeyboard.h>
 #include <ELowMouse.h>
+#include <DInputButton.h>
+#include <DInputMousePos.h>
 
 namespace dy::base 
 {
@@ -39,9 +40,27 @@ public:
   /// @brief Get mouse state. ELowMouseButton::DyMouse__Error, __Sum must not be used.
   EInputState GetMouseButton(ELowMouseButton id);
 
+  /// @brief Set mouse position binding feature state.
+  ///
+  /// If newState is... \n
+  /// ELowMousePosState::Normal :: Mouse position binding range will be set with screen size. \n
+  /// ELowMousePosState::Unlimited :: Mouse position binding range will be unlimited but cursor not move from center. \n
+  /// ELowMousePosState::Off :: Mouse position binding feature will be disabled.
+  void SetMousePosFeatureState(ELowMousePosState newState) noexcept;
+
+  /// @brief Get mouse position binding feature state.
+  ELowMousePosState GetMousePosState() const noexcept;
+
+  /// @brief Try update mouse position with given (platform dependent OS) descriptor.
+  /// If mouse position binding feature is disabled, this function do nothing.
+  virtual void UpdateMousePos(void* descriptor) = 0;
+
 protected:
   std::array<DInputButtonItem, Dy_Key_Menu>   sLowKeyboards;
   std::array<DInputButtonItem, DyMouse__Sum>  sLowMouseButtons;
+  DInputMousePos mLowMousePos;
 };
+
+inline ALowInput::~ALowInput() = default;
 
 } /// ::dy::base namespace

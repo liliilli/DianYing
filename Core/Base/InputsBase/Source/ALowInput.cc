@@ -17,8 +17,6 @@
 namespace dy::base
 {
 
-inline ALowInput::~ALowInput() = default;
-
 EInputState ALowInput::GetKeyboard(ELowKeyboard id)
 {
   if (id == ELowKeyboard::Dy___Error)
@@ -38,6 +36,16 @@ EInputState ALowInput::GetMouseButton(ELowMouseButton id)
   }
 
   return this->sLowMouseButtons[id].Get();
+}
+
+ELowMousePosState ALowInput::GetMousePosState() const noexcept
+{
+  return this->mLowMousePos.GetFeatureState();
+}
+
+void ALowInput::SetMousePosFeatureState(ELowMousePosState newState) noexcept
+{
+  this->mLowMousePos.SetFeatureState(newState);
 }
 
 } /// ::dy::base namespace

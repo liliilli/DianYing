@@ -12,9 +12,6 @@
 /// SOFTWARE.
 ///
 
-#include <array>
-#include <DInputButton.h>
-
 namespace dy::base
 {
 
@@ -37,7 +34,15 @@ enum ELowMouseButton
   DyMouse__Sum
 };
 
-/// @brief Button states management container.
-extern std::array<DInputButtonItem, ELowMouseButton::DyMouse__Sum> sLowMouseButtons;
+/// @enum ELowMousePosState
+/// @brief Low-level mouse position state binding enum value.
+enum class [[nodiscard]] ELowMousePosState
+{
+  Normal,   // Mouse position binding range will be set with screen size.
+  Unlimited,// Mouse position binding range will be unlimited but cursor not move from center.
+  Off       // Mouse position binding feature will be off.
+};
+
+
 
 } /// ::dy::base namespace
