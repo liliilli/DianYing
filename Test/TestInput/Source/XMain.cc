@@ -23,11 +23,11 @@
 #include <FWindowsPlatform.h>
 #include <PLowInputKeyboard.h>
 #include <PLowInputMouseBtn.h>
+#include <PLowInputMousePos.h>
 #include <cassert>
-#include "PLowInputMousePos.h"
 
-static char szWindowClass[] = "win32app";
-const char* windowName = "Gainput basic sample";
+static wchar_t szWindowClass[] = L"win32app";
+const wchar_t* windowName = L"Gainput basic sample";
 bool doExit = false;
 
 std::unique_ptr<dy::APlatformBase> platform = nullptr;
@@ -37,7 +37,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-	char greeting[] = "Hello, World!";
+	wchar_t greeting[] = L"Hello, World!";
 
   using namespace dy::base;
 
@@ -45,7 +45,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		case WM_PAINT:
 			hdc = BeginPaint(hWnd, &ps);
-			TextOut(hdc, 5, 5, greeting, int(strlen(greeting)));
+			TextOut(hdc, 5, 5, greeting, int(lstrlen(greeting)));
 			EndPaint(hWnd, &ps);
 			break;
 		case WM_DESTROY:
@@ -94,20 +94,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         LOG("Mouse Movement Amount : (%3d, %3d)\n", (*optAmnt).first, (*optAmnt).second);
       }
 #endif
+
+      // Dispensable tracing event.
+      {
+        TRACKMOUSEEVENT mouseEvent;
+        mouseEvent.cbSize     = sizeof(mouseEvent);
+        mouseEvent.dwFlags    = TME_LEAVE;
+        mouseEvent.hwndTrack  = gHwnd;
+        TrackMouseEvent(&mouseEvent);
+      }
     } break;
     case WM_MOUSELEAVE:
-    {
-
-      assert(false);
-    } break;
-    case WM_MOUSEWHEEL:
-    {
-
-    } break;
-    case WM_MOUSEHWHEEL:
-    {
-
-    } break;
+    { } break;
+    case WM_MOUSEWHEEL: // Vertical scroll.
+    { } break;
+    case WM_MOUSEHWHEEL: // Horizontal scroll.
+    { } break;
 		default: { return DefWindowProc(hWnd, message, wParam, lParam); }
 	}
 	return 0;
@@ -138,7 +140,7 @@ int WINAPI WinMain(
 
 	if (!RegisterClassEx(&wcex))
 	{
-		MessageBox(NULL, "Call to RegisterClassEx failed!", "Gainput basic sample", NULL);
+		MessageBox(NULL, L"Call to RegisterClassEx failed!", L"Gainput basic sample", NULL);
 		return 1;
 	}
 
@@ -151,7 +153,7 @@ int WINAPI WinMain(
 
 	if (!gHwnd)
 	{
-		MessageBox(NULL, "Call to CreateWindow failed!", "Gainput basic sample", NULL);
+		MessageBox(NULL, L"Call to CreateWindow failed!", L"Gainput basic sample", NULL);
 		return 1;
 	}
 
@@ -159,7 +161,7 @@ int WINAPI WinMain(
 	UpdateWindow(gHwnd);
 
   auto& input = platform->GetInputManager();
-  input.SetMousePosFeatureState(dy::base::ELowMousePosState::Unlimited);
+  input.SetMousePosFeatureState(dy::base::ELowMousePosState::Normal);
 
 	while (!doExit)
 	{
