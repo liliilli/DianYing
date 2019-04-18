@@ -13,6 +13,7 @@
 ///
 
 #include <ELowMouse.h>
+#include <utility>
 
 namespace dy::base
 {
@@ -35,6 +36,23 @@ public:
 
   /// @brief Update position with (x, y) and state value.
   void UpdatePosition(int x, int y);
+
+  /// @brief Get present position (x, y) as integer.
+  /// This function does not check availability of mouse position checking feature,
+  /// just return `mPosX` and `mPosY` as a pair.
+  /// @return Position (first, second) as (x, y).
+  std::pair<int, int> GetPresentPosition() const noexcept;
+
+  /// @brief Get previous position (x, y) as integer.
+  /// This function does not check availability of mouse position checking feature,
+  /// just return `mPrePosX` and `mPrePosY` as a pair.
+  /// @return Position (first, second) as (x, y).
+  std::pair<int, int> GetPreviousPosition() const noexcept;
+
+  /// @brief Get movement amount of position - previous position.
+  /// This function does not check availability of mouse position checking feature.
+  /// @return Position amount (first, second) as (x, y).
+  std::pair<int, int> GetMovementPosition() const noexcept;
 
 private:
   /// @brief Position value.

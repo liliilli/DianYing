@@ -48,4 +48,41 @@ void ALowInput::SetMousePosFeatureState(ELowMousePosState newState) noexcept
   this->mLowMousePos.SetFeatureState(newState);
 }
 
+std::optional<std::pair<int, int>> ALowInput::GetMousePos() const noexcept
+{
+  // If feature is not enabled yet, just return null value.
+  using EEnum = decltype(this->mLowMousePos.GetFeatureState());
+  if (this->mLowMousePos.GetFeatureState() == EEnum::Off)
+  {
+    return std::nullopt;
+  }
+
+  // Or,  get a position (screen or virtual) value from container.
+  return this->mLowMousePos.GetPresentPosition();
+}
+
+std::optional<std::pair<int, int>> ALowInput::GetMousePreviousPos() const noexcept
+{
+  // If feature is not enabled yet, just return null value.
+  using EEnum = decltype(this->mLowMousePos.GetFeatureState());
+  if (this->mLowMousePos.GetFeatureState() == EEnum::Off)
+  {
+    return std::nullopt;
+  }
+
+  return this->mLowMousePos.GetPreviousPosition();
+}
+
+std::optional<std::pair<int, int>> ALowInput::GetMousePosMovement() const noexcept
+{
+  // If feature is not enabled yet, just return null value.
+  using EEnum = decltype(this->mLowMousePos.GetFeatureState());
+  if (this->mLowMousePos.GetFeatureState() == EEnum::Off)
+  {
+    return std::nullopt;
+  }
+
+  return this->mLowMousePos.GetMovementPosition();
+}
+
 } /// ::dy::base namespace

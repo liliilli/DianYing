@@ -12,6 +12,8 @@
 /// SOFTWARE.
 ///
 
+#include <optional>
+
 #include <ELowKeyboard.h>
 #include <ELowMouse.h>
 #include <DInputButton.h>
@@ -54,6 +56,20 @@ public:
   /// @brief Try update mouse position with given (platform dependent OS) descriptor.
   /// If mouse position binding feature is disabled, this function do nothing.
   virtual void UpdateMousePos(void* descriptor) = 0;
+
+  /// @brief Get mouse position.
+  /// If mouse position checking feature is disabled, just return std::nullopt.
+  /// If mouse position checking feature state is `Unlimited`, just return virtual position.
+  std::optional<std::pair<int, int>> GetMousePos() const noexcept;
+
+  /// @brief Get mouse previous frame position.
+  /// If mouse position checking feature is disabled, just return std::nullopt.
+  /// If mouse position checking feature state is `Unlimited`, just return virtual position.
+  std::optional<std::pair<int, int>> GetMousePreviousPos() const noexcept;
+
+  /// @brief Get moved mouse position amounts.
+  /// If mouse position checking feature is disabled, just return std::nullopt.
+  std::optional<std::pair<int, int>> GetMousePosMovement() const noexcept;
 
 protected:
   std::array<DInputButtonItem, Dy_Key_Menu>   sLowKeyboards;

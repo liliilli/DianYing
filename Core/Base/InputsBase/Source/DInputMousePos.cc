@@ -14,6 +14,18 @@
 /// Header file
 #include <DInputMousePos.h>
 
+namespace std
+{
+
+/// @brief Only used in this translation unit.
+std::pair<int, int> 
+operator-(const std::pair<int, int>& lhs, const std::pair<int, int>& rhs) noexcept
+{
+  return {lhs.first - rhs.first, lhs.second - rhs.second};
+}
+
+} /// ::std namespace 
+
 namespace dy::base
 {
 
@@ -69,6 +81,21 @@ void DInputMousePos::SetFeatureState(ELowMousePosState newState) noexcept
     this->mIsMovedFirst = false;
   } break;
   }
+}
+
+std::pair<int, int> DInputMousePos::GetPresentPosition() const noexcept
+{
+  return {this->mPosX, this->mPosY};
+}
+
+std::pair<int, int> DInputMousePos::GetPreviousPosition() const noexcept
+{
+  return {this->mPrePosX, this->mPrePosY};
+}
+
+std::pair<int, int> DInputMousePos::GetMovementPosition() const noexcept
+{
+  return this->GetPresentPosition() - this->GetPreviousPosition();
 }
 
 } /// ::dy::base namespace
