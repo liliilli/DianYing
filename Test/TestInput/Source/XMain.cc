@@ -23,6 +23,8 @@
 #include <FWindowsPlatform.h>
 #include <PLowInputKeyboard.h>
 #include <PLowInputMouseBtn.h>
+#include <cassert>
+#include "PLowInputMousePos.h"
 
 static char szWindowClass[] = "win32app";
 const char* windowName = "Gainput basic sample";
@@ -80,15 +82,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
     case WM_MOUSEMOVE:
     {
-      const int x = GET_X_LPARAM(lParam);
-      const int y = GET_Y_LPARAM(lParam);
-
-
-
+      dy::PLowInputMousePos desc;
+      desc.mLparam = lParam;
+      platform->GetInputManager().UpdateMousePos(&desc);
     } break;
     case WM_MOUSELEAVE:
     {
-
     } break;
     case WM_MOUSEWHEEL:
     {
@@ -147,6 +146,9 @@ int WINAPI WinMain(
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
+
+  auto& input = platform->GetInputManager();
+  input.SetMousePosFeatureState(dy::base::ELowMousePosState::Normal);
 
 	while (!doExit)
 	{
