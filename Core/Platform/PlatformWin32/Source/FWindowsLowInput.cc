@@ -14,6 +14,8 @@
 #include <FWindowsLowInput.h>
 #include <PLowInputKeyboard.h>
 #include <PLowInputMouseBtn.h>
+#include <PLowInputMousePos.h>
+#include <windowsx.h>
 
 namespace 
 {
@@ -235,6 +237,19 @@ void FWindowsLowInput::UpdateMouseButton(void* descriptor)
 
   // Insert
   this->sLowMouseButtons[buttonCode].Update(mouseButtonState);
+}
+
+void FWindowsLowInput::UpdateMousePos(void* descriptor)
+{
+  using namespace base;
+  auto& desc = *static_cast<PLowInputMousePos*>(descriptor);
+
+  // Get position.
+  auto x = GET_X_LPARAM(desc.mLparam);
+  auto y = GET_Y_LPARAM(desc.mLparam);
+
+  // Try update position. When state is Off, just pass it.
+  this->mLowMousePos.UpdatePosition(x, y);
 }
 
 } /// ::dy namespace
