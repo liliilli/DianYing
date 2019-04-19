@@ -69,6 +69,10 @@ public:
   /// If failed, just return false.
   bool RemoveGameWindow() override final;
 
+  /// @brief Processes only evetns that have already been received and that returns
+  /// immediately.
+  void PollEvents() override final;
+
 private:
   /// @brief Register window class into Win32 internal system.
   bool RegisterWindowClassWin32();
@@ -82,6 +86,7 @@ private:
   /// @brief Unregister window class from Win32 internal system.
   bool UnregisterWindowClassWin32();
 
+private:
   FILE* mFdConsole = nullptr;
 };
 

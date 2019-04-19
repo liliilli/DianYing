@@ -89,6 +89,10 @@ public:
 #ifdef _WIN32
 #define FindResource FindResourceW
 #endif
+  
+  /// @brief Processes only evetns that have already been received and that returns
+  /// immediately.
+  virtual void PollEvents() = 0;
 
 protected:
   std::unique_ptr<AHandlesBase>     mHandle     = nullptr;

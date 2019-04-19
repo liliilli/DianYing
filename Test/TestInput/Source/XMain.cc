@@ -82,7 +82,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
       platform->GetInputManager().UpdateMousePos(&desc);
 
       // Debug
-#ifdef false
+#if 0
       if (auto optPos = platform->GetInputManager().GetMousePos(); 
           optPos.has_value() == true)
       {
@@ -121,8 +121,8 @@ int WINAPI WinMain(
   [[maybe_unused]] LPSTR lpCmdLine, 
   int nCmdShow)
 {
-  //CreateKeyboardTables();
   platform = std::make_unique<dy::FWindowsPlatform>();
+  //platform->CreateGameWindow();
 
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -165,13 +165,9 @@ int WINAPI WinMain(
 
 	while (!doExit)
 	{
-		MSG msg;
-		while (PeekMessage(&msg, gHwnd,  0, 0, PM_REMOVE)) 
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+    platform->PollEvents();
 	}
 
+  //platform->RemoveGameWindow();
 	return 0;
 }

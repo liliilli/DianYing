@@ -344,6 +344,16 @@ bool FWindowsPlatform::RemoveGameWindow()
   return true;
 }
 
+void FWindowsPlatform::PollEvents()
+{
+  MSG msg;
+  while (PeekMessage(&msg, nullptr,  0, 0, PM_REMOVE)) 
+  {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
+}
+
 bool FWindowsPlatform::RemoveBackgroundWindow()
 {
   auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
