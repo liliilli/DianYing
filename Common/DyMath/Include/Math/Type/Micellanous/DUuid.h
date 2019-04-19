@@ -76,6 +76,21 @@ public:
 
 private:
   boost::uuids::uuid* mUuid = nullptr;
+
+  friend struct std::hash<::dy::math::DUuid>;
 };
 
 } /// ::dy::math namespace
+
+namespace std
+{
+
+template<> 
+struct hash<::dy::math::DUuid>
+{
+  using argument_type = ::dy::math::DUuid;
+  using result_type = std::size_t;
+  result_type operator()(argument_type const& s) const noexcept;
+};
+
+} /// ::std for hashing of DUuid.

@@ -18,6 +18,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/container_hash/hash.hpp>
 
 #include <Math/Common/XGlobalMacroes.h>
 
@@ -93,3 +94,11 @@ DUuid::const_iterator DUuid::end() const noexcept
 }
 
 } /// ::dy::math namespace
+
+std::hash<dy::math::DUuid>::result_type 
+std::hash<dy::math::DUuid>::operator()(const argument_type& s) const noexcept
+{
+  {
+    return boost::hash<boost::uuids::uuid>()(*s.mUuid);
+  }
+}
