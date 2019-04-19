@@ -45,12 +45,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\ThirdParty\boost;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Common\DyMath\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\ThirdParty\boost;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Common\DyMath\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -94,8 +96,10 @@
     <ClInclude Include="Include\APlatformBase.h" />
     <ClInclude Include="Include\ABtResourceBase.h" />
     <ClInclude Include="Include\AProfilingBase.h" />
+    <ClInclude Include="Include\DWindowHandle.h" />
     <ClInclude Include="Include\EBtResource.h" />
     <ClInclude Include="Include\EPlatform.h" />
+    <ClInclude Include="Include\PWindowCreationDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ABtResourceBase.cc" />

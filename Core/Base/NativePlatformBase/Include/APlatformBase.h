@@ -20,6 +20,8 @@
 #include <ADebugBase.h>
 #include <AProfilingBase.h>
 #include <ALowInput.h>
+#include <PWindowCreationDescriptor.h>
+#include "DWindowHandle.h"
 
 namespace dy
 {
@@ -68,15 +70,23 @@ public:
   /// If console window is not created, do nothing but just return false.
   virtual bool RemoveConsoleWindow() = 0;
 
+  /// @brief Initialize platform dependent resources.
+  /// Note that this function does not create main window.
+  virtual bool InitPlatform() = 0;
+
+  /// @brief Release platform dependent resources.
+  /// Note that this function does not remove main window.
+  virtual bool ReleasePlatform() = 0;
+
   /// @brief Create game window.
   /// Game window is initially visible.
   /// If failed, just return false.
-  virtual bool CreateGameWindow() = 0;
+  virtual DWindowHandle CreateGameWindow(const PWindowCreationDescriptor& desc) = 0;
 
   /// @brief Remove game window.
   /// All related resource will be removed and released.
   /// If failed, just return false.
-  virtual bool RemoveGameWindow() = 0;
+  virtual bool RemoveGameWindow(const DWindowHandle& handle) = 0;
 
 #ifdef _WIN32
 #undef FindResource
