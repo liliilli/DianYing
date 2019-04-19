@@ -12,17 +12,9 @@
 ///
 
 #include <cstdio>
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
 #include <array>
 
-#define LOG(...) {char buf[256]; sprintf(buf, __VA_ARGS__); OutputDebugStringA(buf); }
-
-#include <windowsx.h>
 #include <FWindowsPlatform.h>
-#include <PLowInputKeyboard.h>
-#include <PLowInputMouseBtn.h>
 #include <PLowInputMousePos.h>
 #include <cassert>
 
@@ -33,97 +25,35 @@ bool doExit = false;
 std::unique_ptr<dy::APlatformBase> platform = nullptr;
 HWND gHwnd; // Window handle. 
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	PAINTSTRUCT ps;
-	HDC hdc;
-	wchar_t greeting[] = L"Hello, World!";
-
-  using namespace dy::base;
-
-	switch (message)
-	{
-		case WM_PAINT:
-			hdc = BeginPaint(hWnd, &ps);
-			TextOut(hdc, 5, 5, greeting, int(lstrlen(greeting)));
-			EndPaint(hWnd, &ps);
-			break;
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			doExit = true;
-			break;
-    case WM_KEYDOWN: case WM_KEYUP:
-    case WM_SYSKEYDOWN: case WM_SYSKEYUP:
-    {
-      dy::PLowInputKeyboard desc;
-      desc.mLparam  = lParam;
-      desc.mWparam  = wParam;
-      desc.mMessage = message;
-
-      auto& input = platform->GetInputManager();
-      input.UpdateKeyboard(&desc);
-    } break;
-    case WM_LBUTTONDOWN: case WM_RBUTTONDOWN: case WM_MBUTTONDOWN: case WM_XBUTTONDOWN:
-    case WM_LBUTTONUP: case WM_RBUTTONUP: case WM_MBUTTONUP: case WM_XBUTTONUP:
-    {
-      dy::PLowInputMouseBtn desc;
-      desc.mMessage = message;
-      desc.mWparam  = wParam;
-
-      auto& input = platform->GetInputManager();
-      input.UpdateMouseButton(&desc);
-    } break;
-    case WM_MOUSEMOVE:
-    {
-      dy::PLowInputMousePos desc;
-      desc.mFocusedWindow = gHwnd;
-      desc.mLparam = lParam;
-
-      platform->GetInputManager().UpdateMousePos(&desc);
-
-      // Debug
-#if 0
-      if (auto optPos = platform->GetInputManager().GetMousePos(); 
-          optPos.has_value() == true)
-      {
-        LOG("Mouse Position : (%3d, %3d)\n", (*optPos).first, (*optPos).second);
-      }
-      if (auto optAmnt = platform->GetInputManager().GetMousePosMovement();
-          optAmnt.has_value() == true)
-      {
-        LOG("Mouse Movement Amount : (%3d, %3d)\n", (*optAmnt).first, (*optAmnt).second);
-      }
-#endif
-
-      // Dispensable tracing event.
-      {
-        TRACKMOUSEEVENT mouseEvent;
-        mouseEvent.cbSize     = sizeof(mouseEvent);
-        mouseEvent.dwFlags    = TME_LEAVE;
-        mouseEvent.hwndTrack  = gHwnd;
-        TrackMouseEvent(&mouseEvent);
-      }
-    } break;
-    case WM_MOUSELEAVE:
-    { } break;
-    case WM_MOUSEWHEEL: // Vertical scroll.
-    { } break;
-    case WM_MOUSEHWHEEL: // Horizontal scroll.
-    { } break;
-		default: { return DefWindowProc(hWnd, message, wParam, lParam); }
-	}
-	return 0;
-}
-
 int WINAPI WinMain(
-  HINSTANCE hInstance, 
+  [[maybe_unused]] HINSTANCE hInstance, 
   [[maybe_unused]] HINSTANCE hPrevInstance, 
   [[maybe_unused]] LPSTR lpCmdLine, 
-  int nCmdShow)
+  [[maybe_unused]] int nCmdShow)
 {
   platform = std::make_unique<dy::FWindowsPlatform>();
-  //platform->CreateGameWindow();
+  platform->InitPlatform();
+  platform->CreateConsoleWindow();
 
+#ifdef _WIN32
+  #ifdef CreateWindow
+    #undef CreateWindow
+  #endif
+#endif
+
+  dy::PWindowCreationDescriptor desc = {};
+  desc.mIsWindowFullScreen = false;
+  desc.mIsWindowResizable = true;
+  desc.mIsWindowShouldFocus = true;
+  desc.mIsWindowVisible = true;
+  desc.mWindowName = "Win32App";
+  desc.mWindowWidth = 800;
+  desc.mWindowHeight = 600;
+
+  auto optRes = platform->CreateWindow(desc);
+  assert(optRes.has_value() == true);
+
+#if 0
 	WNDCLASSEX wcex;
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style          = CS_HREDRAW | CS_VREDRAW;
@@ -159,15 +89,18 @@ int WINAPI WinMain(
 
 	ShowWindow(gHwnd, nCmdShow);
 	UpdateWindow(gHwnd);
+#endif
 
   auto& input = platform->GetInputManager();
   input.SetMousePosFeatureState(dy::base::ELowMousePosState::Normal);
 
-	while (!doExit)
+	while (platform->CanShutdown() == false)
 	{
     platform->PollEvents();
 	}
 
-  //platform->RemoveGameWindow();
+  platform->RemoveAllWindow();
+  platform->RemoveConsoleWindow();
+  platform->ReleasePlatform();
 	return 0;
 }
