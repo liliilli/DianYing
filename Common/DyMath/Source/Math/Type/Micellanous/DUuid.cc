@@ -93,6 +93,11 @@ DUuid::const_iterator DUuid::end() const noexcept
   return this->mUuid->end();
 }
 
+bool operator==(const DUuid& lhs, const DUuid& rhs) noexcept
+{
+  return *lhs.mUuid == *rhs.mUuid;
+}
+
 } /// ::dy::math namespace
 
 std::hash<dy::math::DUuid>::result_type 

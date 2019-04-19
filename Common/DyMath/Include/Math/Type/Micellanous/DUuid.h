@@ -78,7 +78,10 @@ private:
   boost::uuids::uuid* mUuid = nullptr;
 
   friend struct std::hash<::dy::math::DUuid>;
+  friend bool operator==(const DUuid& lhs, const DUuid& rhs) noexcept;
 };
+
+bool operator==(const DUuid& lhs, const DUuid& rhs) noexcept;
 
 } /// ::dy::math namespace
 
