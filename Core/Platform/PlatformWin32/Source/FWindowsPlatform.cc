@@ -248,7 +248,8 @@ FWindowsPlatform::FindResource(int id, EXPR_E(EBtResource) type)
 #undef CreateWindow
 #endif
 
-DWindowHandle FWindowsPlatform::CreateWindow(const PWindowCreationDescriptor& desc)
+std::optional<DWindowHandle>
+FWindowsPlatform::CreateWindow(const PWindowCreationDescriptor& desc)
 {
   (void)desc;
   assert(false);

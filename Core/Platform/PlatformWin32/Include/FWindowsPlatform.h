@@ -70,7 +70,8 @@ public:
   /// @brief Create game window.
   /// Game window is initially visible.
   /// If failed, just return false.
-  DWindowHandle CreateWindow(const PWindowCreationDescriptor& desc) override final;
+  std::optional<DWindowHandle> 
+  CreateWindow(const PWindowCreationDescriptor& desc) override final;
 
 #ifndef CreateWindow
 #define CreateWindow CreateWindowW

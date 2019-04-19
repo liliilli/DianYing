@@ -87,7 +87,8 @@ public:
   /// @brief Create game window.
   /// Game window is initially visible.
   /// If failed, just return false.
-  virtual DWindowHandle CreateWindow(const PWindowCreationDescriptor& desc) = 0;
+  virtual std::optional<DWindowHandle> 
+  CreateWindow(const PWindowCreationDescriptor& desc) = 0;
 
 #ifdef _WIN32
   #ifndef CreateWindow

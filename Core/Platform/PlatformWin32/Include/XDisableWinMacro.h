@@ -12,18 +12,23 @@
 /// SOFTWARE.
 ///
 
-#ifdef near
-#undef near
-#endif
-#ifdef far
-#undef far
-#endif
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
-#ifdef DELETE
-#undef DELETE
+#ifdef _WIN32
+  #ifdef near
+  #undef near
+  #endif
+  #ifdef far
+  #undef far
+  #endif
+  #ifdef min
+  #undef min
+  #endif
+  #ifdef max
+  #undef max
+  #endif
+  #ifdef DELETE
+  #undef DELETE
+  #endif
+  #ifdef CreateWindow
+  #undef CreateWindow
+  #endif 
 #endif
