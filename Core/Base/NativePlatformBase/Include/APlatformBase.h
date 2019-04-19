@@ -20,6 +20,8 @@
 #include <ADebugBase.h>
 #include <AProfilingBase.h>
 #include <ALowInput.h>
+#include <PWindowCreationDescriptor.h>
+#include "DWindowHandle.h"
 
 namespace dy
 {
@@ -45,15 +47,29 @@ public:
   /// This function must be succeeded.
   base::ALowInput& GetInputManager() noexcept;
 
-  virtual void SetWindowTitle(const std::string& newTitle) = 0;
+  /// If handle not found in window handle container, do nothing.
+  /// @param handle Window handle to find.
+  /// @param newTitle titlebar name.
+  virtual void SetWindowTitle(const DWindowHandle& handle, const std::string& newTitle) = 0;
 
-  virtual std::string GetWindowTitle() const = 0;
+  /// If handle not found in window handle container, do nothing but return empty string.
+  /// @param handle Window handle to find.
+  virtual std::string GetWindowTitle(const DWindowHandle& handle) const = 0;
 
-  virtual uint32_t GetWindowHeight() const = 0;
+  /// If handle not found in window handle container, do nothing but return 0.
+  /// @param handle Window handle to find.
+  virtual uint32_t GetWindowHeight(const DWindowHandle& handle) const = 0;
 
-  virtual uint32_t GetWindowWidth() const = 0;
+  /// If handle not found in window handle container, do nothing but return 0.
+  /// @param handle Window handle to find.
+  virtual uint32_t GetWindowWidth(const DWindowHandle& handle) const = 0;
 
-  virtual void ResizeWindow(uint32_t width, uint32_t height) = 0;
+  /// @brief Resize window with given (width, height) if found valid handle.
+  /// If handle not found in window handle container, do nothing.
+  /// @param handle Window handle to find.
+  /// @param width must be bigger than 0.
+  /// @param height must be bigger than 0.
+  virtual void ResizeWindow(const DWindowHandle& handle, uint32_t width, uint32_t height) = 0;
 
   EXPR_E(EPlatform) GetPlatformType() const noexcept;
 
@@ -68,15 +84,41 @@ public:
   /// If console window is not created, do nothing but just return false.
   virtual bool RemoveConsoleWindow() = 0;
 
+  /// @brief Initialize platform dependent resources.
+  /// Note that this function does not create main window.
+  virtual bool InitPlatform() = 0;
+
+  /// @brief Release platform dependent resources.
+  /// Note that this function does not remove main window.
+  virtual bool ReleasePlatform() = 0;
+
+#ifdef _WIN32
+  #ifdef CreateWindow
+  #undef CreateWindow
+  #endif
+#endif
+
   /// @brief Create game window.
   /// Game window is initially visible.
   /// If failed, just return false.
-  virtual bool CreateGameWindow() = 0;
+  virtual std::optional<DWindowHandle> 
+  CreateWindow(const PWindowCreationDescriptor& desc) = 0;
+
+#ifdef _WIN32
+  #ifndef CreateWindow
+  #define CreateWindow CreateWindowW
+  #endif
+#endif
 
   /// @brief Remove game window.
   /// All related resource will be removed and released.
   /// If failed, just return false.
-  virtual bool RemoveGameWindow() = 0;
+  virtual bool RemoveWindow(const DWindowHandle& handle) = 0;
+
+  /// @brief Remove all game windows.
+  /// All related resource will be removed and released.
+  /// If failed, just return false.
+  virtual bool RemoveAllWindow() = 0;
 
 #ifdef _WIN32
 #undef FindResource
@@ -89,6 +131,13 @@ public:
 #ifdef _WIN32
 #define FindResource FindResourceW
 #endif
+  
+  /// @brief Process only evetns that have already been received and that returns
+  /// immediately.
+  virtual void PollEvents() = 0;
+
+  /// @brief Check platform module can be shutdown, so everything is able to shutdown.
+  [[nodiscard]] virtual bool CanShutdown() = 0;
 
 protected:
   std::unique_ptr<AHandlesBase>     mHandle     = nullptr;

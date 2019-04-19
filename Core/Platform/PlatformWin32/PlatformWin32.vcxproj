@@ -46,14 +46,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\glad\bin\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\glad\bin\$(Configuration);$(SolutionDir)Common\DyMath\bin\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\glad\bin\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\glad\bin\$(Configuration);$(SolutionDir)Common\DyMath\bin\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -66,12 +66,13 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>glad.lib;glfw3.lib;NativePlatformBase.lib</AdditionalDependencies>
+      <AdditionalDependencies>DyMath.lib;glad.lib;glfw3.lib;NativePlatformBase.lib</AdditionalDependencies>
       <SubSystem>
       </SubSystem>
     </Lib>
@@ -88,6 +89,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -95,7 +97,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>glad.lib;glfw3.lib;NativePlatformBase.lib</AdditionalDependencies>
+      <AdditionalDependencies>DyMath.lib;glad.lib;glfw3.lib;NativePlatformBase.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -108,6 +110,7 @@
     <ClCompile Include="Source\WinMain.cc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\DWin32PostMessage.h" />
     <ClInclude Include="Include\FBtResourceHandle.h" />
     <ClInclude Include="Include\FWindowsDebug.h" />
     <ClInclude Include="Include\FWindowsHandles.h" />

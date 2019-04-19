@@ -12,23 +12,17 @@
 /// SOFTWARE.
 ///
 
-#ifdef _WIN32
-  #ifdef near
-  #undef near
-  #endif
-  #ifdef far
-  #undef far
-  #endif
-  #ifdef min
-  #undef min
-  #endif
-  #ifdef max
-  #undef max
-  #endif
-  #ifdef DELETE
-  #undef DELETE
-  #endif
-  #ifdef CreateWindow
-  #undef CreateWindow
-  #endif 
-#endif
+#include <Math/Type/Micellanous/DUuid.h>
+
+namespace dy
+{
+
+/// @struct DWindowHandle
+/// @brief Result type of window creation. 
+/// This contains unique id for specifying created window.
+struct DWindowHandle final
+{
+  math::DUuid mHandleUuid = math::DUuid{true};
+};
+
+} /// ::dy namespace

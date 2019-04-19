@@ -1,4 +1,3 @@
-#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,23 +11,26 @@
 /// SOFTWARE.
 ///
 
-#ifdef _WIN32
-  #ifdef near
-  #undef near
+namespace dy
+{
+
+/// @brief This function is not implemented yet.
+static auto InitializeDirectX11 = []()
+{
+  #ifdef false
+  MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
+  MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
+
+  ShowWindow(windowHandle, SW_SHOW);
+  SetForegroundWindow(windowHandle);
+  SetFocus(windowHandle);
+
+  DyD11CreateEffectFx();
+  DyD11BindVertexLayout();
+  DyD11CreateVertexBuffer();
+  DyD11RenderLoop();
+  return EDySuccess::DY_FAILURE;
   #endif
-  #ifdef far
-  #undef far
-  #endif
-  #ifdef min
-  #undef min
-  #endif
-  #ifdef max
-  #undef max
-  #endif
-  #ifdef DELETE
-  #undef DELETE
-  #endif
-  #ifdef CreateWindow
-  #undef CreateWindow
-  #endif 
-#endif
+};
+
+} /// ::dy namespace
