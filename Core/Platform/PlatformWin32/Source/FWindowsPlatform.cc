@@ -66,12 +66,20 @@ FWindowsPlatform::FWindowsPlatform()
 
 FWindowsPlatform::~FWindowsPlatform() = default;
 
-void FWindowsPlatform::SetWindowTitle(const std::string& newTitle)
+void FWindowsPlatform::SetWindowTitle(const DWindowHandle& handle, const std::string& newTitle)
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
-  if (handle.mGlfwWindow == nullptr) { return; }
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  
+  // If handle not find, just return.
+  if (auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+    it == handleContainer.mWindowHandles.end())
+  {
+    return;
+  }
 
-  glfwSetWindowTitle(handle.mGlfwWindow, newTitle.c_str());
+  // Temporary
+  if (handleContainer.mGlfwWindow == nullptr) { return; }
+  glfwSetWindowTitle(handleContainer.mGlfwWindow, newTitle.c_str());
 
 #if 0
   // Widen string.
@@ -92,13 +100,21 @@ void FWindowsPlatform::SetWindowTitle(const std::string& newTitle)
 #endif
 }
 
-std::string FWindowsPlatform::GetWindowTitle() const
+std::string FWindowsPlatform::GetWindowTitle(const DWindowHandle& handle) const
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+
+  // If handle not find, just return.
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return "";
+  }
 
   // Get title name from main window handle.
   std::wstring titleName = {256, L'0'};
-  GetWindowText(handle.mMainWindow, titleName.data(), static_cast<int>(titleName.size()));
+  auto& [uuid, hwnd] = *it;
+  GetWindowText(hwnd, titleName.data(), static_cast<int>(titleName.size()));
 
   // If failed to get window text, just return empty string.
   if (titleName.length() == 0)
@@ -121,13 +137,20 @@ std::string FWindowsPlatform::GetWindowTitle() const
 	return resultTitleName;
 }
 
-uint32_t FWindowsPlatform::GetWindowHeight() const
+uint32_t FWindowsPlatform::GetWindowHeight(const DWindowHandle& handle) const
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
-  if (handle.mGlfwWindow == nullptr) { return 0; }
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return 0;
+  }
+
+  // Temporary code
+  if (handleContainer.mGlfwWindow == nullptr) { return 0; }
 
   int width, height;
-  glfwGetWindowSize(handle.mGlfwWindow, &width, &height);
+  glfwGetWindowSize(handleContainer.mGlfwWindow, &width, &height);
 
   return height;
 
@@ -146,13 +169,20 @@ uint32_t FWindowsPlatform::GetWindowHeight() const
 #endif
 }
 
-uint32_t FWindowsPlatform::GetWindowWidth() const
+uint32_t FWindowsPlatform::GetWindowWidth(const DWindowHandle& handle) const
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
-  if (handle.mGlfwWindow == nullptr) { return 0; }
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return 0;
+  }
+
+  // Temporary code
+  if (handleContainer.mGlfwWindow == nullptr) { return 0; }
 
   int width, height;
-  glfwGetWindowSize(handle.mGlfwWindow, &width, &height);
+  glfwGetWindowSize(handleContainer.mGlfwWindow, &width, &height);
 
   return width;
 
@@ -171,13 +201,20 @@ uint32_t FWindowsPlatform::GetWindowWidth() const
 #endif
 }
 
-void FWindowsPlatform::ResizeWindow(uint32_t width, uint32_t height)
+void FWindowsPlatform::ResizeWindow(const DWindowHandle& handle, uint32_t width, uint32_t height)
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
-  if (handle.mGlfwWindow == nullptr) { return; }
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return;
+  }
+
+  // Temporary code
+  if (handleContainer.mGlfwWindow == nullptr) { return; }
 
   // Set size.
-  glfwSetWindowSize(handle.mGlfwWindow, width, height);
+  glfwSetWindowSize(handleContainer.mGlfwWindow, width, height);
 }
 
 bool FWindowsPlatform::CreateConsoleWindow()
@@ -253,7 +290,7 @@ FWindowsPlatform::CreateWindow(const PWindowCreationDescriptor& desc)
 {
   (void)desc;
   assert(false);
-  return DWindowHandle{};
+  return dy::DWindowHandle{};
 }
 
 #ifndef CreateWindow

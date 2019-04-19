@@ -47,15 +47,29 @@ public:
   /// This function must be succeeded.
   base::ALowInput& GetInputManager() noexcept;
 
-  virtual void SetWindowTitle(const std::string& newTitle) = 0;
+  /// If handle not found in window handle container, do nothing.
+  /// @param handle Window handle to find.
+  /// @param newTitle titlebar name.
+  virtual void SetWindowTitle(const DWindowHandle& handle, const std::string& newTitle) = 0;
 
-  virtual std::string GetWindowTitle() const = 0;
+  /// If handle not found in window handle container, do nothing but return empty string.
+  /// @param handle Window handle to find.
+  virtual std::string GetWindowTitle(const DWindowHandle& handle) const = 0;
 
-  virtual uint32_t GetWindowHeight() const = 0;
+  /// If handle not found in window handle container, do nothing but return 0.
+  /// @param handle Window handle to find.
+  virtual uint32_t GetWindowHeight(const DWindowHandle& handle) const = 0;
 
-  virtual uint32_t GetWindowWidth() const = 0;
+  /// If handle not found in window handle container, do nothing but return 0.
+  /// @param handle Window handle to find.
+  virtual uint32_t GetWindowWidth(const DWindowHandle& handle) const = 0;
 
-  virtual void ResizeWindow(uint32_t width, uint32_t height) = 0;
+  /// @brief Resize window with given (width, height) if found valid handle.
+  /// If handle not found in window handle container, do nothing.
+  /// @param handle Window handle to find.
+  /// @param width must be bigger than 0.
+  /// @param height must be bigger than 0.
+  virtual void ResizeWindow(const DWindowHandle& handle, uint32_t width, uint32_t height) = 0;
 
   EXPR_E(EPlatform) GetPlatformType() const noexcept;
 

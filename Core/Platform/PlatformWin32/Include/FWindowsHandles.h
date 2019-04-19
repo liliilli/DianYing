@@ -12,11 +12,14 @@
 /// SOFTWARE.
 ///
 
+#include <unordered_map>
+
 #ifndef NOMINMAX
   #define NOMINMAX
 #endif
 #include <Windows.h>
 #include <AHandlesBase.h>
+#include <Math/Type/Micellanous/DUuid.h>
 
 //!
 //! Forward declaration
@@ -35,11 +38,18 @@ struct FWindowsHandles final : public AHandlesBase
 {
   FWindowsHandles(HANDLE mainProcess);
 
-  HANDLE  mMainProcess = nullptr;
-  HWND    mMainWindow = nullptr;
-  HWND    mBackgroundWindow = nullptr;
+  /// @brief Main process handle. (Not changed)
+  HANDLE mMainProcess = nullptr; 
+  /// @brief Background window handle. (Not changed)
+  HWND mBackgroundWindow = nullptr;
+  /// @brief Device notification handle for HID etc.
   HDEVNOTIFY mDeviceNotiHandle = nullptr;
 
+  /// @brief User-created window handle container.
+  /// All values must be valid.
+  std::unordered_map<math::DUuid, HWND> mWindowHandles;
+
+  /// @brief Temporary
   GLFWwindow* mGlfwWindow = nullptr;
 };
 

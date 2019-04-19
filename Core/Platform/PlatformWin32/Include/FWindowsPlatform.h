@@ -34,15 +34,15 @@ public:
   FWindowsPlatform();
   virtual ~FWindowsPlatform(); 
 
-  void SetWindowTitle(const std::string& newTitle) override final;
+  void SetWindowTitle(const DWindowHandle& handle, const std::string& newTitle) override final;
 
-  std::string GetWindowTitle() const override final;
+  std::string GetWindowTitle(const DWindowHandle& handle) const override final;
 
-  uint32_t GetWindowHeight() const override final;
+  uint32_t GetWindowHeight(const DWindowHandle& handle) const override final;
 
-  uint32_t GetWindowWidth() const override final;
+  uint32_t GetWindowWidth(const DWindowHandle& handle) const override final;
 
-  void ResizeWindow(uint32_t width, uint32_t height) override final;
+  void ResizeWindow(const DWindowHandle& handle, uint32_t width, uint32_t height) override final;
 
   /// @brief Create console window. 
   /// If console window is already created do nothing but just return false.
