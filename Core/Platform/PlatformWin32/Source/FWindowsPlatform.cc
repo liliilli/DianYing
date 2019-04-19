@@ -13,6 +13,8 @@
 
 #include <FWindowsPlatform.h>
 #include <sstream>
+#include <queue>
+#include <cassert>
 
 #include <EPlatform.h>
 #include <FWindowsHandles.h>
@@ -20,33 +22,170 @@
 #include <FBtResourceHandle.h>
 #include <FWindowsProfiling.h>
 #include <FWindowsLowInput.h>
+#include <PLowInputKeyboard.h>
+#include <PLowInputMouseBtn.h>
+#include <PLowInputMousePos.h>
+#include <DWin32PostMessage.h>
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
 #include <GLFW/glfw3native.h>
 #include <atlconv.h>
-#include <cassert>
 
 #define IS_32
 #include <Dbt.h> // DEV_BROADCAST_DEVICEINTERFACE_W ... HID devices.
 
+#define LOG(...) {char buf[256]; sprintf(buf, __VA_ARGS__); OutputDebugStringA(buf); }
+
 namespace 
 {
 
-LRESULT CALLBACK OnWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+/// @brief
+dy::APlatformBase* platform = nullptr;
+
+/// @brief 
+std::queue<dy::DWin32PostMessage> sPostMessages = {};
+
+  /// @brief
+  DWORD GetWin32WindowStyle(const dy::PWindowCreationDescriptor& desc)
 {
-#ifdef false
-  HANDLE window = GetPropW(nullptr, L"DyHelper");
+  DWORD style = WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
-  // If not found window handle,
-  if (window == nullptr) 
-  { 
-    return DefWindowProcW(hWnd, uMsg, wParam, lParam); 
+  if (desc.mIsWindowFullScreen == true)
+  {
+    // The windows is a pop-up window. This style cannot be used with the WS_CHILD style.
+    style |= WS_POPUP;
+    return style;
   }
-#endif
 
-  return DefWindowProcW(hWnd, uMsg, wParam, lParam); 
+  // The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
+  // The window has a title bar (includes the WS_BORDER style).
+  style |= WS_SYSMENU | WS_MINIMIZEBOX;
+  style |= WS_CAPTION;
+
+  if (desc.mIsWindowResizable == true)
+  {
+    // The window has a sizing border. Same as the WS_SIZEBOX style.
+    style |= WS_MAXIMIZEBOX | WS_THICKFRAME;
+  }
+
+  return style;
+}
+
+/// @brief
+DWORD GetWin32WindowExStyle(const dy::PWindowCreationDescriptor& desc)
+{
+  DWORD style = WS_EX_APPWINDOW;
+
+  if (desc.mIsWindowFullScreen == true)
+  {
+    style |= WS_EX_TOPMOST;
+  }
+
+  return style;
+}
+
+/// @brief
+std::pair<int, int> GetWin32FullWindowSize(
+  DWORD style, DWORD exStyle, 
+  int width, int height, int dpi)
+{
+  RECT rect = { 0, 0, width, height };
+
+  //if (_glfwIsWindows10AnniversaryUpdateOrGreaterWin32())
+  AdjustWindowRectExForDpi(&rect, style, FALSE, exStyle, dpi);
+  //else
+    //AdjustWindowRectEx(&rect, style, FALSE, exStyle);
+
+  return { rect.right - rect.left, rect.bottom - rect.top };
+}
+
+LRESULT CALLBACK OnWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	PAINTSTRUCT ps;
+	HDC hdc;
+	wchar_t greeting[] = L"Hello, World!";
+
+  using namespace dy::base;
+
+	switch (message)
+	{
+		case WM_PAINT:
+    {
+			hdc = BeginPaint(hWnd, &ps);
+			TextOut(hdc, 5, 5, greeting, int(lstrlen(greeting)));
+			EndPaint(hWnd, &ps);
+    } break;
+    // @reference http://ssb777.blogspot.com/2009/07/mfc-wmclose-wmdestroy-wmquit.html
+    case WM_CLOSE:
+    {
+      dy::DWin32PostMessage deleteMessage;
+      deleteMessage.mType = decltype(deleteMessage.mType)::DeleteWindow;
+      deleteMessage.mData = hWnd;
+      // Assign deletion message of given hWnd.
+      sPostMessages.push(deleteMessage);
+    } break;
+		case WM_DESTROY: { } break;
+    case WM_KEYDOWN: case WM_KEYUP:
+    case WM_SYSKEYDOWN: case WM_SYSKEYUP:
+    {
+      dy::PLowInputKeyboard desc;
+      desc.mLparam  = lParam;
+      desc.mWparam  = wParam;
+      desc.mMessage = message;
+
+      auto& input = platform->GetInputManager();
+      input.UpdateKeyboard(&desc);
+    } break;
+    case WM_LBUTTONDOWN: case WM_RBUTTONDOWN: case WM_MBUTTONDOWN: case WM_XBUTTONDOWN:
+    case WM_LBUTTONUP: case WM_RBUTTONUP: case WM_MBUTTONUP: case WM_XBUTTONUP:
+    {
+      dy::PLowInputMouseBtn desc;
+      desc.mMessage = message;
+      desc.mWparam  = wParam;
+
+      auto& input = platform->GetInputManager();
+      input.UpdateMouseButton(&desc);
+    } break;
+    case WM_MOUSEMOVE:
+    {
+      dy::PLowInputMousePos desc;
+      desc.mFocusedWindow = hWnd;
+      desc.mLparam = lParam;
+
+      platform->GetInputManager().UpdateMousePos(&desc);
+
+      // Debug
+      if (auto optPos = platform->GetInputManager().GetMousePos(); 
+          optPos.has_value() == true)
+      {
+        LOG("Mouse Position : (%3d, %3d)\n", (*optPos).first, (*optPos).second);
+      }
+      if (auto optAmnt = platform->GetInputManager().GetMousePosMovement();
+          optAmnt.has_value() == true)
+      {
+        LOG("Mouse Movement Amount : (%3d, %3d)\n", (*optAmnt).first, (*optAmnt).second);
+      }
+      // Dispensable tracing event.
+      {
+        TRACKMOUSEEVENT mouseEvent;
+        mouseEvent.cbSize     = sizeof(mouseEvent);
+        mouseEvent.dwFlags    = TME_LEAVE;
+        mouseEvent.hwndTrack  = hWnd;
+        TrackMouseEvent(&mouseEvent);
+      }
+    } break;
+    case WM_MOUSELEAVE:
+    case WM_MOUSEWHEEL: // Vertical scroll.
+    case WM_MOUSEHWHEEL: // Horizontal scroll.
+    {
+
+    } break;
+    default: return DefWindowProcW(hWnd, message, wParam, lParam); 
+	}
+
+  return 0;
 }
 
 } /// anonymous namespace
@@ -66,12 +205,20 @@ FWindowsPlatform::FWindowsPlatform()
 
 FWindowsPlatform::~FWindowsPlatform() = default;
 
-void FWindowsPlatform::SetWindowTitle(const std::string& newTitle)
+void FWindowsPlatform::SetWindowTitle(const DWindowHandle& handle, const std::string& newTitle)
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
-  if (handle.mGlfwWindow == nullptr) { return; }
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  
+  // If handle not find, just return.
+  if (auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+    it == handleContainer.mWindowHandles.end())
+  {
+    return;
+  }
 
-  glfwSetWindowTitle(handle.mGlfwWindow, newTitle.c_str());
+  // Temporary
+  if (handleContainer.mGlfwWindow == nullptr) { return; }
+  glfwSetWindowTitle(handleContainer.mGlfwWindow, newTitle.c_str());
 
 #if 0
   // Widen string.
@@ -92,13 +239,21 @@ void FWindowsPlatform::SetWindowTitle(const std::string& newTitle)
 #endif
 }
 
-std::string FWindowsPlatform::GetWindowTitle() const
+std::string FWindowsPlatform::GetWindowTitle(const DWindowHandle& handle) const
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+
+  // If handle not find, just return.
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return "";
+  }
 
   // Get title name from main window handle.
   std::wstring titleName = {256, L'0'};
-  GetWindowText(handle.mMainWindow, titleName.data(), static_cast<int>(titleName.size()));
+  auto& [uuid, hwnd] = *it;
+  GetWindowText(hwnd, titleName.data(), static_cast<int>(titleName.size()));
 
   // If failed to get window text, just return empty string.
   if (titleName.length() == 0)
@@ -121,13 +276,20 @@ std::string FWindowsPlatform::GetWindowTitle() const
 	return resultTitleName;
 }
 
-uint32_t FWindowsPlatform::GetWindowHeight() const
+uint32_t FWindowsPlatform::GetWindowHeight(const DWindowHandle& handle) const
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
-  if (handle.mGlfwWindow == nullptr) { return 0; }
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return 0;
+  }
+
+  // Temporary code
+  if (handleContainer.mGlfwWindow == nullptr) { return 0; }
 
   int width, height;
-  glfwGetWindowSize(handle.mGlfwWindow, &width, &height);
+  glfwGetWindowSize(handleContainer.mGlfwWindow, &width, &height);
 
   return height;
 
@@ -146,13 +308,20 @@ uint32_t FWindowsPlatform::GetWindowHeight() const
 #endif
 }
 
-uint32_t FWindowsPlatform::GetWindowWidth() const
+uint32_t FWindowsPlatform::GetWindowWidth(const DWindowHandle& handle) const
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
-  if (handle.mGlfwWindow == nullptr) { return 0; }
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return 0;
+  }
+
+  // Temporary code
+  if (handleContainer.mGlfwWindow == nullptr) { return 0; }
 
   int width, height;
-  glfwGetWindowSize(handle.mGlfwWindow, &width, &height);
+  glfwGetWindowSize(handleContainer.mGlfwWindow, &width, &height);
 
   return width;
 
@@ -171,13 +340,20 @@ uint32_t FWindowsPlatform::GetWindowWidth() const
 #endif
 }
 
-void FWindowsPlatform::ResizeWindow(uint32_t width, uint32_t height)
+void FWindowsPlatform::ResizeWindow(const DWindowHandle& handle, uint32_t width, uint32_t height)
 {
-  auto& handle = static_cast<FWindowsHandles&>(*this->mHandle);
-  if (handle.mGlfwWindow == nullptr) { return; }
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return;
+  }
+
+  // Temporary code
+  if (handleContainer.mGlfwWindow == nullptr) { return; }
 
   // Set size.
-  glfwSetWindowSize(handle.mGlfwWindow, width, height);
+  glfwSetWindowSize(handleContainer.mGlfwWindow, width, height);
 }
 
 bool FWindowsPlatform::CreateConsoleWindow()
@@ -244,8 +420,160 @@ FWindowsPlatform::FindResource(int id, EXPR_E(EBtResource) type)
   return std::make_unique<FBtResourceHandle>(hResource);
 }
 
-bool FWindowsPlatform::CreateGameWindow()
+#ifdef CreateWindow
+#undef CreateWindow
+#endif
+
+std::optional<DWindowHandle>
+FWindowsPlatform::CreateWindow(const PWindowCreationDescriptor& desc)
 {
+  // Get style and exstyle.
+  DWORD style = GetWin32WindowStyle(desc);
+  DWORD exStyle = GetWin32WindowExStyle(desc);
+  int posX = CW_USEDEFAULT, posY = CW_USEDEFAULT;
+
+  // Get window size.
+  auto [width, height] = GetWin32FullWindowSize(
+    style, exStyle, 
+    desc.mWindowWidth, desc.mWindowHeight, 96);
+
+  // Widen string.
+  std::wstring wideStr;
+  const auto& ctfacet = std::use_facet<std::ctype<wchar_t>>(std::wstringstream().getloc());
+
+  for (const auto& currChar : desc.mWindowName)
+  {
+    wideStr.push_back(ctfacet.widen(currChar));
+  }
+
+  // Create window actually.
+  // Created window will inherits L"Dy" window class.
+  auto handle = CreateWindowExW(
+    exStyle, L"Dy", wideStr.c_str(), style, 
+    posX, posY, width, height, 
+    nullptr, nullptr, GetModuleHandleW(nullptr), nullptr);
+  // Check
+  assert(handle != nullptr && "Failed to create window.");
+  if (handle == nullptr)
+  {
+    return std::nullopt;
+  }
+
+  DragAcceptFiles(handle, TRUE);
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  
+  // Set properties.
+  if (desc.mIsWindowVisible == true)
+  {
+    ShowWindow(handle, SW_SHOW);
+  }
+
+  if (desc.mIsWindowShouldFocus == true)
+  {
+    BringWindowToTop(handle);
+    SetForegroundWindow(handle);
+    SetFocus(handle);
+  }
+ 
+  // Insert handle with generated uuid.
+  DWindowHandle uuidHandle = {};
+  auto [it, isSucceeded] = handleContainer.mWindowHandles.try_emplace(
+      uuidHandle.mHandleUuid
+    , handle);
+  assert(isSucceeded == true);
+ 
+  // Return
+  return uuidHandle;
+}
+
+#ifndef CreateWindow
+#define CreateWindow CreateWindowW
+#endif
+ 
+bool FWindowsPlatform::RemoveWindow(const DWindowHandle& handle)
+{
+  // Check handle is already not exist (already deleted) in handle container.
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return true;
+  }
+
+  // Destory window.
+  auto& [uuid, hwnd] = *it;
+  const auto flag = DestroyWindow(hwnd);
+  if (flag == FALSE)
+  {
+    return false;
+  }
+
+  handleContainer.mWindowHandles.erase(it);
+  return true;
+}
+
+bool FWindowsPlatform::RemoveAllWindow()
+{
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  for (auto& [uuid, hwnd] : handleContainer.mWindowHandles)
+  {
+    const auto flag = DestroyWindow(hwnd);
+    if (flag == FALSE)
+    {
+      return false;
+    }
+  }
+  handleContainer.mWindowHandles.clear();
+
+  return true;
+}
+
+void FWindowsPlatform::PollEvents()
+{
+  MSG msg;
+  while (PeekMessage(&msg, nullptr,  0, 0, PM_REMOVE)) 
+  {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
+
+  
+  // Do post Dy platform(WIN32) message task.
+  while (sPostMessages.empty() == false)
+  {
+    auto& task = sPostMessages.front();
+    switch (task.mType)
+    {
+    case EWin32PostMesasge::DeleteWindow:
+    {
+      // Get handle container and try to match target hwnd and hwnds.
+      auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+      auto& targetHwnd = std::any_cast<HWND&>(task.mData);
+
+      for (auto& [uuid, hwnd] : handleContainer.mWindowHandles)
+      {
+        // If found, remove window and remove item pair of handle container.
+        // and break.
+        if (hwnd == targetHwnd)
+        {
+          const auto flag = DestroyWindow(hwnd);
+          assert(flag == TRUE);
+          handleContainer.mWindowHandles.erase(uuid);
+          break;
+        }
+      }
+    } break;
+    }
+
+    // POP.
+    sPostMessages.pop();
+  }
+}
+
+bool FWindowsPlatform::InitPlatform()
+{
+  platform = this;
+
   if (this->RegisterWindowClassWin32() == false) { return false; }
 
   if (this->CreateBackgroundWindow() == false) { return false; }
@@ -265,7 +593,7 @@ bool FWindowsPlatform::RegisterWindowClassWin32()
   wndClass.lpfnWndProc  = (WNDPROC) OnWindowProc;
   wndClass.hInstance    = GetModuleHandleW(nullptr);
   wndClass.hCursor      = LoadCursorW(nullptr, IDC_ARROW);
-  wndClass.lpszClassName= L"Dy";
+  wndClass.lpszClassName= L"Dy"; // This name will be used when creating user defined window.
 
   // Check user-provided icon is exist.
   // But in this case, just load default icon temporary.
@@ -335,11 +663,13 @@ bool FWindowsPlatform::CreateBackgroundWindow()
   return true;
 }
 
-bool FWindowsPlatform::RemoveGameWindow()
+bool FWindowsPlatform::ReleasePlatform()
 {
   if (this->RemoveBackgroundWindow() == false) { return false; }
-
   if (this->UnregisterWindowClassWin32() == false) { return false; }
+
+  platform = nullptr;
+  PostQuitMessage(0);
 
   return true;
 }
@@ -367,6 +697,12 @@ bool FWindowsPlatform::UnregisterWindowClassWin32()
   // Unregister.
   const auto flag = UnregisterClassW(L"Dy", GetModuleHandleW(nullptr));
   return flag != 0;
+}
+
+bool FWindowsPlatform::CanShutdown()
+{
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  return handleContainer.mWindowHandles.empty() == true;
 }
 
 } /// ::dy namespace

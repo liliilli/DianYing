@@ -68,5 +68,8 @@
     <ClInclude Include="Include\PLowInputMousePos.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\DWin32PostMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

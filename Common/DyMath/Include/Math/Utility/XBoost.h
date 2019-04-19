@@ -12,23 +12,13 @@
 /// SOFTWARE.
 ///
 
-#ifdef _WIN32
-  #ifdef near
-  #undef near
-  #endif
-  #ifdef far
-  #undef far
-  #endif
-  #ifdef min
-  #undef min
-  #endif
-  #ifdef max
-  #undef max
-  #endif
-  #ifdef DELETE
-  #undef DELETE
-  #endif
-  #ifdef CreateWindow
-  #undef CreateWindow
-  #endif 
-#endif
+#include <exception>
+
+namespace boost
+{
+
+/// @brief Boost alternative Exception handling function.
+/// @reference https://imitursa.tistory.com/1990
+void throw_exception(const std::exception&);
+
+} /// ::boost namespace

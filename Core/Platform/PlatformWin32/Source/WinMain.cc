@@ -77,7 +77,7 @@ int APIENTRY WinMain(
 
   // Initialize engine.
   {
-    const auto flag = gEngine->GetPlatformInfo().CreateGameWindow();
+    const auto flag = gEngine->GetPlatformInfo().InitPlatform();
     assert(flag == true);
   }
   {
@@ -96,7 +96,7 @@ int APIENTRY WinMain(
 
   // Release engine.
   {
-    const auto flag = gEngine->GetPlatformInfo().RemoveGameWindow();
+    const auto flag = gEngine->GetPlatformInfo().ReleasePlatform();
     assert(flag == true);
   }
   gEngine = nullptr;

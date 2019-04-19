@@ -12,23 +12,24 @@
 /// SOFTWARE.
 ///
 
-#ifdef _WIN32
-  #ifdef near
-  #undef near
-  #endif
-  #ifdef far
-  #undef far
-  #endif
-  #ifdef min
-  #undef min
-  #endif
-  #ifdef max
-  #undef max
-  #endif
-  #ifdef DELETE
-  #undef DELETE
-  #endif
-  #ifdef CreateWindow
-  #undef CreateWindow
-  #endif 
-#endif
+#include <any>
+
+namespace dy
+{
+
+/// @enum EWin32PostMesasge
+/// @brief Win32 Post message type.
+enum class EWin32PostMesasge
+{
+  DeleteWindow,
+};
+
+/// @struct DWin32PostMessage
+/// @brief Win32 dependent Dy post message type.
+struct DWin32PostMessage final
+{
+  EWin32PostMesasge mType = EWin32PostMesasge::DeleteWindow;
+  std::any mData = nullptr;
+};
+
+} /// ::dy namespace

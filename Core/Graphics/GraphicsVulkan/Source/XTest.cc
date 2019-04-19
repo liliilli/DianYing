@@ -1,4 +1,3 @@
-#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -12,23 +11,23 @@
 /// SOFTWARE.
 ///
 
-#ifdef _WIN32
-  #ifdef near
-  #undef near
+namespace dy
+{
+
+/// @brief This function is not implemented yet.
+static auto InitializeVulkan = []()
+{
+  #ifdef false
+  dy::DyVkInitialize(windowHandle, hInstance);
+
+  ShowWindow(windowHandle, SW_SHOW);
+  SetForegroundWindow(windowHandle);
+  SetFocus(windowHandle);
+
+  dy::DyVkRenderLoop();
+  dy::DyVkCleanupResources();
+  return EDySuccess::DY_FAILURE;
   #endif
-  #ifdef far
-  #undef far
-  #endif
-  #ifdef min
-  #undef min
-  #endif
-  #ifdef max
-  #undef max
-  #endif
-  #ifdef DELETE
-  #undef DELETE
-  #endif
-  #ifdef CreateWindow
-  #undef CreateWindow
-  #endif 
-#endif
+};
+
+}
