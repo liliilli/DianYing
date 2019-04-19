@@ -492,8 +492,39 @@ FWindowsPlatform::CreateWindow(const PWindowCreationDescriptor& desc)
  
 bool FWindowsPlatform::RemoveWindow(const DWindowHandle& handle)
 {
-  (void)handle;
-  assert(false);
+  // Check handle is already not exist (already deleted) in handle container.
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    return true;
+  }
+
+  // Destory window.
+  auto& [uuid, hwnd] = *it;
+  const auto flag = DestroyWindow(hwnd);
+  if (flag == FALSE)
+  {
+    return false;
+  }
+
+  handleContainer.mWindowHandles.erase(it);
+  return true;
+}
+
+bool FWindowsPlatform::RemoveAllWindow()
+{
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  for (auto& [uuid, hwnd] : handleContainer.mWindowHandles)
+  {
+    const auto flag = DestroyWindow(hwnd);
+    if (flag == FALSE)
+    {
+      return false;
+    }
+  }
+  handleContainer.mWindowHandles.clear();
+
   return true;
 }
 
@@ -666,6 +697,12 @@ bool FWindowsPlatform::UnregisterWindowClassWin32()
   // Unregister.
   const auto flag = UnregisterClassW(L"Dy", GetModuleHandleW(nullptr));
   return flag != 0;
+}
+
+bool FWindowsPlatform::CanShutdown()
+{
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  return handleContainer.mWindowHandles.empty() == true;
 }
 
 } /// ::dy namespace

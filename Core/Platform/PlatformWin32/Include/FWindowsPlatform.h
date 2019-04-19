@@ -34,6 +34,19 @@ public:
   FWindowsPlatform();
   virtual ~FWindowsPlatform(); 
 
+private:
+  /// @brief Register window class into Win32 internal system.
+  bool RegisterWindowClassWin32();
+  /// @brief Create background (helper) window.
+  /// This window will get background message & HID and controller device detecting etc.
+  bool CreateBackgroundWindow() override final;
+
+  /// @brief Remove background (helper) window resource.
+  /// If already removed or failed to remove window, just return false.
+  bool RemoveBackgroundWindow() override final;
+  /// @brief Unregister window class from Win32 internal system.
+  bool UnregisterWindowClassWin32();
+
   void SetWindowTitle(const DWindowHandle& handle, const std::string& newTitle) override final;
 
   std::string GetWindowTitle(const DWindowHandle& handle) const override final;
@@ -82,6 +95,11 @@ public:
   /// If failed, just return false.
   bool RemoveWindow(const DWindowHandle& handle) override final;
 
+  /// @brief Remove all game windows.
+  /// All related resource will be removed and released.
+  /// If failed, just return false.
+  bool RemoveAllWindow() override final;
+
   /// @brief Processes only evetns that have already been received and that returns
   /// immediately.
   void PollEvents() override final;
@@ -94,19 +112,10 @@ public:
   /// Note that this function does not remove main window.
   bool ReleasePlatform() override final;;
 
+  /// @brief Check platform module can be shutdown, so everything is able to shutdown.
+  bool CanShutdown() override final;
+
 private:
-  /// @brief Register window class into Win32 internal system.
-  bool RegisterWindowClassWin32();
-  /// @brief Create background (helper) window.
-  /// This window will get background message & HID and controller device detecting etc.
-  bool CreateBackgroundWindow() override final;
-
-  /// @brief Remove background (helper) window resource.
-  /// If already removed or failed to remove window, just return false.
-  bool RemoveBackgroundWindow() override final;
-  /// @brief Unregister window class from Win32 internal system.
-  bool UnregisterWindowClassWin32();
-
   FILE* mFdConsole = nullptr;
 };
 

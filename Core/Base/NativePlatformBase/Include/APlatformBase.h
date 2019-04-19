@@ -115,6 +115,11 @@ public:
   /// If failed, just return false.
   virtual bool RemoveWindow(const DWindowHandle& handle) = 0;
 
+  /// @brief Remove all game windows.
+  /// All related resource will be removed and released.
+  /// If failed, just return false.
+  virtual bool RemoveAllWindow() = 0;
+
 #ifdef _WIN32
 #undef FindResource
 #endif
@@ -127,9 +132,12 @@ public:
 #define FindResource FindResourceW
 #endif
   
-  /// @brief Processes only evetns that have already been received and that returns
+  /// @brief Process only evetns that have already been received and that returns
   /// immediately.
   virtual void PollEvents() = 0;
+
+  /// @brief Check platform module can be shutdown, so everything is able to shutdown.
+  [[nodiscard]] virtual bool CanShutdown() = 0;
 
 protected:
   std::unique_ptr<AHandlesBase>     mHandle     = nullptr;
