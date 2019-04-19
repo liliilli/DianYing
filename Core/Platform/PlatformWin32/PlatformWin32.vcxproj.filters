@@ -33,6 +33,9 @@
     <ClCompile Include="Source\FWindowsProfiling.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\FWindowsLowInput.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\FWindowsPlatform.h">
@@ -51,6 +54,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Include\FWindowsProfiling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\FWindowsLowInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PLowInputKeyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PLowInputMouseBtn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\PLowInputMousePos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DWin32PostMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

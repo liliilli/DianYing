@@ -20,7 +20,7 @@ namespace dy::expr
 {
    
 /// @macro EXPR_SINGLETON_PROPERTIES
-/// This macro must not be attached to whichever class does not inherits ISingleton<>.
+/// @brief This macro must not be attached to whichever class does not inherits ISingleton<>.
 #define EXPR_SINGLETON_PROPERTIES(__MASingletonType__) \
 public: \
     __MASingletonType__(const EXPR_MAKENAME(__MASingletonType__,&)) = delete; \
@@ -29,7 +29,7 @@ public: \
     EXPR_MAKENAME(__MASingletonType__,&) operator=(EXPR_MAKENAME(__MASingletonType__,&&)) noexcept = delete
 
 /// @macro EXPR_SINGLETON_DERIVED
-/// This macro must not be attached to whichever class does not inherits ISingleton<>.
+/// @brief This macro must not be attached to whichever class does not inherits ISingleton<>.
 #define EXPR_SINGLETON_DERIVED(__MADerivedSingletonType__) \
 private:                                                  \
     __MADerivedSingletonType__() = default;               \
@@ -39,6 +39,13 @@ private:                                                  \
 public:                                                   \
     virtual ~__MADerivedSingletonType__() = default;
 
+/// @macro EXPR_SGT
+/// @brief Singleton type.
+#define EXPR_SGT(__SingletonType__) \
+  __SingletonType__::GetInstance()
+  
+/// @class ISingleton
+/// @brief Singleton type interface.
 template <typename TType>
 class ISingleton
 {

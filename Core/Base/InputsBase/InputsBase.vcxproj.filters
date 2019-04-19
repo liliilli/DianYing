@@ -30,6 +30,18 @@
     <ClInclude Include="Include\DInputAnalog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\ELowKeyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ELowMouse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ALowInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DInputMousePos.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\DInputButton.cc">
@@ -39,6 +51,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\DInputAnalog.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ALowInput.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DInputMousePos.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

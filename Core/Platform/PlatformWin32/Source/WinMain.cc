@@ -77,6 +77,10 @@ int APIENTRY WinMain(
 
   // Initialize engine.
   {
+    const auto flag = gEngine->GetPlatformInfo().InitPlatform();
+    assert(flag == true);
+  }
+  {
     const auto flag = gEngine->Initialize();
     assert(flag == expr::DY_SUCCESS);
   }
@@ -91,6 +95,10 @@ int APIENTRY WinMain(
   }
 
   // Release engine.
+  {
+    const auto flag = gEngine->GetPlatformInfo().ReleasePlatform();
+    assert(flag == true);
+  }
   gEngine = nullptr;
   WIN32_TRY_TURN_OFF_DEBUG();
 

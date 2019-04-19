@@ -39,6 +39,12 @@
     <ClInclude Include="Include\AProfilingBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\PWindowCreationDescriptor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DWindowHandle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\APlatformBase.cc">

@@ -18,41 +18,6 @@ namespace dy
 
 inline MWindow::Impl::Impl(MWindow& parent) : mImplParent{parent}
 {
-  /// @brief This function is not implemented yet.
-  static auto InitializeVulkan = [this]()
-  {
-    #ifdef false
-    dy::DyVkInitialize(windowHandle, hInstance);
-
-    ShowWindow(windowHandle, SW_SHOW);
-    SetForegroundWindow(windowHandle);
-    SetFocus(windowHandle);
-
-    dy::DyVkRenderLoop();
-    dy::DyVkCleanupResources();
-    #endif
-    return EDySuccess::DY_FAILURE;
-  };
-
-  /// @brief This function is not implemented yet.
-  static auto InitializeDirectX11 = [this]()
-  {
-    #ifdef false
-    MDY_CALL_ASSERT_SUCCESS(DyWin32InitializeWindow(hInstance));
-    MDY_CALL_ASSERT_SUCCESS(DyD11InitializeDirect3D());
-
-    ShowWindow(windowHandle, SW_SHOW);
-    SetForegroundWindow(windowHandle);
-    SetFocus(windowHandle);
-
-    DyD11CreateEffectFx();
-    DyD11BindVertexLayout();
-    DyD11CreateVertexBuffer();
-    DyD11RenderLoop();
-    #endif
-    return EDySuccess::DY_FAILURE;
-  };
-
   /// @brief Initialize OpenGL Context.
   /// This function must be returned `EDySuccess::DY_SUCCESS`.
   static auto InitializeOpenGL = [this]()

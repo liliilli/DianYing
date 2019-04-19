@@ -29,6 +29,8 @@
     <ClInclude Include="Include\Math\Type\Micellanous\ERandomPolicy.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DBounds2D.h" />
     <ClInclude Include="Include\Math\Type\Micellanous\DBounds3D.h" />
+    <ClInclude Include="Include\Math\Type\Micellanous\DUuid.h" />
+    <ClInclude Include="Include\Math\Utility\XBoost.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Include\Math\Common\Inline\TGlobalTypes.inl" />
@@ -83,5 +85,9 @@
     <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DInt.inl" />
     <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DReal.inl" />
     <None Include="Include\Math\Type\Inline\DBounds3D\DBounds3DCommon.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Math\Type\Micellanous\DUuid.cc" />
+    <ClCompile Include="Source\Utility\XBoost.cc" />
   </ItemGroup>
 </Project>

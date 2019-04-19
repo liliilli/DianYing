@@ -1,3 +1,4 @@
+#pragma once
 ///
 /// MIT License
 /// Copyright (c) 2018-2019 Jongmin Yun
@@ -11,35 +12,13 @@
 /// SOFTWARE.
 ///
 
-#include <APlatformBase.h>
+#include <exception>
 
-namespace dy
+namespace boost
 {
 
-APlatformBase::APlatformBase(EXPR_E(EPlatform) platform)
-  : mPlatform{platform}
-{ }
+/// @brief Boost alternative Exception handling function.
+/// @reference https://imitursa.tistory.com/1990
+void throw_exception(const std::exception&);
 
-APlatformBase::~APlatformBase() = default;
-
-ADebugBase& APlatformBase::GetDebugManager() noexcept
-{
-  return *this->mDebug;
-}
-
-AProfilingBase& APlatformBase::GetProfilingManager() noexcept
-{
-  return *this->mProfiling;
-}
-
-EPlatform::_ APlatformBase::GetPlatformType() const noexcept
-{
-  return this->mPlatform;
-}
-
-bool APlatformBase::IsConsoleWindowCreated() noexcept
-{
-  return this->mIsConsoleWindowCreated;
-}
-
-} /// ::dy namespace
+} /// ::boost namespace
