@@ -24,6 +24,7 @@ This math library suports below things.
 * Clamping type that has compile time range `TStart` and `TEnd`, and supporting compile type. `DClamp`
 * Quaternion
 * Random value creation functions.
+* UUID type (To use this, need to import static library file `DyMath.lib`.)
 * and, miscellaneous helper math functions...
 
 Implemented container type's arithmethic operators and functions are automatically proceeded by converting to more coverable type following value category description.
@@ -60,6 +61,7 @@ Dy(DianYing) Common Math (a.k.a `DyMath`) has value category to support automati
 2019-03-30 Add Quaternion. Move Random function into DyMath	
 2019-03-31 Add DBounds (AABB) 2D & 3D Type. Add `ExtractMin` `ExtractMax` math api for DVectors.
 2019-04-02 Add SIMD version of DVector4<TI32> and DVector4<TF32>.
+2019-04-19 Add UUID type for code reusability.
 
 ## Copyright
 
