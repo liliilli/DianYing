@@ -244,7 +244,39 @@ FWindowsPlatform::FindResource(int id, EXPR_E(EBtResource) type)
   return std::make_unique<FBtResourceHandle>(hResource);
 }
 
-bool FWindowsPlatform::CreateGameWindow()
+#ifdef CreateWindow
+#undef CreateWindow
+#endif
+
+DWindowHandle FWindowsPlatform::CreateWindow(const PWindowCreationDescriptor& desc)
+{
+  (void)desc;
+  assert(false);
+  return DWindowHandle{};
+}
+
+#ifndef CreateWindow
+#define CreateWindow CreateWindowW
+#endif
+ 
+bool FWindowsPlatform::RemoveWindow(const DWindowHandle& handle)
+{
+  (void)handle;
+  assert(false);
+  return true;
+}
+
+void FWindowsPlatform::PollEvents()
+{
+  MSG msg;
+  while (PeekMessage(&msg, nullptr,  0, 0, PM_REMOVE)) 
+  {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
+}
+
+bool FWindowsPlatform::InitPlatform()
 {
   if (this->RegisterWindowClassWin32() == false) { return false; }
 
@@ -335,23 +367,13 @@ bool FWindowsPlatform::CreateBackgroundWindow()
   return true;
 }
 
-bool FWindowsPlatform::RemoveGameWindow()
+bool FWindowsPlatform::ReleasePlatform()
 {
   if (this->RemoveBackgroundWindow() == false) { return false; }
 
   if (this->UnregisterWindowClassWin32() == false) { return false; }
 
   return true;
-}
-
-void FWindowsPlatform::PollEvents()
-{
-  MSG msg;
-  while (PeekMessage(&msg, nullptr,  0, 0, PM_REMOVE)) 
-  {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
-  }
 }
 
 bool FWindowsPlatform::RemoveBackgroundWindow()

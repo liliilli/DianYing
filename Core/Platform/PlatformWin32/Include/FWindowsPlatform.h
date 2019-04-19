@@ -52,26 +52,46 @@ public:
   /// If console window is not created, do nothing but just return false.
   bool RemoveConsoleWindow() override final;
 
+#ifdef FindResource
 #undef FindResource // This sucks
+#endif
 
   std::unique_ptr<ABtResourceBase> 
   FindResource(int id, EXPR_E(EBtResource) type) override final;
 
+#ifndef FindResource
 #define FindResource FindResourceW // Resume
+#endif
+
+#ifdef CreateWindow
+#undef CreateWindow
+#endif
 
   /// @brief Create game window.
   /// Game window is initially visible.
   /// If failed, just return false.
-  bool CreateGameWindow() override final;
+  DWindowHandle CreateWindow(const PWindowCreationDescriptor& desc) override final;
+
+#ifndef CreateWindow
+#define CreateWindow CreateWindowW
+#endif
   
   /// @brief Remove game window.
   /// All related resource will be removed and released.
   /// If failed, just return false.
-  bool RemoveGameWindow() override final;
+  bool RemoveWindow(const DWindowHandle& handle) override final;
 
   /// @brief Processes only evetns that have already been received and that returns
   /// immediately.
   void PollEvents() override final;
+
+  /// @brief Initialize platform dependent resources.
+  /// Note that this function does not create main window.
+  bool InitPlatform() override final;
+
+  /// @brief Release platform dependent resources.
+  /// Note that this function does not remove main window.
+  bool ReleasePlatform() override final;;
 
 private:
   /// @brief Register window class into Win32 internal system.
@@ -86,7 +106,6 @@ private:
   /// @brief Unregister window class from Win32 internal system.
   bool UnregisterWindowClassWin32();
 
-private:
   FILE* mFdConsole = nullptr;
 };
 

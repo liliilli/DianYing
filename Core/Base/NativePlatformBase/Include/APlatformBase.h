@@ -78,15 +78,27 @@ public:
   /// Note that this function does not remove main window.
   virtual bool ReleasePlatform() = 0;
 
+#ifdef _WIN32
+  #ifdef CreateWindow
+  #undef CreateWindow
+  #endif
+#endif
+
   /// @brief Create game window.
   /// Game window is initially visible.
   /// If failed, just return false.
-  virtual DWindowHandle CreateGameWindow(const PWindowCreationDescriptor& desc) = 0;
+  virtual DWindowHandle CreateWindow(const PWindowCreationDescriptor& desc) = 0;
+
+#ifdef _WIN32
+  #ifndef CreateWindow
+  #define CreateWindow CreateWindowW
+  #endif
+#endif
 
   /// @brief Remove game window.
   /// All related resource will be removed and released.
   /// If failed, just return false.
-  virtual bool RemoveGameWindow(const DWindowHandle& handle) = 0;
+  virtual bool RemoveWindow(const DWindowHandle& handle) = 0;
 
 #ifdef _WIN32
 #undef FindResource
