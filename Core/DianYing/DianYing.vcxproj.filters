@@ -221,7 +221,6 @@
     <ClCompile Include="Source\Helper\Type\DColorRGBA.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGB24.cc" />
     <ClCompile Include="Source\Helper\Type\DColorRGBA32.cc" />
-    <ClCompile Include="Source\Helper\Type\DString.cc" />
     <ClCompile Include="Source\Helper\Type\DQuaternion.cc" />
     <ClCompile Include="Source\Management\MFont.cc" />
     <ClCompile Include="Source\Management\MGameTimer.cc" />
