@@ -26,6 +26,7 @@
 #include <PLowInputMouseBtn.h>
 #include <PLowInputMousePos.h>
 #include <DWin32PostMessage.h>
+#include <StringUtil/XUtility.h>
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -210,32 +211,25 @@ void FWindowsPlatform::SetWindowTitle(const DWindowHandle& handle, const std::st
   auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
   
   // If handle not find, just return.
-  if (auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
-    it == handleContainer.mWindowHandles.end())
+  auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
   {
     return;
   }
 
+  auto& [uuid, hwnd] = *it;
+  const auto flag = SetWindowText(hwnd, ConvertStringToWString(newTitle).c_str());
+  if (flag == 0)
+  {
+    LOG("Failed to set window title, %s.\n", newTitle.c_str());
+    return;
+  }
+
+#if 0
   // Temporary
   if (handleContainer.mGlfwWindow == nullptr) { return; }
   glfwSetWindowTitle(handleContainer.mGlfwWindow, newTitle.c_str());
 
-#if 0
-  // Widen string.
-  std::wstring wideStr;
-  const auto& ctfacet = std::use_facet<std::ctype<wchar_t>>(std::wstringstream().getloc());
-
-  for (const auto& currChar : newTitle)
-  {
-    wideStr.push_back(ctfacet.widen(currChar));
-  }
-
-  // Try set window text.
-  const auto isSucceeded = SetWindowText(handle.mMainWindow, wideStr.c_str());
-  if (isSucceeded == FALSE)
-  {
-    const auto errorFlag = GetLastError();
-  }
 #endif
 }
 
@@ -251,29 +245,20 @@ std::string FWindowsPlatform::GetWindowTitle(const DWindowHandle& handle) const
   }
 
   // Get title name from main window handle.
-  std::wstring titleName = {256, L'0'};
+  //std::wstring titleName = {256, 0};
+  wchar_t titleName[256] = {0};
   auto& [uuid, hwnd] = *it;
-  GetWindowText(hwnd, titleName.data(), static_cast<int>(titleName.size()));
+  const auto length = GetWindowText(hwnd, titleName, 255);
 
   // If failed to get window text, just return empty string.
-  if (titleName.length() == 0)
+  if (length == 0)
   {
     const auto errorFlag = GetLastError();
     return "";
   }
 
-  // Narrow string into std::string (<char>)
-  std::string resultTitleName;
-  const auto& ctfacet = std::use_facet<std::ctype<wchar_t>>(std::wstringstream().getloc());
-
-  for (const auto& currWChar : titleName)
-  {
-    if (currWChar == L'0') { continue; }
-    resultTitleName.push_back( ctfacet.narrow(currWChar, 0 ) );
-  }
-       
-  // Return.
-	return resultTitleName;
+  // Narrow string into std::string (<char>) and return.
+  return ConvertWStringToString(titleName);
 }
 
 uint32_t FWindowsPlatform::GetWindowHeight(const DWindowHandle& handle) const
@@ -285,6 +270,7 @@ uint32_t FWindowsPlatform::GetWindowHeight(const DWindowHandle& handle) const
     return 0;
   }
 
+#if 0
   // Temporary code
   if (handleContainer.mGlfwWindow == nullptr) { return 0; }
 
@@ -292,11 +278,13 @@ uint32_t FWindowsPlatform::GetWindowHeight(const DWindowHandle& handle) const
   glfwGetWindowSize(handleContainer.mGlfwWindow, &width, &height);
 
   return height;
+#endif
 
-#if 0
-  // Get RECT from main window.
+  auto& [uuid, hwnd] = *it;
+  // Get RECT from window handle.
+  // Do not use GetWindowRect (global)
   RECT rect;
-  const auto isSucceeded = GetWindowRect(handle.mMainWindow, &rect);
+  const auto isSucceeded = GetClientRect(hwnd, &rect);
   if (isSucceeded == FALSE)
   {
     const auto errorFlag = GetLastError();
@@ -305,7 +293,6 @@ uint32_t FWindowsPlatform::GetWindowHeight(const DWindowHandle& handle) const
 
   // Return values.
   return rect.bottom - rect.top;
-#endif
 }
 
 uint32_t FWindowsPlatform::GetWindowWidth(const DWindowHandle& handle) const
@@ -317,6 +304,7 @@ uint32_t FWindowsPlatform::GetWindowWidth(const DWindowHandle& handle) const
     return 0;
   }
 
+#if 0
   // Temporary code
   if (handleContainer.mGlfwWindow == nullptr) { return 0; }
 
@@ -324,11 +312,12 @@ uint32_t FWindowsPlatform::GetWindowWidth(const DWindowHandle& handle) const
   glfwGetWindowSize(handleContainer.mGlfwWindow, &width, &height);
 
   return width;
+#endif
 
-#if 0
+  auto& [uuid, hwnd] = *it;
   // Get RECT from main window.
   RECT rect;
-  const auto isSucceeded = GetWindowRect(handle.mMainWindow, &rect);
+  const auto isSucceeded = GetClientRect(hwnd, &rect);
   if (isSucceeded == FALSE)
   {
     const auto errorFlag = GetLastError();
@@ -337,7 +326,6 @@ uint32_t FWindowsPlatform::GetWindowWidth(const DWindowHandle& handle) const
 
   // Return values.
   return rect.right - rect.left;
-#endif
 }
 
 void FWindowsPlatform::ResizeWindow(const DWindowHandle& handle, uint32_t width, uint32_t height)
@@ -349,11 +337,43 @@ void FWindowsPlatform::ResizeWindow(const DWindowHandle& handle, uint32_t width,
     return;
   }
 
+#ifdef false
   // Temporary code
   if (handleContainer.mGlfwWindow == nullptr) { return; }
-
   // Set size.
   glfwSetWindowSize(handleContainer.mGlfwWindow, width, height);
+#endif
+
+  auto& [uuid, hwnd] = *it;
+
+  // Set RECT as original (width, height).
+  RECT rect = {};
+  rect.bottom = height;
+  rect.right = width;
+  
+  // Get style of given hwnd.
+  const DWORD style = GetWindowLong(hwnd, GWL_STYLE);
+  const DWORD exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+  const HMENU menu = GetMenu(hwnd);
+
+  // Get adjusted window rect.
+  const auto flag = AdjustWindowRectEx(&rect, style, menu ? TRUE : FALSE, exStyle);
+  if (flag == 0)
+  {
+    LOG("Failed to resize window. Failed to adjust window rect in WIN32.\n");
+    return;
+  }
+  
+  // Resize window without moving position and zorder etc.
+  const auto isSucceeded = SetWindowPos(
+    hwnd, nullptr,
+    0, 0, 
+    rect.right - rect.left, rect.bottom - rect.top, 
+    SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOMOVE);
+  if (isSucceeded == 0)
+  {
+    LOG("Failed to resize window. Failed to resize with win32 api, SetWindowPos.\n");
+  }
 }
 
 bool FWindowsPlatform::CreateConsoleWindow()
@@ -438,13 +458,7 @@ FWindowsPlatform::CreateWindow(const PWindowCreationDescriptor& desc)
     desc.mWindowWidth, desc.mWindowHeight, 96);
 
   // Widen string.
-  std::wstring wideStr;
-  const auto& ctfacet = std::use_facet<std::ctype<wchar_t>>(std::wstringstream().getloc());
-
-  for (const auto& currChar : desc.mWindowName)
-  {
-    wideStr.push_back(ctfacet.widen(currChar));
-  }
+  auto wideStr = ConvertStringToWString(desc.mWindowName);
 
   // Create window actually.
   // Created window will inherits L"Dy" window class.
@@ -474,7 +488,8 @@ FWindowsPlatform::CreateWindow(const PWindowCreationDescriptor& desc)
     SetForegroundWindow(handle);
     SetFocus(handle);
   }
- 
+	UpdateWindow(handle);
+
   // Insert handle with generated uuid.
   DWindowHandle uuidHandle = {};
   auto [it, isSucceeded] = handleContainer.mWindowHandles.try_emplace(

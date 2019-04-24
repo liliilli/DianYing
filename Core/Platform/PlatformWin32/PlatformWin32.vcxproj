@@ -46,7 +46,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\DyStringUtil\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\glad\bin\$(Configuration);$(SolutionDir)Common\DyMath\bin\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
