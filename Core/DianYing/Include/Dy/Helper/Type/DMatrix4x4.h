@@ -15,6 +15,7 @@
 
 #include <nlohmann/json_fwd.hpp>
 #include <foundation/PxTransform.h>
+#include <glm/mat4x4.hpp>
 
 #include <Dy/Helper/Type/DVector3.h>
 #include <Dy/Helper/Type/DVector4.h>
