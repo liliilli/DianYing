@@ -720,5 +720,20 @@ bool FWindowsPlatform::CanShutdown()
   return handleContainer.mWindowHandles.empty() == true;
 }
 
+void* FWindowsPlatform::_GetHandleOf(const DWindowHandle& handle)
+{
+  // Check handle is already not exist (already deleted) in handle container.
+  auto& handleContainer = static_cast<FWindowsHandles&>(*this->mHandle);
+  const auto it = handleContainer.mWindowHandles.find(handle.mHandleUuid);
+  if (it == handleContainer.mWindowHandles.end())
+  {
+    LOG("Failed to find internal handle.\n");
+    return nullptr;
+  }  
+
+  auto& [uuid, hwnd] = *it;
+  return hwnd;
+}
+
 } /// ::dy namespace
 

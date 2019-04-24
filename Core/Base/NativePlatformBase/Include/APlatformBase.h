@@ -139,6 +139,10 @@ public:
   /// @brief Check platform module can be shutdown, so everything is able to shutdown.
   [[nodiscard]] virtual bool CanShutdown() = 0;
 
+  /// @brief Get internal handle instance of given handle.
+  /// If not exist, just return nullptr.
+  virtual void* _GetHandleOf(const DWindowHandle& handle) = 0;
+
 protected:
   std::unique_ptr<AHandlesBase>     mHandle     = nullptr;
   std::unique_ptr<ADebugBase>       mDebug      = nullptr;

@@ -115,6 +115,10 @@ private:
   /// @brief Check platform module can be shutdown, so everything is able to shutdown.
   bool CanShutdown() override final;
 
+  /// @brief Get internal handle instance of given handle.
+  /// If not exist, just return nullptr.
+  void* _GetHandleOf(const DWindowHandle& handle) override final;
+
 private:
   FILE* mFdConsole = nullptr;
 };
