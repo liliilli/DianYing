@@ -15,6 +15,11 @@
 #include <string>
 #include <sstream>
 
+#ifdef _WIN32
+  __pragma(warning(push))
+  __pragma(warning(disable:4244))
+#endif
+
 namespace dy
 {
 
@@ -47,3 +52,7 @@ inline std::string ConvertWStringToString(const std::wstring& wstring)
 }
 
 } /// ::dy namespace
+
+#ifdef _WIN32
+  __pragma(warning(pop))
+#endif
