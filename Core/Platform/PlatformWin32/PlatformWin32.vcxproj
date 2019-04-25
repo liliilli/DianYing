@@ -46,14 +46,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\DyStringUtil\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\glad\bin\$(Configuration);$(SolutionDir)Common\Utils\DyMath\lib\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\Utils\DyStringUtil\Include;$(SolutionDir)Common\Utils\DyMath\Include;$(SolutionDir)Common\Utils\DyExpression\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Common\Utils\DyMath\lib\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\ThirdParty\glfw\include;$(SolutionDir)Common\ThirdParty\glad\include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\glad\bin\$(Configuration);$(SolutionDir)Common\Utils\DyMath\lib\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\NativePlatformBase\Include;$(SolutionDir)Common\Utils\DyStringUtil\Include;$(SolutionDir)Common\Utils\DyMath\Include;$(SolutionDir)Common\Utils\DyExpression\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Common\Utils\DyMath\lib\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -72,7 +72,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>DyMath.lib;glad.lib;glfw3.lib;NativePlatformBase.lib</AdditionalDependencies>
+      <AdditionalDependencies>DyMath.lib;NativePlatformBase.lib</AdditionalDependencies>
       <SubSystem>
       </SubSystem>
     </Lib>
@@ -97,7 +97,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>DyMath.lib;glad.lib;glfw3.lib;NativePlatformBase.lib</AdditionalDependencies>
+      <AdditionalDependencies>DyMath.lib;NativePlatformBase.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

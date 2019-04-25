@@ -28,10 +28,6 @@
 #include <DWin32PostMessage.h>
 #include <StringUtil/XUtility.h>
 
-#include <GLFW/glfw3.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
-#define GLFW_EXPOSE_NATIVE_WGL
-#include <GLFW/glfw3native.h>
 #include <atlconv.h>
 
 #define IS_32
