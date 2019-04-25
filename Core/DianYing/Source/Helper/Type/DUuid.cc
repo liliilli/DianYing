@@ -13,40 +13,10 @@
 ///
 
 #include <Dy/Helper/Type/DUuid.h>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/uuid/uuid_io.hpp>
-
 #include <Dy/Management/MLog.h>
 
-namespace dy
+namespace dy::math
 {
-
-DUuid::DUuid(bool iCreateValue) : mUuid()
-{
-  if (iCreateValue == true)
-  {
-    // Make new value.
-    this->mUuid = boost::uuids::random_generator()();
-  }
-}
-
-DUuid::DUuid(const std::string& iUuidString, bool iIsStrict) 
-  : mUuid()
-{
-  const boost::uuids::string_generator gen;
-  this->mUuid = gen(iUuidString);
-}
-
-bool DUuid::HasValue() const
-{
-  return this->mUuid.is_nil() == false;
-}
-
-std::string DUuid::ToString() const noexcept
-{
-  return boost::lexical_cast<std::string>(this->mUuid);
-}
 
 void to_json(nlohmann::json& oJson, const DUuid& iUuid)
 {
@@ -56,7 +26,8 @@ void to_json(nlohmann::json& oJson, const DUuid& iUuid)
 void from_json(const nlohmann::json& iJson, DUuid& oUuid)
 {
   const auto resultUuid = DUuid(iJson.get<std::string>());
-  std::memcpy(&oUuid.mUuid, &resultUuid.mUuid, oUuid.Size());
+  oUuid = resultUuid;
+  //std::memcpy(&oUuid.mUuid, resultUuid., oUuid.Size());
 }
 
 } /// ::dy namespace

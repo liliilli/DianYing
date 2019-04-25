@@ -45,14 +45,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\ThirdParty\boost;$(ProjectDir)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Common\DyMath\bin\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Common\Utils\DyExpression\Include;$(SolutionDir)Common\Utils\DyMath\Include;$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Common\Utils\DyMath\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Common\DyExpression\Include;$(SolutionDir)Common\DyMath\Include;$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\ThirdParty\boost;$(ProjectDir)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Common\DyMath\bin\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Common\Utils\DyExpression\Include;$(SolutionDir)Common\Utils\DyMath\Include;$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Common\Utils\DyMath\lib\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

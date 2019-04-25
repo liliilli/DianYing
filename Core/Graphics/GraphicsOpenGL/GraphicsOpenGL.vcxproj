@@ -45,13 +45,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Common\DyExpression\Include;$(ProjectDir)Include;$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)Common\Utils\DyExpression\Include;$(ProjectDir)Include;$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)Core\Base\NativeGraphicsBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Common\DyExpression\Include;$(ProjectDir)Include;$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)Common\Utils\DyExpression\Include;$(ProjectDir)Include;$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)Core\Base\NativeGraphicsBase\bin\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
