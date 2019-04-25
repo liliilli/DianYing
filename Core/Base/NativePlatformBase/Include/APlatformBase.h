@@ -21,7 +21,8 @@
 #include <AProfilingBase.h>
 #include <ALowInput.h>
 #include <PWindowCreationDescriptor.h>
-#include "DWindowHandle.h"
+#include <DWindowHandle.h>
+#include <AGraphicsBase.h>
 
 namespace dy
 {
@@ -46,6 +47,10 @@ public:
   /// @brief Get input manager as reference.
   /// This function must be succeeded.
   base::ALowInput& GetInputManager() noexcept;
+
+  /// @brief Get low-level graphics manager as reference.
+  /// This function must be succeeded.
+  AGraphicsBase& GetGraphics() noexcept;
 
   /// If handle not found in window handle container, do nothing.
   /// @param handle Window handle to find.
@@ -148,6 +153,7 @@ protected:
   std::unique_ptr<ADebugBase>       mDebug      = nullptr;
   std::unique_ptr<AProfilingBase>   mProfiling  = nullptr;
   std::unique_ptr<base::ALowInput>  mLowInput   = nullptr;
+  std::unique_ptr<AGraphicsBase>    mGraphics   = nullptr;
   bool mIsConsoleWindowCreated = false;
 
 private:

@@ -37,6 +37,11 @@ base::ALowInput& APlatformBase::GetInputManager() noexcept
   return *this->mLowInput;
 }
 
+AGraphicsBase& APlatformBase::GetGraphics() noexcept
+{
+  return *this->mGraphics;
+}
+
 EPlatform::_ APlatformBase::GetPlatformType() const noexcept
 {
   return this->mPlatform;
