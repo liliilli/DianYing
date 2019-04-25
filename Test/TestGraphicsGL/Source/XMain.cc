@@ -98,6 +98,8 @@ int WINAPI WinMain(
   }
 
   // Create GL context. 
+  // https://www.khronos.org/opengl/wiki/Creating_an_OpenGL_Context_(WGL)
+  // http://egloos.zum.com/NoGravity/v/9092122
   rc = wglCreateContext(dc);
   if (rc == nullptr)
   {

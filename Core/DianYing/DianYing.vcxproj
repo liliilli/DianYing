@@ -48,14 +48,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyStringUtil\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyStringUtil\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
     <LibraryPath>$(SolutionDir)Core\Base\InputsBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(SolutionDir)Common\DyStringUtil\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)imm\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyStringUtil\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Core\Base\NativeGraphicsBase\Include;$(SolutionDir)Core\Base\InputsBase\Include;$(SolutionDir)Common\DyStringUtil\Include;$(ProjectDir)Include;$(IncludePath)</IncludePath>
     <SourcePath>$(SourcePath)</SourcePath>
     <LibraryPath>$(SolutionDir)Core\Base\InputsBase\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\zlib\bin\$(Configuration);$(SolutionDir)Core\Platform\PlatformWin32\bin\$(Configuration);$(SolutionDir)Core\Base\NativePlatformBase\bin\$(Configuration);$(SolutionDir)Common\DyStringUtil\bin\$(Configuration);$(SolutionDir)Common\ThirdParty\glfw\$(Configuration);$(SolutionDir)Common\ThirdParty\Lua\bin\$(Platform)\$(Configuration);$(SolutionDir)Common\ThirdParty\physX\lib\$(Configuration);$(ProjectDir)Libraries\fmod\lowlevel\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
